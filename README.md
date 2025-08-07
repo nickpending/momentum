@@ -74,27 +74,63 @@ $WORKFLOW_DEV/myproject/          # Development workspace
 └── [your code...]
 ```
 
-### Workflow Commands
+### Custom Slash Commands (The Magic)
 
-**Exploration:**
-- `/ideate` - Start exploring an idea through discussion (global command)
+These custom commands turn Claude Code into a development powerhouse. They're not just shortcuts - they enforce the iteration workflow and embed quality standards directly into your process.
 
-**Planning:**
-- `/plan-iteration` - Interview-based iteration planning with embedded standards
+**Exploration Phase:**
+- `/ideate` - Start exploring through conversation, not premature file creation (global command)
+  - Interviews you about the idea
+  - Creates exploration artifacts only when requested
+  - Bridges unstructured thinking → structured project
+
+**Planning Commands:**
+- `/plan-iteration` - Interview-based iteration planning
+  - Asks concrete questions about what you're building
+  - Embeds tech-specific standards into ITERATION.md
+  - Forces you to define evidence of completion
+  
 - `/decompose-iteration` - Break features into implementable tasks
-- `/plan-task` - Create implementation plan with linting/quality checks
+  - Turns high-level features into concrete work items
+  - Adds linting/quality gates to each task
+  - Creates actionable TASKS.md
 
-**Implementation:**
+- `/plan-task [N]` - Create implementation plan for specific task
+  - Loads task context and standards
+  - Creates step-by-step implementation guidance
+  - Includes verification steps
+
+**Development Commands:**
 - `/load-app-context` - Quick project orientation
-- `/save-state` - Capture discoveries, decisions, and progress
-- `/restore-state` - Resume work with full context
+  - Loads IDEA, current iteration, tasks, and discoveries
+  - Perfect for resuming work or onboarding
+  
+- `/save-state` - Capture discoveries and decisions
+  - Saves technical discoveries that cause context overflow
+  - Documents architectural decisions
+  - Preserves open questions and breakthroughs
+  
+- `/restore-state` - Resume with full context
+  - Reloads all saved states
+  - Reconstructs working context
+  - Continues exactly where you left off
 
-**Testing:**
-- `/plan-test` - Write tests for implemented features
+**Quality Commands:**
+- `/plan-test` - Write tests after implementation
+  - Tests prove functionality, not drive development
+  - Uses real services by default
+  - Follows existing test patterns
 
-**Completion:**
-- `/complete-task` - Validate task completion with evidence
-- `/complete-iteration` - Archive iteration and prepare for next
+**Shipping Commands:**
+- `/complete-task [N]` - Validate task completion
+  - Requires evidence of working functionality
+  - Updates task status with proof
+  - Maintains momentum through clear completion
+  
+- `/complete-iteration` - Archive and prepare next cycle
+  - Archives completed iteration
+  - Updates feature statuses in IDEA.md
+  - Sets up for next iteration
 
 ### Feature Status Flow
 
