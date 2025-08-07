@@ -1,0 +1,47 @@
+#!/usr/bin/env zsh
+# Workflow Configuration
+# Source this file to set up workflow paths
+
+# Core Paths (customize these)
+export WORKFLOW_PROJECTS="${WORKFLOW_PROJECTS:-$HOME/obsidian/projects}"
+export WORKFLOW_DEV="${WORKFLOW_DEV:-$HOME/development/projects}"
+export WORKFLOW_HOME="${WORKFLOW_HOME:-$HOME/development/projects/momentum}"
+
+# Workflow Components
+export WORKFLOW_COMMANDS="$WORKFLOW_HOME/commands"
+export WORKFLOW_TEMPLATES="$WORKFLOW_HOME/templates"
+export WORKFLOW_RESOURCES="$WORKFLOW_HOME/resources"
+export WORKFLOW_AGENTS="$WORKFLOW_HOME/agents"
+
+# External Integrations (optional)
+export WORKFLOW_STANDARDS="${WORKFLOW_STANDARDS:-$HOME/.workflow/standards}"
+
+# Quick Command Paths (for qback, qdiscovery, etc.)
+# These use ${PROJECT} which gets resolved at runtime
+export WORKFLOW_BACKLOG_TEMPLATE="${WORKFLOW_PROJECTS}/\${PROJECT}/01-backlog.md"
+export WORKFLOW_DISCOVERY_TEMPLATE="${WORKFLOW_PROJECTS}/\${PROJECT}/discoveries"
+
+# Function to get current project name from git or directory
+get_project_name() {
+    # Try git remote first
+    local git_remote=$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//')
+    if [[ -n "$git_remote" ]]; then
+        echo "$git_remote"
+        return
+    fi
+    
+    # Try current directory name if in projects
+    local current_dir=$(pwd)
+    if [[ "$current_dir" == *"/development/projects/"* ]]; then
+        echo "${current_dir#*/development/projects/}" | cut -d'/' -f1
+        return
+    fi
+    
+    # Fallback to directory name
+    basename "$current_dir"
+}
+
+# Aliases for quick access
+alias workflow-config="source $WORKFLOW_HOME/config"
+alias workflow-home="cd $WORKFLOW_HOME"
+alias workflow-projects="cd $WORKFLOW_PROJECTS"

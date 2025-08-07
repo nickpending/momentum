@@ -1,0 +1,178 @@
+#!/usr/bin/env zsh
+# setupd - Claude workflow project setup with config support
+
+# Colors for output
+autoload -U colors && colors
+RED='\033[31m'
+GREEN='\033[32m'
+YELLOW='\033[33m'
+BLUE='\033[34m'
+MAGENTA='\033[35m'
+CYAN='\033[36m'
+RESET='\033[0m'
+
+# Load configuration
+WORKFLOW_CONFIG="$HOME/.config/workflow/config"
+if [[ -f "$WORKFLOW_CONFIG" ]]; then
+    source "$WORKFLOW_CONFIG"
+else
+    # Fallback defaults if no config
+    WORKFLOW_PROJECTS="${WORKFLOW_PROJECTS:-$HOME/obsidian/projects}"
+    WORKFLOW_DEV="${WORKFLOW_DEV:-$HOME/development/projects}"
+    WORKFLOW_HOME="${WORKFLOW_HOME:-$HOME/development/workflow}"
+    WORKFLOW_COMMANDS="$WORKFLOW_HOME/commands"
+    WORKFLOW_TEMPLATES="$WORKFLOW_HOME/templates"
+    WORKFLOW_RESOURCES="$WORKFLOW_HOME/resources"
+    WORKFLOW_STANDARDS="${WORKFLOW_STANDARDS:-$HOME/.workflow/standards}"
+fi
+
+PROJECT_NAME=$1
+
+if [ -z "$PROJECT_NAME" ]; then
+    echo -e "${RED}❌ Error: Project name required${RESET}"
+    echo "Usage: $(basename $0) <project-name>"
+    echo -e "${BLUE}Example: $(basename $0) arsenl${RESET}"
+    echo -e "${BLUE}Example: $(basename $0) arsenl/arsenl-prompt${RESET}"
+    echo -e "${CYAN}💡 Tech stack detection happens automatically from IDEA.md${RESET}"
+    exit 1
+fi
+
+# Parse project name for nested structure
+if [[ "$PROJECT_NAME" == */* ]]; then
+    PARENT_PROJECT="${PROJECT_NAME%/*}"
+    SUB_PROJECT="${PROJECT_NAME##*/}"
+    OBSIDIAN_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
+    DEV_PROJECT="$WORKFLOW_DEV/$PROJECT_NAME"
+    
+    echo -e "${BLUE}🔍 Nested project: $PARENT_PROJECT/$SUB_PROJECT${RESET}"
+else
+    OBSIDIAN_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
+    DEV_PROJECT="$WORKFLOW_DEV/$PROJECT_NAME"
+fi
+
+# Check if obsidian project exists
+OBSIDIAN_EXISTS=true
+
+if [[ "$PROJECT_NAME" == */* ]]; then
+    # Nested project - likely an extracted tool
+    if [ ! -d "$OBSIDIAN_PROJECT" ]; then
+        echo -e "${YELLOW}⚠️  Extracted tool: $PROJECT_NAME not found in obsidian${RESET}"
+        echo -e "${CYAN}💡 This is normal for extracted tools - continuing setup${RESET}"
+        OBSIDIAN_EXISTS=false
+    else
+        echo -e "${GREEN}✅ Found nested obsidian project${RESET}"
+        OBSIDIAN_EXISTS=true
+    fi
+else
+    # Flat project - should exist in obsidian
+    if [ ! -d "$OBSIDIAN_PROJECT" ]; then
+        echo -e "${RED}❌ Main project not found: $OBSIDIAN_PROJECT${RESET}"
+        
+        # Smart suggestions using zsh globbing
+        setopt nullglob
+        SIMILAR_PROJECTS=($WORKFLOW_PROJECTS/*${PROJECT_NAME}*(N) $WORKFLOW_PROJECTS/${PROJECT_NAME}*(N))
+        if [[ ${#SIMILAR_PROJECTS[@]} -gt 0 ]]; then
+            echo -e "${CYAN}💡 Similar projects: ${SIMILAR_PROJECTS[@]:t}${RESET}"
+        fi
+        unsetopt nullglob
+        exit 1
+    fi
+    OBSIDIAN_EXISTS=true
+fi
+
+# Check if dev project already exists
+if [ -d "$DEV_PROJECT" ]; then
+    if [[ ! -d "$DEV_PROJECT/.workflow" ]]; then
+        echo -e "${YELLOW}⚠️ Project exists, creating .workflow/ directory${RESET}"
+    fi
+fi
+
+echo -e "${MAGENTA}🚀 Setting up: $PROJECT_NAME${RESET}"
+echo -e "${CYAN}📁 Ideation: $OBSIDIAN_PROJECT${RESET}"
+echo -e "${CYAN}💻 Development: $DEV_PROJECT${RESET}"
+
+# Create dev project directory structure
+mkdir -p "$DEV_PROJECT/.workflow/artifacts"
+mkdir -p "$DEV_PROJECT/.workflow/archives"
+mkdir -p "$DEV_PROJECT/.workflow/state"
+
+# Symlink planning artifacts from Obsidian
+local obsidian_artifacts=(IDEA.md COMPOSITION_ARCHITECTURE.md)
+local obsidian_count=0
+
+if [[ "$OBSIDIAN_EXISTS" == "true" ]]; then
+    for artifact in "${(@)obsidian_artifacts}"; do
+        if [[ -f "$OBSIDIAN_PROJECT/$artifact" ]]; then
+            ln -sf "$OBSIDIAN_PROJECT/$artifact" "$DEV_PROJECT/.workflow/artifacts/$artifact"
+            ((obsidian_count++))
+        fi
+    done
+    
+    echo "📁 Obsidian files: ${obsidian_count}/${#obsidian_artifacts} ideation files linked"
+else
+    echo "📁 Obsidian files: Skipped for extracted tool (no obsidian project)"
+fi
+
+# Check for existing iteration files
+local iteration_artifacts=(ITERATION.md)
+local iteration_count=0
+
+for artifact in "${(@)iteration_artifacts}"; do
+    if [[ -f "$DEV_PROJECT/.workflow/artifacts/$artifact" ]]; then
+        ((iteration_count++))
+    fi
+done
+
+echo "📁 Iteration files: ${iteration_count}/${#iteration_artifacts} files found"
+
+# Link workflow resources
+local resource_count=0
+local resource_missing=()
+
+# Commands
+if [[ -d "$WORKFLOW_COMMANDS" ]]; then
+    mkdir -p "$DEV_PROJECT/.claude"
+    rm -rf "$DEV_PROJECT/.claude/commands"
+    ln -sf "$WORKFLOW_COMMANDS" "$DEV_PROJECT/.claude/commands"
+    ((resource_count++))
+else
+    resource_missing+=("commands")
+fi
+
+# Templates
+if [[ -d "$WORKFLOW_TEMPLATES" ]]; then
+    rm -rf "$DEV_PROJECT/.workflow/templates"
+    ln -sf "$WORKFLOW_TEMPLATES" "$DEV_PROJECT/.workflow/templates"
+    ((resource_count++))
+else
+    resource_missing+=("templates")
+fi
+
+# Resources
+if [[ -d "$WORKFLOW_RESOURCES" ]]; then
+    rm -rf "$DEV_PROJECT/.workflow/resources"
+    ln -sf "$WORKFLOW_RESOURCES" "$DEV_PROJECT/.workflow/resources"
+    ((resource_count++))
+else
+    resource_missing+=("resources")
+fi
+
+local total_components=3
+if [[ ${#resource_missing[@]} -gt 0 ]]; then
+    echo "🔧 Workflow: ${resource_count}/${total_components} components linked"
+    echo -e "${RED}❌ Missing components: ${resource_missing[*]} at $WORKFLOW_HOME${RESET}"
+    exit 1
+else
+    echo "🔧 Workflow: ${resource_count} components linked from $WORKFLOW_HOME"
+fi
+
+# Validate workflow standards exist (optional)
+if [[ -d "$WORKFLOW_STANDARDS" ]]; then
+    echo "🧠 Workflow standards: available at $WORKFLOW_STANDARDS"
+else
+    echo -e "${YELLOW}⚠️  Workflow standards: $WORKFLOW_STANDARDS not found${RESET}"
+    echo -e "${CYAN}💡 Tech standards will be embedded in ITERATION.md during planning${RESET}"
+fi
+
+echo -e "${GREEN}✅ Development project ready for iteration workflow!${RESET}"
+echo -e "${CYAN}💡 Next: Use /decompose-iteration to break features into tasks${RESET}"
