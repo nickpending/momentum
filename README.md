@@ -28,10 +28,16 @@ cd $WORKFLOW_DEV/myproject
 Every iteration must produce **working software** that solves real problems.
 
 ```
-IDEA → BUILD → SHIP → LEARN → ADAPT → repeat
+IDEATE → PLAN ITERATION → LOOP (
+    PLAN TASK → IMPLEMENT → TEST → COMPLETE TASK
+) → COMPLETE ITERATION → SHIP → LEARN → repeat
 ```
 
-**Not:** `PLAN → PLAN → PLAN → BUILD → SHIP`
+The workflow enforces quality through:
+- Interview-based planning (gather real requirements)
+- Embedded standards (linting/quality built into tasks)
+- Evidence-based completion (prove it works)
+- Test-after-implementation (tests prove functionality)
 
 ### Evidence-Based Progress
 - Only mark features ✅ Built when users can accomplish their intended goals
