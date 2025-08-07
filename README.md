@@ -210,11 +210,35 @@ The agent configuration includes rapid development commands:
 - Add complexity only when real usage demands it
 - Refactor when technical debt measurably slows iteration velocity
 
+## Prerequisites
+
+### Directory Structure
+
+Momentum works with two workspace directories (they can be the same if you prefer):
+
+1. **Ideation workspace** - Where you capture ideas, explorations, and project documentation
+   - Default: `~/obsidian/projects/`
+   - This is where IDEA.md, explorations, and archives live
+   - Can be any directory, preferably synced (Obsidian, Notion, etc.)
+
+2. **Development workspace** - Where you write code
+   - Default: `~/development/projects/`
+   - This is where actual code projects live
+   - Can be the same as ideation workspace if you prefer everything together
+
+```bash
+# Create default structure (optional - installer will create if missing)
+mkdir -p ~/obsidian/projects
+mkdir -p ~/development/projects
+```
+
+You can customize these paths in `~/.config/workflow/config` after installation.
+
 ## Installation
 
 ```bash
 cd ~/development/projects
-git clone https://github.com/yourusername/momentum.git
+git clone https://github.com/nickpending/momentum.git
 cd momentum
 ./install.sh claude --name="Your Name" --git-email="you@example.com" --email="you@company.com" --timezone="America/New_York"
 ```
