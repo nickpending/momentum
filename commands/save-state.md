@@ -1,4 +1,4 @@
-# /save-state Command - V3 Adaptive Context Capture
+# Capture discoveries, decisions, and progress for resumption
 
 ## Usage
 

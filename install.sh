@@ -54,14 +54,14 @@ chmod +x ~/.local/bin/setupd
 echo -e "${GREEN}✅ Installed setupd to ~/.local/bin${RESET}"
 
 # Create config directory
-mkdir -p ~/.config/workflow
+mkdir -p ~/.config/momentum
 
 # Create user config from template (don't overwrite)
-if [[ ! -f ~/.config/workflow/config ]]; then
-    cp $WORKFLOW_HOME/config ~/.config/workflow/config
-    echo -e "${GREEN}✅ Created config at ~/.config/workflow/config${RESET}"
+if [[ ! -f ~/.config/momentum/config ]]; then
+    cp $WORKFLOW_HOME/config ~/.config/momentum/config
+    echo -e "${GREEN}✅ Created config at ~/.config/momentum/config${RESET}"
 else
-    echo -e "${YELLOW}ℹ️  Config already exists at ~/.config/workflow/config${RESET}"
+    echo -e "${YELLOW}ℹ️  Config already exists at ~/.config/momentum/config${RESET}"
 fi
 
 # Install agent configuration based on tool
@@ -92,14 +92,20 @@ case $AGENT in
       echo -e "${YELLOW}💡 Edit ~/.claude/CLAUDE.md to add your personal details${RESET}"
     fi
     
-    # Install global commands
+    # Install user commands (global)
     mkdir -p ~/.claude/commands
-    cp $WORKFLOW_HOME/commands/ideate.md ~/.claude/commands/
-    echo -e "${GREEN}✅ Installed global /ideate command${RESET}"
+    cp $WORKFLOW_HOME/user-commands/*.md ~/.claude/commands/
+    echo -e "${GREEN}✅ Installed user commands (global)${RESET}"
+    
+    # Install custom subagents
+    mkdir -p ~/.claude/agents
+    ln -sf $WORKFLOW_HOME/subagents/architecture-analyst.md ~/.claude/agents/
+    ln -sf $WORKFLOW_HOME/subagents/implementation-analyst.md ~/.claude/agents/
+    echo -e "${GREEN}✅ Installed custom subagents${RESET}"
     
     # Source config to get WORKFLOW_PROJECTS
-    if [[ -f ~/.config/workflow/config ]]; then
-      source ~/.config/workflow/config
+    if [[ -f ~/.config/momentum/config ]]; then
+      source ~/.config/momentum/config
     fi
     
     # Create obsidian structure using environment variable
@@ -128,7 +134,7 @@ esac
 if ! grep -q "Workflow System" ~/.zshrc 2>/dev/null; then
     echo "" >> ~/.zshrc
     echo "# Workflow System" >> ~/.zshrc
-    echo "[[ -f ~/.config/workflow/config ]] && source ~/.config/workflow/config" >> ~/.zshrc
+    echo "[[ -f ~/.config/momentum/config ]] && source ~/.config/momentum/config" >> ~/.zshrc
     echo -e "${GREEN}✅ Added to ~/.zshrc${RESET}"
 else
     echo -e "${YELLOW}ℹ️  Already in ~/.zshrc${RESET}"
@@ -144,7 +150,7 @@ echo ""
 echo -e "${GREEN}✅ Workflow System installed successfully!${RESET}"
 echo ""
 echo -e "${CYAN}📁 Workflow home: $WORKFLOW_HOME${RESET}"
-echo -e "${CYAN}⚙️  Config: ~/.config/workflow/config${RESET}"
+echo -e "${CYAN}⚙️  Config: ~/.config/momentum/config${RESET}"
 echo -e "${CYAN}🤖 Agent: $AGENT${RESET}"
 echo -e "${CYAN}🚀 Usage: setupd <project-name>${RESET}"
 echo ""

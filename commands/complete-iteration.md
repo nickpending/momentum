@@ -1,4 +1,4 @@
-# /complete-iteration Command - Iteration Synthesis & Archival
+# Synthesize iteration learnings, update statuses, and archive
 
 ## ⚠️ CRITICAL: ITERATION CLOSURE AND KNOWLEDGE SYNTHESIS ⚠️
 

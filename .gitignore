@@ -3,7 +3,7 @@
 .claude/
 
 # User configuration (personalized)
-~/.config/workflow/config
+~/.config/momentum/config
 
 # OS files
 .DS_Store

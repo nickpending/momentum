@@ -1,4 +1,4 @@
-# /complete-task $TASK_NUMBER Command - Evidence Validation & Completion
+# Validate task completion with evidence of working functionality
 
 ## ⚠️ CRITICAL: FINAL TASK VALIDATION ⚠️
 

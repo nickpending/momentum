@@ -1,4 +1,4 @@
-# /restore-state - Resume from Saved State + Load Context
+# Resume work with full context from saved state
 
 ## Usage
 

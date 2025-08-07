@@ -1,4 +1,4 @@
-# /open-questions - Capture Open Questions
+# Capture unresolved questions and architectural uncertainties
 
 ## Usage
 

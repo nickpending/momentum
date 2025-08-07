@@ -1,4 +1,4 @@
-# /plan-iteration Command - V3 Interview Preservation
+# Interview-based iteration planning with embedded standards
 
 ## Environment Context
 

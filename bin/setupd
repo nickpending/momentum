@@ -12,7 +12,7 @@ CYAN='\033[36m'
 RESET='\033[0m'
 
 # Load configuration
-WORKFLOW_CONFIG="$HOME/.config/workflow/config"
+WORKFLOW_CONFIG="$HOME/.config/momentum/config"
 if [[ -f "$WORKFLOW_CONFIG" ]]; then
     source "$WORKFLOW_CONFIG"
 else
@@ -93,6 +93,7 @@ echo -e "${CYAN}💻 Development: $DEV_PROJECT${RESET}"
 
 # Create dev project directory structure
 mkdir -p "$DEV_PROJECT/.workflow/artifacts"
+mkdir -p "$DEV_PROJECT/.workflow/artifacts/subagents"
 mkdir -p "$DEV_PROJECT/.workflow/archives"
 mkdir -p "$DEV_PROJECT/.workflow/state"
 

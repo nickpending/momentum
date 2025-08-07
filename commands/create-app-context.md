@@ -1,4 +1,4 @@
-# /create-app-context v3 - Generate LLM Integration Guide
+# Generate system integration context for LLM understanding
 
 ## Purpose
 

@@ -1,4 +1,4 @@
-# /plan-test $TASK_NUMBER Command - V3 Focused Testing
+# Write focused tests that prove functionality works
 
 ## ⚠️ CRITICAL: TEST EXISTING CODE ONLY ⚠️
 

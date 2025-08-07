@@ -1,4 +1,4 @@
-# /ideate Command - Exploration Through Discussion
+# Exploration Through Discussion
 
 ## ⚠️ CRITICAL: DISCUSSION FIRST - NO ARTIFACTS UNTIL REQUESTED ⚠️
 

@@ -1,4 +1,4 @@
-# /load-app-context  - Load Minimal Context
+# Quick project orientation with current tasks and vision
 
 ## Step 1: Essential Context ONLY
 

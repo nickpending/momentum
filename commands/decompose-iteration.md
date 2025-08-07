@@ -1,4 +1,4 @@
-# /decompose-iteration - Break Features into Implementable Tasks
+# Break iteration features into concrete implementable tasks
 
 ## ⚠️ CRITICAL: DECOMPOSE FEATURES INTO REAL TASKS ⚠️
 

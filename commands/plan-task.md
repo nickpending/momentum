@@ -1,4 +1,4 @@
-# /plan-task $TASK_NUMBER Command - V5 Group-First Development
+# Create implementation plan with linting and quality checks
 
 ## ⚠️ CRITICAL: GROUP RELATED TASKS FIRST ⚠️
 

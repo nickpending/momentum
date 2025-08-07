@@ -78,6 +78,13 @@ $WORKFLOW_DEV/myproject/          # Development workspace
 
 These custom commands turn Claude Code into a development powerhouse. They're not just shortcuts - they enforce the iteration workflow and embed quality standards directly into your process.
 
+**The Context Window Solution:**
+Previous workflows failed when tasks were too large to complete before hitting context limits. Momentum solves this:
+- `/decompose-iteration` breaks features into micro-tasks (1-2 files each, single responsibility)
+- Each task is sized to complete within one AI conversation
+- `/plan-task` intelligently groups related micro-tasks when it makes sense
+- Result: Tasks actually complete instead of dying mid-implementation
+
 **Exploration Phase:**
 - `/ideate` - Start exploring through conversation, not premature file creation (global command)
   - Interviews you about the idea
@@ -132,6 +139,15 @@ These custom commands turn Claude Code into a development powerhouse. They're no
   - Updates feature statuses in IDEA.md
   - Sets up for next iteration
 
+### Custom Subagents
+
+Momentum includes specialized subagents for deep analysis:
+
+- **architecture-analyst** - Determines system structure, patterns, and integration points
+- **implementation-analyst** - Defines algorithms, data structures, and technical approaches
+
+The `/plan-task` command can invoke these for complex features, or you can call them directly. They output detailed guidance to `.workflow/artifacts/subagents/`.
+
 ### Feature Status Flow
 
 Features progress through defined states:
@@ -161,13 +177,13 @@ Features progress through defined states:
 
 ## Configuration
 
-### User Configuration File: `~/.config/workflow/config`
+### User Configuration File: `~/.config/momentum/config`
 
 The install script creates your personal config file from the template. Edit this file to customize paths:
 
 ```bash
 # Edit your personal config
-vim ~/.config/workflow/config
+vim ~/.config/momentum/config
 
 # Core Paths (customize these)
 export WORKFLOW_PROJECTS="${WORKFLOW_PROJECTS:-$HOME/obsidian/projects}"  # Ideation files
@@ -177,7 +193,7 @@ export WORKFLOW_HOME="${WORKFLOW_HOME:-$HOME/development/projects/momentum}"  # 
 
 ### How Configuration Works
 
-1. **Install**: `install.sh` copies `config` template to `~/.config/workflow/config`
+1. **Install**: `install.sh` copies `config` template to `~/.config/momentum/config`
 2. **Shell**: Your shell sources the config (added to `~/.zshrc`)
 3. **setupd**: Reads your config to know where to create projects
 4. **Agent**: Uses environment variables for quick commands (qback, qdiscovery)
@@ -188,14 +204,14 @@ The config bridges the workflow system with your specific directory structure.
 
 If you rename the momentum directory or move your folders:
 
-1. Update the paths in `~/.config/workflow/config`:
+1. Update the paths in `~/.config/momentum/config`:
    - `WORKFLOW_HOME` - momentum repository location
    - `WORKFLOW_PROJECTS` - obsidian projects location  
    - `WORKFLOW_DEV` - development projects location
 
 2. Source the updated config:
    ```bash
-   source ~/.config/workflow/config
+   source ~/.config/momentum/config
    ```
 
 3. **Re-run setupd for existing projects** to fix symlinks:
@@ -274,7 +290,7 @@ mkdir -p ~/obsidian/projects
 mkdir -p ~/development/projects
 ```
 
-You can customize these paths in `~/.config/workflow/config` after installation.
+You can customize these paths in `~/.config/momentum/config` after installation.
 
 ## Installation
 
@@ -286,8 +302,9 @@ cd momentum
 ```
 
 This installs:
-- Workflow commands to project `.claude/commands/`
-- Global `/ideate` command to `~/.claude/commands/`
+- User commands (like `/ideate`) to `~/.claude/commands/` (global)
+- Project commands to each project's `.claude/commands/` via setupd
+- Custom subagents to `~/.claude/agents/`
 - Personalized agent configuration
 - Obsidian exploration structure
 
@@ -299,17 +316,21 @@ momentum/                         # This repository
 │   └── CLAUDE.md                # Agent configuration template
 ├── bin/
 │   └── setupd                   # Project setup script  
-├── commands/                    # Workflow commands
-│   ├── ideate.md               # Global exploration command
+├── user-commands/               # Global user commands
+│   └── ideate.md               # Exploration command
+├── commands/                    # Project workflow commands
 │   ├── plan-iteration.md       # Planning commands
 │   ├── plan-task.md           
-│   └── ...                     
+│   └── ...   
+├── subagents/                   # Custom analysis agents
+│   ├── architecture-analyst.md
+│   └── implementation-analyst.md                  
 ├── templates/                   # Document templates
 ├── resources/                   # Design principles
 ├── config                       # Environment configuration
 └── install.sh                   # System installer
 
-~/.config/workflow/config        # User configuration
+~/.config/momentum/config        # User configuration
 ~/.claude/commands/              # Global commands
 $WORKFLOW_PROJECTS/              # Obsidian workspace
 └── explorations/               # Active explorations
