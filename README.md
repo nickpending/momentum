@@ -170,6 +170,15 @@ Note: Symlinks are created with resolved paths, not environment variables, so th
 
 The workflow bridges **ideation** (obsidian) with **implementation** (development).
 
+## Optional Integration: Claudex Standards
+
+Momentum can integrate with [Claudex](https://github.com/nickpending/claudex) for language-specific coding standards:
+
+- Standards are loaded by `/plan-iteration` and embedded in ITERATION.md
+- Provides tech-specific linting, patterns, and quality gates
+- Install separately at `~/.claudex/standards/`
+- Not required - momentum works without it
+
 ## Quality Standards
 
 ### Built-in Principles
