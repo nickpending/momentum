@@ -145,8 +145,9 @@ Momentum includes specialized subagents for deep analysis:
 
 - **architecture-analyst** - Determines system structure, patterns, and integration points
 - **implementation-analyst** - Defines algorithms, data structures, and technical approaches
+- **architecture-auditor** - Audits what actually got built vs what was planned (finds dead code, violations, drift)
 
-The `/plan-task` command can invoke these for complex features, or you can call them directly. They output detailed guidance to `.workflow/artifacts/subagents/`.
+The `/plan-task` command can invoke the analysts for complex features, or you can call any of them directly. They output detailed guidance to `.workflow/artifacts/subagents/`.
 
 ### Feature Status Flow
 

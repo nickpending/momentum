@@ -101,6 +101,7 @@ case $AGENT in
     mkdir -p ~/.claude/agents
     ln -sf $WORKFLOW_HOME/subagents/architecture-analyst.md ~/.claude/agents/
     ln -sf $WORKFLOW_HOME/subagents/implementation-analyst.md ~/.claude/agents/
+    ln -sf $WORKFLOW_HOME/subagents/architecture-auditor.md ~/.claude/agents/
     echo -e "${GREEN}✅ Installed custom subagents${RESET}"
     
     # Source config to get WORKFLOW_PROJECTS
