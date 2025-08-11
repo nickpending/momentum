@@ -16,14 +16,9 @@ WORKFLOW_CONFIG="$HOME/.config/momentum/config"
 if [[ -f "$WORKFLOW_CONFIG" ]]; then
     source "$WORKFLOW_CONFIG"
 else
-    # Fallback defaults if no config
-    WORKFLOW_PROJECTS="${WORKFLOW_PROJECTS:-$HOME/obsidian/projects}"
-    WORKFLOW_DEV="${WORKFLOW_DEV:-$HOME/development/projects}"
-    WORKFLOW_HOME="${WORKFLOW_HOME:-$HOME/development/workflow}"
-    WORKFLOW_COMMANDS="$WORKFLOW_HOME/commands"
-    WORKFLOW_TEMPLATES="$WORKFLOW_HOME/templates"
-    WORKFLOW_RESOURCES="$WORKFLOW_HOME/resources"
-    WORKFLOW_STANDARDS="${WORKFLOW_STANDARDS:-$HOME/.workflow/standards}"
+    echo -e "${RED}❌ Error: Momentum not installed${RESET}"
+    echo "Run the install script first: ./install.sh"
+    exit 1
 fi
 
 PROJECT_NAME=$1

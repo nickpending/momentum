@@ -157,30 +157,29 @@ Features progress through defined states:
 - **🔄 In Progress** → Currently being developed (iteration-N) 
 - **✅ Built** → Completed with evidence of user accessibility
 
-## Agent Support
+## Installation
 
-### Claude (Automatic)
 ```bash
-# Basic install (template with placeholder values)
-./install.sh claude
-
-# Personalized install (replaces template variables with your details)
-./install.sh claude --name="Your Name" --git-email="you@example.com" --email="your@email.com" --timezone="America/New_York"
+cd ~/development/projects
+git clone https://github.com/nickpending/momentum.git
+cd momentum
+./install.sh
 ```
 
-### Other Tools (Manual)
-```bash  
-./install.sh manual
-# Copy agents/CLAUDE.md to your tool's config location
-```
+This installs:
+- Momentum system to `~/.config/momentum/`
+- Global commands (like `/ideate`) to `~/.claude/commands/`
+- Custom subagents to `~/.claude/agents/`
+- `setupd` command to `~/.local/bin/`
+- Configuration to `~/.config/momentum/config`
 
-**Important**: The workflow creates slash commands in `.claude/commands/` for Claude Code compatibility. The internal workflow still uses `.workflow/` for artifacts and resources.
+**Note**: Your personal CLAUDE.md is preserved. Momentum uses its own MOMENTUM.md agent configuration.
 
 ## Configuration
 
 ### User Configuration File: `~/.config/momentum/config`
 
-The install script creates your personal config file from the template. Edit this file to customize paths:
+The install script creates your personal config file. Edit this file to customize paths:
 
 ```bash
 # Edit your personal config
@@ -188,25 +187,23 @@ vim ~/.config/momentum/config
 
 # Core Paths (customize these)
 export WORKFLOW_PROJECTS="${WORKFLOW_PROJECTS:-$HOME/obsidian/projects}"  # Ideation files
-export WORKFLOW_DEV="${WORKFLOW_DEV:-$HOME/development/projects}"         # Development projects  
-export WORKFLOW_HOME="${WORKFLOW_HOME:-$HOME/development/projects/momentum}"  # Momentum system location
+export WORKFLOW_DEV="${WORKFLOW_DEV:-$HOME/development/projects}"         # Development projects
 ```
 
 ### How Configuration Works
 
-1. **Install**: `install.sh` copies `config` template to `~/.config/momentum/config`
+1. **Install**: `install.sh` creates config at `~/.config/momentum/config`
 2. **Shell**: Your shell sources the config (added to `~/.zshrc`)
 3. **setupd**: Reads your config to know where to create projects
-4. **Agent**: Uses environment variables for quick commands (qback, qdiscovery)
+4. **Momentum mode**: Uses environment variables for workflow operations
 
 The config bridges the workflow system with your specific directory structure.
 
-### Moving or Renaming Momentum
+### Customizing Paths
 
-If you rename the momentum directory or move your folders:
+If you need to change your workspace locations:
 
 1. Update the paths in `~/.config/momentum/config`:
-   - `WORKFLOW_HOME` - momentum repository location
    - `WORKFLOW_PROJECTS` - obsidian projects location  
    - `WORKFLOW_DEV` - development projects location
 
@@ -293,28 +290,12 @@ mkdir -p ~/development/projects
 
 You can customize these paths in `~/.config/momentum/config` after installation.
 
-## Installation
-
-```bash
-cd ~/development/projects
-git clone https://github.com/nickpending/momentum.git
-cd momentum
-./install.sh claude --name="Your Name" --git-email="you@example.com" --email="you@company.com" --timezone="America/New_York"
-```
-
-This installs:
-- User commands (like `/ideate`) to `~/.claude/commands/` (global)
-- Project commands to each project's `.claude/commands/` via setupd
-- Custom subagents to `~/.claude/agents/`
-- Personalized agent configuration
-- Obsidian exploration structure
-
 ## File Organization
 
 ```bash
 momentum/                         # This repository
 ├── agents/
-│   └── CLAUDE.md                # Agent configuration template
+│   └── MOMENTUM.md              # Momentum mode agent configuration
 ├── bin/
 │   └── setupd                   # Project setup script  
 ├── user-commands/               # Global user commands
