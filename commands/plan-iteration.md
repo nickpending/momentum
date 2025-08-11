@@ -59,11 +59,45 @@ REQUIRED: Read and acknowledge ALL foundation files:
 - .workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
 - .workflow/artifacts/APP_CONTEXT.md (if exists) - Current system understanding
 - .workflow/artifacts/QUESTIONS.md (if exists) - Open questions to address
-- $WORKFLOW_PROJECTS/[projectname]/01-backlog.md (if exists)
+- $WORKFLOW_PROJECTS/[projectname]/later.md (if exists) - Later items to consider
 - $WORKFLOW_PROJECTS/[projectname]/designs/ (if exists) - Design artifacts and decisions
 - CLAUDE.md (if exists) - Development context and patterns
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
+```
+
+**CHECKPOINT 1.5: Analyze and Recommend Later Items (if exists)**
+
+```
+IF later.md exists:
+- READ all later items
+- ANALYZE relevance to current iteration goals from IDEA.md
+- IDENTIFY critical bugs that should be fixed
+- SPOT todos that align with features being built
+- NOTE aging items (>30 days old) that might need attention
+
+PROACTIVE RECOMMENDATION:
+"Based on later.md and our iteration goals, I recommend including:
+
+CRITICAL BUGS (should fix):
+- bug:: [Description] - captured [X days ago]
+  Why: [Blocks feature Y / Affects user experience]
+
+ALIGNED TODOS (natural fit):  
+- todo:: [Description] - captured [date]
+  Why: [Relates to feature we're building / Quick win]
+
+WORTH CONSIDERING:
+- idea:: [Description] - captured [date]
+  Why: [Could enhance what we're building]
+
+AGING ITEMS (need attention):
+- [Type]:: [Description] - captured [60+ days ago]
+  Why: [Has been waiting too long]
+
+Should we include these in the iteration?"
+
+VERIFICATION: Provide smart recommendations based on later.md analysis
 ```
 
 **CHECKPOINT 2: System State Analysis**
@@ -121,7 +155,27 @@ FAILURE MODE: If you cannot list specific patterns from each standard, you MUST 
 
 ### PHASE 2: SCOPE INTERVIEW (REQUIRED)
 
-**CHECKPOINT 5: Integration Architecture Interview**
+**CHECKPOINT 5: Later Items Integration (if user accepted recommendations)**
+
+```
+IF user accepted later items:
+
+INTEGRATE INTO ITERATION PLANNING:
+- Priority bugs become high-priority tasks
+- Selected todos merge with feature implementation
+- Ideas become enhancements or stretch goals
+- Track which iteration tasks address later items
+
+TRACKING FORMAT:
+## Later Items in This Iteration
+- bug:: [Description] → Will be fixed in Task #X
+- todo:: [Description] → Addressed by Task #Y
+- idea:: [Description] → Enhancement in Task #Z (if time permits)
+
+VERIFICATION: Map each selected later item to specific iteration task
+```
+
+**CHECKPOINT 6: Integration Architecture Interview**
 
 ```
 REQUIRED: Understand how new iteration integrates with existing system:
@@ -212,6 +266,11 @@ Interview Discoveries Captured:
 - Integration points: [key connections]
 - Test scenarios: [key validations]
 
+Selected from later.md: [count] items
+- Bugs to fix: [count]
+- Todos to implement: [count]
+- Ideas to explore: [count]
+
 Proposed Tasks: [count] tasks
 - Implementation: [count]
 - Research Spikes: [count]
@@ -227,7 +286,35 @@ Please respond with YES or NO.
 
 ### PHASE 4: ITERATION GENERATION (AFTER APPROVAL)
 
-**CHECKPOINT 8: Update Feature Status in IDEA.md**
+**CHECKPOINT 8: Move Selected Items to active.md**
+
+```
+IF items were selected from later.md:
+
+MOVE TO ACTIVE:
+1. READ $WORKFLOW_PROJECTS/[projectname]/active.md (create if not exists)
+2. ADD selected items to appropriate section:
+   - Critical bugs → Today section
+   - Iteration tasks → This Week section
+3. FORMAT as checkboxes with promoted date:
+   - [ ] {Description} id::{id} captured::{original_date} promoted::{today}
+4. REMOVE moved items from later.md
+
+ACTIVE.MD FORMAT:
+# Active
+
+## Today
+- [ ] Critical bug fix id::abc123 captured:: 2024-12-15 promoted:: 2025-01-11
+- [ ] High priority task id::def456 captured:: 2025-01-05 promoted:: 2025-01-11
+
+## This Week  
+- [ ] Feature implementation id::ghi789 captured:: 2024-11-20 promoted:: 2025-01-11
+- [ ] Research spike id::jkl012 captured:: 2025-01-08 promoted:: 2025-01-11
+
+VERIFICATION: Confirm items moved to active.md and removed from later.md
+```
+
+**CHECKPOINT 9: Update Feature Status in IDEA.md**
 
 ```
 REQUIRED: Update IDEA.md with iteration progress:
@@ -238,7 +325,7 @@ REQUIRED: Update IDEA.md with iteration progress:
 VERIFICATION: Confirm feature status updates applied
 ```
 
-**CHECKPOINT 9: Generate ITERATION.md Using Template**
+**CHECKPOINT 10: Generate ITERATION.md Using Template**
 
 ```
 REQUIRED: Create ITERATION.md preserving ALL interview discoveries:
@@ -260,7 +347,7 @@ MANDATORY SECTIONS TO POPULATE:
 VERIFICATION: Every interview discovery appears in final ITERATION.md
 ```
 
-**CHECKPOINT 10: Task Construction with Interview Details**
+**CHECKPOINT 11: Task Construction with Interview Details**
 
 ```
 REQUIRED: Transform interview discoveries into concrete tasks:
@@ -304,7 +391,7 @@ EXAMPLE:
 [EXACT curl command from interview]
 ```
 
-**CHECKPOINT 11: Embed Standards in Context**
+**CHECKPOINT 12: Embed Standards in Context**
 
 ```
 REQUIRED: Paste actual standards patterns in Tech Stack section:
@@ -325,7 +412,7 @@ REQUIRED: Paste actual standards patterns in Tech Stack section:
 VERIFICATION: Standards are embedded, not referenced
 ```
 
-**CHECKPOINT 12: Final Validation**
+**CHECKPOINT 13: Final Validation**
 
 ```
 VERIFICATION GATE: Before finalizing ITERATION.md, confirm:
@@ -354,10 +441,12 @@ ITERATION PLANNED WITH INTERVIEW GOLD PRESERVED
 ✅ One smoke test per task
 ✅ Exact success verification commands
 ✅ All integration points mapped
+✅ Selected items moved to active.md
 
 No generic descriptions - everything concrete from interview.
 
 Ready for implementation with /plan-task 1
+
 ```
 
 ## ENFORCEMENT MECHANISMS
@@ -389,3 +478,5 @@ Ready for implementation with /plan-task 1
 **If standards not loaded:** STOP and read required files  
 **If tasks generic:** Re-read interview discoveries and add specifics  
 **If no concrete examples:** Request exact commands/data from user
+**If later.md not found:** Continue without backlog items
+**If active.md not found:** Create it when moving items from later.md

@@ -94,6 +94,8 @@ Previous workflows failed when tasks were too large to complete before hitting c
 **Planning Commands:**
 - `/plan-iteration` - Interview-based iteration planning
   - Asks concrete questions about what you're building
+  - Analyzes `later.md` and recommends relevant items
+  - Moves selected items to `active.md` with promoted date
   - Embeds tech-specific standards into ITERATION.md
   - Forces you to define evidence of completion
   
@@ -136,6 +138,7 @@ Previous workflows failed when tasks were too large to complete before hitting c
   
 - `/complete-iteration` - Archive and prepare next cycle
   - Archives completed iteration
+  - Moves checked items from `active.md` to `completed.md`
   - Updates feature statuses in IDEA.md
   - Sets up for next iteration
 
@@ -220,11 +223,31 @@ If you need to change your workspace locations:
 Note: Symlinks are created with resolved paths, not environment variables, so they must be recreated after moving directories.
 
 ### Integration with Obsidian
-- **IDEA.md** lives in `$WORKFLOW_PROJECTS/{name}/` (ideation/vision)
-- **01-backlog.md** lives in obsidian (project management)
-- **Discoveries** live in obsidian (architectural decisions)
 
-The workflow bridges **ideation** (obsidian) with **implementation** (development).
+The workflow bridges **ideation** (obsidian) with **implementation** (development) through a task lifecycle:
+
+#### Task Lifecycle: `later.md` → `active.md` → `completed.md`
+
+1. **later.md** - Backlog of ideas, todos, and bugs
+   - Lives in `$WORKFLOW_PROJECTS/{name}/`
+   - Items waiting to be worked on
+   - Format: `- type:: Description id::xxxxx captured:: YYYY-MM-DD`
+
+2. **active.md** - Current work in progress
+   - Lives in `$WORKFLOW_PROJECTS/{name}/`
+   - Items selected during `/plan-iteration`
+   - Two sections: Today (urgent) and This Week (iteration scope)
+   - Format: `- [ ] Description id::xxxxx captured:: date promoted:: date`
+
+3. **completed.md** - Historical record
+   - Lives in `$WORKFLOW_PROJECTS/{name}/`
+   - Items moved here during `/complete-iteration`
+   - Organized by month and date
+   - Format: `- Description id::xxxxx captured:: date completed:: YYYY-MM-DD HH:MM`
+
+#### Other Obsidian Files
+- **IDEA.md** - Project vision and feature tracking
+- **Discoveries** - Architectural decisions and learnings
 
 ## Optional Integration: Claudex Standards
 
@@ -250,7 +273,7 @@ The agent configuration includes rapid development commands:
 - **qtest** - Write ONE integration test using real services
 - **qcom** - Commit with conventional message
 - **qfix** - Debug and fix specific error
-- **qback** - Add to project backlog in obsidian
+- **qback** - Add to project later.md in obsidian
 
 ## Architecture Patterns
 

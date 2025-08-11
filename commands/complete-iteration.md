@@ -90,7 +90,33 @@ ARCHIVAL STRUCTURE:
 VERIFICATION: Iteration properly archived and accessible for future reference
 ```
 
-**CHECKPOINT 5: Workspace Preparation**
+**CHECKPOINT 5: Move Completed Items to completed.md**
+
+```
+REQUIRED: Move active items to completed tracking:
+- READ $WORKFLOW_PROJECTS/[projectname]/active.md
+- READ $WORKFLOW_PROJECTS/[projectname]/completed.md (create if not exists)
+- MOVE all checked items from active.md to completed.md
+- FORMAT with completion timestamp
+
+COMPLETED.MD FORMAT:
+# Completed
+
+## YYYY-MM (current month)
+### YYYY-MM-DD (today)
+- Task description id::xxxxx captured:: original_date completed:: YYYY-MM-DD HH:MM
+- Bug fix id::yyyyy captured:: original_date completed:: YYYY-MM-DD HH:MM
+
+TRACKING:
+- Group by month, then date
+- Newest dates at top within month
+- Include original captured:: date and completed:: timestamp
+- Preserve id:: for tracking
+
+VERIFICATION: All completed items moved from active.md to completed.md
+```
+
+**CHECKPOINT 6: Workspace Preparation**
 
 ```
 REQUIRED: Prepare clean workspace for next iteration:
@@ -110,7 +136,7 @@ VERIFICATION: Clean workspace ready for next iteration planning
 
 ### PHASE 4: TRANSITION GUIDANCE (REQUIRED)
 
-**CHECKPOINT 6: Next Iteration Preparation**
+**CHECKPOINT 7: Next Iteration Preparation**
 
 ```
 REQUIRED: Provide clear guidance for next iteration:

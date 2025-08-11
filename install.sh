@@ -79,7 +79,7 @@ export WORKFLOW_STANDARDS="${WORKFLOW_STANDARDS:-$HOME/.workflow/standards}"
 
 # Quick Command Paths (for qback, qdiscovery, etc.)
 # These use ${PROJECT} which gets resolved at runtime
-export WORKFLOW_BACKLOG_TEMPLATE="${WORKFLOW_PROJECTS}/${PROJECT}/01-backlog.md"
+export WORKFLOW_LATER_TEMPLATE="${WORKFLOW_PROJECTS}/${PROJECT}/later.md"
 export WORKFLOW_DISCOVERY_TEMPLATE="${WORKFLOW_PROJECTS}/${PROJECT}/discoveries"
 
 # Function to get current project name from git or directory

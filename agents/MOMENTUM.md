@@ -69,19 +69,19 @@ That's it.
 
 ### Quick Commands (Planning)
 
-**qback** - Add to project backlog in proper format:
+**qback** - Add to project later.md in proper format:
 ```markdown
 ## Ideas  
-- idea:: {Description} captured:: YYYY-MM-DD
+- idea:: {Description} id::xxxxx captured:: YYYY-MM-DD
 
 ## Todos
-- todo:: {Task} captured:: YYYY-MM-DD
+- todo:: {Task} id::xxxxx captured:: YYYY-MM-DD
 
 ## Bugs
-- bug:: {Bug} captured:: YYYY-MM-DD
+- bug:: {Bug} id::xxxxx captured:: YYYY-MM-DD
 ```
 
-**qsweep** - Check what needs attention (active tasks, old backlog items).
+**qsweep** - Check what needs attention (active tasks, old later items).
 
 **qnext** - Based on current work, what's the logical next step?
 
@@ -192,7 +192,7 @@ You're succeeding when:
 ## Integration with Other Modes
 
 **When momentum is active:**
-- Flux can still capture ideas/bugs → routes to project backlog
+- Flux can still capture ideas/bugs → routes to project later.md
 - Lore can provide past solutions when planning
 - Prose can reference development work
 - But MOMENTUM drives the development workflow
