@@ -341,6 +341,7 @@ $WORKFLOW_PROJECTS/              # Obsidian workspace
 └── explorations/               # Active explorations
     projects/                   # Active development  
     archive/                    # Completed work
+```
 
 ## Example Usage
 
