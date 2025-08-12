@@ -1,11 +1,4 @@
-# Plan and Structure Project Idea Through Interview
-
-## Purpose
-Transform exploratory thinking into a concrete project vision through structured interview, creating IDEA.md in the obsidian project space.
-
-## Prerequisites
-- Previous exploration with `/ideate` (optional but helpful)
-- Ready to develop an idea into a project
+# Transform Exploration into Concrete Project Vision
 
 ## Environment Context
 
@@ -14,199 +7,347 @@ Transform exploratory thinking into a concrete project vision through structured
 - `$WORKFLOW_TEMPLATES` - Template files location
 - Template location: `$WORKFLOW_TEMPLATES/IDEA_TEMPLATE.md`
 
-## ⚠️ CRITICAL: INTERVIEW FIRST - NO DIRECTORIES UNTIL APPROVED ⚠️
+## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
 
-**🛑 STOP. DO NOT CREATE DIRECTORIES OR FILES YET.**
-**🛑 ANALYZE EXPLORATIONS AND CONDUCT INTERVIEW FIRST**
-**🛑 ASK FOR APPROVAL BEFORE CREATING IDEA.md**
+**🛑 STOP AFTER INTERVIEW. DO NOT GENERATE ARTIFACTS.**
+**🛑 ASK QUESTIONS ONE AT A TIME - BUILD ON ANSWERS**
+**🛑 ALWAYS END WITH: "Ready to create IDEA.md in obsidian?"**
+**🛑 WAIT FOR EXPLICIT APPROVAL BEFORE CREATING IDEA.md**
 
-## PHASE 1: EXPLORATION ANALYSIS
+## ⚠️ CRITICAL: PRESERVE EXPLORATION INSIGHTS ⚠️
 
-### Load and Analyze Existing Explorations
+**🛑 CAPTURE CONCRETE DETAILS FROM EXPLORATION**
+**🛑 NO GENERIC PROJECT DESCRIPTIONS**
+**🛑 ACTUAL PROBLEMS AND USE CASES DISCUSSED**
+**🛑 REAL EXAMPLES AND DATA STRUCTURES**
+
+## ⚠️ CRITICAL: THINK ⚠️
+
+### PHASE 0: PREPARATION
+
+- READ EVERYTHING 3 TIMES BEFORE DOING ANYTHING
+- WHEN YOU GENERATE QUESTIONS - REVIEW THEM INTERNALLY FOR DEPTH
+- ENSURE YOU EXTRACT ALL INSIGHTS FROM EXPLORATION - REVIEW IT 3 TIMES
+
+## MANDATORY EXECUTION SEQUENCE - NO SKIPPING
+
+### PHASE 1: EXPLORATION LOADING (REQUIRED)
+
+**CHECKPOINT 1: Scan Available Explorations**
 
 ```
-CHECK: List directories in $WORKFLOW_PROJECTS/../explorations/
+REQUIRED: List and analyze exploration directories:
+- LIST directories in $WORKFLOW_PROJECTS/../explorations/
+- SORT by modification date (newest first)
+- CALCULATE age of each exploration
+- IDENTIFY potential matches for continuation
+
+DISPLAY FORMAT:
+"Recent explorations:
+• [name] ([relative time])
+• [name] ([relative time])
+• [name] ([relative time])
+
+Which?: "
+
+PARSING REQUIREMENTS:
+- Accept numbers (1, 2, 3)
+- Accept partial matches ("auth", "pipe")
+- Accept full names
+- Accept "new" for fresh start
+
+IF USER RESPONSE UNCLEAR OR EMPTY:
+ASK: "Did you want to continue with [most recent exploration name] or start something new?"
+
+VERIFICATION: Confirm exploration selection or fresh start
+```
+
+**CHECKPOINT 2: Deep Exploration Analysis (if selected)**
+
+```
+IF exploration selected:
   
-IF explorations exist:
-  DISPLAY: "Recent explorations:
-           • authentication-flow (2 days ago)
-           • data-pipeline (4 days ago)
-           • monitoring-ideas (7 days ago)
-           
-           Which?: "
-        
-  PARSE INPUT FLEXIBLY:
-    - Number (1, 2, 3) → select by position
-    - Partial match ("auth", "pipeline") → find matching exploration
-    - Full name → exact match
-    - "new" or unmatched → start fresh
-    - Empty/return → select most recent
-    
-  IF exploration matched:
-    READ: $WORKFLOW_PROJECTS/../explorations/[matched]/README.md
-    ANALYZE: Content deeply to understand:
-      - Core problems being explored
-      - Technical approaches considered
-      - Open questions raised
-      - Connections and patterns identified
-    
-    GENERATE TARGETED QUESTIONS based on exploration:
-      - Questions that dig into unknowns discovered
-      - Questions that clarify tentative decisions
-      - Questions that explore implications
-      - Questions that solidify vague ideas
-    
-  IF no match or "new":
-    PROCEED: Generate questions without exploration context
+REQUIRED: Read and analyze exploration deeply:
+- READ: $WORKFLOW_PROJECTS/../explorations/[selected]/README.md
+- EXTRACT: Every problem statement mentioned
+- IDENTIFY: Technical approaches considered
+- CAPTURE: Open questions and uncertainties
+- NOTE: Specific examples or data structures discussed
+- UNDERSTAND: The journey of thinking so far
 
-IF no explorations:
-  PROCEED: Direct to interview with general questions
+ANALYSIS CHECKLIST:
+□ What problems were being explored?
+□ What solutions were considered?
+□ What decisions were tentative?
+□ What examples were given?
+□ What constraints were mentioned?
+□ What excited the user?
+□ What concerned them?
+
+VERIFICATION: Summarize key exploration themes before proceeding
 ```
 
-## PHASE 2: DYNAMIC INTERVIEW
+### PHASE 2: DYNAMIC INTERVIEW GENERATION
 
-### Project Naming
+**CHECKPOINT 3: Generate Targeted Questions**
+
+```
+BASED ON EXPLORATION, GENERATE QUESTIONS THAT:
+
+1. RESOLVE UNCERTAINTIES
+   - If exploration says "not sure about X"
+   - Generate: "You mentioned uncertainty about X. What are the key factors driving this decision?"
+
+2. CONCRETIZE VAGUE IDEAS
+   - If exploration has "some kind of Y"
+   - Generate: "Tell me more about this Y - what exactly needs to happen?"
+
+3. EXTRACT SPECIFICATIONS
+   - If exploration mentions "handle data"
+   - Generate: "What does this data look like? Show me an example."
+
+4. CLARIFY SCOPE
+   - If exploration is broad
+   - Generate: "What's the smallest version that would be useful?"
+
+5. IDENTIFY CONSTRAINTS
+   - Always ask: "What constraints do we need to work within?"
+
+QUESTION QUALITY CHECK:
+□ Questions target specific unknowns from exploration
+□ Questions will yield concrete, not abstract answers
+□ Questions build toward implementation clarity
+□ Questions explore both problem and solution space
+
+VERIFICATION: Have 5-8 targeted questions ready
+```
+
+### PHASE 3: CONDUCT INTERVIEW
+
+**CHECKPOINT 4: Project Naming**
 
 ```
 ASK: "What would you like to call this project?"
 
-IF user unsure or asks for help:
-  BASED ON EXPLORATION/DISCUSSION: 
+IF user needs help:
+  BASED ON EXPLORATION CONTENT:
   "Based on [specific aspect from exploration], some options:
-  - [contextual-suggestion-1] - emphasizes [specific feature discussed]
-  - [contextual-suggestion-2] - focuses on [problem being solved]
-  - [contextual-suggestion-3] - highlights [architecture/approach]
+  - [contextual-name-1] - emphasizes [feature]
+  - [contextual-name-2] - focuses on [problem]
+  - [contextual-name-3] - describes [approach]
   
   Which resonates, or something else?"
 
-VALIDATE: lowercase with hyphens only
+VALIDATION:
+- Lowercase letters, numbers, hyphens only
+- No spaces or special characters
+- Meaningful and memorable
+
+VERIFICATION: Confirm valid project name
 ```
 
-### Dynamic Interview Generation
+**CHECKPOINT 5: Problem Discovery Interview**
 
 ```
-BASED ON EXPLORATION CONTENT, GENERATE QUESTIONS THAT:
+REQUIRED: Extract concrete problem details
 
-1. PROBE SPECIFIC UNKNOWNS from exploration
-   Example: If exploration mentions "not sure about auth approach"
-   ASK: "You mentioned uncertainty about authentication. 
-        Are you leaning toward JWT, sessions, or OAuth? 
-        What are the constraints?"
+ASK PROGRESSIVELY DEEPER (ONE AT A TIME):
+START: "What specific problem does [project-name] solve?"
+THEN BUILD: Based on answer, explore who/when/where
+THEN DIG: Into current pain points
+THEN VISION: What better looks like
 
-2. CLARIFY VAGUE CONCEPTS from exploration
-   Example: If exploration says "some kind of data pipeline"
-   ASK: "Tell me about this data pipeline - what's the source? 
-        What transformations? Real-time or batch?"
+CAPTURE FORMAT:
+## Problem Discovery
+- Core Problem: [specific, not generic]
+- Who Has It: [concrete user description]
+- Current Pain: [actual friction points]
+- Better State: [measurable improvement]
 
-3. SOLIDIFY TENTATIVE DECISIONS
-   Example: If exploration considers "maybe Python or Node"
-   ASK: "For the [specific use case mentioned], which language 
-        fits better? What's driving that choice?"
-
-4. EXPLORE IMPLICATIONS of ideas
-   Example: If exploration mentions "distributed processing"
-   ASK: "How distributed? Multiple machines? 
-        What coordination is needed? 
-        What happens when a node fails?"
-
-5. EXTRACT CONCRETE DETAILS
-   ASK: "Show me an example of [concept from exploration]"
-   ASK: "What would the [data/API/config] look like?"
-   ASK: "Walk me through a user doing [action mentioned]"
-
-BUILD CONVERSATION NATURALLY:
-- One question at a time
-- Follow threads that emerge
-- Dig deeper on technical details
-- Capture specific examples and data structures
+VERIFICATION: Can explain problem to someone unfamiliar
 ```
 
-### Capture Discoveries During Interview
+**CHECKPOINT 6: Solution Architecture Interview**
 
 ```
-DOCUMENT AS YOU GO:
-## Interview Discoveries
-- Problem Details: [specific pain points revealed]
-- Technical Decisions: [stack choices with reasoning]
-- Data Examples: [actual JSON/schema discussed]
-- User Workflows: [concrete steps described]
-- Integration Points: [specific systems to connect]
-- Constraints: [real limitations discovered]
-- Scope Boundaries: [what's explicitly excluded]
+REQUIRED: Understand technical approach
+
+CONCRETE DISCOVERY QUESTIONS:
+- "Walk me through how [project-name] will work"
+- "What are the main components or modules?"
+- "What data needs to be stored? Show me the structure"
+- "What external systems will this connect to?"
+- "What's the core algorithm or logic?"
+
+CAPTURE FORMAT:
+## Solution Architecture
+- Core Mechanism: [how it actually works]
+- Key Components: [specific modules]
+- Data Structures: [actual schemas/examples]
+- Integration Points: [external systems]
+- Critical Logic: [algorithms/rules]
+
+VERIFICATION: Have concrete technical approach
 ```
 
-### Interview Completion
+**CHECKPOINT 7: Feature Scoping Interview**
 
 ```
-SYNTHESIZE: "Based on our discussion:
+REQUIRED: Define concrete features
 
-**Vision**: [crisp summary from interview]
-**Core Problem**: [specific problem with context]
-**Solution Approach**: [technical approach discussed]
-**Key Features**: 
-  - [feature with specific detail]
-  - [feature with implementation note]
-**Technical Stack**: [if determined]
-**Critical Unknowns**: [remaining questions]
+STRUCTURED QUESTIONING (BUILD ON ANSWERS):
+START: "What are the absolute must-have features for v1?"
+THEN: Based on MVP, explore v2 additions
+THEN: Clarify boundaries - what's OUT
+FINALLY: Identify success indicator feature
 
-Ready to create IDEA.md in $WORKFLOW_PROJECTS/[project-name]/?"
+CAPTURE FORMAT:
+## Feature Scope
+- MVP Features: [minimum viable]
+- Enhancement Features: [post-MVP]
+- Future Ideas: [long-term vision]
+- Out of Scope: [what we're NOT building]
+- Success Indicator: [proof it works]
+
+VERIFICATION: Clear line between MVP and future
+```
+
+**CHECKPOINT 8: Technical Decisions Interview**
+
+```
+REQUIRED: Clarify technical choices
+
+DECISION QUESTIONS (ADAPT BASED ON PROJECT TYPE):
+START: "Any language or framework preferences?"
+IF RELEVANT: Deployment environment
+IF APPLICABLE: Performance constraints
+IF NEEDED: Security considerations
+ALWAYS ASK: "What can we build on?"
+
+CAPTURE FORMAT:
+## Technical Decisions
+- Tech Stack: [languages/frameworks]
+- Deployment: [where/how it runs]
+- Performance: [requirements if any]
+- Security: [considerations]
+- Dependencies: [what we'll build on]
+
+VERIFICATION: Technical approach is feasible
+```
+
+### PHASE 4: INTERVIEW SYNTHESIS
+
+**CHECKPOINT 9: Summarize Before Creation**
+
+```
+REQUIRED: Synthesize interview into clear vision
+
+PRESENT SUMMARY:
+"Based on our discussion, here's what I understand:
+
+**Project**: [project-name]
+**Core Problem**: [crisp problem statement]
+**Solution**: [technical approach in one sentence]
+**MVP Features**: 
+  - [concrete feature 1]
+  - [concrete feature 2]
+  - [concrete feature 3]
+**Tech Stack**: [if determined]
+**Key Differentiator**: [what makes this unique]
+**Success Looks Like**: [measurable outcome]
+
+Ready to create IDEA.md in obsidian?"
 
 WAIT FOR: Explicit approval
+NO ARTIFACTS WITHOUT: "yes", "ready", "go ahead", "create it"
 ```
 
-## PHASE 3: CREATE PROJECT AND IDEA.md
+### PHASE 5: CREATE PROJECT ARTIFACTS
 
-### After Approval Only
+**CHECKPOINT 10: Create Project Structure**
 
 ```
-1. CREATE: $WORKFLOW_PROJECTS/[project-name]/
-   REPORT: "Created obsidian project: [project-name]"
+ONLY AFTER EXPLICIT APPROVAL:
 
-2. READ: $WORKFLOW_TEMPLATES/IDEA_TEMPLATE.md
+1. CREATE DIRECTORY:
+   - mkdir -p $WORKFLOW_PROJECTS/[project-name]
+   - VERIFY: Directory created successfully
+
+2. LOAD TEMPLATE:
+   - READ: $WORKFLOW_TEMPLATES/IDEA_TEMPLATE.md
+   - UNDERSTAND: All sections and their purpose
+
+3. GENERATE IDEA.md:
+   - CREATE: $WORKFLOW_PROJECTS/[project-name]/IDEA.md
+   - USE: Template structure
+   - FILL: With interview discoveries
+   - EMBED: Concrete examples from discussion
+   - PRESERVE: Exploration insights if applicable
+
+4. QUALITY CHECK:
+   □ Problem section has specific examples
+   □ Solution describes actual approach
+   □ Features marked as "📋 Planned"
+   □ MVP clearly defined
+   □ Technical approach documented
+   □ Open questions captured
+
+VERIFICATION: IDEA.md contains interview gold, not boilerplate
+```
+
+**CHECKPOINT 11: Link to Exploration (if applicable)**
+
+```
+IF created from exploration:
+  
+ADD TO IDEA.md:
+- Note at top: "Evolved from exploration: [date]-[topic]"
+- Preserve key insights in relevant sections
+- Maintain continuity of thinking
+
+VERIFICATION: Evolution from exploration is traceable
+```
+
+### PHASE 6: GUIDE NEXT STEPS
+
+**CHECKPOINT 12: Provide Clear Path Forward**
+
+```
+REQUIRED: Guide user to next action
+
+REPORT:
+"✅ Created IDEA.md in $WORKFLOW_PROJECTS/[project-name]/
+
+Next steps:
+1. Set up development environment:
+   → Run: setupd [project-name]
    
-3. GENERATE: $WORKFLOW_PROJECTS/[project-name]/IDEA.md
+2. Navigate to project:
+   → Run: cd $WORKFLOW_DEV/[project-name]
    
-   USE TEMPLATE STRUCTURE but EMBED CONCRETE DETAILS:
-   - Problem section: Specific problems from interview
-   - Solution section: Technical approach with examples
-   - System Flow: Based on workflows discussed
-   - Features: From interview, marked "📋 Planned"
-   - MVP Definition: Explicit scope from discussion
-   - Technical details: Real examples captured
-   - Open Questions: Unknowns that emerged
-   
-4. IF exploration was source:
-   NOTE in IDEA.md: "Evolved from exploration: [date]-[topic]"
-   PRESERVE: Key insights from exploration
+3. Plan first iteration:
+   → Run: /plan-iteration
+
+Would you like to set up the development environment now?"
+
+IF YES: Guide through setupd command
+IF NO: Confirm IDEA.md saved for future
 ```
 
-## PHASE 4: CONFIRM & GUIDE
+## SUCCESS CRITERIA
 
-### Review and Next Actions
+- Explorations properly loaded and analyzed
+- Questions generated from exploration content, not generic
+- Interview captures concrete details, not abstractions  
+- IDEA.md contains specific examples and decisions
+- Clear evolution from exploration to project
+- User knows exact next steps
 
-```
-REPORT: "Created IDEA.md in $WORKFLOW_PROJECTS/[project-name]/"
+## FAILURE MODES TO AVOID
 
-ASK: "Would you like to:
-1. Set up development environment? (run: setupd [project-name])
-2. Continue refining the idea?
-3. Save for later?"
-
-GUIDE based on choice:
-- Option 1: "Run: setupd [project-name]
-            Then: cd $WORKFLOW_DEV/[project-name]
-            Then: /decompose-iteration to plan your first iteration"
-- Option 2: Continue editing IDEA.md
-- Option 3: "IDEA.md saved. Run setupd [project-name] when ready to start."
-```
-
-## Success Criteria
-
-- Uses proper environment variables throughout
-- Loads template from correct location
-- Dynamic questions generated from exploration content
-- Interview builds on exploration discoveries
-- Concrete technical details captured
-- Real examples and data structures documented
-- Natural conversation flow
-- IDEA.md contains interview gold, not generic text
+- Creating artifacts before approval
+- Generic questions not based on exploration
+- Vague problem or solution statements
+- Missing technical decisions from interview
+- Boilerplate IDEA.md without specifics
+- Lost insights from exploration phase
