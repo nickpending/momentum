@@ -175,11 +175,16 @@ for agent in "$MOMENTUM_HOME/subagents"/*.md; do
 done
 echo -e "${GREEN}  ✓ Symlinked subagents to ~/.claude/agents${RESET}"
 
-# Symlink ideate.md to global claude commands (it's universal)
+# Symlink user commands to global claude commands (they're universal)
 mkdir -p "$HOME/.claude/commands"
 if [[ -f "$MOMENTUM_HOME/user-commands/ideate.md" ]]; then
     ln -sf "$MOMENTUM_HOME/user-commands/ideate.md" "$HOME/.claude/commands/ideate.md"
     echo -e "${GREEN}  ✓ Symlinked ideate command to ~/.claude/commands${RESET}"
+fi
+
+if [[ -f "$MOMENTUM_HOME/user-commands/plan-idea.md" ]]; then
+    ln -sf "$MOMENTUM_HOME/user-commands/plan-idea.md" "$HOME/.claude/commands/plan-idea.md"
+    echo -e "${GREEN}  ✓ Symlinked plan-idea command to ~/.claude/commands${RESET}"
 fi
 
 # Source config to get WORKFLOW_PROJECTS
