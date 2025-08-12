@@ -13,7 +13,10 @@ An iteration-first development workflow that maintains forward progress through 
 # Start exploring an idea (globally available)
 /ideate "interesting problem"
 
-# When ready to build, set up a project
+# Transform exploration into project vision
+/plan-idea
+
+# Set up development environment
 setupd myproject
 
 # Start iterating
@@ -90,6 +93,12 @@ Previous workflows failed when tasks were too large to complete before hitting c
   - Interviews you about the idea
   - Creates exploration artifacts only when requested
   - Bridges unstructured thinking → structured project
+
+- `/plan-idea` - Transform exploration into concrete project vision (global command)
+  - Loads existing explorations for continuation
+  - Dynamic interview based on exploration content
+  - Creates IDEA.md in obsidian project space
+  - Bridges exploration → project structure
 
 **Planning Commands:**
 - `/plan-iteration` - Interview-based iteration planning
@@ -322,7 +331,8 @@ momentum/                         # This repository
 ├── bin/
 │   └── setupd                   # Project setup script  
 ├── user-commands/               # Global user commands
-│   └── ideate.md               # Exploration command
+│   ├── ideate.md               # Exploration command
+│   └── plan-idea.md            # Exploration to project command
 ├── commands/                    # Project workflow commands
 │   ├── plan-iteration.md       # Planning commands
 │   ├── plan-task.md           
