@@ -19,7 +19,7 @@
 
 ### Find and Load State File
 
-1. **READ** `.workflow/state/task-{SPECIFIED_OR_RECENT}.md`
+1. **READ** `.workflow/state/task-[specified_or_recent].md`
 2. **EXTRACT** essential resumption information:
     - Current progress and phase
     - Files changed and their status
@@ -54,10 +54,10 @@
 STATE + CONTEXT RESTORED
 =====================================
 
-📂 State File: task-{TASK_NUMBER}-{TIMESTAMP}
-🎯 Project: {PROJECT_NAME_FROM_IDEA}
-🔄 Task: #{TASK_NUMBER} - {TASK_NAME}
-📊 Progress: {SAVED_PROGRESS_DESCRIPTION}
+📂 State File: task-[task_number]-[timestamp]
+🎯 Project: [project_name_from_idea]
+🔄 Task: #[task_number] - [task_name]
+📊 Progress: [saved_progress_description]
 
 ITERATION CONTEXT LOADED:
 ✅ Complete iteration with embedded standards
@@ -66,16 +66,16 @@ ITERATION CONTEXT LOADED:
 ✅ Task requirements and success criteria
 
 SAVED STATE RESTORED:
-✅ Current progress: {CURRENT_PHASE}
-✅ Files changed: {FILE_COUNT} files in various states
-✅ Key decisions: {DECISION_COUNT} implementation decisions
-✅ Next steps: {NEXT_STEP_COUNT} actions identified
+✅ Current progress: [current_phase]
+✅ Files changed: [file_count] files in various states
+✅ Key decisions: [decision_count] implementation decisions
+✅ Next steps: [next_step_count] actions identified
 
 READY TO RESUME FROM:
-{RESUME_POINT_FROM_STATE}
+[resume_point_from_state]
 
 IMMEDIATE NEXT ACTION:
-{FIRST_NEXT_STEP}
+[first_next_step]
 ```
 
 ### Update Task Status

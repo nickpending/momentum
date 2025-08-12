@@ -1,19 +1,19 @@
-# Iteration {N}: {Clear Outcome Description}
+# Iteration [n]: [clear_outcome_description]
 
 ## Working Software Goal
 
-{1-2 sentences: What users can DO after this iteration that they couldn't before}
+[1-2_sentences_what_users_can_do_after_this_iteration_that_they_couldnt_before]
 
 ## Context From Previous Iterations
 
-- **Built**: {What's already working in the system}
-- **Current State**: {Key services, APIs, data structures that exist}
-- **Infrastructure**: {Docker services, databases, deployment setup}
-- **Now Building**: {How this iteration extends the system}
+- **Built**: [whats_already_working_in_the_system]
+- **Current State**: [key_services_apis_data_structures_that_exist]
+- **Infrastructure**: [docker_services_databases_deployment_setup]
+- **Now Building**: [how_this_iteration_extends_the_system]
 
 ## Tech Stack & Embedded Standards
 
-{Paste the ACTUAL standards loaded during interview - not generic descriptions}
+[paste_the_actual_standards_loaded_during_interview_not_generic_descriptions]
 
 ### Python Backend (FastAPI)
 
@@ -30,24 +30,24 @@
 
 ### How This Iteration Connects
 
-- **Existing Services**: {What APIs/services this iteration uses}
-- **New Integration Points**: {What new interfaces this creates}
-- **Data Flow**: {How data moves through new and existing components}
-- **Service Dependencies**: {What needs to be running for this to work}
+- **Existing Services**: [what_apis_services_this_iteration_uses]
+- **New Integration Points**: [what_new_interfaces_this_creates]
+- **Data Flow**: [how_data_moves_through_new_and_existing_components]
+- **Service Dependencies**: [what_needs_to_be_running_for_this_to_work]
 
 ## Tasks
 
-### 1. {Specific Component/Feature Name} 📋 Planned
+### 1. [specific_component_feature_name] 📋 Planned
 
 **Type**: Implementation Task / Research Spike / Integration Task / Wiring Task **Depends on**: None / Task N **Estimated time**: N hours
 
-**What to build**: {1-2 sentences of WHAT, not why}
+**What to build**: [1-2_sentences_of_what_not_why]
 
 **Key files**:
 
 ```
-path/to/specific/file.py - {what this file does}
-path/to/another/file.ts - {what this file does}
+path/to/specific/file.py - [what_this_file_does]
+path/to/another/file.ts - [what_this_file_does]
 ```
 
 **Core functionality**:
@@ -71,14 +71,14 @@ class SpecificThing:
 
 **Integration points**:
 
-- Receives: {exact message/API format from existing system}
-- Sends: {exact format this component outputs}
-- Database: {specific tables/queries needed}
+- Receives: [exact_message_api_format_from_existing_system]
+- Sends: [exact_format_this_component_outputs]
+- Database: [specific_tables_queries_needed]
 
 **One smoke test**:
 
 ```python
-async def test_{feature}_actually_works():
+async def test_[feature]_actually_works():
     # Real integration test pattern
     # Uses actual services, not mocks
     # Tests the ONE thing that proves this task succeeded
@@ -93,16 +93,16 @@ curl -X POST localhost:8000/specific/endpoint -d '{"real": "data"}'
 {"should": "see this"}
 ```
 
-### 2. {Next Specific Component} 📋 Planned
+### 2. [next_specific_component] 📋 Planned
 
 **Type**: Implementation Task / Research Spike / Integration Task / Wiring Task **Depends on**: Task 1 **Estimated time**: N hours
 
-**What to build**: {Clear description}
+**What to build**: [clear_description]
 
 **Key files**:
 
 ```
-path/to/file.py - {purpose}
+path/to/file.py - [purpose]
 ```
 
 **Core functionality**:
@@ -121,9 +121,9 @@ path/to/file.py - {purpose}
 
 **Integration points**:
 
-- Receives: {exact format}
-- Sends: {exact format}
-- Database: {specific needs}
+- Receives: [exact_format]
+- Sends: [exact_format]
+- Database: [specific_needs]
 
 **One smoke test**:
 
@@ -139,9 +139,9 @@ async def test_feature_works():
 # Expected result
 ```
 
-### 3. {Another Component} 📋 Planned
+### 3. [another_component] 📋 Planned
 
-{Continue with same structure for all tasks}
+[continue_with_same_structure_for_all_tasks]
 
 ## Task Type Definitions
 
@@ -152,10 +152,10 @@ async def test_feature_works():
 
 ## Progress Tracking
 
-- [ ] Task 1: {Name} - 📋 Planned
-- [ ] Task 2: {Name} - 📋 Planned
-- [ ] Task 3: {Name} - 📋 Planned
-- [ ] Task N: {Name} - 📋 Planned
+- [ ] Task 1: [name] - 📋 Planned
+- [ ] Task 2: [name] - 📋 Planned
+- [ ] Task 3: [name] - 📋 Planned
+- [ ] Task N: [name] - 📋 Planned
 
 **Status Legend**: 📋 Planned | 🔄 In Progress | ✅ Complete
 
@@ -198,14 +198,14 @@ curl -X POST localhost:8000/auth/login -d '{"username": "test", "password": "tes
 
 ## What This Iteration Validates
 
-- **Assumption 1**: {Specific thing we think users want - will be proven/disproven}
-- **Assumption 2**: {Technical approach we think will work - will be validated}
+- **Assumption 1**: [specific_thing_we_think_users_want_will_be_proven_disproven]
+- **Assumption 2**: [technical_approach_we_think_will_work_will_be_validated]
 
 ## Not In This Iteration (Scope Control)
 
-- {Feature X} - Waiting for user feedback on current approach
-- {Feature Y} - Depends on validating assumption above
-- {Complex Feature Z} - Keeping iteration focused
+- [feature_x] - Waiting for user feedback on current approach
+- [feature_y] - Depends on validating assumption above
+- [complex_feature_z] - Keeping iteration focused
 
 ---
 

@@ -229,18 +229,18 @@ The workflow bridges **ideation** (obsidian) with **implementation** (developmen
 #### Task Lifecycle: `later.md` → `active.md` → `completed.md`
 
 1. **later.md** - Backlog of ideas, todos, and bugs
-   - Lives in `$WORKFLOW_PROJECTS/{name}/`
+   - Lives in `$WORKFLOW_PROJECTS/[projectname]/`
    - Items waiting to be worked on
    - Format: `- type:: Description id::xxxxx captured:: YYYY-MM-DD`
 
 2. **active.md** - Current work in progress
-   - Lives in `$WORKFLOW_PROJECTS/{name}/`
+   - Lives in `$WORKFLOW_PROJECTS/[projectname]/`
    - Items selected during `/plan-iteration`
    - Two sections: Today (urgent) and This Week (iteration scope)
    - Format: `- [ ] Description id::xxxxx captured:: date promoted:: date`
 
 3. **completed.md** - Historical record
-   - Lives in `$WORKFLOW_PROJECTS/{name}/`
+   - Lives in `$WORKFLOW_PROJECTS/[projectname]/`
    - Items moved here during `/complete-iteration`
    - Organized by month and date
    - Format: `- Description id::xxxxx captured:: date completed:: YYYY-MM-DD HH:MM`

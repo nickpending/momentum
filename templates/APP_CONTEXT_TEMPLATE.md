@@ -1,4 +1,4 @@
-# {PROJECT_NAME} - Claude Code Integration Guide
+# [projectname] - Claude Code Integration Guide
 
 ## CRITICAL: This document is for Claude Code, not humans
 
@@ -7,10 +7,10 @@
 
 ## Project Overview
 
-**Type**: {APPLICATION_TYPE}  
-**Tech Stack**: {TECH_STACK_WITH_VERSIONS}  
-**Architecture**: {ARCHITECTURE_PATTERN}  
-**Primary Function**: {CORE_PURPOSE_ONE_LINE}
+**Type**: [application_type]  
+**Tech Stack**: [tech_stack_with_versions]  
+**Architecture**: [architecture_pattern]  
+**Primary Function**: [core_purpose_one_line]
 
 ## Integration Constraints
 
@@ -18,141 +18,141 @@
 
 **ALWAYS modify these file types:**
 
-- `{FILE_PATTERN}` - {PURPOSE_AND_PATTERN}
-- `{FILE_PATTERN}` - {PURPOSE_AND_PATTERN}
+- `[file_pattern]` - [purpose_and_pattern]
+- `[file_pattern]` - [purpose_and_pattern]
 
 **NEVER modify these files:**
 
-- `{PROTECTED_FILE_PATTERN}` - {REASON_AND_ALTERNATIVE}
-- `{PROTECTED_FILE_PATTERN}` - {REASON_AND_ALTERNATIVE}
+- `[protected_file_pattern]` - [reason_and_alternative]
+- `[protected_file_pattern]` - [reason_and_alternative]
 
 ### Code Integration Patterns
 
 #### Database Access
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Use existing session pattern
-{DATABASE_PATTERN_EXAMPLE}
+[database_pattern_example]
 
-# WRONG: {ANTI_PATTERN_EXAMPLE}
+# WRONG: [anti_pattern_example]
 ```
 
 #### API Route Integration
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Follow existing route pattern
-{API_ROUTE_PATTERN}
+[api_route_pattern]
 
-# WRONG: {API_ANTI_PATTERN}
+# WRONG: [api_anti_pattern]
 ```
 
 #### Error Handling
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Use project's error handling
-{ERROR_HANDLING_PATTERN}
+[error_handling_pattern]
 
-# WRONG: {ERROR_ANTI_PATTERN}
+# WRONG: [error_anti_pattern]
 ```
 
 ## Architecture Constraints
 
 ### Design Principles (from embedded context)
 
-{EMBEDDED_DESIGN_PRINCIPLES}
+[embedded_design_principles]
 
 ### Integration Requirements
 
-- **Component Connection**: {COMPONENT_CONNECTION_PATTERN}
-- **Data Flow**: {DATA_FLOW_PATTERNS}
-- **Authentication**: {AUTH_INTEGRATION_PATTERN}
-- **Validation**: {INPUT_VALIDATION_PATTERN}
+- **Component Connection**: [component_connection_pattern]
+- **Data Flow**: [data_flow_patterns]
+- **Authentication**: [auth_integration_pattern]
+- **Validation**: [input_validation_pattern]
 
 ### Performance Constraints
 
-- **Database**: {DATABASE_PERFORMANCE_PATTERNS}
-- **Caching**: {CACHING_STRATEGY}
-- **Async Patterns**: {ASYNC_USAGE_PATTERNS}
+- **Database**: [database_performance_patterns]
+- **Caching**: [caching_strategy]
+- **Async Patterns**: [async_usage_patterns]
 
 ## Development Patterns
 
 ### Testing Integration
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Follow existing test patterns
-{TEST_PATTERN_EXAMPLE}
+[test_pattern_example]
 ```
 
 **Test Database:**
 
-- **Use**: {TEST_DATABASE_PATTERN}
-- **Don't**: {TEST_ANTI_PATTERN}
+- **Use**: [test_database_pattern]
+- **Don't**: [test_anti_pattern]
 
 ### Configuration Integration
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Use existing config pattern
-{CONFIG_PATTERN_EXAMPLE}
+[config_pattern_example]
 
-# WRONG: {CONFIG_ANTI_PATTERN}
+# WRONG: [config_anti_pattern]
 ```
 
 **Secrets Management:**
 
-- **Correct Pattern**: {SECRETS_PATTERN}
-- **Never**: {SECRETS_ANTI_PATTERN}
+- **Correct Pattern**: [secrets_pattern]
+- **Never**: [secrets_anti_pattern]
 
 ## Security Constraints
 
 ### Authentication Integration
 
-**Pattern**: {AUTH_PATTERN}
+**Pattern**: [auth_pattern]
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Use existing auth decorator/dependency
-{AUTH_PATTERN_EXAMPLE}
+[auth_pattern_example]
 ```
 
 ### Input Validation
 
-**Pattern**: {VALIDATION_PATTERN}
+**Pattern**: [validation_pattern]
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Use existing validation
-{VALIDATION_PATTERN_EXAMPLE}
+[validation_pattern_example]
 ```
 
 ### Authorization
 
-**Pattern**: {AUTHORIZATION_PATTERN}
+**Pattern**: [authorization_pattern]
 
-```{LANGUAGE}
+```[language]
 # CORRECT: Use existing authorization
-{AUTHORIZATION_PATTERN_EXAMPLE}
+[authorization_pattern_example]
 ```
 
 ## Deployment Integration
 
 ### Container Integration
 
-**Docker Pattern**: {DOCKER_PATTERN} **Environment**: {DEPLOYMENT_ENVIRONMENT}
+**Docker Pattern**: [docker_pattern] **Environment**: [deployment_environment]
 
 ### Database Migrations
 
-**Pattern**: {MIGRATION_PATTERN}
+**Pattern**: [migration_pattern]
 
 ```bash
 # CORRECT: Use existing migration commands
-{MIGRATION_COMMAND}
+[migration_command]
 ```
 
 ## Anti-Patterns (NEVER DO THESE)
 
 ### Code Anti-Patterns
 
-- **Don't**: {CODE_ANTI_PATTERN_1}
-- **Don't**: {CODE_ANTI_PATTERN_2}
-- **Don't**: {CODE_ANTI_PATTERN_3}
+- **Don't**: [code_anti_pattern_1]
+- **Don't**: [code_anti_pattern_2]
+- **Don't**: [code_anti_pattern_3]
 
 ### Integration Anti-Patterns
 
@@ -163,9 +163,9 @@
 
 ### Testing Anti-Patterns
 
-- **Don't**: {TESTING_ANTI_PATTERN_1}
-- **Don't**: {TESTING_ANTI_PATTERN_2}
-- **Don't**: {TESTING_ANTI_PATTERN_3}
+- **Don't**: [testing_anti_pattern_1]
+- **Don't**: [testing_anti_pattern_2]
+- **Don't**: [testing_anti_pattern_3]
 
 ## Quick Integration Checklist
 
@@ -182,17 +182,17 @@ When adding new functionality:
 
 ## Tech Stack Specifics
 
-### {PRIMARY_FRAMEWORK} Patterns
+### [primary_framework] Patterns
 
-{FRAMEWORK_SPECIFIC_INTEGRATION_PATTERNS}
+[framework_specific_integration_patterns]
 
-### {DATABASE_SYSTEM} Patterns
+### [database_system] Patterns
 
-{DATABASE_SPECIFIC_PATTERNS}
+[database_specific_patterns]
 
-### {ADDITIONAL_TECH} Patterns
+### [additional_tech] Patterns
 
-{ADDITIONAL_TECH_PATTERNS}
+[additional_tech_patterns]
 
 ## Emergency Integration Rules
 
@@ -205,14 +205,14 @@ When adding new functionality:
 
 ## Context for Complex Integration
 
-### {COMPLEX_FEATURE_AREA}
+### [complex_feature_area]
 
-**Background**: {WHY_THIS_EXISTS} **Pattern**: {HOW_TO_INTEGRATE} **Constraints**: {WHAT_NOT_TO_DO}
+**Background**: [why_this_exists] **Pattern**: [how_to_integrate] **Constraints**: [what_not_to_do]
 
-### {ANOTHER_COMPLEX_AREA}
+### [another_complex_area]
 
-**Background**: {BACKGROUND_CONTEXT} **Pattern**: {INTEGRATION_APPROACH} **Constraints**: {CONSTRAINTS_AND_LIMITS}
+**Background**: [background_context] **Pattern**: [integration_approach] **Constraints**: [constraints_and_limits]
 
 ---
 
-**Generated**: {TIMESTAMP} **Based on**: ITERATION.md patterns + codebase analysis **Purpose**: Enable Claude Code to integrate correctly with existing system
+**Generated**: [timestamp] **Based on**: ITERATION.md patterns + codebase analysis **Purpose**: Enable Claude Code to integrate correctly with existing system

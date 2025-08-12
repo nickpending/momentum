@@ -94,28 +94,28 @@ Generate `APP_CONTEXT.md` by populating the v3 template with project-specific in
 
 ### Basic Information
 
-- `{PROJECT_NAME}` - Extract from package.json, pyproject.toml, or directory name
-- `{APPLICATION_TYPE}` - Infer from codebase: web app, API, CLI tool, library, etc.
-- `{TECH_STACK_WITH_VERSIONS}` - Detect from dependencies and imports
-- `{CORE_PURPOSE_ONE_LINE}` - Extract from IDEA.md or README.md
+- `[project_name]` - Extract from package.json, pyproject.toml, or directory name
+- `[application_type]` - Infer from codebase: web app, API, CLI tool, library, etc.
+- `[tech_stack_with_versions]` - Detect from dependencies and imports
+- `[core_purpose_one_line]` - Extract from IDEA.md or README.md
 
 ### Pattern Examples Population
 
 **POPULATE** template sections with real code:
 
-- `{DATABASE_PATTERN_EXAMPLE}` - actual database access code from project
-- `{API_ROUTE_PATTERN}` - real API route definition from codebase
-- `{ERROR_HANDLING_PATTERN}` - actual error handling code
-- `{TEST_PATTERN_EXAMPLE}` - real test code from project
-- `{CONFIG_PATTERN_EXAMPLE}` - actual configuration access code
+- `[database_pattern_example]` - actual database access code from project
+- `[api_route_pattern]` - real API route definition from codebase
+- `[error_handling_pattern]` - actual error handling code
+- `[test_pattern_example]` - real test code from project
+- `[config_pattern_example]` - actual configuration access code
 
 ### Anti-Pattern Population
 
 **POPULATE** anti-pattern sections:
 
-- `{CODE_ANTI_PATTERN_1}` - actual problematic patterns found or to avoid
-- `{TESTING_ANTI_PATTERN_1}` - testing approaches that break project standards
-- `{CONFIG_ANTI_PATTERN}` - configuration approaches to avoid
+- `[code_anti_pattern_1]` - actual problematic patterns found or to avoid
+- `[testing_anti_pattern_1]` - testing approaches that break project standards
+- `[config_anti_pattern]` - configuration approaches to avoid
 
 ### Embedded Context Integration
 
@@ -169,11 +169,11 @@ Generate `APP_CONTEXT.md` by populating the v3 template with project-specific in
 APP_CONTEXT.md GENERATED - LLM OPTIMIZED
 =====================================
 
-✅ Project Type: {APPLICATION_TYPE}
-✅ Tech Stack: {DETECTED_TECH_STACK}
-✅ Integration Patterns: {PATTERN_COUNT} extracted from codebase
-✅ Code Examples: {EXAMPLE_COUNT} real working examples
-✅ Anti-Patterns: {ANTI_PATTERN_COUNT} problematic patterns identified
+✅ Project Type: [application_type]
+✅ Tech Stack: [detected_tech_stack]
+✅ Integration Patterns: [pattern_count] extracted from codebase
+✅ Code Examples: [example_count] real working examples
+✅ Anti-Patterns: [anti_pattern_count] problematic patterns identified
 ✅ Template Population: All variables populated with project-specific content
 
 📁 Created: APP_CONTEXT.md

@@ -69,7 +69,7 @@ That's it.
 
 ### Quick Commands (Planning)
 
-**qback** - Add to project later.md in proper format:
+**qback** - Add to project later.md ($WORKFLOW_PROJECTS/[projectname]/later.md) in proper format:
 ```markdown
 ## Ideas  
 - idea:: {Description} id::xxxxx captured:: YYYY-MM-DD
@@ -153,13 +153,26 @@ That's it.
 
 ## Environment Available
 
-These are expected in development projects:
-- .workflow/artifacts/ - Planning documents
+These are set in your environment:
+- $WORKFLOW_PROJECTS - Obsidian projects root
+- $WORKFLOW_DEV - Development projects root  
+- $WORKFLOW_HOME - Momentum installation directory
+- $WORKFLOW_COMMANDS - Workflow commands
+- $WORKFLOW_TEMPLATES - Document templates
+- $WORKFLOW_RESOURCES - Design principles and guidelines
+- $WORKFLOW_AGENTS - Agent overrides (MOMENTUM.md, etc.)
+
+Project-specific paths (resolved at runtime):
+- $WORKFLOW_PROJECTS/[projectname]/later.md - Backlog items
+- $WORKFLOW_PROJECTS/[projectname]/active.md - Currently working  
+- $WORKFLOW_PROJECTS/[projectname]/completed.md - Archived items
+- $WORKFLOW_PROJECTS/[projectname]/discoveries/ - Discovery documents
+
+Development project structure:
+- .workflow/artifacts/ - Planning documents (TASKS.md, ITERATION.md)
 - .workflow/state/ - Context saves
 - .workflow/archives/ - Completed iterations
-- .claude/commands/ - Project commands
-- $WORKFLOW_PROJECTS - Obsidian projects
-- $WORKFLOW_DEV - Development root
+- .claude/commands/ - Project-specific commands
 
 ## Behavioral Requirements
 

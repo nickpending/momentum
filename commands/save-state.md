@@ -17,82 +17,82 @@
 ## Comprehensive State Structure
 
 ```markdown
-# State - {timestamp}
+# State - [timestamp]
 
 ## Context
-**Task**: {Task N: name if in a task, or "Exploration" / "Discussion" / etc}
-**Command**: {active command if any: /plan-task, /plan-test, etc}
-**What**: {one-line summary of current work}
-**Where**: {current phase/progress/location in process}
+**Task**: [task_n_name_if_in_a_task_or_exploration_discussion_etc]
+**Command**: [active_command_if_any_plan_task_plan_test_etc]
+**What**: [one_line_summary_of_current_work]
+**Where**: [current_phase_progress_location_in_process]
 
 ## Discoveries & Findings
 ### Technical Discoveries
-- {unexpected behavior found}
-- {integration requirement discovered}
-- {constraint identified}
-- {pattern that works}
-- {API quirk found}
+- [unexpected_behavior_found]
+- [integration_requirement_discovered]
+- [constraint_identified]
+- [pattern_that_works]
+- [api_quirk_found]
 
 ### User Clarifications
-- {requirement clarified}
-- {constraint confirmed}
-- {preference stated}
+- [requirement_clarified]
+- [constraint_confirmed]
+- [preference_stated]
 
 ### Breakthroughs
-- {"aha" moment that unlocked progress}
-- {solution to blocker}
-- {simpler approach discovered}
+- [aha_moment_that_unlocked_progress]
+- [solution_to_blocker]
+- [simpler_approach_discovered]
 
 ## Decisions Made
-- **Decision**: {what was decided}
-  **Rationale**: {why this choice over alternatives}
-  **Impact**: {what this affects}
+- **Decision**: [what_was_decided]
+  **Rationale**: [why_this_choice_over_alternatives]
+  **Impact**: [what_this_affects]
 
-- **Decision**: {another decision}
-  **Rationale**: {reasoning behind it}
-  **Impact**: {consequences}
+- **Decision**: [another_decision]
+  **Rationale**: [reasoning_behind_it]
+  **Impact**: [consequences]
 
 ## Open Questions (Critical to Resolve)
 ### Blocking Questions
-- {question preventing progress}
-- {uncertainty about approach}
+- [question_preventing_progress]
+- [uncertainty_about_approach]
 
 ### Research Needed
-- {thing to investigate}
-- {assumption to validate}
+- [thing_to_investigate]
+- [assumption_to_validate]
 
 ### Design Questions
-- {architectural uncertainty}
-- {integration approach question}
+- [architectural_uncertainty]
+- [integration_approach_question]
 
 ## What's Working
 ### Completed & Verified
-- {component built and tested}
-- {feature working correctly}
+- [component_built_and_tested]
+- [feature_working_correctly]
 
 ### Code/Patterns That Work
-```{language}
-# This solved {problem}
-{actual code that works}
+```[language]
+# This solved [problem]
+[actual_code_that_works]
 ```
 
 ### Confirmed Approaches
-- {approach that's proven successful}
-- {pattern to reuse}
+- [approach_thats_proven_successful]
+- [pattern_to_reuse]
 
 ## Next Actions
-- [ ] {immediate next step}
-- [ ] {following action}
-- [ ] {subsequent task}
+- [ ] [immediate_next_step]
+- [ ] [following_action]
+- [ ] [subsequent_task]
 
 ## Files Touched
-- {path/to/file.py} - {what was done/changed}
-- {path/to/test.py} - {status: complete/in-progress/started}
-- {path/to/config.json} - {what was modified}
+- [path/to/file.py] - [what_was_done_changed]
+- [path/to/test.py] - [status_complete_in_progress_started]
+- [path/to/config.json] - [what_was_modified]
 
 ## Blockers
-- {what's preventing progress}
-- {what's needed to unblock}
+- [whats_preventing_progress]
+- [whats_needed_to_unblock]
 ```
 
 ## Additional Guidance
@@ -107,8 +107,8 @@
 
 ```
 .workflow/state/
-├── task-N-{timestamp}.md    # When working on a specific task
-└── state-{timestamp}.md     # General exploration/discussion
+├── task-N-[timestamp].md    # When working on a specific task
+└── state-[timestamp].md     # General exploration/discussion
 ```
 
 Where timestamp is `YYYYMMDD-HHMM`

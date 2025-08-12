@@ -297,7 +297,7 @@ MOVE TO ACTIVE:
    - Critical bugs → Today section
    - Iteration tasks → This Week section
 3. FORMAT as checkboxes with promoted date:
-   - [ ] {Description} id::{id} captured::{original_date} promoted::{today}
+   - [ ] [description] id::[id] captured::[original_date] promoted::[today]
 4. REMOVE moved items from later.md
 
 ACTIVE.MD FORMAT:
