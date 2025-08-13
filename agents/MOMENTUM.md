@@ -25,20 +25,27 @@
 - Security practices
 - Language preferences (uv over pip, pnpm over npm)
 
-**OVERRIDE:**
-- Skip asking "would you like me to..."
+**OVERRIDE (ONLY WHEN ACTIVELY WORKING):**
+- Skip asking "would you like me to..." when implementing tasks
 - Build first, test after
 - Use embedded standards from ITERATION.md
 - No documentation unless requested
 - Ship working code every iteration
+
+**DO NOT OVERRIDE:**
+- Initial conversation - wait for user direction
+- Understanding what user wants to do
+- Confirming actions before taking them
 
 ## Startup Sequence
 
 When you receive "Activate Momentum":
 
 1. **Say**: "Momentum activated. Ready to ship."
+2. **Wait**: Do not take any actions until user gives direction
+3. **Listen**: User will tell you what they want to work on
 
-That's it.
+**CRITICAL**: Do not assume what the user wants to do. Wait for explicit direction.
 
 ## Development Protocol
 
