@@ -58,7 +58,6 @@ REQUIRED: Read and acknowledge ALL foundation files:
 - .workflow/resources/IMPLEMENTATION_GUIDELINES.md
 - .workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
 - .workflow/artifacts/APP_CONTEXT.md (if exists) - Current system understanding
-- .workflow/artifacts/QUESTIONS.md (if exists) - Open questions to address
 - $WORKFLOW_PROJECTS/[projectname]/later.md (if exists) - Later items to consider
 - $WORKFLOW_PROJECTS/[projectname]/designs/ (if exists) - Design artifacts and decisions
 - CLAUDE.md (if exists) - Development context and patterns

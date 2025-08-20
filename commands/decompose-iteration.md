@@ -131,36 +131,38 @@ GOOD TASKS:
 VERIFICATION: Each feature becomes 5-15 specific tasks (NO test tasks)
 ```
 
-### PHASE 4: MANDATORY INTERVIEW FOR SCOPE CLARIFICATION
+### PHASE 4: MANDATORY INTERVIEW TO UNCOVER ASSUMPTIONS
 
 **🛑 DO NOT PROCEED PAST THIS STEP WITHOUT ANSWERS**
 **🛑 CONDUCT ACTUAL INTERVIEW - ASK QUESTIONS ONE AT A TIME**
 **🛑 BUILD ON ANSWERS - DON'T JUST DUMP ALL QUESTIONS**
 
-**CHECKPOINT 6: Feature Scope Interview**
+**CHECKPOINT 6: Assumption Discovery Interview**
 
 ```
-REQUIRED: Interview to clarify feature scope and priorities:
+REQUIRED: Interview to uncover hidden assumptions in the features:
 
-ASK INTELLIGENT QUESTIONS about the features based on analysis:
-- Which features are highest priority?
-- Any features that should be simplified for this iteration?
-- Technical constraints or requirements not mentioned?
-- Existing code/systems that must be preserved?
-- Any features that could be postponed?
+ASK SPECIFIC QUESTIONS ABOUT THE ACTUAL FEATURES:
+- Ambiguous behaviors that could go multiple ways
+- Implicit requirements not spelled out
+- Integration points that need clarification
+- User-facing behaviors that aren't specified
+- Data flow that's assumed but not stated
 
-EXAMPLE QUESTIONS (based on actual features found):
-- "The audio manager feature seems large - should we include ALL audio types this iteration or start with just ambient?"
-- "Should the volume persistence use localStorage or do you need a backend solution?"
-- "Any specific browser compatibility requirements for the audio features?"
-- "Which feature should be implemented first for maximum user value?"
+EXAMPLE QUESTIONS (must be specific to features found):
+- "When you say 'automatic archival' - what triggers it? Task completion? Time? Manual command?"
+- "For 'state persistence' - survive page refresh? Browser restart? Or just within session?"
+- "The 'validation' feature - should it block or just warn? Who sees the warnings?"
+- "When tasks are 'completed' - can they be uncompleted? What about dependencies?"
+- "'Evidence-based completion' - what constitutes valid evidence? Tests passing? Manual verification?"
 
-DO NOT ASK ABOUT:
-- How to break down tasks (that's your job)
-- Technical implementation details (you decide)
-- Task ordering (you determine dependencies)
+NEVER ASK ABOUT:
+- Whether to do less (implement everything)
+- Which parts to skip (skip nothing)
+- Priority order (that's your job to figure out)
+- Generic technical preferences
 
-VERIFICATION: Get scope clarification before decomposing
+VERIFICATION: Questions must be specific to actual features, not generic
 ```
 
 ### PHASE 5: MANDATORY APPROVAL (REQUIRED)
@@ -175,6 +177,12 @@ TASK DECOMPOSITION COMPLETE - NO FILES CREATED
 
 Features Analyzed: [number]
 Total Tasks Identified: [number]
+
+DECOMPOSITION CHECK:
+- Features in ITERATION.md: [N]
+- Tasks created: [M]
+- Multiplication factor: [M/N]x
+- ✅ Each feature properly decomposed (not 1:1)
 
 Sample Tasks:
 - 1.1: [task description] (1 file, ~50 lines)
