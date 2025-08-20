@@ -120,18 +120,28 @@ VERIFICATION: All completed items moved from active.md to completed.md
 
 ```
 REQUIRED: Prepare clean workspace for next iteration:
-- CLEAR any temporary state or work-in-progress artifacts
-- RESET workspace for fresh iteration planning
-- PRESERVE only what's needed for next iteration context
-- ENSURE clean handoff to /plan-iteration
 
-CLEANUP FOCUS:
-- Remove temporary files and work artifacts
-- Preserve completed work and documentation
-- Clean state ready for next iteration planning
-- No clutter or confusion from previous iteration
+ARTIFACTS CLEANUP (.workflow/artifacts/):
+- REMOVE iteration-specific files:
+  - ITERATION.md (now archived)
+  - TASKS.md (now archived)
+  - Any subagent artifacts (ARCHITECTURE-*.md, IMPLEMENTATION-*.md, etc.)
+- PRESERVE project-level files:
+  - IDEA.md (project vision)
+  - APP_CONTEXT.md (if exists - project patterns)
+  - Any other project-wide documentation
 
-VERIFICATION: Clean workspace ready for next iteration planning
+STATE CLEANUP (.workflow/state/):
+- REMOVE all saved state files (task-*.md, etc.)
+- These are iteration-specific and no longer needed
+
+CLEANUP COMMANDS:
+- rm .workflow/artifacts/ITERATION.md
+- rm .workflow/artifacts/TASKS.md
+- rm .workflow/artifacts/subagents/*.md (if directory exists)
+- rm .workflow/state/*.md (if any exist)
+
+VERIFICATION: Only IDEA.md and APP_CONTEXT.md remain in artifacts
 ```
 
 ### PHASE 4: TRANSITION GUIDANCE (REQUIRED)
