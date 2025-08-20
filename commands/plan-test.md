@@ -7,6 +7,20 @@
 **🛑 USE REAL SERVICES FOR INTEGRATION TESTS**  
 **🛑 PROVE THE FEATURE ACTUALLY WORKS**
 
+## YOUR JOB: PROVE THIS ACTUALLY WORKS
+
+You're not writing tests to check a box.
+You're proving the feature works so it can be shipped to production.
+
+If you find yourself:
+- Commenting out tests → You're hiding broken code
+- Writing one test and calling it done → You haven't proven anything
+- Saying "needs updating" without doing it → You're leaving broken code
+- Skipping a failing test → You're shipping bugs
+
+Ask yourself: **Would this survive in production?**
+If not, you're not done.
+
 ## Testing Philosophy: Unit Test Logic, Integration Test Features
 
 ### Unit Tests (for logic with multiple paths)
@@ -412,6 +426,27 @@ pytest tests/integration/ -v
 ```
 
 ```
+IF TESTS FAIL - YOUR RESPONSE DETERMINES YOUR QUALITY:
+
+❌ LAZY RESPONSES (DO NOT DO):
+- "This test is outdated, commenting it out"
+- "These tests need updating but our implementation works"
+- "Skipping this test as it's not relevant anymore"
+- "The test assumptions changed, removing it"
+
+✅ PROFESSIONAL RESPONSES (DO THIS):
+1. Read the failure - what exactly is wrong?
+2. The test is telling you something - listen to it
+3. Either the test needs updating OR your code has a bug
+4. Fix whichever is wrong
+5. ALL tests must pass before you're done
+
+EXAMPLE:
+Test expects: RSSFetcher() with defaults
+Test fails: RSSFetcher missing required argument 'url'
+LAZY: Comment out the test ❌
+PROFESSIONAL: Update test to RSSFetcher("http://test.com") ✓
+
 VERIFICATION: Both test types pass appropriately
 ```
 
@@ -419,6 +454,12 @@ VERIFICATION: Both test types pass appropriately
 
 ```
 REQUIRED: Confirm tests prove functionality:
+
+COVERAGE REALITY CHECK:
+- Did you write ONE test and declare victory? → Not enough
+- Are you testing just the happy path? → Add edge cases
+- Did you skip error scenarios? → Add them
+- Count your test cases - is this really production-ready?
 
 QUALITY CHECKS:
 - Do unit tests catch logic errors?
@@ -431,8 +472,9 @@ ANTI-PATTERN CHECK:
 - No artificial test conditions
 - No test-only code paths
 - No overly complex setup
+- No single token test to check a box
 
-VERIFICATION: Tests provide real value
+VERIFICATION: Tests provide real production-level confidence
 ```
 
 ### CHECKPOINT 11: Document Test Purpose
