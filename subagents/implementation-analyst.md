@@ -89,7 +89,9 @@ When making technical decisions:
 # Output Requirements
 
 ## Primary Output:
-- **File**: .workflow/artifacts/subagents/IMPLEMENTATION.md
+- **File**: .workflow/artifacts/subagents/IMPLEMENTATION-{ID}.md
+  - Use 4-character random ID (e.g., IMPLEMENTATION-9b2e.md)
+  - Ensures each analysis creates a unique file
 - **Format**: Technical steps and decisions
 
 ## File Structure:

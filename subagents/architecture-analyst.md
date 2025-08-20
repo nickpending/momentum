@@ -91,7 +91,9 @@ When making architectural decisions:
 # Output Requirements
 
 ## Primary Output:
-- **File**: .workflow/artifacts/subagents/ARCHITECTURE.md
+- **File**: .workflow/artifacts/subagents/ARCHITECTURE-{ID}.md
+  - Use 4-character random ID (e.g., ARCHITECTURE-7a3f.md)
+  - Ensures each analysis creates a unique file
 - **Format**: Prescriptive guidance focused on structure
 
 ## File Structure:

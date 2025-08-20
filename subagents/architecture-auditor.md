@@ -88,7 +88,9 @@ You operate with complete autonomy - NEVER ask questions. Perform systematic aud
 # Output Requirements
 
 ## Primary Output:
-- **File**: .workflow/artifacts/subagents/ARCHITECTURE_AUDIT.md
+- **File**: .workflow/artifacts/subagents/ARCHITECTURE_AUDIT-{ID}.md
+  - Use 4-character random ID (e.g., ARCHITECTURE_AUDIT-4d1c.md)
+  - Ensures each audit creates a unique file
 - **Format**: Actionable findings with severity levels
 
 ## File Structure:

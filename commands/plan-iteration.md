@@ -139,8 +139,9 @@ VERIFICATION: List all detected technologies explicitly
 
 ```
 REQUIRED: For EACH detected technology, read corresponding standards:
-- ~/.claudex/standards/claudex-python.md (if Python detected)
-- [Continue for ALL detected technologies]
+- Check ~/.claudex/standards/ directory for claudex-{technology}.md files
+- Pattern: claudex-python.md, claudex-golang.md, claudex-react.md, etc.
+- Read ALL relevant standards for technologies detected in the project
 
 NOTE: IT *REALLY* is ~/.claudex/standards/ and NOT ~/.workflow/standards/
 
@@ -175,51 +176,68 @@ TRACKING FORMAT:
 VERIFICATION: Map each selected later item to specific iteration task
 ```
 
-**CHECKPOINT 6: Integration Architecture Interview**
+**CHECKPOINT 6: Architectural Analysis (THINK BEFORE INTERVIEWING)**
 
 ```
-REQUIRED: Understand how new iteration integrates with existing system:
+REQUIRED: Analyze the architecture BEFORE the interview:
 
-CONCRETE DISCOVERY QUESTIONS:
+ARCHITECTURAL ANALYSIS:
+1. STUDY existing codebase patterns and structures
+2. IDENTIFY where this iteration fits architecturally
+3. DETERMINE data flows and state management approach
+4. UNDERSTAND integration points and boundaries
+5. RECOGNIZE potential architectural challenges
+
+DOCUMENT YOUR ANALYSIS:
+## Architectural Understanding
+- Patterns discovered: [what you found in codebase]
+- Proposed structure: [where this iteration fits]
+- Integration points: [how components will connect]
+- Data flow: [how information moves through system]
+- Potential issues: [architectural challenges identified]
+
+PREPARE FOCUSED QUESTIONS:
+Based on your analysis, prepare ONLY essential questions for interview:
+- Architectural decisions that need validation
+- Integration points that are unclear
+- Conflicts between possible approaches
+
+VERIFICATION: You have a proposed architecture ready BEFORE interviewing
+```
+
+**CHECKPOINT 7: Consolidated Interview (VALIDATE YOUR ANALYSIS)**
+
+```
+REQUIRED: Interview to VALIDATE architecture and gather specifics:
+
+PRESENT YOUR ARCHITECTURAL ANALYSIS FIRST:
+"Based on my analysis, I understand [architecture]. I propose [approach]."
+
+THEN GATHER ESSENTIAL DETAILS:
+
+Integration Questions (if still unclear after analysis):
 - "What exact APIs/endpoints will this connect to?"
-- "Show me the WebSocket message format this will receive"
+- "Show me the message format this will receive"
 - "What database tables/queries does this need?"
-- "What's the exact curl command to test this?"
 
-CAPTURE DURING INTERVIEW:
-## Interview Discoveries - Integration
-- Existing endpoints: {exact paths and methods}
-- Message formats: {real JSON examples}
-- Database needs: {specific tables and queries}
-- Test commands: {exact curl/requests}
-
-VERIFICATION: Document all integration points with concrete examples
-```
-
-**CHECKPOINT 6: Feature Implementation Interview**
-
-```
-REQUIRED: Extract concrete implementation details:
-
-CONCRETE DISCOVERY QUESTIONS:
+Implementation Specifics:
 - "What specific user action triggers this feature?"
 - "What exact data do we receive/send?" (get JSON examples)
 - "Show me what success looks like" (get exact output)
-- "What's the simplest implementation that works?"
 - "What's the ONE test that proves this works?"
 
 CAPTURE DURING INTERVIEW:
-## Interview Discoveries - Implementation
-- User triggers: {exact button clicks/commands}
+## Interview Discoveries
+- Architecture validation: [confirmed/adjusted understanding]
+- Integration details: {exact endpoints, formats}
 - Data structures: {real JSON/models from discussion}
 - Success criteria: {exact expected output}
-- Core logic: {pseudocode or approach}
 - Test scenario: {the one integration test that matters}
 
-VERIFICATION: Have concrete examples for every feature
+VERIFICATION: Architecture validated, specifics gathered
 ```
 
-**CHECKPOINT 7: Task Decomposition Interview**
+**CHECKPOINT 8: Task Decomposition Interview**
 
 ```
 REQUIRED: Break features into <4 hour concrete tasks:
@@ -398,16 +416,16 @@ REQUIRED: Paste actual standards patterns in Tech Stack section:
 
 ## Tech Stack & Embedded Standards
 
-### Python Backend (FastAPI)
-[PASTE actual patterns from ~/.claudex/standards/python/modern-python.md]
+### Python Backend (if using Python)
+[PASTE actual patterns from ~/.claudex/standards/claudex-python.md]
 - **Package Management**: Use `uv` exclusively (NOT pip)
 - **Async patterns**: All endpoints use `async def`
 - **Testing**: pytest with real PostgreSQL
 [etc - actual content from standards file]
 
-### React Frontend
-[PASTE actual patterns from ~/.claudex/standards/react/modern-react.md]
-[etc for each technology]
+### React Frontend (if using React)
+[PASTE actual patterns from ~/.claudex/standards/claudex-react.md]
+[etc for each technology detected]
 
 VERIFICATION: Standards are embedded, not referenced
 ```

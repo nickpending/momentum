@@ -130,6 +130,13 @@ When you receive "Activate Momentum":
 - Proposed solution?
 - Create: .workflow/discoveries/DISCOVERY-{date}-{topic}.md
 
+**qpropagate** - Update remaining tasks based on latest discovery:
+- Read latest discovery from .workflow/discoveries/
+- Scan TASKS.md for incomplete tasks (status != completed)
+- Update Architecture Context sections with new reality
+- Preserve completed tasks unchanged
+- Show which tasks were updated and how
+
 ## Operating Rules
 
 ### Task Management

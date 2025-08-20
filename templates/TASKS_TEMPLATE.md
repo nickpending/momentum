@@ -26,27 +26,51 @@
 
 - **Status:** 📋 Not Started
 - **Files:** `[exact file paths to create/modify]`
+- **Architecture Context:**
+  - Patterns: [Existing patterns to follow, conventions to maintain]
+  - State: [Where state lives, how it flows, what changes]
+  - Data: [Schema, format, source of truth, validation rules]
+  - Integration: [APIs used, services called, events handled]
+  - Constraints: [Performance needs, security requirements, limits]
+- **Error Scenarios:** [Specific failures to handle gracefully]
 - **Deliverable:** [What this task produces - be specific]
 - **Demo:** `[exact command to verify this works]`
 - **Dependencies:** None OR [list task numbers like 1.2, 1.3]
+- **Validation:** [How to verify this works correctly]
 - **Notes:** [Any specific implementation notes]
 
 ### 1.2: [Specific Task Name]
 
 - **Status:** 📋 Not Started
 - **Files:** `[exact file paths]`
+- **Architecture Context:**
+  - Patterns: [Existing patterns to follow, conventions to maintain]
+  - State: [Where state lives, how it flows, what changes]
+  - Data: [Schema, format, source of truth, validation rules]
+  - Integration: [APIs used, services called, events handled]
+  - Constraints: [Performance needs, security requirements, limits]
+- **Error Scenarios:** [Specific failures to handle gracefully]
 - **Deliverable:** [What this produces]
 - **Demo:** `[verification command]`
 - **Dependencies:** 1.1
+- **Validation:** [How to verify this works correctly]
 - **Notes:** [Any notes]
 
 ### 1.3: [Specific Task Name]
 
 - **Status:** 📋 Not Started
 - **Files:** `[exact file paths]`
+- **Architecture Context:**
+  - Patterns: [Existing patterns to follow, conventions to maintain]
+  - State: [Where state lives, how it flows, what changes]
+  - Data: [Schema, format, source of truth, validation rules]
+  - Integration: [APIs used, services called, events handled]
+  - Constraints: [Performance needs, security requirements, limits]
+- **Error Scenarios:** [Specific failures to handle gracefully]
 - **Deliverable:** [What this produces]
 - **Demo:** `[verification command]`
 - **Dependencies:** 1.1, 1.2
+- **Validation:** [How to verify this works correctly]
 - **Notes:** [Any notes]
 
 ## Feature 2: [Full Feature Name from ITERATION.md]
@@ -55,18 +79,34 @@
 
 - **Status:** 📋 Not Started
 - **Files:** `[exact file paths]`
+- **Architecture Context:**
+  - Patterns: [Existing patterns to follow, conventions to maintain]
+  - State: [Where state lives, how it flows, what changes]
+  - Data: [Schema, format, source of truth, validation rules]
+  - Integration: [APIs used, services called, events handled]
+  - Constraints: [Performance needs, security requirements, limits]
+- **Error Scenarios:** [Specific failures to handle gracefully]
 - **Deliverable:** [What this produces]
 - **Demo:** `[verification command]`
 - **Dependencies:** None
+- **Validation:** [How to verify this works correctly]
 - **Notes:** [Any notes]
 
 ### 2.2: [Specific Task Name]
 
 - **Status:** 📋 Not Started
 - **Files:** `[exact file paths]`
+- **Architecture Context:**
+  - Patterns: [Existing patterns to follow, conventions to maintain]
+  - State: [Where state lives, how it flows, what changes]
+  - Data: [Schema, format, source of truth, validation rules]
+  - Integration: [APIs used, services called, events handled]
+  - Constraints: [Performance needs, security requirements, limits]
+- **Error Scenarios:** [Specific failures to handle gracefully]
 - **Deliverable:** [What this produces]
 - **Demo:** `[verification command]`
 - **Dependencies:** 2.1
+- **Validation:** [How to verify this works correctly]
 - **Notes:** [Any notes]
 
 ## Implementation Order

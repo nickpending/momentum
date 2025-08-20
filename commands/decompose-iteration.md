@@ -213,16 +213,42 @@ TASK ENTRY REQUIREMENTS:
 - Deliverable: One sentence describing what gets built
 - Demo: Actual command that proves it works
 - Dependencies: List task numbers or "None"
+- Architecture: Data model assumptions, integration points, error scenarios
 - Notes: Implementation hints without over-specifying
+
+ARCHITECTURE-HEAVY TASK TEMPLATE:
+### X.Y: [Action] [Target] [Purpose]
+- **Status:** 📋 Not Started
+- **Files:** `exact/file/paths.ts`
+- **Architecture Context:**
+  - Patterns: [Existing patterns to follow, conventions to maintain]
+  - State: [Where state lives, how it flows, what changes]
+  - Data: [Schema, format, source of truth, validation rules]
+  - Integration: [APIs used, services called, events handled]
+  - Constraints: [Performance needs, security requirements, limits]
+- **Error Scenarios:** [Specific failures to handle gracefully]
+- **Deliverable:** [One sentence describing what gets built]
+- **Demo:** `command that proves it works`
+- **Dependencies:** X.X, X.X or "None"
+- **Validation:** [How to verify this works correctly]
+- **Notes:** [Implementation hints without over-specifying]
 
 EXAMPLE TASK ENTRY:
 ### 2.3: Connect room change events to audio manager
 - **Status:** 📋 Not Started
 - **Files:** `src/hooks/useAudioManager.ts`
+- **Architecture Context:**
+  - Patterns: Follow existing WebSocket subscription pattern from useGameState hook
+  - State: Room state in Redux store, audio state local to hook
+  - Data: WebSocket emits {type: 'game_update', room: {id, name, ambience_url}}
+  - Integration: WebSocket service (ws.on), AudioManager singleton (.stop/.play)
+  - Constraints: Audio must crossfade within 500ms, handle Safari autoplay policy
+- **Error Scenarios:** Missing ambience_url (use silence), network failure (keep playing current), audio load failure (retry 3x with backoff)
 - **Deliverable:** Audio manager stops current sound and plays new room's ambient when player moves
 - **Demo:** `npm test -- useAudioManager.test.ts -t "changes audio on room transition"`
 - **Dependencies:** 2.1, 2.2
-- **Notes:** Subscribe to WebSocket 'game_update' event, check if room changed, call stop() then play(newRoomSound)
+- **Validation:** Move between rooms in dev mode, verify audio transitions smoothly without gaps
+- **Notes:** Subscribe to 'game_update', compare old vs new room_id, handle transitions
 
 LOCATION: Create in .workflow/artifacts/
 VERIFICATION: TASKS.md follows template structure exactly
