@@ -1,46 +1,67 @@
 # Validate task completion with evidence of working functionality
 
-## ⚠️ CRITICAL: FINAL TASK VALIDATION ⚠️
+## ⚠️ CRITICAL: MARK TASK COMPLETE AND DOCUMENT ⚠️
 
-**🛑 QUICK SANITY CHECK - SOFTWARE STILL WORKS**  
-**🛑 MARK TASK COMPLETE IN TASKS.MD**  
+**🛑 NO REDUNDANT DEMOS - ALREADY PROVEN TO WORK**  
+**🛑 CAPTURE WHAT ACTUALLY HAPPENED IN TASKS.MD**  
 **🛑 UPDATE PROGRESS AND SUGGEST NEXT TASK**
 
 ## STREAMLINED COMPLETION SEQUENCE
 
-### PHASE 1: QUICK VALIDATION (REQUIRED)
+### PHASE 1: LOAD AND VERIFY (REQUIRED)
 
-**CHECKPOINT 1: Sanity Check**
-
-```
-REQUIRED: Quick verification that implementation still works:
-- READ TASKS.md to confirm task status and requirements
-- RUN one demo command from /plan-task to verify software still functions
-- CONFIRM no obvious regressions introduced
-
-QUICK VALIDATION:
-- Does the main demo command still work?
-- Is the software behaving as expected?
-- Any obvious issues that need fixing first?
-
-VERIFICATION: Basic functionality confirmed working
-```
-
-### PHASE 2: MARK COMPLETE (REQUIRED)
-
-**CHECKPOINT 2: Update Task Status**
+**CHECKPOINT 1: Load Task Context**
 
 ```
-REQUIRED: Mark task complete in TASKS.md:
-- UPDATE task status from 📋 Not Started to ✅ Complete
+REQUIRED: Understand what was done:
+- READ TASKS.md to find the task
+- VERIFY task is currently 🔄 In Progress
+- CHECK that tests are passing (if any were written)
+- CONFIRM linting/quality checks still pass
+
+DO NOT:
+- Re-run demos that already worked
+- Re-test functionality already proven
+- Repeat validation already done
+
+VERIFICATION: Task ready to be marked complete
+```
+
+### PHASE 2: MARK COMPLETE WITH IMPLEMENTATION NOTES (REQUIRED)
+
+**CHECKPOINT 2: Update Task Status and Document What Happened**
+
+```
+REQUIRED: Mark task complete and capture implementation reality:
+- UPDATE task status from 🔄 In Progress to ✅ Complete
 - ADD completion timestamp
-- PRESERVE any key decisions or lessons learned during implementation
+- DOCUMENT what actually happened during implementation
+
+CAPTURE THESE DETAILS IN NOTES:
+- **Deviations:** Did implementation differ from plan? How?
+- **Discoveries:** What did you learn that wasn't obvious before?
+- **Gotchas:** Any tricky parts future devs should know?
+- **Dependencies:** Any new dependencies or integrations added?
+- **Decisions:** Key choices made and why
+- **Files:** Any files created/modified beyond what was planned
 
 TASK UPDATE FORMAT:
 - **Status:** ✅ Complete (YYYY-MM-DD)
-- **Notes:** [brief summary of key decisions or learnings if significant]
+- **Implementation Notes:** 
+  - [What actually got built vs planned]
+  - [Any surprises or discoveries]
+  - [Key decisions and tradeoffs]
+  - [Files touched: actual list if different from plan]
 
-VERIFICATION: Task properly marked complete in TASKS.md
+EXAMPLE:
+- **Status:** ✅ Complete (2024-01-15)
+- **Implementation Notes:**
+  - Added retry logic to handle flaky WebSocket (not in original plan)
+  - Discovered existing auth middleware, reused instead of creating new
+  - Chose localStorage over sessionStorage for persistence across tabs
+  - Files: Also modified middleware/auth.ts to expose token refresh
+
+VERIFICATION: Task marked complete with useful implementation details
 ```
 
 ### PHASE 3: PROGRESS REPORT (REQUIRED)
