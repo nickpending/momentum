@@ -13,7 +13,7 @@
 ### Build-First Development
 - Implementation before tests
 - Focus on working demos
-- Demo commands serve as manual smoke tests
+- Demo commands prove functionality works
 - Real integration throughout
 
 ### Evidence Collection
@@ -256,7 +256,7 @@ SUCCESS DEMONSTRATION:
 - Exact curl/CLI command that shows it working
 - Expected output/response
 - Integration verification steps
-- One smoke test that will prove completion
+- One command that will prove completion
 
 DEMO SCENARIOS:
 - Exact commands to run
@@ -440,7 +440,7 @@ REQUIRED: Summarize implementation completion:
 IMPLEMENTATION COMPLETE:
 ✅ [Single task / Grouped tasks X.Y-X.Z] implemented
 ✅ Working software built and demonstrated
-✅ Demo commands verified (manual smoke tests pass)
+✅ Demo commands verified (functionality confirmed)
 ✅ Integration with existing system confirmed
 ✅ Standards compliance applied
 
@@ -481,7 +481,7 @@ VERIFICATION: Implementation phase complete, ready for testing/completion
 **If implementation blocked:** Simplify approach, focus on core  
 **If integration fails:** Check services running, verify APIs  
 **If standards missed:** Refactor minimally to comply  
-**If demo doesn't work:** Fix functionality - demo commands are your smoke tests  
+**If demo doesn't work:** Fix functionality - demo commands prove it works  
 **If context overflows:** Save state and continue with restored context
 
 ## SUCCESS CRITERIA
@@ -491,7 +491,7 @@ Implementation phase completed when:
 - [ ] All related tasks completed together (if grouped)
 - [ ] Core functionality works and can be demoed
 - [ ] Integration with existing system verified
-- [ ] Demo commands serve as working smoke tests
+- [ ] Demo commands serve as working verification
 - [ ] Standards applied appropriately
 - [ ] Implementation summary provided
 - [ ] Clear next steps identified (/plan-test or /complete-task)
