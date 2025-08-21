@@ -7,6 +7,8 @@
 - `$WORKFLOW_TEMPLATES` - Template files location
 - Template location: `$WORKFLOW_TEMPLATES/IDEA_TEMPLATE.md`
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
 
 **🛑 STOP AFTER INTERVIEW. DO NOT GENERATE ARTIFACTS.**

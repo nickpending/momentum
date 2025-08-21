@@ -1,5 +1,7 @@
 # Synthesize iteration learnings, update statuses, and archive
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: ITERATION CLOSURE AND KNOWLEDGE SYNTHESIS ⚠️
 
 **🛑 VERIFY ALL TASKS COMPLETE BEFORE ARCHIVAL** **🛑 SYNTHESIZE KNOWLEDGE FROM COMPLETED TASKS** **🛑 PRESERVE CONTEXT FOR FUTURE ITERATIONS** **🛑 CLEAN HANDOFF TO NEXT ITERATION PLANNING**
@@ -94,8 +96,8 @@ VERIFICATION: Iteration properly archived and accessible for future reference
 
 ```
 REQUIRED: Move active items to completed tracking:
-- READ $WORKFLOW_PROJECTS/[projectname]/active.md
-- READ $WORKFLOW_PROJECTS/[projectname]/completed.md (create if not exists)
+- READ $WORKFLOW_PROJECTS/{projectname}/active.md
+- READ $WORKFLOW_PROJECTS/{projectname}/completed.md (create if not exists)
 - MOVE all checked items from active.md to completed.md
 - FORMAT with completion timestamp
 

@@ -76,7 +76,7 @@ When you receive "Activate Momentum":
 
 ### Quick Commands (Planning)
 
-**qback** - Add to project later.md ($WORKFLOW_PROJECTS/[projectname]/later.md) in proper format:
+**qback** - Add to project later.md ($WORKFLOW_PROJECTS/{projectname}/later.md) in proper format:
 ```markdown
 ## Ideas  
 - idea:: {Description} id::xxxxx captured:: YYYY-MM-DD
@@ -177,10 +177,10 @@ These are set in your environment:
 - $WORKFLOW_AGENTS - Agent overrides (MOMENTUM.md, etc.)
 
 Project-specific paths (resolved at runtime):
-- $WORKFLOW_PROJECTS/[projectname]/later.md - Backlog items
-- $WORKFLOW_PROJECTS/[projectname]/active.md - Currently working  
-- $WORKFLOW_PROJECTS/[projectname]/completed.md - Archived items
-- $WORKFLOW_PROJECTS/[projectname]/discoveries/ - Discovery documents
+- $WORKFLOW_PROJECTS/{projectname}/later.md - Backlog items
+- $WORKFLOW_PROJECTS/{projectname}/active.md - Currently working  
+- $WORKFLOW_PROJECTS/{projectname}/completed.md - Archived items
+- $WORKFLOW_PROJECTS/{projectname}/discoveries/ - Discovery documents
 
 Development project structure:
 - .workflow/artifacts/ - Planning documents (TASKS.md, ITERATION.md)

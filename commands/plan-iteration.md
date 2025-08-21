@@ -7,6 +7,8 @@
 - `$WORKFLOW_HOME` - Workflow system location
 - These are available for direct use in file paths
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
 
 **🛑 STOP AFTER INTERVIEW. DO NOT GENERATE ARTIFACTS.**  
@@ -58,8 +60,8 @@ REQUIRED: Read and acknowledge ALL foundation files:
 - .workflow/resources/IMPLEMENTATION_GUIDELINES.md
 - .workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
 - .workflow/artifacts/APP_CONTEXT.md (if exists) - Current system understanding
-- $WORKFLOW_PROJECTS/[projectname]/later.md (if exists) - Later items to consider
-- $WORKFLOW_PROJECTS/[projectname]/designs/ (if exists) - Design artifacts and decisions
+- $WORKFLOW_PROJECTS/{projectname}/later.md (if exists) - Later items to consider
+- $WORKFLOW_PROJECTS/{projectname}/designs/ (if exists) - Design artifacts and decisions
 - CLAUDE.md (if exists) - Development context and patterns
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
@@ -309,7 +311,7 @@ Please respond with YES or NO.
 IF items were selected from later.md:
 
 MOVE TO ACTIVE:
-1. READ $WORKFLOW_PROJECTS/[projectname]/active.md (create if not exists)
+1. READ $WORKFLOW_PROJECTS/{projectname}/active.md (create if not exists)
 2. ADD selected items to appropriate section:
    - Critical bugs → Today section
    - Iteration tasks → This Week section
