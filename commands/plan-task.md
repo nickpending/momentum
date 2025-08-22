@@ -147,6 +147,37 @@ FAILURE MODE: If task is too complex or integration unclear, STOP and clarify ar
 VERIFICATION: Confirm task follows composition-first principles and integration requirements
 ```
 
+**CHECKPOINT 2.5: Initial Risk Assessment (BEFORE Building)**
+
+```
+PROACTIVE RISK IDENTIFICATION - Guide your implementation focus:
+
+Based on this task, identify potential risks BEFORE building:
+
+HIGH RISK AREAS (need careful implementation):
+□ [Component] - Could impact [what user experience]
+□ [Data flow] - Could cause [what problem]
+□ [State change] - Could break [what invariant]
+Examples:
+- Player progress (XP/items) - Could lose user data
+- Concurrent operations - Could duplicate/corrupt
+- Money calculations - Could break economy
+
+LOW RISK AREAS (can keep simple):
+□ [Component] - Only affects [minor thing]
+□ [Display] - Just cosmetic
+Examples:
+- Message formatting - Just looks wrong
+- Animation timing - Minor visual issue
+
+This assessment will:
+1. Focus your attention during implementation
+2. Guide where to be extra careful
+3. Be validated after building (Checkpoint 13)
+
+VERIFICATION: Document initial risk assessment to guide implementation
+```
+
 ### PHASE 2: IMPLEMENTATION PLANNING
 
 **CHECKPOINT 3: Architectural Complexity Assessment**
@@ -456,6 +487,65 @@ READY FOR NEXT PHASE:
 VERIFICATION: Implementation phase complete, ready for testing/completion
 ```
 
+**CHECKPOINT 13: Risk Assessment Validation & Discovered Invariants**
+
+```
+CRITICAL: Compare initial assessment (Checkpoint 2.5) with actual discoveries
+
+RISK ASSESSMENT VALIDATION:
+Compare your initial risk assessment to what you actually found:
+
+CONFIRMED RISKS (guessed right):
+□ [Component] - Was HIGH risk, confirmed by [what happened]
+□ [Component] - Was LOW risk, stayed simple
+
+UPGRADED RISKS (more dangerous than expected):
+□ [Component] - Thought LOW, actually HIGH because [discovery]
+Example: "Message formatting" - Broke screen readers (accessibility)
+
+DOWNGRADED RISKS (simpler than expected):
+□ [Component] - Thought HIGH, actually simple because [reason]
+
+NEW DISCOVERIES (didn't anticipate):
+□ [Component] - Discovered [new risk/invariant] during building
+Example: "Corpse creation" - Must be atomic or items duplicate
+
+INVARIANTS DISCOVERED (properties that must ALWAYS hold):
+□ [Invariant]: Found when [what broke/almost broke]
+□ [Invariant]: Critical because [what it prevents]
+Example: "XP >= 0" - Found when negative XP crashed UI
+
+FAILURE MODES ENCOUNTERED:
+□ [Failure]: System must [handle gracefully]  
+Example: "DB disconnect during save" - Must queue or retry cleanly
+
+FINAL RISK ASSESSMENT:
+HIGH RISK (could ruin user's day if broken):
+- [Component]: Because [impact] - Status: [Confirmed/Upgraded/New]
+Example: "Item duplication" - Breaks game economy (Confirmed HIGH)
+
+LOW RISK (cosmetic/minor):
+- [Component]: Only affects [minor thing] - Status: [Confirmed/Downgraded]
+Example: "Animation timing" - Just visual (Confirmed LOW)
+
+UPDATE .workflow/artifacts/TASKS.md:
+Add these discoveries to the task entry:
+
+### Discovered During Implementation:
+**Invariants:**
+- [List invariants found]
+
+**Failure Modes:**
+- [List failure scenarios encountered]
+
+**Risk Assessment:**
+- HIGH: [Components that could ruin user's day]
+- LOW: [Components that don't matter]
+
+This captures real implementation insights for testing.
+VERIFICATION: TASKS.md updated with discovered invariants and risks
+```
+
 ## CRITICAL GATES & ENFORCEMENT
 
 ### Standards Compliance Gates
@@ -488,11 +578,13 @@ VERIFICATION: Implementation phase complete, ready for testing/completion
 
 Implementation phase completed when:
 - [ ] Grouping decision made FIRST with clear rationale
+- [ ] Initial risk assessment documented (Checkpoint 2.5)
 - [ ] All related tasks completed together (if grouped)
 - [ ] Core functionality works and can be demoed
 - [ ] Integration with existing system verified
 - [ ] Demo commands serve as working verification
 - [ ] Standards applied appropriately
+- [ ] Risk assessment validated with discoveries (Checkpoint 13)
 - [ ] Implementation summary provided
 - [ ] Clear next steps identified (/plan-test or /complete-task)
 - [ ] YAGNI principle maintained throughout

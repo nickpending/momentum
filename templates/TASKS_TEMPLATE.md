@@ -39,6 +39,15 @@
 - **Validation:** [How to verify this works correctly]
 - **Notes:** [Any specific implementation notes]
 
+**Discovered During Implementation:**
+- **Invariants:**
+  - [None discovered yet]
+- **Failure Modes:**
+  - [None encountered yet]
+- **Risk Assessment:**
+  - HIGH: [None identified yet]
+  - LOW: [None identified yet]
+
 ### 1.2: [Specific Task Name]
 
 - **Status:** 📋 Not Started
@@ -129,6 +138,20 @@ Suggested sequence based on dependencies:
 ## Notes
 
 [Any general notes about the task breakdown, special considerations, or warnings]
+
+### Example of Discovered During Implementation (filled in after /plan-task):
+```
+**Discovered During Implementation:**
+- **Invariants:**
+  - "XP >= 0": Found when negative XP crashed UI, prevents progression breaking
+  - "Items unique": Found when duplication corrupted inventory, prevents economy break
+- **Failure Modes:**
+  - "DB disconnect during save": Must queue or retry cleanly, not lose data
+  - "Concurrent deaths": Must handle atomically, prevent duplication
+- **Risk Assessment:**
+  - HIGH: Item duplication (breaks game economy), XP calculation (breaks progression)
+  - LOW: Message formatting (just looks wrong), Animation timing (cosmetic)
+```
 
 ---
 
