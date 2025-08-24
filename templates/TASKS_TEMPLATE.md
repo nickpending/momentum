@@ -40,13 +40,15 @@
 - **Notes:** [Any specific implementation notes]
 
 **Discovered During Implementation:**
-- **Invariants:**
+- **Invariants (from iteration planning):**
+  - [Mapped invariants from ITERATION.md that this task could affect]
+- **Additional Invariants (found during building):**
   - [None discovered yet]
 - **Failure Modes:**
   - [None encountered yet]
 - **Risk Assessment:**
-  - HIGH: [None identified yet]
-  - LOW: [None identified yet]
+  - HIGH: [If this task affects HIGH risk areas]
+  - LOW: [If this task is LOW risk]
 
 ### 1.2: [Specific Task Name]
 
@@ -139,12 +141,15 @@ Suggested sequence based on dependencies:
 
 [Any general notes about the task breakdown, special considerations, or warnings]
 
-### Example of Discovered During Implementation (filled in after /plan-task):
+### Example of Discovered During Implementation (filled in during /decompose-iteration and /plan-task):
 ```
 **Discovered During Implementation:**
-- **Invariants:**
-  - "XP >= 0": Found when negative XP crashed UI, prevents progression breaking
-  - "Items unique": Found when duplication corrupted inventory, prevents economy break
+- **Invariants (from iteration planning):**
+  - "XP >= 0": Prevents progression breaking (mapped during decompose)
+  - "Items unique": Prevents economy break (mapped during decompose)
+- **Additional Invariants (found during building):**
+  - "Death animation completes": Found when incomplete animation broke UI state
+  - "Respawn location valid": Found when invalid coords crashed client
 - **Failure Modes:**
   - "DB disconnect during save": Must queue or retry cleanly, not lose data
   - "Concurrent deaths": Must handle atomically, prevent duplication

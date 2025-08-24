@@ -35,6 +35,37 @@
 - **Data Flow**: [how_data_moves_through_new_and_existing_components]
 - **Service Dependencies**: [what_needs_to_be_running_for_this_to_work]
 
+## Invariant Analysis (IDD)
+
+### System Invariants (Must Never Break)
+- **[Property]**: [Why this matters to users] - [Impact if violated]
+- **[Property]**: [Why this matters to users] - [Impact if violated]
+
+Examples:
+- **Player progress never lost**: Core user trust - Would lose users permanently
+- **Inventory count preserved**: Game economy integrity - Would break virtual goods system
+
+### Behavioral Bounds (Acceptable Variance)
+- **[Behavior]**: [Acceptable range] - [Why this range is okay]
+
+Examples:
+- **Response time**: < 2 seconds 95% of time - User experience threshold
+- **AI appropriateness**: 85% acceptable responses - Humans expect some variation
+
+### Risk Assessment
+**HIGH RISK (could ruin user's day):**
+- [Component]: [Specific user impact if broken]
+
+**LOW RISK (cosmetic/minor):**
+- [Component]: [Minor impact only]
+
+### Expected Failures (Inevitable in Production)
+- **[Failure type]**: System handles by [graceful degradation approach]
+
+Examples:
+- **Database disconnection**: Queue operations, retry with backoff
+- **Network timeout**: Show cached data, retry in background
+
 ## Tasks
 
 ### 1. [specific_component_feature_name] 📋 Planned

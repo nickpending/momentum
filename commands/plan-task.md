@@ -95,8 +95,8 @@ IF GROUPED TASKS:
 - NOTE which files will be touched multiple times
 
 ALSO REQUIRED:
-- READ .workflow/artifacts/ITERATION.md (embedded standards)
-- READ .workflow/artifacts/APP_CONTEXT.md (integration patterns)
+- READ {project-root}/.workflow/artifacts/ITERATION.md (embedded standards)
+- READ {project-root}/.workflow/artifacts/APP_CONTEXT.md (integration patterns)
 - REVIEW existing codebase for similar patterns
 
 SYSTEM INTEGRATION CONTEXT:
@@ -198,7 +198,7 @@ SUBAGENT DECISION:
 - Major systems: Use both agents in parallel
 
 Check for Existing Subagent Artifacts:
-- SCAN .workflow/artifacts/ directory for relevant artifacts
+- SCAN {project-root}/.workflow/artifacts/ directory for relevant artifacts
 - READ any existing ARCHITECTURE.md, IMPLEMENTATION.md, or task-specific files
 - INCORPORATE existing insights before deciding if new analysis needed
 
@@ -210,8 +210,8 @@ IF subagents needed:
         prompt="Create technical plan for task(s) X.Y-X.Z...")
   
   AFTER COMPLETION:
-  - READ .workflow/artifacts/ARCHITECTURE.md for structural guidance
-  - READ .workflow/artifacts/IMPLEMENTATION.md for technical approach
+  - READ {project-root}/.workflow/artifacts/ARCHITECTURE.md for structural guidance
+  - READ {project-root}/.workflow/artifacts/IMPLEMENTATION.md for technical approach
   - INCORPORATE insights into implementation plan
 
 DECISION: [Use subagents / Skip subagents] because [specific reasoning]
@@ -326,8 +326,8 @@ Standards Applied: [Embedded patterns to be used]
 Services Required: [What existing services need to be running]
 
 Key Insights (if subagents used):
-- Architecture: [key decisions from .workflow/artifacts/ARCHITECTURE.md]
-- Implementation: [key approaches from .workflow/artifacts/IMPLEMENTATION.md]
+- Architecture: [key decisions from {project-root}/.workflow/artifacts/ARCHITECTURE.md]
+- Implementation: [key approaches from {project-root}/.workflow/artifacts/IMPLEMENTATION.md]
 
 Ready to begin implementation?
 
@@ -528,8 +528,10 @@ LOW RISK (cosmetic/minor):
 - [Component]: Only affects [minor thing] - Status: [Confirmed/Downgraded]
 Example: "Animation timing" - Just visual (Confirmed LOW)
 
-UPDATE .workflow/artifacts/TASKS.md:
-Add these discoveries to the task entry:
+⚠️ MANDATORY: UPDATE {project-root}/.workflow/artifacts/TASKS.md BEFORE PROCEEDING ⚠️
+
+You MUST update {project-root}/.workflow/artifacts/TASKS.md with discoveries.
+Use Edit or MultiEdit tool to add these to the task entry:
 
 ### Discovered During Implementation:
 **Invariants:**
@@ -543,7 +545,7 @@ Add these discoveries to the task entry:
 - LOW: [Components that don't matter]
 
 This captures real implementation insights for testing.
-VERIFICATION: TASKS.md updated with discovered invariants and risks
+DO NOT PROCEED until you've updated {project-root}/.workflow/artifacts/TASKS.md with Edit/MultiEdit
 ```
 
 ## CRITICAL GATES & ENFORCEMENT
@@ -562,7 +564,7 @@ VERIFICATION: TASKS.md updated with discovered invariants and risks
 
 ### Context Overflow Protection
 - Auto-save state if context exceeds 80% using /save-state
-- State saved to .workflow/state/task-N-timestamp.md
+- State saved to {project-root}/.workflow/state/task-N-timestamp.md
 - Continue with /restore-state when context restored
 - Minimal state capture for resumption
 

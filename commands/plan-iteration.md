@@ -56,13 +56,12 @@
 
 ```
 REQUIRED: Read and acknowledge ALL foundation files:
-- .workflow/resources/DESIGN_PRINCIPLES.md
-- .workflow/resources/IMPLEMENTATION_GUIDELINES.md
-- .workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
-- .workflow/artifacts/APP_CONTEXT.md (if exists) - Current system understanding
+- {project-root}/.workflow/resources/DESIGN_PRINCIPLES.md
+- {project-root}/.workflow/resources/IMPLEMENTATION_GUIDELINES.md
+- {project-root}/.workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
+- {project-root}/.workflow/artifacts/APP_CONTEXT.md (if exists) - Current system understanding
 - $WORKFLOW_PROJECTS/{projectname}/later.md (if exists) - Later items to consider
 - $WORKFLOW_PROJECTS/{projectname}/designs/ (if exists) - Design artifacts and decisions
-- CLAUDE.md (if exists) - Development context and patterns
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
 ```
@@ -105,7 +104,7 @@ VERIFICATION: Provide smart recommendations based on later.md analysis
 
 ```
 REQUIRED: Analyze current system architecture and existing components:
-- SCAN .workflow/archives/ directory for completed iterations
+- SCAN {project-root}/.workflow/archives/ directory for completed iterations
 - IDENTIFY what services/APIs/components exist from previous work
 - ASSESS current system architecture and data flows
 - ANALYZE existing interfaces and integration points
@@ -177,10 +176,10 @@ TRACKING FORMAT:
 VERIFICATION: Map each selected later item to specific iteration task
 ```
 
-**CHECKPOINT 6: Architectural Analysis (THINK BEFORE INTERVIEWING)**
+**CHECKPOINT 6: Architectural & Invariant Analysis (THINK BEFORE INTERVIEWING)**
 
 ```
-REQUIRED: Analyze the architecture BEFORE the interview:
+REQUIRED: Analyze the architecture AND invariants BEFORE the interview:
 
 ARCHITECTURAL ANALYSIS:
 1. STUDY existing codebase patterns and structures
@@ -188,6 +187,13 @@ ARCHITECTURAL ANALYSIS:
 3. DETERMINE data flows and state management approach
 4. UNDERSTAND integration points and boundaries
 5. RECOGNIZE potential architectural challenges
+
+INVARIANT SKETCHING (NEW):
+6. IDENTIFY what properties this feature must preserve
+7. SKETCH system invariants (what must NEVER break)
+8. IDENTIFY behavioral bounds (acceptable variance)
+9. MAP risk areas by user impact
+10. ANTICIPATE inevitable failure modes
 
 DOCUMENT YOUR ANALYSIS:
 ## Architectural Understanding
@@ -197,13 +203,21 @@ DOCUMENT YOUR ANALYSIS:
 - Data flow: [how information moves through system]
 - Potential issues: [architectural challenges identified]
 
+## Invariant Sketch (NEW)
+- System invariants: [properties that must always hold]
+- Behavioral bounds: [acceptable variance ranges]
+- High risk areas: [could ruin user's day]
+- Low risk areas: [cosmetic/minor impact]
+- Expected failures: [what will inevitably happen]
+
 PREPARE FOCUSED QUESTIONS:
 Based on your analysis, prepare ONLY essential questions for interview:
 - Architectural decisions that need validation
 - Integration points that are unclear
 - Conflicts between possible approaches
+- Invariant validation questions
 
-VERIFICATION: You have a proposed architecture ready BEFORE interviewing
+VERIFICATION: You have a proposed architecture AND invariant sketch ready BEFORE interviewing
 ```
 
 **CHECKPOINT 7: Consolidated Interview (VALIDATE YOUR ANALYSIS)**
@@ -211,10 +225,17 @@ VERIFICATION: You have a proposed architecture ready BEFORE interviewing
 ```
 REQUIRED: Interview to VALIDATE architecture and gather specifics:
 
-PRESENT YOUR ARCHITECTURAL ANALYSIS FIRST:
-"Based on my analysis, I understand [architecture]. I propose [approach]."
+PRESENT BOTH ARCHITECTURAL AND INVARIANT ANALYSIS:
+"Based on my analysis, I understand [architecture]. I propose [approach].
+Here are the properties I think must be preserved: [invariants]
+Here's what I think could go wrong: [risks]"
 
-THEN GATHER ESSENTIAL DETAILS:
+THEN VALIDATE WITH USER:
+Invariant Validation:
+- "What must NEVER break in this feature?"
+- "What would ruin a user's day if it failed?"
+- "What data loss is acceptable vs unacceptable?"
+- "What failure modes have you seen before?"
 
 Integration Questions (if still unclear after analysis):
 - "What exact APIs/endpoints will this connect to?"
@@ -230,12 +251,13 @@ Implementation Specifics:
 CAPTURE DURING INTERVIEW:
 ## Interview Discoveries
 - Architecture validation: [confirmed/adjusted understanding]
+- Invariant validation: [confirmed/refined invariants and risks]
 - Integration details: {exact endpoints, formats}
 - Data structures: {real JSON/models from discussion}
 - Success criteria: {exact expected output}
 - Test scenario: {the one integration test that matters}
 
-VERIFICATION: Architecture validated, specifics gathered
+VERIFICATION: Architecture validated, invariants refined, specifics gathered
 ```
 
 **CHECKPOINT 8: Task Decomposition Interview**
@@ -284,6 +306,8 @@ Interview Discoveries Captured:
 - Data structures: [key formats]
 - Integration points: [key connections]
 - Test scenarios: [key validations]
+- Invariant refinements: [confirmed/discovered properties]
+- Risk assessment: [high/low risk areas identified]
 
 Selected from later.md: [count] items
 - Bugs to fix: [count]
@@ -337,9 +361,9 @@ VERIFICATION: Confirm items moved to active.md and removed from later.md
 
 ```
 REQUIRED: Update IDEA.md with iteration progress:
-- DETERMINE next iteration number from .workflow/archives/
+- DETERMINE next iteration number from {project-root}/.workflow/archives/
 - MARK selected features as 🔄 In Progress (iteration-N)
-- UPDATE .workflow/artifacts/IDEA.md with new feature statuses
+- UPDATE {project-root}/.workflow/artifacts/IDEA.md with new feature statuses
 
 VERIFICATION: Confirm feature status updates applied
 ```
@@ -348,7 +372,7 @@ VERIFICATION: Confirm feature status updates applied
 
 ```
 REQUIRED: Create ITERATION.md preserving ALL interview discoveries:
-- LOAD .workflow/templates/ITERATION_TEMPLATE.md
+- LOAD {project-root}/.workflow/templates/ITERATION_TEMPLATE.md
 - POPULATE with concrete details from interview discoveries
 - EMBED all loaded tech standards directly
 - PRESERVE exact data structures, commands, examples

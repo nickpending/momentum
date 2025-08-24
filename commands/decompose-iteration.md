@@ -22,7 +22,7 @@
 
 ```
 REQUIRED: Load and analyze iteration context:
-- READ .workflow/artifacts/ITERATION.md for all features
+- READ {project-root}/.workflow/artifacts/ITERATION.md for all features
 - EXTRACT each numbered "task" (these are actually features)
 - IDENTIFY embedded standards and tech patterns
 - NOTE success criteria for each feature
@@ -131,6 +131,37 @@ GOOD TASKS:
 VERIFICATION: Each feature becomes 5-15 specific tasks (NO test tasks)
 ```
 
+**CHECKPOINT 5.5: Map Invariants to Tasks**
+
+```
+REQUIRED: Connect iteration-level invariants to specific tasks:
+
+1. READ Invariant Analysis section from ITERATION.md
+2. FOR EACH TASK identify which invariants it could affect
+3. MAP system invariants, behavioral bounds, and risk areas to relevant tasks
+4. PREPARE pre-populated invariant context for each task
+
+MAPPING PROCESS:
+- Which tasks modify data that invariants protect?
+- Which tasks handle user-facing behaviors with bounds?
+- Which tasks implement HIGH risk components?
+- Which tasks are LOW risk and can skip most invariants?
+
+EXAMPLE MAPPING:
+From ITERATION.md invariants:
+- "XP >= 0": Never goes negative
+- "Player can always resume": No permanent failure states  
+- "Audio transitions smoothly": < 500ms crossfade
+
+Task Mapping:
+- 1.2 (XP loss calculation): Gets "XP >= 0" invariant
+- 1.3 (respawn endpoint): Gets "Player can always resume" invariant  
+- 2.4 (audio transitions): Gets "Audio transitions smoothly" invariant
+- 3.1 (UI styling): Gets no invariants (LOW risk)
+
+VERIFICATION: Each HIGH risk task has relevant invariants mapped
+```
+
 ### PHASE 4: MANDATORY INTERVIEW TO UNCOVER ASSUMPTIONS
 
 **🛑 DO NOT PROCEED PAST THIS STEP WITHOUT ANSWERS**
@@ -210,7 +241,7 @@ Please respond with YES or NO.
 ```
 REQUIRED: Create TASKS.md in project root using template:
 
-TEMPLATE LOCATION: .workflow/templates/TASKS_TEMPLATE.md
+TEMPLATE LOCATION: {project-root}/.workflow/templates/TASKS_TEMPLATE.md
 - USE template structure exactly
 - POPULATE all fields for each task
 - ENSURE every task has complete information
@@ -222,6 +253,7 @@ TASK ENTRY REQUIREMENTS:
 - Demo: Actual command that proves it works
 - Dependencies: List task numbers or "None"
 - Architecture: Data model assumptions, integration points, error scenarios
+- Invariants: Pre-populate with mapped invariants from ITERATION.md
 - Notes: Implementation hints without over-specifying
 
 ARCHITECTURE-HEAVY TASK TEMPLATE:
@@ -241,6 +273,17 @@ ARCHITECTURE-HEAVY TASK TEMPLATE:
 - **Validation:** [How to verify this works correctly]
 - **Notes:** [Implementation hints without over-specifying]
 
+**Discovered During Implementation:**
+- **Invariants (from iteration planning):**
+  - [Mapped invariants from ITERATION.md that this task could affect]
+- **Additional Invariants (found during building):**
+  - [None discovered yet]
+- **Failure Modes:**
+  - [None encountered yet]
+- **Risk Assessment:**
+  - HIGH: [If this task affects HIGH risk areas]
+  - LOW: [If this task is LOW risk]
+
 EXAMPLE TASK ENTRY:
 ### 2.3: Connect room change events to audio manager
 - **Status:** 📋 Not Started
@@ -258,7 +301,18 @@ EXAMPLE TASK ENTRY:
 - **Validation:** Move between rooms in dev mode, verify audio transitions smoothly without gaps
 - **Notes:** Subscribe to 'game_update', compare old vs new room_id, handle transitions
 
-LOCATION: Create in .workflow/artifacts/
+**Discovered During Implementation:**
+- **Invariants (from iteration planning):**
+  - "Audio transitions smoothly": < 500ms crossfade (affects user experience)
+- **Additional Invariants (found during building):**
+  - [None discovered yet]
+- **Failure Modes:**
+  - [None encountered yet]
+- **Risk Assessment:**
+  - HIGH: Audio transition timing (poor UX if jarring)
+  - LOW: [None for this task]
+
+LOCATION: Create in {project-root}/.workflow/artifacts/
 VERIFICATION: TASKS.md follows template structure exactly
 ```
 
