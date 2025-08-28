@@ -466,25 +466,35 @@ FAILURE MODE: If integration fails, fix before claiming complete
 **CHECKPOINT 12: Implementation Summary**
 
 ```
-REQUIRED: Summarize implementation completion:
+REQUIRED: Summarize what was built (NOT marking task complete):
 
-IMPLEMENTATION COMPLETE:
-✅ [Single task / Grouped tasks X.Y-X.Z] implemented
+IMPLEMENTATION PHASE COMPLETE - TASK STILL IN PROGRESS:
+✅ [Single task / Grouped tasks X.Y-X.Z] code written
 ✅ Working software built and demonstrated
 ✅ Demo commands verified (functionality confirmed)
 ✅ Integration with existing system confirmed
 ✅ Standards compliance applied
 
 FOR GROUPED TASKS:
-✅ All X tasks completed as a coherent unit
+✅ All X tasks implemented as a coherent unit
 ✅ Common patterns properly applied
 ✅ No inconsistencies between tasks
 
-READY FOR NEXT PHASE:
-📋 /plan-test [task numbers] (if automated tests needed)
-📋 /complete-task [task numbers] (to finalize and mark complete)
+⚠️ TASK STATUS REMAINS: 🔄 In Progress
+⚠️ DO NOT MARK AS COMPLETE
+⚠️ Task completion happens separately after testing
 
-VERIFICATION: Implementation phase complete, ready for testing/completion
+WHAT'S BUILT:
+- Code is written and working
+- Demo commands prove functionality
+- Integration verified
+
+WHAT'S NOT DONE:
+- Task NOT marked complete in TASKS.md
+- Testing phase may still be needed
+- Final completion step still required
+
+VERIFICATION: Implementation code complete, task remains in progress
 ```
 
 **CHECKPOINT 13: Risk Assessment Validation & Discovered Invariants**
@@ -531,21 +541,21 @@ Example: "Animation timing" - Just visual (Confirmed LOW)
 ⚠️ MANDATORY: UPDATE {project-root}/.workflow/artifacts/TASKS.md BEFORE PROCEEDING ⚠️
 
 You MUST update {project-root}/.workflow/artifacts/TASKS.md with discoveries.
-Use Edit or MultiEdit tool to add these to the task entry:
+Use Edit or MultiEdit tool to update ONLY the "Discovered During Implementation" section:
 
-### Discovered During Implementation:
-**Invariants:**
-- [List invariants found]
+**ONLY UPDATE THE DISCOVERIES SECTION:**
+- **Additional Invariants (found during building):** [Add new discoveries]
+- **Failure Modes:** [Add encountered failures]
+- **Risk Assessment:** [Update HIGH/LOW assessments]
 
-**Failure Modes:**
-- [List failure scenarios encountered]
+⚠️ CRITICAL: DO NOT CHANGE TASK STATUS
+⚠️ CRITICAL: DO NOT MARK TASKS AS COMPLETE
+⚠️ CRITICAL: ONLY UPDATE THE DISCOVERIES SECTION
 
-**Risk Assessment:**
-- HIGH: [Components that could ruin user's day]
-- LOW: [Components that don't matter]
+Task status changes happen separately during task completion phase.
 
 This captures real implementation insights for testing.
-DO NOT PROCEED until you've updated {project-root}/.workflow/artifacts/TASKS.md with Edit/MultiEdit
+DO NOT PROCEED until you've updated ONLY the discoveries in {project-root}/.workflow/artifacts/TASKS.md
 ```
 
 ## CRITICAL GATES & ENFORCEMENT
@@ -581,12 +591,12 @@ DO NOT PROCEED until you've updated {project-root}/.workflow/artifacts/TASKS.md 
 Implementation phase completed when:
 - [ ] Grouping decision made FIRST with clear rationale
 - [ ] Initial risk assessment documented (Checkpoint 2.5)
-- [ ] All related tasks completed together (if grouped)
+- [ ] All related tasks implemented together (if grouped)
 - [ ] Core functionality works and can be demoed
 - [ ] Integration with existing system verified
 - [ ] Demo commands serve as working verification
 - [ ] Standards applied appropriately
 - [ ] Risk assessment validated with discoveries (Checkpoint 13)
-- [ ] Implementation summary provided
-- [ ] Clear next steps identified (/plan-test or /complete-task)
+- [ ] TASKS.md updated with discoveries
+- [ ] Task remains marked as 🔄 In Progress (NOT complete)
 - [ ] YAGNI principle maintained throughout

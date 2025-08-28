@@ -137,6 +137,44 @@ Suggested sequence based on dependencies:
 - ❌ Blocked
 - 🔍 In Review
 
+## Discovered Tasks (Added During Implementation)
+
+[This section is added when tasks are discovered during implementation using /add-task]
+
+### [Prefix]1: [Description of discovered issue/refactor]
+
+**Discovery Context:**
+- **Found while:** [Working on task X.Y / Running audit / Testing]
+- **Root cause:** [Technical explanation]
+- **Impact:** [What breaks without this]
+- **Why now:** [Why can't wait for next iteration]
+
+#### [Prefix]1.1: [Specific task name]
+
+- **Status:** 📋 Not Started
+- **Files:** `[exact file paths]`
+- **Architecture Context:**
+  - Patterns: [Patterns to follow]
+  - State: [State changes]
+  - Data: [Data implications]
+  - Integration: [Component effects]
+  - Constraints: [Requirements]
+- **Error Scenarios:** [Failure modes]
+- **Deliverable:** [What this produces]
+- **Demo:** `[verification command]`
+- **Dependencies:** [Task dependencies]
+- **Validation:** [How to verify]
+- **Notes:** [Implementation notes]
+
+**Discovered During Implementation:**
+- **Invariants (from iteration planning):**
+  - [Relevant invariants]
+- **Additional Invariants (found during building):**
+  - [New discoveries]
+- **Risk Assessment:**
+  - HIGH: [If applicable]
+  - LOW: [If applicable]
+
 ## Notes
 
 [Any general notes about the task breakdown, special considerations, or warnings]
