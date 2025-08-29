@@ -1,5 +1,7 @@
 # Force deep analysis when claiming premature completion
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ STOP. YOU'RE NOT DONE. THINK. ⚠️
 
 You're trying to mark things complete that aren't actually complete.

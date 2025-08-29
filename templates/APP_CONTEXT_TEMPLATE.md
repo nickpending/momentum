@@ -1,5 +1,7 @@
 # [projectname] - Claude Code Integration Guide
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## CRITICAL: This document is for Claude Code, not humans
 
 **Purpose**: Enable Claude Code to integrate with existing system correctly  

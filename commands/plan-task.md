@@ -1,5 +1,7 @@
 # Create implementation plan with linting and quality checks
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: GROUP RELATED TASKS FIRST ⚠️
 
 **🛑 CHECK FOR TASK GROUPING BEFORE ANYTHING ELSE**  

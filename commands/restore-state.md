@@ -1,5 +1,7 @@
 # Resume work with full context from saved state
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## Usage
 
 ```bash
@@ -19,7 +21,7 @@
 
 ### Find and Load State File
 
-1. **READ** `.workflow/state/task-[specified_or_recent].md`
+1. **READ** `{project-root}/.workflow/state/task-[specified_or_recent].md`
 2. **EXTRACT** essential resumption information:
     - Current progress and phase
     - Files changed and their status
@@ -31,13 +33,13 @@
 
 ### Core Context (same as /load-app-context)
 
-1. **READ** `.workflow/artifacts/TASKS.md` - Current task list and status
-2. **READ** `.workflow/artifacts/IDEA.md` - Overall project vision and goals
+1. **READ** `{project-root}/.workflow/artifacts/TASKS.md` - Current task list and status
+2. **READ** `{project-root}/.workflow/artifacts/IDEA.md` - Overall project vision and goals
 
 ### Extended Context for Resumption
 
-3. **READ** `.workflow/artifacts/ITERATION.md` - Complete iteration with embedded standards
-4. **READ** `.workflow/artifacts/APP_CONTEXT.md` (if exists) - System integration context
+3. **READ** `{project-root}/.workflow/artifacts/ITERATION.md` - Complete iteration with embedded standards
+4. **READ** `{project-root}/.workflow/artifacts/APP_CONTEXT.md` (if exists) - System integration context
 5. **READ** `CLAUDE.md` (if exists) - Project development context
 
 ### Verify Current Environment
@@ -80,7 +82,7 @@ IMMEDIATE NEXT ACTION:
 
 ### Update Task Status
 
-1. **UPDATE** `.workflow/artifacts/ITERATION.md` - Remove state reference
+1. **UPDATE** `{project-root}/.workflow/artifacts/ITERATION.md` - Remove state reference
 2. **MAINTAIN** task as 🔄 In Progress
 3. **READY** for continued implementation
 
@@ -105,7 +107,7 @@ IMMEDIATE NEXT ACTION:
 
 **IF** state file not found:
 
-- **LIST** available state files in `.workflow/state/`
+- **LIST** available state files in `{project-root}/.workflow/state/`
 - **OFFER** to start fresh with `/load-app-context` equivalent
 
 **IF** iteration context missing:

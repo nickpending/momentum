@@ -1,5 +1,7 @@
 # Iteration [n]: [clear_outcome_description]
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## Working Software Goal
 
 [1-2_sentences_what_users_can_do_after_this_iteration_that_they_couldnt_before]

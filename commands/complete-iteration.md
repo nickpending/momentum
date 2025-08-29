@@ -14,7 +14,7 @@
 
 ```
 REQUIRED: Verify iteration is ready for completion:
-- READ .workflow/artifacts/ITERATION.md
+- READ {project-root}/.workflow/artifacts/ITERATION.md
 - COUNT total tasks vs completed tasks (✅ Complete)
 - IDENTIFY any remaining 📋 Planned or 🔄 In Progress tasks
 - VERIFY iteration success criteria were met
@@ -78,13 +78,13 @@ VERIFICATION: Clear, actionable summary ready for archival and future reference
 
 ```
 REQUIRED: Archive completed iteration properly:
-- CREATE .workflow/archives/iteration-N/ directory
+- CREATE {project-root}/.workflow/archives/iteration-N/ directory
 - COPY ITERATION.md to archives with completion summary
 - PRESERVE any critical artifacts or documentation
 - MAINTAIN clean archive structure for future reference
 
 ARCHIVAL STRUCTURE:
-.workflow/archives/iteration-N/
+{project-root}/.workflow/archives/iteration-N/
 ├── ITERATION.md (completed with all task details)
 ├── SUMMARY.md (synthesized insights and lessons)
 └── artifacts/ (any critical files or documentation)
@@ -123,7 +123,7 @@ VERIFICATION: All completed items moved from active.md to completed.md
 ```
 REQUIRED: Prepare clean workspace for next iteration:
 
-ARTIFACTS CLEANUP (.workflow/artifacts/):
+ARTIFACTS CLEANUP ({project-root}/.workflow/artifacts/):
 - REMOVE iteration-specific files:
   - ITERATION.md (now archived)
   - TASKS.md (now archived)
@@ -133,15 +133,15 @@ ARTIFACTS CLEANUP (.workflow/artifacts/):
   - APP_CONTEXT.md (if exists - project patterns)
   - Any other project-wide documentation
 
-STATE CLEANUP (.workflow/state/):
+STATE CLEANUP ({project-root}/.workflow/state/):
 - REMOVE all saved state files (task-*.md, etc.)
 - These are iteration-specific and no longer needed
 
 CLEANUP COMMANDS:
-- rm .workflow/artifacts/ITERATION.md
-- rm .workflow/artifacts/TASKS.md
-- rm .workflow/artifacts/subagents/*.md (if directory exists)
-- rm .workflow/state/*.md (if any exist)
+- rm {project-root}/.workflow/artifacts/ITERATION.md
+- rm {project-root}/.workflow/artifacts/TASKS.md
+- rm {project-root}/.workflow/artifacts/subagents/*.md (if directory exists)
+- rm {project-root}/.workflow/state/*.md (if any exist)
 
 VERIFICATION: Only IDEA.md and APP_CONTEXT.md remain in artifacts
 ```

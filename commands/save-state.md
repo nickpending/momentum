@@ -1,5 +1,7 @@
 # Capture discoveries, decisions, and progress for resumption
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## Usage
 
 ```bash
@@ -106,7 +108,7 @@
 ## State File Naming
 
 ```
-.workflow/state/
+{project-root}/.workflow/state/
 ├── task-N-[timestamp].md    # When working on a specific task
 └── state-[timestamp].md     # General exploration/discussion
 ```

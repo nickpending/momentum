@@ -1,5 +1,7 @@
 # Quick project orientation with current tasks and vision
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## Step 1: Essential Context ONLY
 
 **LOAD FILES** (in order, if they exist):

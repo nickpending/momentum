@@ -1,5 +1,7 @@
 # Validate task completion with evidence of working functionality
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: MARK TASK COMPLETE AND DOCUMENT ⚠️
 
 **🛑 NO REDUNDANT DEMOS - ALREADY PROVEN TO WORK**  

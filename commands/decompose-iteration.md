@@ -1,5 +1,7 @@
 # Break iteration features into concrete implementable tasks
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: DECOMPOSE FEATURES INTO REAL TASKS ⚠️
 
 **🛑 CREATE TASKS NOT MINI-FEATURES**

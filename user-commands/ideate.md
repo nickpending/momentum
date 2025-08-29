@@ -1,5 +1,7 @@
 # Exploration Through Discussion
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: DISCUSSION FIRST - NO ARTIFACTS UNTIL REQUESTED ⚠️
 
 **🛑 STOP. DO NOT CREATE DIRECTORIES OR FILES.**  

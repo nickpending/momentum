@@ -1,5 +1,7 @@
 # Add discovered tasks to current iteration during implementation
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: DISCOVERED TASKS NEED FULL CONTEXT ⚠️
 
 **🛑 INTERVIEW FIRST - NO TASKS UNTIL CONTEXT GATHERED**  

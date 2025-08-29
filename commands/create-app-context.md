@@ -1,5 +1,7 @@
 # Generate system integration context for LLM understanding
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## Purpose
 
 Generate `APP_CONTEXT.md` by populating the v3 template with project-specific integration patterns.
@@ -148,6 +150,10 @@ Generate `APP_CONTEXT.md` by populating the v3 template with project-specific in
 
 ## Step 6: Generate APP_CONTEXT.md
 
+### Output Location
+
+**CREATE** file at: `{project-root}/.workflow/artifacts/APP_CONTEXT.md`
+
 ### Create Populated Context File
 
 1. **POPULATE** all template variables with actual project content
@@ -176,7 +182,7 @@ APP_CONTEXT.md GENERATED - LLM OPTIMIZED
 ✅ Anti-Patterns: [anti_pattern_count] problematic patterns identified
 ✅ Template Population: All variables populated with project-specific content
 
-📁 Created: APP_CONTEXT.md
+📁 Created: {project-root}/.workflow/artifacts/APP_CONTEXT.md
 🎯 Optimized for: Claude Code integration decisions
 🔍 Based on: Actual codebase analysis + embedded iteration context
 ⚠️  Anti-patterns: Real problematic patterns to avoid

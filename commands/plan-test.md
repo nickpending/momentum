@@ -1,5 +1,7 @@
 # Write focused tests that prove functionality works
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: TEST EXISTING CODE ONLY ⚠️
 
 **🛑 CODE ALREADY EXISTS - WRITE TESTS FOR WHAT'S BUILT**  

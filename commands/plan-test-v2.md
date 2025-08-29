@@ -1,5 +1,7 @@
 # Write tests that protect invariants and handle failures
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## ⚠️ CRITICAL: RISK-GUIDED INVARIANT TESTING ⚠️
 
 **🛑 YOU'RE A SAFETY INSPECTOR, NOT A COVERAGE CHECKER**  
@@ -32,7 +34,7 @@ Think like a safety inspector who:
 
 ```
 REQUIRED: Understand what was built:
-- READ .workflow/artifacts/ITERATION.md
+- READ {project-root}/.workflow/artifacts/ITERATION.md
 - LOCATE task $TASK_NUMBER
 - VERIFY task status is 🔄 In Progress or ✅ Complete
 - IDENTIFY what functionality was implemented
@@ -45,7 +47,7 @@ IMPLEMENTATION ANALYSIS:
 - What would a user actually do with this?
 - What could go wrong that would ruin their day?
 
-DEVELOPER'S DISCOVERIES (from .workflow/artifacts/TASKS.md):
+DEVELOPER'S DISCOVERIES (from {project-root}/.workflow/artifacts/TASKS.md):
 - What invariants did they discover?
 - What failure modes did they encounter?
 - What risk assessment did they make?
@@ -223,7 +225,7 @@ TEST PLANNING COMPLETE - NO TESTS WRITTEN
 Task: [task name and number]
 Implementation Summary: [what was built]
 
-DEVELOPER'S PERSPECTIVE (from .workflow/artifacts/TASKS.md):
+DEVELOPER'S PERSPECTIVE (from {project-root}/.workflow/artifacts/TASKS.md):
 - Discovered invariants: [What broke during building]
 - Encountered failures: [What they had to handle]
 - Risk assessment: [Their view of HIGH/LOW]

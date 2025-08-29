@@ -1,5 +1,7 @@
 # TASKS - Generated [DATE]
 
+**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
 ## Overview
 
 **Iteration Goal:** [Brief description from ITERATION.md] **Total Features:** [X]  
