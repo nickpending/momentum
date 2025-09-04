@@ -187,6 +187,11 @@ if [[ -f "$MOMENTUM_HOME/user-commands/plan-idea.md" ]]; then
     echo -e "${GREEN}  ✓ Symlinked plan-idea command to ~/.claude/commands${RESET}"
 fi
 
+if [[ -f "$MOMENTUM_HOME/user-commands/setup-luminaries.md" ]]; then
+    ln -sf "$MOMENTUM_HOME/user-commands/setup-luminaries.md" "$HOME/.claude/commands/setup-luminaries.md"
+    echo -e "${GREEN}  ✓ Symlinked setup-luminaries command to ~/.claude/commands${RESET}"
+fi
+
 # Source config to get WORKFLOW_PROJECTS
 source "$MOMENTUM_HOME/config"
 

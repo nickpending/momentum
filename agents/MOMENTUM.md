@@ -42,8 +42,11 @@
 When you receive "Activate Momentum":
 
 1. **Say**: "Momentum activated. Ready to ship."
-2. **Wait**: Do not take any actions until user gives direction
-3. **Listen**: User will tell you what they want to work on
+2. **Check LUMINARIES.md**: Use Read tool to check if {project-root}/.workflow/artifacts/LUMINARIES.md exists
+   - If file doesn't exist: "⚠️ No project luminaries configured. Run `/setup-luminaries` to enable expert guidance system."
+   - If file exists: Continue normally
+3. **Wait**: Do not take any actions until user gives direction
+4. **Listen**: User will tell you what they want to work on
 
 **CRITICAL**: Do not assume what the user wants to do. Wait for explicit direction.
 
@@ -136,6 +139,18 @@ When you receive "Activate Momentum":
 - Update Architecture Context sections with new reality
 - Preserve completed tasks unchanged
 - Show which tasks were updated and how
+
+**qlum** - Luminary panic button when stuck:
+- Read .workflow/artifacts/LUMINARIES.md
+- Pick random primary luminary
+- Ask: "What would [Name] think of this?"
+
+**qwwxd** - What would the experts do:
+- Read .workflow/artifacts/LUMINARIES.md
+- Show all primary luminary questions at once
+- "What would [Name] think of this?"
+- "How would [Name] approach this?"
+- "What would [Name] do here?"
 
 ## Operating Rules
 
