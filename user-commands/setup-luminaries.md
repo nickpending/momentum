@@ -22,7 +22,9 @@ REQUIRED: Check for {project-root}/.workflow/artifacts/LUMINARIES.md
 
 IF LUMINARIES.md EXISTS:
 - READ luminaries configuration
-- PROCEED to Phase 3 (Roundtable Generation)
+- ASK user: "Existing luminaries found. Regenerate based on current IDEA.md? (y/n)"
+  - IF "y" or "yes": DELETE LUMINARIES.md and roundtable.md, PROCEED to Phase 2
+  - IF "n" or "no": PROCEED to Phase 3 (Roundtable Generation only)
 
 IF LUMINARIES.md MISSING:
 - PROCEED to Phase 2 (Luminary Generation)
@@ -97,11 +99,17 @@ Generate LUMINARIES.md using the extracted information and format below.
 - **Aaron Swartz**: Created RSS, web.py, Reddit co-founder. Expert in content syndication, open data
 - **Matt Mullenweg**: Built WordPress. Expert in content management, publishing systems
 
-### Security/Hacking
+### Security/Hacking  
 - **Dan Kaminsky**: Found DNS cache poisoning, SSL vulnerabilities. Expert in protocol security, cryptography
 - **Mudge**: Built L0pht, @stake security firm. Expert in vulnerability research, secure systems
-- **Kevin Mitnick**: Social engineering expert, security consultant. Expert in attack vectors, human factors
 - **Bruce Schneier**: Cryptography researcher, security author. Expert in applied cryptography, threat modeling
+
+### AI/LLM Security (2025 Era)
+- **Simon Willison**: Coined "prompt injection", documented Dual LLM pattern. Expert in LLM security, data exfiltration
+- **rez0 (Joseph Thacker)**: Hacked Google Bard/Gemini, HackerOne AI. Expert in prompt injection, AI pentesting
+- **Johann Rehberger**: Month of AI Bugs researcher. Expert in prompt injection attacks, LLM vulnerabilities
+- **Mohamed Amine Ferrag**: Authored LLM-agent threat models. Expert in protocol exploits, agent security
+- **Lakera Team**: Built Gandalf CTF, adversarial testing. Expert in jailbreaking, red teaming
 
 ## Domain Mapping Rules
 
@@ -118,10 +126,12 @@ Generate LUMINARIES.md using the extracted information and format below.
 - RSS/Content → Aaron Swartz or Matt Mullenweg
 - Daemon/Client architecture → Antirez (daemons) + relevant client expert
 - Simple > Complex → Pike or Thompson
-- Security concerns → Dan Kaminsky (protocols) or Mudge (systems)
-- Cryptography → Bruce Schneier or Dan Kaminsky
-- Attack vectors → Kevin Mitnick or Mudge
-- Threat modeling → Bruce Schneier
+- Traditional security → Dan Kaminsky (protocols) or Mudge (systems)
+- Cryptography → Bruce Schneier
+- AI/LLM security → Simon Willison (prompt injection) or Johann Rehberger (vulnerabilities)
+- Agent security → Mohamed Amine Ferrag (threat models)
+- Jailbreaking/Red teaming → Lakera Team or NeuralTrust
+- Threat modeling → Bruce Schneier (traditional) or Ferrag (AI systems)
 
 ## MANDATORY INTERRUPT FORMAT
 
@@ -179,13 +189,14 @@ Generate LUMINARIES.md in {project-root}/.workflow/artifacts/ with this EXACT fo
 - Complex [thing] → Invoke [Name] ("[their actual principle]")
 
 RULES:
-1. Pick 3 primary luminaries: ALWAYS include 1 security expert + 2 based on tech stack/architecture
-2. Security luminary selection:
-   - Web/API projects → Dan Kaminsky (protocol security)
+1. Pick 4 primary luminaries: 3 domain experts + 1 MANDATORY security expert
+2. Security luminary selection (ALWAYS pick one):
+   - AI/LLM projects → Simon Willison or rez0 (prompt injection)
+   - Agent systems → Mohamed Amine Ferrag (threat models)
+   - Web/API projects → Dan Kaminsky (protocol security) or rez0 (AI pentesting)
    - System/Infrastructure → Mudge (system hardening)
-   - User-facing apps → Kevin Mitnick (attack vectors)
    - Crypto/sensitive data → Bruce Schneier (cryptography/threat modeling)
-3. Pick 1-2 domain specialists for secondary concerns
+3. Pick 0-1 domain specialists for specific edge cases
 4. Keep interrupts OPEN-ENDED using the mandatory format
 5. Only use luminaries from the knowledge base above
 6. Match based on what they ACTUALLY built
@@ -194,6 +205,8 @@ RULES:
 Generate LUMINARIES.md from the extracted IDEA.md information following the mandatory interrupt patterns.
 
 VERIFICATION: Confirm LUMINARIES.md created in {project-root}/.workflow/artifacts/
+
+NOTE: If regenerating, existing LUMINARIES.md will be overwritten with new expert selection based on updated IDEA.md.
 ```
 
 ### PHASE 3: ROUNDTABLE SUBAGENT GENERATION
