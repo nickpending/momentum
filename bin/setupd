@@ -126,28 +126,28 @@ local resource_count=0
 local resource_missing=()
 
 # Commands
-if [[ -d "$WORKFLOW_COMMANDS" ]]; then
+if [[ -d "$MOMENTUM_HOME/commands" ]]; then
     mkdir -p "$DEV_PROJECT/.claude"
     rm -rf "$DEV_PROJECT/.claude/commands"
-    ln -sf "$WORKFLOW_COMMANDS" "$DEV_PROJECT/.claude/commands"
+    ln -sf "$MOMENTUM_HOME/commands" "$DEV_PROJECT/.claude/commands"
     ((resource_count++))
 else
     resource_missing+=("commands")
 fi
 
 # Templates
-if [[ -d "$WORKFLOW_TEMPLATES" ]]; then
+if [[ -d "$MOMENTUM_HOME/templates" ]]; then
     rm -rf "$DEV_PROJECT/.workflow/templates"
-    ln -sf "$WORKFLOW_TEMPLATES" "$DEV_PROJECT/.workflow/templates"
+    ln -sf "$MOMENTUM_HOME/templates" "$DEV_PROJECT/.workflow/templates"
     ((resource_count++))
 else
     resource_missing+=("templates")
 fi
 
 # Resources
-if [[ -d "$WORKFLOW_RESOURCES" ]]; then
+if [[ -d "$MOMENTUM_HOME/resources" ]]; then
     rm -rf "$DEV_PROJECT/.workflow/resources"
-    ln -sf "$WORKFLOW_RESOURCES" "$DEV_PROJECT/.workflow/resources"
+    ln -sf "$MOMENTUM_HOME/resources" "$DEV_PROJECT/.workflow/resources"
     ((resource_count++))
 else
     resource_missing+=("resources")
@@ -156,10 +156,10 @@ fi
 local total_components=3
 if [[ ${#resource_missing[@]} -gt 0 ]]; then
     echo "🔧 Workflow: ${resource_count}/${total_components} components linked"
-    echo -e "${RED}❌ Missing components: ${resource_missing[*]} at $WORKFLOW_HOME${RESET}"
+    echo -e "${RED}❌ Missing components: ${resource_missing[*]} at $MOMENTUM_HOME${RESET}"
     exit 1
 else
-    echo "🔧 Workflow: ${resource_count} components linked from $WORKFLOW_HOME"
+    echo "🔧 Workflow: ${resource_count} components linked from $MOMENTUM_HOME"
 fi
 
 # Validate workflow standards exist (optional)

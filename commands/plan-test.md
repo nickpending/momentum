@@ -2,6 +2,11 @@
 
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
+**Key Paths**:
+- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
+- `$WORKFLOW_DEV` - Development projects root (from environment)
+
 ## ⚠️ CRITICAL: TEST EXISTING CODE ONLY ⚠️
 
 **🛑 CODE ALREADY EXISTS - WRITE TESTS FOR WHAT'S BUILT**  
@@ -102,7 +107,7 @@ Before writing a test, ask:
 
 ```
 REQUIRED: Understand what was built:
-- READ .workflow/artifacts/ITERATION.md
+- READ {project-root}/.workflow/artifacts/ITERATION.md
 - LOCATE task $TASK_NUMBER
 - VERIFY task status is 🔄 In Progress or ✅ Complete
 - IDENTIFY what functionality was implemented

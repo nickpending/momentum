@@ -2,13 +2,18 @@
 
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
+**Key Paths**:
+- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
+- `$WORKFLOW_DEV` - Development projects root (from environment)
+
 ## Step 1: Essential Context ONLY
 
 **LOAD FILES** (in order, if they exist):
 
-1. **READ** `.workflow/artifacts/TASKS.md` - current iteration with embedded context and task status
-2. **READ** `.workflow/artifacts/IDEA.md` - understand overall project vision and goals  
-3. **READ** `.workflow/artifacts/APP_CONTEXT.md` - project-specific integration patterns (if exists)
+1. **READ** `{project-root}/.workflow/artifacts/TASKS.md` - current iteration with embedded context and task status
+2. **READ** `{project-root}/.workflow/artifacts/IDEA.md` - understand overall project vision and goals  
+3. **READ** `{project-root}/.workflow/artifacts/APP_CONTEXT.md` - project-specific integration patterns (if exists)
 
 ## Step 2: Report Status
 
@@ -45,7 +50,7 @@ What would you like to do?
 ### If no files exist:
 ```
 **NO CONTEXT FOUND**
-No project files found in .workflow/artifacts/
+No project files found in {project-root}/.workflow/artifacts/
 
 To get started:
 - Create IDEA.md in obsidian for project vision

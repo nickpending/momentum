@@ -2,6 +2,11 @@
 
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
+**Key Paths**:
+- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
+- `$WORKFLOW_DEV` - Development projects root (from environment)
+
 ## Purpose
 
 Generate `APP_CONTEXT.md` by populating the v3 template with project-specific integration patterns.
@@ -22,10 +27,10 @@ Generate `APP_CONTEXT.md` by populating the v3 template with project-specific in
 
 ## Step 1: Load Context and Template
 
-1. **READ** `.workflow/templates/APP_CONTEXT_TEMPLATE.md` - LLM-optimized template structure
-2. **READ** `.workflow/artifacts/ITERATION.md` (if exists) - embedded patterns and standards
-3. **READ** `.workflow/artifacts/IDEA.md` - project tech stack and purpose
-4. **READ** existing `.workflow/artifacts/APP_CONTEXT.md` (if exists) - current context to update/replace
+1. **READ** `{project-root}/.workflow/templates/APP_CONTEXT_TEMPLATE.md` - LLM-optimized template structure
+2. **READ** `{project-root}/.workflow/artifacts/ITERATION.md` (if exists) - embedded patterns and standards
+3. **READ** `{project-root}/.workflow/artifacts/IDEA.md` - project tech stack and purpose
+4. **READ** existing `{project-root}/.workflow/artifacts/APP_CONTEXT.md` (if exists) - current context to update/replace
 
 ## Step 2: Analyze Codebase for Integration Patterns
 

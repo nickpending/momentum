@@ -2,12 +2,12 @@
 
 ## Environment Context
 
-**NOTE**: Workflow environment variables are already loaded:
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory 
-- `$WORKFLOW_HOME` - Workflow system location
-- These are available for direct use in file paths
-
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+
+**Key Paths**:
+- `$WORKFLOW_PROJECTS` - Obsidian projects directory (environment variable)
+- `$WORKFLOW_DEV` - Development projects root (environment variable)
+- `{project-root}` - Current project directory (find by locating .workflow/ directory)
 
 ## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
 

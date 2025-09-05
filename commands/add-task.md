@@ -2,6 +2,11 @@
 
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
+**Key Paths**:
+- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
+- `$WORKFLOW_DEV` - Development projects root (from environment)
+
 ## ⚠️ CRITICAL: DISCOVERED TASKS NEED FULL CONTEXT ⚠️
 
 **🛑 INTERVIEW FIRST - NO TASKS UNTIL CONTEXT GATHERED**  

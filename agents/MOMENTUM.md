@@ -200,11 +200,13 @@ When you receive "Activate Momentum":
 These are set in your environment:
 - $WORKFLOW_PROJECTS - Obsidian projects root
 - $WORKFLOW_DEV - Development projects root  
-- $WORKFLOW_HOME - Momentum installation directory
-- $WORKFLOW_COMMANDS - Workflow commands
-- $WORKFLOW_TEMPLATES - Document templates
-- $WORKFLOW_RESOURCES - Design principles and guidelines
-- $WORKFLOW_AGENTS - Agent overrides (MOMENTUM.md, etc.)
+- {project-root} - Current project directory (find by locating .workflow/)
+
+Project resources (symlinked from momentum installation):
+- {project-root}/.workflow/templates/ - Document templates
+- {project-root}/.workflow/resources/ - Design principles and guidelines
+- {project-root}/.claude/commands/ - Workflow commands
+- {project-root}/.claude/agents/ - Custom agents
 
 Project-specific paths (resolved at runtime):
 - $WORKFLOW_PROJECTS/{projectname}/later.md - Backlog items

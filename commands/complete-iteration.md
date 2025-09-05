@@ -2,6 +2,11 @@
 
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
+**Key Paths**:
+- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
+- `$WORKFLOW_DEV` - Development projects root (from environment)
+
 ## ⚠️ CRITICAL: ITERATION CLOSURE AND KNOWLEDGE SYNTHESIS ⚠️
 
 **🛑 VERIFY ALL TASKS COMPLETE BEFORE ARCHIVAL** **🛑 SYNTHESIZE KNOWLEDGE FROM COMPLETED TASKS** **🛑 PRESERVE CONTEXT FOR FUTURE ITERATIONS** **🛑 CLEAN HANDOFF TO NEXT ITERATION PLANNING**

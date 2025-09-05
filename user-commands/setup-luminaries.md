@@ -4,7 +4,7 @@
 
 **NOTE**: Workflow environment variables are already loaded:
 - `$WORKFLOW_PROJECTS` - Obsidian projects directory 
-- `$WORKFLOW_HOME` - Workflow system location
+- `{project-root}` - Current project directory (find by locating .workflow/)
 - These are available for direct use in file paths
 
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -237,6 +237,9 @@ TEMPLATE SUBSTITUTION:
 - [LUMINARY_3] → Primary Luminary 3 name
 - [LUMINARY_3_BUILT] → What they built
 - [LUMINARY_3_EXPERTISE] → Their expertise area
+- [LUMINARY_4] → Primary Luminary 4 name (Security Expert)
+- [LUMINARY_4_BUILT] → What they built
+- [LUMINARY_4_EXPERTISE] → Their expertise area
 ```
 
 ### PHASE 4: COMPLETION VERIFICATION
