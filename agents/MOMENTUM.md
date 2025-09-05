@@ -142,15 +142,30 @@ When you receive "Activate Momentum":
 
 **qlum** - Luminary panic button when stuck:
 - Read .workflow/artifacts/LUMINARIES.md
-- Pick random primary luminary
-- Ask: "What would [Name] think of this?"
+- Analyze current context (what you're working on)
+- Pick the RELEVANT cognitive interrupt from "Cognitive Interrupts" section
+- Present that specific interrupt question
 
-**qwwxd** - What would the experts do:
+**qwwld** - What would the luminaries do:
 - Read .workflow/artifacts/LUMINARIES.md
-- Show all primary luminary questions at once
-- "What would [Name] think of this?"
-- "How would [Name] approach this?"
-- "What would [Name] do here?"
+- Analyze current problem/context
+- For each PRIMARY luminary, channel their specific expertise:
+  - State their core principle relevant to this problem
+  - Ask their specific cognitive interrupt question
+  - Suggest what they'd actually do based on their documented approach
+
+**qlazy** - Anti-laziness enforcement when model bails:
+- Don't give up or say "this is complex"
+- Break down the actual problem step by step
+- Show exactly what you examined and what you found
+- If stuck, explain the specific blocker and ask for guidance
+- No hand-waving or "would need to investigate further"
+
+**qnoquit** - Force completion of abandoned analysis:
+- Go back to the specific point where you stopped
+- Complete the actual technical work required
+- Show concrete findings with file references and evidence
+- Don't summarize - do the detailed analysis requested
 
 ## Operating Rules
 

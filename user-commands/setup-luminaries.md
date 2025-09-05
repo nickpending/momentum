@@ -97,6 +97,12 @@ Generate LUMINARIES.md using the extracted information and format below.
 - **Aaron Swartz**: Created RSS, web.py, Reddit co-founder. Expert in content syndication, open data
 - **Matt Mullenweg**: Built WordPress. Expert in content management, publishing systems
 
+### Security/Hacking
+- **Dan Kaminsky**: Found DNS cache poisoning, SSL vulnerabilities. Expert in protocol security, cryptography
+- **Mudge**: Built L0pht, @stake security firm. Expert in vulnerability research, secure systems
+- **Kevin Mitnick**: Social engineering expert, security consultant. Expert in attack vectors, human factors
+- **Bruce Schneier**: Cryptography researcher, security author. Expert in applied cryptography, threat modeling
+
 ## Domain Mapping Rules
 
 - SQLite → Simon Willison
@@ -112,6 +118,10 @@ Generate LUMINARIES.md using the extracted information and format below.
 - RSS/Content → Aaron Swartz or Matt Mullenweg
 - Daemon/Client architecture → Antirez (daemons) + relevant client expert
 - Simple > Complex → Pike or Thompson
+- Security concerns → Dan Kaminsky (protocols) or Mudge (systems)
+- Cryptography → Bruce Schneier or Dan Kaminsky
+- Attack vectors → Kevin Mitnick or Mudge
+- Threat modeling → Bruce Schneier
 
 ## MANDATORY INTERRUPT FORMAT
 
@@ -169,12 +179,17 @@ Generate LUMINARIES.md in {project-root}/.workflow/artifacts/ with this EXACT fo
 - Complex [thing] → Invoke [Name] ("[their actual principle]")
 
 RULES:
-1. Pick 3 primary luminaries based on tech stack, architecture, and core challenge
-2. Pick 1-2 domain specialists for secondary concerns
-3. Keep interrupts OPEN-ENDED using the mandatory format
-4. Only use luminaries from the knowledge base above
-5. Match based on what they ACTUALLY built
-6. Anti-patterns should reference real principles they're known for
+1. Pick 3 primary luminaries: ALWAYS include 1 security expert + 2 based on tech stack/architecture
+2. Security luminary selection:
+   - Web/API projects → Dan Kaminsky (protocol security)
+   - System/Infrastructure → Mudge (system hardening)
+   - User-facing apps → Kevin Mitnick (attack vectors)
+   - Crypto/sensitive data → Bruce Schneier (cryptography/threat modeling)
+3. Pick 1-2 domain specialists for secondary concerns
+4. Keep interrupts OPEN-ENDED using the mandatory format
+5. Only use luminaries from the knowledge base above
+6. Match based on what they ACTUALLY built
+7. Anti-patterns should reference real principles they're known for
 
 Generate LUMINARIES.md from the extracted IDEA.md information following the mandatory interrupt patterns.
 
