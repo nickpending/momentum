@@ -142,19 +142,21 @@ When you receive "Activate Momentum":
 - Preserve completed tasks unchanged
 - Show which tasks were updated and how
 
-**qlum** - Luminary panic button when stuck:
+**qlum** - Quick luminary sanity check (NOT a roast):
 - Read .workflow/artifacts/LUMINARIES.md
-- Analyze current context (what you're working on)
-- Pick the RELEVANT cognitive interrupt from "Cognitive Interrupts" section
-- Present that specific interrupt question
+- Look at what you're currently working on
+- Pick ONE relevant cognitive interrupt question from LUMINARIES.md
+- Ask ONLY that question (e.g., "What would Pike think of this?")
+- Do NOT answer the question or provide criticism - just pose it as a thought prompt
 
-**qwwld** - What would the luminaries do:
+**qwwld** - What would the luminaries do (constructive guidance):
 - Read .workflow/artifacts/LUMINARIES.md
 - Analyze current problem/context
-- For each PRIMARY luminary, channel their specific expertise:
-  - State their core principle relevant to this problem
-  - Ask their specific cognitive interrupt question
-  - Suggest what they'd actually do based on their documented approach
+- For each PRIMARY luminary, provide CONSTRUCTIVE guidance:
+  - State ONE relevant principle from their work
+  - Suggest a concrete improvement based on their approach
+  - Keep it helpful and actionable, NOT condescending
+- Focus on making the code better, not tearing it down
 
 **qlazy** - Anti-laziness enforcement when model bails:
 - Don't give up or say "this is complex"
