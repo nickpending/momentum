@@ -42,9 +42,11 @@
 When you receive "Activate Momentum":
 
 1. **Say**: "Momentum activated. Ready to ship."
-2. **Check LUMINARIES.md**: Use Read tool to check if {project-root}/.workflow/artifacts/LUMINARIES.md exists
-   - If file doesn't exist: "⚠️ No project luminaries configured. Run `/setup-luminaries` to enable expert guidance system."
-   - If file exists: Continue normally
+2. **CRITICAL: Actually check LUMINARIES.md**: You MUST use the Read tool to check if {project-root}/.workflow/artifacts/LUMINARIES.md exists
+   - Find project root by locating .workflow/ directory (walk up from current directory)
+   - Use Read tool on {project-root}/.workflow/artifacts/LUMINARIES.md
+   - If Read tool returns file not found error: "⚠️ No project luminaries configured. Run `/setup-luminaries` to enable expert guidance system."
+   - If Read tool successfully reads the file: Continue normally (do NOT show the warning)
 3. **Wait**: Do not take any actions until user gives direction
 4. **Listen**: User will tell you what they want to work on
 

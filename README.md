@@ -16,11 +16,14 @@ An iteration-first development workflow that maintains forward progress through 
 # Transform exploration into project vision
 /plan-idea
 
-# Set up development environment
+# Set up development environment and experts
 setupd myproject
 
-# Start iterating
+# Configure expert guidance (recommended)
 cd $WORKFLOW_DEV/myproject
+/setup-luminaries  # Configure domain experts for your project
+
+# Start iterating
 /plan-iteration    # Plan what to build
 /plan-task 1       # Build it
 ```
@@ -158,8 +161,52 @@ Momentum includes specialized subagents for deep analysis:
 - **architecture-analyst** - Determines system structure, patterns, and integration points
 - **implementation-analyst** - Defines algorithms, data structures, and technical approaches
 - **architecture-auditor** - Audits what actually got built vs what was planned (finds dead code, violations, drift)
+- **production-auditor** - Comprehensive production-readiness audit coordinating specialized checks
 
 The `/plan-task` command can invoke the analysts for complex features, or you can call any of them directly. They output detailed guidance to `.workflow/artifacts/subagents/`.
+
+### Expert Guidance System (Luminaries)
+
+Momentum includes an expert guidance system that brings domain-specific expertise to your project. This prevents common architectural mistakes and provides cognitive interrupts during development.
+
+**Setup Luminaries:**
+```bash
+# After creating a project with setupd
+cd $WORKFLOW_DEV/myproject
+# Use /setup-luminaries to configure project experts
+```
+
+This command:
+1. Analyzes your IDEA.md to understand project type and tech stack
+2. Selects 4 domain experts (3 technical + 1 security) relevant to your project
+3. Creates LUMINARIES.md with expert profiles and cognitive interrupts
+4. Generates a custom `roundtable` subagent for comprehensive code reviews
+
+**Using Expert Guidance:**
+
+**Quick Cognitive Interrupts** (during development):
+- `qlum` - Quick "What would [luminary] think of this?" sanity check
+- `qwwjd` - "What would [luminary] do?" for specific decisions
+
+**Deep Expert Review** (comprehensive analysis):
+```bash
+# Invoke the roundtable for full codebase review
+# The roundtable agent performs expert code review through 4 perspectives
+```
+
+The roundtable subagent provides:
+- Architecture and implementation review from each expert's perspective
+- Security analysis from the dedicated security expert
+- Consensus areas (high confidence issues)
+- Trade-off analysis where experts disagree
+- Prioritized action items (Critical, Important, Strategic)
+
+Example luminaries for different project types:
+- **CLI Tool**: Rob Pike (Go/simplicity), Mitchell Hashimoto (CLI design), Simon Willison (developer tools), + security expert
+- **Web API**: Roy Fielding (REST), appropriate language expert, performance expert, + security expert
+- **Game Server**: John Carmack (networking), Richard Bartle (game design), performance expert, + security expert
+
+The system matches experts who actually built similar systems, ensuring practical, battle-tested guidance rather than theoretical advice.
 
 ### Feature Status Flow
 
@@ -286,11 +333,26 @@ Momentum can integrate with [Claudex](https://github.com/nickpending/claudex) fo
 ### Quick Commands
 The agent configuration includes rapid development commands:
 
+**Development:**
 - **qcheck** - Skeptical senior engineer code review
 - **qtest** - Write ONE integration test using real services
 - **qcom** - Commit with conventional message
+- **qpush** - Push to origin main
 - **qfix** - Debug and fix specific error
+
+**Expert Guidance:**
+- **qlum** - Quick luminary check: "What would [expert] think of this?"
+- **qwwjd** - "What would [expert] do?" for decisions
+
+**Planning:**
 - **qback** - Add to project later.md in obsidian
+- **qnext** - What's the logical next step?
+- **qsweep** - Check what needs attention
+
+**Analysis:**
+- **qux** - List user test scenarios by priority
+- **qsensible** - Align on goals and approach
+- **qwhy** - Explain why last command failed
 
 ## Architecture Patterns
 
@@ -370,17 +432,22 @@ $WORKFLOW_PROJECTS/              # Obsidian workspace
 # 2. Set up development environment
 setupd myproject
 
-# 3. Plan first iteration  
+# 3. Configure expert guidance (recommended)
 cd $WORKFLOW_DEV/myproject
+# Use /setup-luminaries to configure domain experts
+
+# 4. Plan first iteration  
 # Use /plan-iteration in your AI tool
 
-# 4. Break down features into tasks
+# 5. Break down features into tasks
 # Use /decompose-iteration in your AI tool
 
-# 5. Implement tasks iteratively
+# 6. Implement tasks iteratively
 # Use /plan-task, implement, /complete-task cycle
+# Use qlum/qwwjd for quick expert guidance during development
+# Use roundtable subagent for comprehensive code review
 
-# 6. Ship iteration
+# 7. Ship iteration
 # Use /complete-iteration to archive and prepare next cycle
 ```
 
