@@ -1,8 +1,10 @@
-#!/usr/bin/env zsh
-# setupd - Claude workflow project setup with config support
+#!/usr/bin/env bash
+# setupd - Project setup for Momentum workflow
+# Shell-agnostic, clear error messages, helpful guidance
 
-# Colors for output
-autoload -U colors && colors
+set -e
+
+# Colors (POSIX-compliant)
 RED='\033[31m'
 GREEN='\033[32m'
 YELLOW='\033[33m'
@@ -17,18 +19,25 @@ if [[ -f "$WORKFLOW_CONFIG" ]]; then
     source "$WORKFLOW_CONFIG"
 else
     echo -e "${RED}❌ Error: Momentum not installed${RESET}"
-    echo "Run the install script first: ./install.sh"
+    echo "Run the install script first: ./install-interactive.sh"
     exit 1
 fi
 
+# Check for project name
 PROJECT_NAME=$1
 
-if [ -z "$PROJECT_NAME" ]; then
+if [[ -z "$PROJECT_NAME" ]]; then
     echo -e "${RED}❌ Error: Project name required${RESET}"
-    echo "Usage: $(basename $0) <project-name>"
-    echo -e "${BLUE}Example: $(basename $0) arsenl${RESET}"
-    echo -e "${BLUE}Example: $(basename $0) arsenl/arsenl-prompt${RESET}"
-    echo -e "${CYAN}💡 Tech stack detection happens automatically from IDEA.md${RESET}"
+    echo
+    echo "Usage: setupd <project-name>"
+    echo
+    echo "Examples:"
+    echo "  setupd myapp"
+    echo "  setupd tools/mytool  (for nested projects)"
+    echo
+    echo "Note: Run this AFTER creating IDEA.md with:"
+    echo "  1. /ideate (in Claude Code)"
+    echo "  2. /plan-idea (in Claude Code)"
     exit 1
 fi
 
@@ -39,52 +48,109 @@ if [[ "$PROJECT_NAME" == */* ]]; then
     OBSIDIAN_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
     DEV_PROJECT="$WORKFLOW_DEV/$PROJECT_NAME"
     
-    echo -e "${BLUE}🔍 Nested project: $PARENT_PROJECT/$SUB_PROJECT${RESET}"
+    echo -e "${BLUE}🔍 Nested project detected: $PARENT_PROJECT/$SUB_PROJECT${RESET}"
 else
     OBSIDIAN_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
     DEV_PROJECT="$WORKFLOW_DEV/$PROJECT_NAME"
+fi
+
+# Check if directories are configured
+if [[ -z "$WORKFLOW_PROJECTS" ]] || [[ -z "$WORKFLOW_DEV" ]]; then
+    echo -e "${RED}❌ Error: Workspace directories not configured${RESET}"
+    echo "Please run the installer first: ./install-interactive.sh"
+    exit 1
 fi
 
 # Check if obsidian project exists
 OBSIDIAN_EXISTS=true
 
 if [[ "$PROJECT_NAME" == */* ]]; then
-    # Nested project - likely an extracted tool
-    if [ ! -d "$OBSIDIAN_PROJECT" ]; then
-        echo -e "${YELLOW}⚠️  Extracted tool: $PROJECT_NAME not found in obsidian${RESET}"
-        echo -e "${CYAN}💡 This is normal for extracted tools - continuing setup${RESET}"
+    # Nested project - might be an extracted tool
+    if [[ ! -d "$OBSIDIAN_PROJECT" ]]; then
+        echo -e "${YELLOW}⚠️  Planning directory not found: $OBSIDIAN_PROJECT${RESET}"
+        echo -e "${CYAN}This is normal for extracted tools that don't need separate planning.${RESET}"
         OBSIDIAN_EXISTS=false
     else
-        echo -e "${GREEN}✅ Found nested obsidian project${RESET}"
-        OBSIDIAN_EXISTS=true
+        if [[ ! -f "$OBSIDIAN_PROJECT/IDEA.md" ]]; then
+            echo -e "${YELLOW}⚠️  IDEA.md not found in $OBSIDIAN_PROJECT${RESET}"
+            echo
+            echo "Create it first with:"
+            echo "  1. Run: momentum (in terminal)"
+            echo "  2. Run: /ideate 'your project idea' (in Claude Code)"
+            echo "  3. Run: /plan-idea (in Claude Code)"
+            echo "  4. Then run setupd again"
+            exit 1
+        fi
+        echo -e "${GREEN}✅ Found nested project with IDEA.md${RESET}"
     fi
 else
     # Flat project - should exist in obsidian
-    if [ ! -d "$OBSIDIAN_PROJECT" ]; then
-        echo -e "${RED}❌ Main project not found: $OBSIDIAN_PROJECT${RESET}"
+    if [[ ! -d "$OBSIDIAN_PROJECT" ]]; then
+        echo -e "${RED}❌ Project not found: $OBSIDIAN_PROJECT${RESET}"
+        echo
         
-        # Smart suggestions using zsh globbing
-        setopt nullglob
-        SIMILAR_PROJECTS=($WORKFLOW_PROJECTS/*${PROJECT_NAME}*(N) $WORKFLOW_PROJECTS/${PROJECT_NAME}*(N))
-        if [[ ${#SIMILAR_PROJECTS[@]} -gt 0 ]]; then
-            echo -e "${CYAN}💡 Similar projects: ${SIMILAR_PROJECTS[@]:t}${RESET}"
+        # Try to find similar projects
+        echo "Looking for similar projects..."
+        found_similar=false
+        if [[ -d "$WORKFLOW_PROJECTS" ]]; then
+            for dir in "$WORKFLOW_PROJECTS"/*; do
+                if [[ -d "$dir" ]]; then
+                    basename_dir=$(basename "$dir")
+                    if [[ "$basename_dir" == *"$PROJECT_NAME"* ]] || [[ "$PROJECT_NAME" == *"$basename_dir"* ]]; then
+                        echo -e "${CYAN}  Did you mean: $basename_dir ?${RESET}"
+                        found_similar=true
+                    fi
+                fi
+            done
         fi
-        unsetopt nullglob
+        
+        if [[ "$found_similar" == "false" ]]; then
+            echo "  No similar projects found"
+        fi
+        
+        echo
+        echo "To create a new project:"
+        echo "  1. Run: momentum (in terminal)"
+        echo "  2. Run: /ideate 'your project idea' (in Claude Code)"
+        echo "  3. Run: /plan-idea (in Claude Code)"
+        echo "  4. Then run: setupd $PROJECT_NAME"
         exit 1
     fi
-    OBSIDIAN_EXISTS=true
+    
+    # Check for IDEA.md
+    if [[ ! -f "$OBSIDIAN_PROJECT/IDEA.md" ]]; then
+        echo -e "${RED}❌ IDEA.md not found in $OBSIDIAN_PROJECT${RESET}"
+        echo
+        echo "IDEA.md is required to set up a project."
+        echo "Create it with:"
+        echo "  1. Run: momentum (in terminal)"
+        echo "  2. Run: /ideate 'your project idea' (in Claude Code)"
+        echo "  3. Run: /plan-idea (in Claude Code)"
+        echo
+        echo "This creates the project vision that drives development."
+        exit 1
+    fi
+    
+    echo -e "${GREEN}✅ Found project with IDEA.md${RESET}"
 fi
 
 # Check if dev project already exists
-if [ -d "$DEV_PROJECT" ]; then
+if [[ -d "$DEV_PROJECT" ]]; then
     if [[ ! -d "$DEV_PROJECT/.workflow" ]]; then
-        echo -e "${YELLOW}⚠️ Project exists, creating .workflow/ directory${RESET}"
+        echo -e "${YELLOW}⚠️  Project exists without .workflow directory${RESET}"
+        echo "Adding Momentum workflow structure..."
+    else
+        echo -e "${CYAN}ℹ️  Project already set up, refreshing symlinks...${RESET}"
     fi
+else
+    echo -e "${CYAN}Creating development project...${RESET}"
 fi
 
+echo
 echo -e "${MAGENTA}🚀 Setting up: $PROJECT_NAME${RESET}"
-echo -e "${CYAN}📁 Ideation: $OBSIDIAN_PROJECT${RESET}"
+echo -e "${CYAN}📁 Planning: $OBSIDIAN_PROJECT${RESET}"
 echo -e "${CYAN}💻 Development: $DEV_PROJECT${RESET}"
+echo
 
 # Create dev project directory structure
 mkdir -p "$DEV_PROJECT/.workflow/artifacts"
@@ -92,83 +158,135 @@ mkdir -p "$DEV_PROJECT/.workflow/artifacts/subagents"
 mkdir -p "$DEV_PROJECT/.workflow/archives"
 mkdir -p "$DEV_PROJECT/.workflow/state"
 
-# Symlink planning artifacts from Obsidian
-local obsidian_artifacts=(IDEA.md COMPOSITION_ARCHITECTURE.md)
-local obsidian_count=0
-
+# Symlink planning artifacts from Obsidian (if they exist)
+obsidian_count=0
 if [[ "$OBSIDIAN_EXISTS" == "true" ]]; then
-    for artifact in "${(@)obsidian_artifacts}"; do
-        if [[ -f "$OBSIDIAN_PROJECT/$artifact" ]]; then
-            ln -sf "$OBSIDIAN_PROJECT/$artifact" "$DEV_PROJECT/.workflow/artifacts/$artifact"
-            ((obsidian_count++))
-        fi
-    done
+    # Link IDEA.md
+    if [[ -f "$OBSIDIAN_PROJECT/IDEA.md" ]]; then
+        ln -sf "$OBSIDIAN_PROJECT/IDEA.md" "$DEV_PROJECT/.workflow/artifacts/IDEA.md" 2>/dev/null || true
+        ((obsidian_count++))
+    fi
     
-    echo "📁 Obsidian files: ${obsidian_count}/${#obsidian_artifacts} ideation files linked"
+    # Link COMPOSITION_ARCHITECTURE.md if it exists
+    if [[ -f "$OBSIDIAN_PROJECT/COMPOSITION_ARCHITECTURE.md" ]]; then
+        ln -sf "$OBSIDIAN_PROJECT/COMPOSITION_ARCHITECTURE.md" "$DEV_PROJECT/.workflow/artifacts/COMPOSITION_ARCHITECTURE.md" 2>/dev/null || true
+        ((obsidian_count++))
+    fi
+    
+    echo -e "${GREEN}✅ Planning files: $obsidian_count files linked${RESET}"
 else
-    echo "📁 Obsidian files: Skipped for extracted tool (no obsidian project)"
+    echo -e "${YELLOW}⚠️  Planning files: Skipped (no planning directory)${RESET}"
 fi
 
 # Check for existing iteration files
-local iteration_artifacts=(ITERATION.md)
-local iteration_count=0
+iteration_count=0
+if [[ -f "$DEV_PROJECT/.workflow/artifacts/ITERATION.md" ]]; then
+    ((iteration_count++))
+fi
+if [[ -f "$DEV_PROJECT/.workflow/artifacts/TASKS.md" ]]; then
+    ((iteration_count++))
+fi
 
-for artifact in "${(@)iteration_artifacts}"; do
-    if [[ -f "$DEV_PROJECT/.workflow/artifacts/$artifact" ]]; then
-        ((iteration_count++))
-    fi
-done
+if [[ $iteration_count -gt 0 ]]; then
+    echo -e "${GREEN}✅ Iteration files: $iteration_count files found${RESET}"
+else
+    echo -e "${CYAN}ℹ️  Iteration files: None yet (create with /plan-iteration)${RESET}"
+fi
 
-echo "📁 Iteration files: ${iteration_count}/${#iteration_artifacts} files found"
+# Link workflow resources from momentum installation
+resource_count=0
+resource_missing=""
 
-# Link workflow resources
-local resource_count=0
-local resource_missing=()
-
-# Commands
+# Commands directory
 if [[ -d "$MOMENTUM_HOME/commands" ]]; then
     mkdir -p "$DEV_PROJECT/.claude"
-    rm -rf "$DEV_PROJECT/.claude/commands"
+    rm -rf "$DEV_PROJECT/.claude/commands" 2>/dev/null || true
     ln -sf "$MOMENTUM_HOME/commands" "$DEV_PROJECT/.claude/commands"
     ((resource_count++))
 else
-    resource_missing+=("commands")
+    resource_missing="${resource_missing}commands "
 fi
 
-# Templates
+# Templates directory
 if [[ -d "$MOMENTUM_HOME/templates" ]]; then
-    rm -rf "$DEV_PROJECT/.workflow/templates"
+    rm -rf "$DEV_PROJECT/.workflow/templates" 2>/dev/null || true
     ln -sf "$MOMENTUM_HOME/templates" "$DEV_PROJECT/.workflow/templates"
     ((resource_count++))
 else
-    resource_missing+=("templates")
+    resource_missing="${resource_missing}templates "
 fi
 
-# Resources
+# Resources directory
 if [[ -d "$MOMENTUM_HOME/resources" ]]; then
-    rm -rf "$DEV_PROJECT/.workflow/resources"
+    rm -rf "$DEV_PROJECT/.workflow/resources" 2>/dev/null || true
     ln -sf "$MOMENTUM_HOME/resources" "$DEV_PROJECT/.workflow/resources"
     ((resource_count++))
 else
-    resource_missing+=("resources")
+    resource_missing="${resource_missing}resources "
 fi
 
-local total_components=3
-if [[ ${#resource_missing[@]} -gt 0 ]]; then
-    echo "🔧 Workflow: ${resource_count}/${total_components} components linked"
-    echo -e "${RED}❌ Missing components: ${resource_missing[*]} at $MOMENTUM_HOME${RESET}"
+# Check if all resources linked
+if [[ -n "$resource_missing" ]]; then
+    echo -e "${RED}❌ Missing components: $resource_missing${RESET}"
+    echo "Momentum installation may be incomplete."
+    echo "Try running the installer again: ./install-interactive.sh"
     exit 1
 else
-    echo "🔧 Workflow: ${resource_count} components linked from $MOMENTUM_HOME"
+    echo -e "${GREEN}✅ Workflow components: All 3 linked successfully${RESET}"
 fi
 
-# Validate workflow standards exist (optional)
-if [[ -d "$WORKFLOW_STANDARDS" ]]; then
-    echo "🧠 Workflow standards: available at $WORKFLOW_STANDARDS"
+# Check for claudex standards (optional)
+if [[ -d "$HOME/.claudex/standards" ]]; then
+    standard_count=$(ls -1 "$HOME/.claudex/standards"/*.md 2>/dev/null | wc -l)
+    if [[ $standard_count -gt 0 ]]; then
+        echo -e "${GREEN}✅ Claudex standards: $standard_count available${RESET}"
+    fi
 else
-    echo -e "${YELLOW}⚠️  Workflow standards: $WORKFLOW_STANDARDS not found${RESET}"
-    echo -e "${CYAN}💡 Tech standards will be embedded in ITERATION.md during planning${RESET}"
+    echo -e "${CYAN}ℹ️  Claudex standards: Not found (optional)${RESET}"
 fi
 
-echo -e "${GREEN}✅ Development project ready for iteration workflow!${RESET}"
-echo -e "${CYAN}💡 Next: Use /decompose-iteration to break features into tasks${RESET}"
+echo
+echo -e "${GREEN}╔════════════════════════════════════════╗${RESET}"
+echo -e "${GREEN}║   Project ready for Momentum! 🎉      ║${RESET}"
+echo -e "${GREEN}╚════════════════════════════════════════╝${RESET}"
+echo
+
+# Provide clear next steps
+echo -e "${MAGENTA}NEXT STEPS:${RESET}"
+echo
+
+if [[ $iteration_count -eq 0 ]]; then
+    # No iteration files - start fresh
+    echo "1. Navigate to project:"
+    echo -e "   ${CYAN}cd $DEV_PROJECT${RESET}"
+    echo
+    echo "2. Start Momentum mode:"
+    echo -e "   ${CYAN}momentum${RESET}"
+    echo
+    echo "3. Plan your first iteration (in Claude Code):"
+    echo -e "   ${CYAN}/plan-iteration${RESET}"
+    echo
+    echo "4. Break into tasks (in Claude Code):"
+    echo -e "   ${CYAN}/decompose-iteration${RESET}"
+    echo
+    echo "5. Start building (in Claude Code):"
+    echo -e "   ${CYAN}/plan-task 1${RESET}"
+else
+    # Has iteration files - continue work
+    echo "1. Navigate to project:"
+    echo -e "   ${CYAN}cd $DEV_PROJECT${RESET}"
+    echo
+    echo "2. Start Momentum mode:"
+    echo -e "   ${CYAN}momentum${RESET}"
+    echo
+    echo "3. Load context (in Claude Code):"
+    echo -e "   ${CYAN}/load-app-context${RESET}"
+    echo
+    echo "4. Continue with next task (in Claude Code):"
+    echo -e "   ${CYAN}/plan-task N${RESET}"
+fi
+
+echo
+echo -e "${YELLOW}Remember: All /commands run in Claude Code, not terminal!${RESET}"
+echo
+echo -e "${GREEN}Ship working software every iteration! 🚀${RESET}"

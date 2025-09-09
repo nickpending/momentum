@@ -1,244 +1,404 @@
-#!/bin/bash
-# Momentum Installer - Sets up ~/.config/momentum directory with all workflow files
+#!/usr/bin/env bash
+# Momentum Interactive Installer
+# Shell-agnostic, non-destructive, user-friendly setup
 
 set -e
 
-MOMENTUM_SOURCE="$(cd "$(dirname "$0")" && pwd)"
-MOMENTUM_HOME="$HOME/.config/momentum"
+# Colors (POSIX-compliant)
+RED='\033[31m'
 GREEN='\033[32m'
 YELLOW='\033[33m'
-CYAN='\033[36m'
-RED='\033[31m'
+BLUE='\033[34m'
 MAGENTA='\033[35m'
+CYAN='\033[36m'
 RESET='\033[0m'
 
-echo -e "${MAGENTA}🚀 Installing Momentum Development Workflow${RESET}"
-echo -e "${CYAN}Source: $MOMENTUM_SOURCE${RESET}"
-echo -e "${CYAN}Target: $MOMENTUM_HOME${RESET}"
+# Source directory
+MOMENTUM_SOURCE="$(cd "$(dirname "$0")" && pwd)"
+MOMENTUM_HOME="$HOME/.config/momentum"
+
+clear
+echo -e "${MAGENTA}╔════════════════════════════════════════╗${RESET}"
+echo -e "${MAGENTA}║      Momentum Installation Setup       ║${RESET}"
+echo -e "${MAGENTA}╚════════════════════════════════════════╝${RESET}"
+echo
+echo "This installer will:"
+echo "  • Check for required dependencies"
+echo "  • Set up your workspace directories"
+echo "  • Configure Momentum for your system"
+echo "  • Never delete or overwrite existing files"
 echo
 
-# Check for existing installation
-if [[ -d "$MOMENTUM_HOME" ]]; then
-    echo -e "${YELLOW}⚠️  Existing installation found${RESET}"
-    read -p "Overwrite existing momentum installation? (y/n) " -n 1 -r
+# Step 1: Check for Claude CLI
+echo -e "${CYAN}Step 1: Checking dependencies${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+if command -v claude &> /dev/null; then
+    echo -e "${GREEN}✅ Claude Code CLI found${RESET}"
+    claude_version=$(claude --version 2>/dev/null || echo "version unknown")
+    echo "   Version: $claude_version"
+else
+    echo -e "${RED}❌ Claude Code CLI not found${RESET}"
     echo
-    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
-        echo -e "${RED}Installation cancelled${RESET}"
-        exit 1
-    fi
-    echo -e "${YELLOW}Backing up existing installation...${RESET}"
-    mv "$MOMENTUM_HOME" "$MOMENTUM_HOME.backup.$(date +%Y%m%d_%H%M%S)"
+    echo "Momentum requires Claude Code CLI to function."
+    echo "Please install it first from:"
+    echo -e "${BLUE}https://claude.ai/news/claude-code${RESET}"
+    echo
+    echo "After installation, run this installer again."
+    exit 1
 fi
 
-# Create momentum directory structure
-echo -e "${CYAN}📁 Creating momentum directories...${RESET}"
+echo
+
+# Step 2: Detect shell
+echo -e "${CYAN}Step 2: Detecting your shell${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+DETECTED_SHELL=$(basename "$SHELL")
+SHELL_CONFIG=""
+
+case "$DETECTED_SHELL" in
+    zsh)
+        SHELL_CONFIG="$HOME/.zshrc"
+        echo -e "${GREEN}✅ Detected shell: zsh${RESET}"
+        ;;
+    bash)
+        # Check which config file exists
+        if [[ -f "$HOME/.bashrc" ]]; then
+            SHELL_CONFIG="$HOME/.bashrc"
+        elif [[ -f "$HOME/.bash_profile" ]]; then
+            SHELL_CONFIG="$HOME/.bash_profile"
+        else
+            SHELL_CONFIG="$HOME/.bashrc"
+        fi
+        echo -e "${GREEN}✅ Detected shell: bash${RESET}"
+        ;;
+    fish)
+        SHELL_CONFIG="$HOME/.config/fish/config.fish"
+        echo -e "${GREEN}✅ Detected shell: fish${RESET}"
+        ;;
+    *)
+        echo -e "${YELLOW}⚠️  Unknown shell: $DETECTED_SHELL${RESET}"
+        echo "Using bash configuration as fallback"
+        SHELL_CONFIG="$HOME/.bashrc"
+        ;;
+esac
+
+echo "   Config file: $SHELL_CONFIG"
+echo
+
+# Step 3: Configure workspace directories
+echo -e "${CYAN}Step 3: Setting up workspace directories${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+echo "Momentum uses two separate directories:"
+echo "  📝 Planning directory - for project documentation and ideas"
+echo "  💻 Development directory - for your actual code"
+echo
+
+# Get development directory
+echo -e "${YELLOW}Where do you keep your code projects?${RESET}"
+echo "Examples: ~/code, ~/projects, ~/development"
+printf "Development directory: "
+read -r DEV_DIR
+
+# Expand tilde
+DEV_DIR="${DEV_DIR/#\~/$HOME}"
+
+# Validate and create if needed
+if [[ ! -d "$DEV_DIR" ]]; then
+    echo
+    echo "Directory '$DEV_DIR' doesn't exist."
+    printf "Create it? (y/n): "
+    read -r CREATE_DEV
+    if [[ "$CREATE_DEV" =~ ^[Yy]$ ]]; then
+        mkdir -p "$DEV_DIR"
+        echo -e "${GREEN}✅ Created $DEV_DIR${RESET}"
+    else
+        echo -e "${RED}❌ Cannot continue without development directory${RESET}"
+        exit 1
+    fi
+else
+    echo -e "${GREEN}✅ Using existing $DEV_DIR${RESET}"
+fi
+
+echo
+
+# Get planning directory
+echo -e "${YELLOW}Where should Momentum store project planning/documentation?${RESET}"
+echo "This should be SEPARATE from your code directory."
+echo "Examples: ~/Documents/momentum, ~/obsidian/momentum, ~/notes/momentum"
+printf "Planning directory: "
+read -r PLANNING_DIR
+
+# Expand tilde
+PLANNING_DIR="${PLANNING_DIR/#\~/$HOME}"
+
+# Check if same as dev directory
+if [[ "$PLANNING_DIR" == "$DEV_DIR" ]]; then
+    echo
+    echo -e "${RED}❌ Planning directory must be different from development directory${RESET}"
+    echo "This keeps documentation separate from code."
+    echo "Please choose a different directory."
+    exit 1
+fi
+
+# Validate and create structure
+if [[ ! -d "$PLANNING_DIR" ]]; then
+    echo
+    echo "Directory '$PLANNING_DIR' doesn't exist."
+    printf "Create planning structure? (y/n): "
+    read -r CREATE_PLANNING
+    if [[ "$CREATE_PLANNING" =~ ^[Yy]$ ]]; then
+        mkdir -p "$PLANNING_DIR"
+        mkdir -p "$PLANNING_DIR/explorations"
+        mkdir -p "$PLANNING_DIR/archive/$(date +%Y)"
+        echo -e "${GREEN}✅ Created planning structure at $PLANNING_DIR${RESET}"
+    else
+        echo -e "${RED}❌ Cannot continue without planning directory${RESET}"
+        exit 1
+    fi
+else
+    # Create subdirectories if they don't exist (non-destructive)
+    echo -e "${GREEN}✅ Using existing $PLANNING_DIR${RESET}"
+    mkdir -p "$PLANNING_DIR/explorations" 2>/dev/null || true
+    mkdir -p "$PLANNING_DIR/archive/$(date +%Y)" 2>/dev/null || true
+    echo "   Created missing subdirectories (if any)"
+fi
+
+echo
+
+# Step 4: Check for existing installation
+echo -e "${CYAN}Step 4: Installing Momentum files${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+if [[ -d "$MOMENTUM_HOME" ]]; then
+    echo -e "${YELLOW}⚠️  Existing installation found at $MOMENTUM_HOME${RESET}"
+    printf "Backup and reinstall? (y/n): "
+    read -r REINSTALL
+    if [[ "$REINSTALL" =~ ^[Yy]$ ]]; then
+        # Create backups inside momentum directory
+        mkdir -p "$MOMENTUM_HOME/.backups"
+        backup_name="backup-$(date +%Y%m%d_%H%M%S)"
+        backup_dir="$MOMENTUM_HOME/.backups/$backup_name"
+        
+        # Copy current installation to backup (excluding previous backups)
+        mkdir -p "$backup_dir"
+        for item in "$MOMENTUM_HOME"/*; do
+            if [[ "$(basename "$item")" != ".backups" ]]; then
+                cp -r "$item" "$backup_dir/" 2>/dev/null || true
+            fi
+        done
+        
+        echo -e "${GREEN}✅ Backed up to $backup_dir${RESET}"
+        
+        # Remove old files (except backups)
+        for item in "$MOMENTUM_HOME"/*; do
+            if [[ "$(basename "$item")" != ".backups" ]]; then
+                rm -rf "$item"
+            fi
+        done
+    else
+        echo "Keeping existing installation"
+    fi
+fi
+
+# Copy momentum files
+# Always copy components if they're missing
+echo "Installing Momentum components..."
 mkdir -p "$MOMENTUM_HOME"
 
-# Copy all momentum components to ~/.momentum
-echo -e "${CYAN}📄 Installing momentum agent...${RESET}"
-cp -r "$MOMENTUM_SOURCE/agents" "$MOMENTUM_HOME/"
+# Only copy if component doesn't exist or we just backed up
+if [[ ! -d "$MOMENTUM_HOME/agents" ]]; then
+    cp -r "$MOMENTUM_SOURCE/agents" "$MOMENTUM_HOME/" && echo "  ✓ Agents"
+fi
+if [[ ! -d "$MOMENTUM_HOME/commands" ]]; then
+    cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_HOME/" && echo "  ✓ Commands"
+fi
+if [[ ! -d "$MOMENTUM_HOME/templates" ]]; then
+    cp -r "$MOMENTUM_SOURCE/templates" "$MOMENTUM_HOME/" && echo "  ✓ Templates"
+fi
+if [[ ! -d "$MOMENTUM_HOME/resources" ]]; then
+    cp -r "$MOMENTUM_SOURCE/resources" "$MOMENTUM_HOME/" && echo "  ✓ Resources"
+fi
+if [[ ! -d "$MOMENTUM_HOME/subagents" ]]; then
+    cp -r "$MOMENTUM_SOURCE/subagents" "$MOMENTUM_HOME/" && echo "  ✓ Subagents"
+fi
+if [[ ! -d "$MOMENTUM_HOME/user-commands" ]]; then
+    cp -r "$MOMENTUM_SOURCE/user-commands" "$MOMENTUM_HOME/" && echo "  ✓ User commands"
+fi
 
-echo -e "${CYAN}📋 Installing commands...${RESET}"
-cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_HOME/"
-
-echo -e "${CYAN}📝 Installing templates...${RESET}"
-cp -r "$MOMENTUM_SOURCE/templates" "$MOMENTUM_HOME/"
-
-echo -e "${CYAN}📚 Installing resources...${RESET}"
-cp -r "$MOMENTUM_SOURCE/resources" "$MOMENTUM_HOME/"
-
-echo -e "${CYAN}🎓 Installing subagents...${RESET}"
-cp -r "$MOMENTUM_SOURCE/subagents" "$MOMENTUM_HOME/"
-
-echo -e "${CYAN}👤 Installing user commands...${RESET}"
-cp -r "$MOMENTUM_SOURCE/user-commands" "$MOMENTUM_HOME/"
-
-# Create config that points to ~/.momentum
-echo -e "${CYAN}⚙️  Creating configuration...${RESET}"
-cat > "$MOMENTUM_HOME/config" << 'EOF'
-#!/usr/bin/env zsh
+# Create configuration
+cat > "$MOMENTUM_HOME/config" << EOF
+#!/usr/bin/env bash
 # Momentum Configuration
-# Source this file to set up momentum paths
+# Generated: $(date)
 
-# Core Paths (customize these)
-export WORKFLOW_PROJECTS="${WORKFLOW_PROJECTS:-$HOME/obsidian/projects}"
-export WORKFLOW_DEV="${WORKFLOW_DEV:-$HOME/development/projects}"
+# Your workspace directories
+export WORKFLOW_DEV="$DEV_DIR"
+export WORKFLOW_PROJECTS="$PLANNING_DIR"
 
-# Momentum Installation (points to ~/.config/momentum)
+# Momentum installation
 export MOMENTUM_HOME="$HOME/.config/momentum"
-export WORKFLOW_HOME="$MOMENTUM_HOME"
 
-# Workflow Components (now in ~/.config/momentum)
-export WORKFLOW_COMMANDS="$MOMENTUM_HOME/commands"
-export WORKFLOW_TEMPLATES="$MOMENTUM_HOME/templates"
-export WORKFLOW_RESOURCES="$MOMENTUM_HOME/resources"
-export WORKFLOW_AGENTS="$MOMENTUM_HOME/agents"
+# Component paths (for internal use)
+export WORKFLOW_HOME="\$MOMENTUM_HOME"
+export WORKFLOW_COMMANDS="\$MOMENTUM_HOME/commands"
+export WORKFLOW_TEMPLATES="\$MOMENTUM_HOME/templates"
+export WORKFLOW_RESOURCES="\$MOMENTUM_HOME/resources"
+export WORKFLOW_AGENTS="\$MOMENTUM_HOME/agents"
 
-# External Integrations (optional)
-export WORKFLOW_STANDARDS="${WORKFLOW_STANDARDS:-$HOME/.workflow/standards}"
-
-# Quick Command Paths (for qback, qdiscovery, etc.)
-# These use ${PROJECT} which gets resolved at runtime
-export WORKFLOW_LATER_TEMPLATE="${WORKFLOW_PROJECTS}/${PROJECT}/later.md"
-export WORKFLOW_DISCOVERY_TEMPLATE="${WORKFLOW_PROJECTS}/${PROJECT}/discoveries"
-
-# Function to get current project name from git or directory
+# Helper function for project name detection
 get_project_name() {
     # Try git remote first
-    local git_remote=$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//')
-    if [[ -n "$git_remote" ]]; then
-        echo "$git_remote"
-        return
-    fi
-    
-    # Try current directory name if in projects
-    local current_dir=$(pwd)
-    if [[ "$current_dir" == *"/development/projects/"* ]]; then
-        echo "${current_dir#*/development/projects/}" | cut -d'/' -f1
+    local git_remote=\$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//')
+    if [[ -n "\$git_remote" ]]; then
+        echo "\$git_remote"
         return
     fi
     
     # Fallback to directory name
-    basename "$current_dir"
+    basename "\$(pwd)"
 }
-
-# Aliases for quick access
-alias workflow-config="source $MOMENTUM_HOME/config"
-alias workflow-home="cd $MOMENTUM_HOME"
-alias workflow-projects="cd $WORKFLOW_PROJECTS"
 EOF
 
-# Install setupd to PATH
-echo -e "${CYAN}🔧 Installing setupd to ~/.local/bin...${RESET}"
+echo -e "${GREEN}✅ Configuration written${RESET}"
+echo
+
+# Step 5: Install setupd
+echo -e "${CYAN}Step 5: Installing setupd command${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
 mkdir -p "$HOME/.local/bin"
 cp "$MOMENTUM_SOURCE/bin/setupd" "$HOME/.local/bin/"
 chmod +x "$HOME/.local/bin/setupd"
+echo -e "${GREEN}✅ Installed setupd to ~/.local/bin${RESET}"
+echo
 
-# Update setupd to use ~/.momentum instead of git repo
-# This is handled by the config which setupd sources
-
-# Update shell configuration
-echo -e "${CYAN}🐚 Configuring shell...${RESET}"
-
-# Determine shell config file
-if [[ -f "$HOME/.zshrc" ]]; then
-    SHELL_CONFIG="$HOME/.zshrc"
-elif [[ -f "$HOME/.bashrc" ]]; then
-    SHELL_CONFIG="$HOME/.bashrc"
-else
-    SHELL_CONFIG="$HOME/.zshrc"
-    echo -e "${YELLOW}Creating $SHELL_CONFIG${RESET}"
-    touch "$SHELL_CONFIG"
-fi
+# Step 6: Configure shell
+echo -e "${CYAN}Step 6: Configuring your shell${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
 
 # Function to add line to file if not present
-add_to_file() {
+add_to_shell() {
     local file=$1
     local line=$2
     if [[ -f "$file" ]]; then
-        if ! grep -Fxq "$line" "$file"; then
+        if ! grep -Fq "$line" "$file" 2>/dev/null; then
             echo "$line" >> "$file"
-            echo -e "${GREEN}  ✓ Added to $file${RESET}"
-        else
-            echo -e "${CYAN}  ○ Already in $file${RESET}"
+            return 0
         fi
     fi
+    return 1
 }
 
-echo -e "${CYAN}Adding to $SHELL_CONFIG:${RESET}"
+# Add configuration based on shell type
+case "$DETECTED_SHELL" in
+    fish)
+        # Fish shell syntax
+        mkdir -p "$HOME/.config/fish"
+        add_to_shell "$SHELL_CONFIG" "set -x PATH \$HOME/.local/bin \$PATH"
+        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_HOME/config.fish"
+        
+        # Create fish-compatible config
+        cat > "$MOMENTUM_HOME/config.fish" << 'EOF'
+# Momentum Configuration for Fish
+set -x MOMENTUM_HOME "$HOME/.config/momentum"
+source $MOMENTUM_HOME/config
 
-# Add ~/.local/bin to PATH if not already there
-if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    add_to_file "$SHELL_CONFIG" 'export PATH="$HOME/.local/bin:$PATH"'
-fi
+# Momentum alias
+alias momentum 'claude --append-system-prompt (cat $MOMENTUM_HOME/agents/MOMENTUM.md) "Activate Momentum"'
+EOF
+        ;;
+    *)
+        # Bash/Zsh syntax
+        add_to_shell "$SHELL_CONFIG" 'export PATH="$HOME/.local/bin:$PATH"'
+        add_to_shell "$SHELL_CONFIG" ""
+        add_to_shell "$SHELL_CONFIG" "# Momentum Configuration"
+        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_HOME/config"
+        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'claude --append-system-prompt "$(cat $MOMENTUM_HOME/agents/MOMENTUM.md)" "Activate Momentum"'"'"
+        ;;
+esac
 
-# Add momentum configuration
-add_to_file "$SHELL_CONFIG" ''
-add_to_file "$SHELL_CONFIG" '# Momentum Configuration'
-add_to_file "$SHELL_CONFIG" 'source ~/.config/momentum/config'
-add_to_file "$SHELL_CONFIG" 'export MOMENTUM_HOME="$HOME/.config/momentum"'
-add_to_file "$SHELL_CONFIG" ''
-add_to_file "$SHELL_CONFIG" '# Momentum alias - activates momentum mode'
-add_to_file "$SHELL_CONFIG" '# Run from your project directory to start momentum mode'
-add_to_file "$SHELL_CONFIG" '# Sends "Activate Momentum" to trigger the startup sequence'
-add_to_file "$SHELL_CONFIG" 'alias momentum='\''source ~/.config/momentum/config && claude --append-system-prompt "$(cat $MOMENTUM_HOME/agents/MOMENTUM.md)" "Activate Momentum"'\'''
+echo -e "${GREEN}✅ Shell configuration updated${RESET}"
+echo
 
-# Install universal Claude components
-echo -e "${CYAN}📦 Installing universal Claude components...${RESET}"
+# Step 7: Set up Claude Code integration
+echo -e "${CYAN}Step 7: Setting up Claude Code integration${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
 
-# Symlink subagents to global claude agents (they're universal)
+# Create .claude directory structure
 mkdir -p "$HOME/.claude/agents"
+mkdir -p "$HOME/.claude/commands"
+
+# Symlink subagents
 for agent in "$MOMENTUM_HOME/subagents"/*.md; do
     if [[ -f "$agent" ]]; then
-        ln -sf "$agent" "$HOME/.claude/agents/$(basename "$agent")"
+        ln -sf "$agent" "$HOME/.claude/agents/$(basename "$agent")" 2>/dev/null || true
     fi
 done
-echo -e "${GREEN}  ✓ Symlinked subagents to ~/.claude/agents${RESET}"
+echo "  ✓ Linked subagents"
 
-# Symlink user commands to global claude commands (they're universal)
-mkdir -p "$HOME/.claude/commands"
-if [[ -f "$MOMENTUM_HOME/user-commands/ideate.md" ]]; then
-    ln -sf "$MOMENTUM_HOME/user-commands/ideate.md" "$HOME/.claude/commands/ideate.md"
-    echo -e "${GREEN}  ✓ Symlinked ideate command to ~/.claude/commands${RESET}"
-fi
+# Symlink global commands
+for cmd in ideate plan-idea setup-luminaries; do
+    if [[ -f "$MOMENTUM_HOME/user-commands/$cmd.md" ]]; then
+        ln -sf "$MOMENTUM_HOME/user-commands/$cmd.md" "$HOME/.claude/commands/$cmd.md" 2>/dev/null || true
+    fi
+done
+echo "  ✓ Linked global commands"
 
-if [[ -f "$MOMENTUM_HOME/user-commands/plan-idea.md" ]]; then
-    ln -sf "$MOMENTUM_HOME/user-commands/plan-idea.md" "$HOME/.claude/commands/plan-idea.md"
-    echo -e "${GREEN}  ✓ Symlinked plan-idea command to ~/.claude/commands${RESET}"
-fi
-
-if [[ -f "$MOMENTUM_HOME/user-commands/setup-luminaries.md" ]]; then
-    ln -sf "$MOMENTUM_HOME/user-commands/setup-luminaries.md" "$HOME/.claude/commands/setup-luminaries.md"
-    echo -e "${GREEN}  ✓ Symlinked setup-luminaries command to ~/.claude/commands${RESET}"
-fi
-
-# Source config to get WORKFLOW_PROJECTS
-source "$MOMENTUM_HOME/config"
-
-# Create obsidian structure if applicable
-if [[ -n "$WORKFLOW_PROJECTS" && -d "${WORKFLOW_PROJECTS%/*}" ]]; then
-    echo -e "${CYAN}📁 Creating obsidian structure...${RESET}"
-    mkdir -p "$WORKFLOW_PROJECTS/../explorations"
-    mkdir -p "$WORKFLOW_PROJECTS/../archive/$(date +%Y)"
-    echo -e "${GREEN}✅ Created obsidian directories${RESET}"
-fi
-
-echo
-echo -e "${GREEN}✅ Momentum installed successfully!${RESET}"
-echo
-echo -e "${CYAN}Installation summary:${RESET}"
-echo -e "  • Momentum home: ${YELLOW}$MOMENTUM_HOME${RESET}"
-echo -e "  • Commands: ${YELLOW}$MOMENTUM_HOME/commands/${RESET}"
-echo -e "  • Templates: ${YELLOW}$MOMENTUM_HOME/templates/${RESET}"
-echo -e "  • Config: ${YELLOW}$MOMENTUM_HOME/config${RESET}"
-echo -e "  • Setupd: ${YELLOW}$HOME/.local/bin/setupd${RESET}"
+echo -e "${GREEN}✅ Claude Code integration complete${RESET}"
 echo
 
-# Test if we can run setupd
-echo -e "${CYAN}Testing installation...${RESET}"
-if command -v setupd &> /dev/null; then
-    echo -e "${GREEN}✅ setupd is available in current shell${RESET}"
-    echo
-    echo -e "${GREEN}You're ready to go!${RESET}"
-    echo
-    echo -e "${CYAN}Quick start:${RESET}"
-    echo -e "  1. Setup a project: ${YELLOW}setupd <project-name>${RESET}"
-    echo -e "  2. Start momentum: ${YELLOW}cd ~/development/projects/<project-name> && momentum${RESET}"
-else
-    echo -e "${YELLOW}⚠️  setupd not found in PATH${RESET}"
-    echo
-    echo -e "${RED}IMPORTANT: You must reload your shell first!${RESET}"
-    echo
-    echo -e "${CYAN}Run this command:${RESET}"
-    echo -e "  ${YELLOW}source $SHELL_CONFIG${RESET}"
-    echo
-    echo -e "${CYAN}Then you can:${RESET}"
-    echo -e "  1. Setup a project: ${YELLOW}setupd <project-name>${RESET}"
-    echo -e "  2. Start momentum: ${YELLOW}cd ~/development/projects/<project-name> && momentum${RESET}"
-fi
-
+# Final instructions
 echo
-echo -e "${CYAN}The momentum alias runs:${RESET}"
-echo -e "  ${YELLOW}claude --append-system-prompt \"\$(cat ~/.config/momentum/agents/MOMENTUM.md)\"${RESET}"
+echo -e "${GREEN}╔════════════════════════════════════════╗${RESET}"
+echo -e "${GREEN}║    Installation Complete! 🎉           ║${RESET}"
+echo -e "${GREEN}╚════════════════════════════════════════╝${RESET}"
 echo
-echo -e "${MAGENTA}Ship working software every iteration! 🚀${RESET}"
+echo "Your workspace:"
+echo -e "  📝 Planning: ${BLUE}$PLANNING_DIR${RESET}"
+echo -e "  💻 Development: ${BLUE}$DEV_DIR${RESET}"
+echo
+echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo -e "${YELLOW}IMPORTANT: Reload your shell first!${RESET}"
+echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo
+echo "Run this command:"
+echo -e "  ${CYAN}source $SHELL_CONFIG${RESET}"
+echo
+echo "Then start your first project:"
+echo
+echo -e "${MAGENTA}WHERE TO RUN COMMANDS:${RESET}"
+echo "┌─────────────────┬──────────────────────┐"
+echo "│ In Terminal     │ In Claude Code       │"
+echo "├─────────────────┼──────────────────────┤"
+echo "│ momentum        │ /ideate              │"
+echo "│ setupd          │ /plan-idea           │"
+echo "│                 │ /plan-iteration      │"
+echo "│                 │ /plan-task           │"
+echo "└─────────────────┴──────────────────────┘"
+echo
+echo -e "${MAGENTA}STEP-BY-STEP FIRST PROJECT:${RESET}"
+echo "1. Start Momentum mode:"
+echo -e "   ${CYAN}momentum${RESET}"
+echo
+echo "2. In Claude Code, explore idea:"
+echo -e "   ${CYAN}/ideate 'your project idea'${RESET}"
+echo
+echo "3. Transform to project vision:"
+echo -e "   ${CYAN}/plan-idea${RESET}"
+echo
+echo "4. In terminal, set up project:"
+echo -e "   ${CYAN}setupd project-name${RESET}"
+echo
+echo "5. In Claude Code, plan work:"
+echo -e "   ${CYAN}/plan-iteration${RESET}"
+echo
+echo -e "${GREEN}Ship working software every iteration! 🚀${RESET}"
