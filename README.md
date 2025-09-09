@@ -34,7 +34,8 @@ The installer will ask where you keep your code and where to store project docum
 ### Your First Project
 
 ```bash
-# 1. Start Claude with Momentum
+# 1. Start Claude with Momentum (from anywhere - home dir is fine)
+cd ~
 momentum
 
 # 2. In Claude, explore your idea
@@ -47,7 +48,7 @@ momentum
 setupd habit-tracker
 cd ~/development/projects/habit-tracker
 
-# 5. Build your first iteration (in Claude)
+# 5. Build your first iteration (in Claude - from project dir)
 momentum
 /plan-iteration
 /decompose-iteration  
@@ -80,8 +81,16 @@ Commands run in two places:
 - `/plan-iteration` - Plan what to build next
 - `/decompose-iteration` - Break features into tasks
 - `/plan-task N` - Build specific task
+- `/plan-test N` - Write tests for completed task
 - `/complete-task N` - Mark task done with evidence
 - `/complete-iteration` - Ship and archive
+- `/save-state` - Save progress when context fills
+- `/restore-state` - Resume from saved state
+
+**💡 Important:** Where you run `momentum` matters:
+- **For exploration** (`/ideate`): Run from home dir or anywhere
+- **For building** (`/plan-iteration`, `/plan-task`): Run from project directory
+- Claude creates `.claude/` in your current directory, so project commands need project context
 
 ### The Magic: Context Management
 
@@ -96,18 +105,22 @@ You can work on complex projects without losing progress.
 
 ## Common Workflows
 
-### Starting Fresh
+### Starting Fresh (Exploring Ideas)
 ```bash
-momentum              # Start Claude
-/ideate "your idea"   # Explore
-/plan-idea           # Create project
-setupd projectname   # Set up directories
-/plan-iteration      # Start building
+cd ~                 # Start from home dir for exploration
+momentum             # Start Claude
+/ideate "your idea"  # Explore
+/plan-idea          # Create project vision
+# Exit Claude
+setupd projectname  # Set up directories (in terminal)
+cd ~/development/projects/projectname
+momentum            # Restart Claude in project dir
+/plan-iteration     # Start building
 ```
 
 ### Continuing Work
 ```bash
-cd ~/development/projects/myproject
+cd ~/development/projects/myproject  # Always from project dir
 momentum
 /load-app-context    # Get oriented
 /plan-task 3         # Continue where you left off
