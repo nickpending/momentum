@@ -104,7 +104,6 @@ IF GROUPED TASKS:
 ALSO REQUIRED:
 - READ {project-root}/.workflow/artifacts/ITERATION.md (embedded standards)
 - READ {project-root}/.workflow/artifacts/APP_CONTEXT.md (integration patterns)
-- REVIEW existing codebase for similar patterns
 
 SYSTEM INTEGRATION CONTEXT:
 - What existing services/components does this task need to integrate with?
@@ -113,6 +112,25 @@ SYSTEM INTEGRATION CONTEXT:
 - How does this task fit into the overall system architecture?
 
 VERIFICATION: State task description, integration requirements, and embedded standards that apply
+```
+
+**CHECKPOINT 1.5: Codebase Understanding (MANDATORY)**
+
+```
+⚠️ YOU CANNOT PLAN WITHOUT READING CODE ⚠️
+
+REQUIRED ACTIONS:
+- Use Glob to find relevant files for your task
+- Read the actual implementation files you'll be working with
+- Read files that do similar things to what you're building
+- Understand the patterns, not just the documentation
+
+VERIFICATION GATE: 
+- List specific files you read (with paths)
+- State the patterns you found
+- Explain how existing code does similar things
+
+FAILURE MODE: If you haven't read actual code, STOP. You cannot proceed.
 ```
 
 **CHECKPOINT 2: Task Value Validation**

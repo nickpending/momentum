@@ -42,11 +42,11 @@ VERIFICATION: State each feature found and confirm they need decomposition
 
 ```
 REQUIRED: Explore codebase to understand existing patterns:
-- SCAN project structure and file organization
-- READ key files to understand conventions
-- IDENTIFY reusable components and utilities
-- MAP similar features already implemented
-- NOTE testing patterns and approaches
+- USE Glob to scan project structure and file organization  
+- READ 5-10 actual implementation files (not just configs)
+- IDENTIFY reusable components and utilities in the code
+- FIND similar features already implemented and read their code
+- CHECK how existing features are structured and organized
 
 CONSIDER: What patterns already exist that tasks should follow?
 VERIFICATION: List discovered patterns tasks must follow

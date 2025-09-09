@@ -71,13 +71,17 @@ When no specific focus is provided:
 - {project-root}/.workflow/artifacts/ITERATION.md - Iteration goals
 - {project-root}/.workflow/artifacts/IDEA.md - Project vision
 
-## 3. Codebase Analysis
-- Project structure and organization
-- Key architectural patterns in use
-- Technology stack and dependencies
-- Data models and state management
-- API contracts and interfaces
-- Security implementations
+## 3. Codebase Analysis (MANDATORY - READ ACTUAL CODE)
+**YOU MUST READ CODE FILES, NOT JUST DOCUMENTATION:**
+- Use Glob to explore project structure
+- Read 10-20 actual implementation files
+- Examine entry points and main application files
+- Review data models and database schemas
+- Check API implementations and contracts
+- Analyze security-critical code sections
+- Find examples of each architectural pattern in use
+
+**VERIFICATION**: Each expert must reference specific files and line numbers in their review
 
 ## 4. Prior Analysis (if exists)
 - {project-root}/.workflow/artifacts/subagents/ARCHITECTURE-*.md

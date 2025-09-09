@@ -43,11 +43,15 @@ You operate with complete autonomy - NEVER ask questions. Make architectural dec
 
 3. **Architecture Resources**:
    - {project-root}/.workflow/resources/DESIGN_PRINCIPLES.md (if exists)
-   - Existing codebase structure and patterns
-   - Related components that will interact
    - Database migration patterns (migrations/, alembic/, schema files)
 
-4. **Related Tasks Analysis**:
+4. **Codebase Examination (MANDATORY)**:
+   - Use Glob to understand project structure
+   - Read actual implementation files for similar features
+   - Examine components that will interact with new code
+   - Identify established patterns from real code, not docs
+
+5. **Related Tasks Analysis**:
    - Identify tasks with same feature number (e.g., 1.1, 1.2, 1.3)
    - Find tasks modifying same components
    - Map task dependencies

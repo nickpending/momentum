@@ -471,6 +471,46 @@ VERIFICATION GATE: Before finalizing ITERATION.md, confirm:
 FAILURE MODE: If missing interview details or using generic descriptions, REGENERATE
 ```
 
+### PHASE 4.5: TEST INFRASTRUCTURE (First Iteration Only)
+
+**CHECKPOINT 14: Create TESTING.md**
+
+```
+ONLY IF FIRST ITERATION (no .workflow/archives/ directory):
+
+1. CHECK: Does {project-root}/.workflow/artifacts/TESTING.md exist?
+   - If yes → skip this phase
+   - If no → create it
+
+2. IDENTIFY tech stack from ITERATION.md you just created
+
+3. READ the appropriate claudex standard:
+   - ~/.claudex/standards/claudex-python.md for Python
+   - ~/.claudex/standards/claudex-typescript.md for TypeScript  
+   - ~/.claudex/standards/claudex-golang.md for Go
+   - ~/.claudex/standards/claudex-rust.md for Rust
+   - etc.
+
+4. EXTRACT testing information from the claudex standard:
+   - Test framework and commands
+   - Directory structure (language-specific!)
+   - Dependency installation
+   - Environment setup
+   - Common patterns and examples
+
+5. LOAD {project-root}/.workflow/templates/TESTING_TEMPLATE.md
+
+6. POPULATE the template with extracted information:
+   - Replace placeholders with actual values from claudex
+   - Keep language-specific conventions (e.g., Go's *_test.go)
+   - Include real examples from the standard
+   - Make commands concrete and runnable
+
+7. WRITE to {project-root}/.workflow/artifacts/TESTING.md
+
+VERIFICATION: TESTING.md exists with concrete test setup
+```
+
 ### PHASE 5: COMPLETION STATEMENT
 
 ```
@@ -485,6 +525,7 @@ ITERATION PLANNED WITH INTERVIEW GOLD PRESERVED
 ✅ Exact success verification commands
 ✅ All integration points mapped
 ✅ Selected items moved to active.md
+✅ TESTING.md created (if first iteration)
 
 No generic descriptions - everything concrete from interview.
 

@@ -43,12 +43,16 @@ You operate with complete autonomy - NEVER ask questions. Make technical decisio
 
 3. **Architectural Context**:
    - {project-root}/.workflow/artifacts/subagents/ARCHITECTURE-*.md (if exists) - Understand structural decisions
-   - Existing codebase for similar implementations
-   - Related components for pattern consistency
 
-4. **Technical Standards**:
+4. **Code Analysis (MANDATORY)**:
+   - Use Glob to find similar implementations
+   - Read actual code files that solve similar problems
+   - Examine the specific algorithms and patterns in use
+   - Study error handling and edge case management in existing code
+
+5. **Technical Standards**:
    - {project-root}/.workflow/resources/IMPLEMENTATION_GUIDELINES.md (if exists)
-   - Language/framework specific patterns in codebase
+   - Extract patterns from actual code, not just documentation
 
 # Core Responsibilities
 

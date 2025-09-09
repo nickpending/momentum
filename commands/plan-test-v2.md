@@ -35,6 +35,23 @@ Think like a safety inspector who:
 
 ## PHASE 1: CONTEXT AND RISK ANALYSIS
 
+### CHECKPOINT 0.5: Load Test Infrastructure
+
+```
+REQUIRED: Understand how testing works in this project:
+- READ {project-root}/.workflow/artifacts/TESTING.md
+- EXTRACT test runner command and framework
+- NOTE directory structure for tests
+- UNDERSTAND environment requirements
+
+IF TESTING.md MISSING:
+- Check package.json, pyproject.toml, go.mod for test scripts
+- Look for existing test files to understand patterns
+- Warn user that TESTING.md is missing
+
+VERIFICATION: You know how to run tests for this project
+```
+
 ### CHECKPOINT 1: Load Task and Implementation Context
 
 ```
@@ -124,10 +141,15 @@ VERIFICATION: List the HIGH risk components identified
 
 ```
 REQUIRED: Find and analyze existing tests to copy their patterns:
-- SCAN test directories for similar functionality tests
+- USE Glob to find test files based on TESTING.md structure
 - FIND 2-3 existing tests that test comparable features
-- READ these tests to understand their structure
+- READ these test files completely (use Read tool)
 - EXTRACT their patterns
+
+IF NO TESTS EXIST YET:
+- Use examples from TESTING.md
+- Follow patterns from ITERATION.md's embedded standards
+- You're writing the first tests
 
 PATTERN EXTRACTION:
 For each similar test found:
@@ -408,23 +430,14 @@ VERIFICATION: Thresholds set and validated
 ```
 REQUIRED: Execute all tests with real services
 
-Run unit tests (fast, no setup needed):
+Run tests using commands from TESTING.md:
 ```bash
-pytest tests/unit/ -v
-# or: npm run test:unit
-# or: cargo test --lib
-```
+# For unit tests:
+[Use unit test command from TESTING.md]
 
-Run integration tests (need services):
-```bash
-# Start services first
-docker-compose up -d
-# or start your services manually
-
-# Run integration tests
-pytest tests/integration/ -v
-# or: npm run test:integration
-# or: cargo test --test '*'
+# For integration tests:
+[Use start services command from TESTING.md if needed]
+[Use integration test command from TESTING.md]
 ```
 
 ALL tests must pass

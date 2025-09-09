@@ -103,6 +103,23 @@ Before writing a test, ask:
 
 ## PHASE 1: CONTEXT AND CODE ANALYSIS
 
+### CHECKPOINT 0.5: Load Test Infrastructure
+
+```
+REQUIRED: Understand how testing works in this project:
+- READ {project-root}/.workflow/artifacts/TESTING.md
+- EXTRACT test runner command and framework
+- NOTE directory structure for tests
+- UNDERSTAND environment requirements
+
+IF TESTING.md MISSING:
+- Check package.json, pyproject.toml, go.mod for test scripts
+- Look for existing test files to understand patterns
+- Warn user that TESTING.md is missing
+
+VERIFICATION: You know how to run tests for this project
+```
+
 ### CHECKPOINT 1: Load Task and Implementation Context
 
 ```
@@ -128,11 +145,16 @@ VERIFICATION: Summarize what needs unit vs integration tests
 
 ```
 REQUIRED: Find and analyze existing tests to copy their patterns:
-- SCAN test directories for tests covering similar functionality
+- USE Glob to find test files based on TESTING.md structure
 - FIND 2-3 existing tests that test comparable features
-- READ these tests completely to understand their structure
+- READ these test files completely (use Read tool)
 - EXTRACT their setup/teardown patterns
 - NOTE their assertion styles and approaches
+
+IF NO TESTS EXIST YET:
+- Use examples from TESTING.md
+- Follow patterns from ITERATION.md's embedded standards
+- You're writing the first tests
 
 PATTERN EXTRACTION:
 For each similar test found:
@@ -414,22 +436,22 @@ REQUIRED: Execute both test types:
 Run unit tests:
 
 ```bash
-# Run unit tests (fast, no setup needed)
-pytest tests/unit/ -v
+# Use command from TESTING.md for unit tests
+[Run unit test command from TESTING.md]
 # Should complete in seconds
-# No database queries in output
+# No external service calls in output
 ```
 
 Run integration tests:
 
 ```bash
-# Start services
-docker-compose up -d db redis
+# Start services if needed (from TESTING.md)
+[Start services command from TESTING.md if applicable]
 
-# Run integration tests
-pytest tests/integration/ -v
-# Should see real database queries
-# Should see service interactions
+# Use command from TESTING.md for integration tests
+[Run integration test command from TESTING.md]
+# Should see real service interactions
+# Should see data persistence
 ```
 
 ```
