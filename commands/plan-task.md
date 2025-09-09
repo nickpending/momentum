@@ -12,13 +12,13 @@
 **🛑 CHECK FOR TASK GROUPING BEFORE ANYTHING ELSE**  
 **🛑 BUILD WORKING SOFTWARE FIRST**  
 **🛑 DEMO-DRIVEN DEVELOPMENT**  
-**🛑 ONE SMOKE TEST THAT PROVES IT WORKS**  
+**🛑 NO TESTS DURING IMPLEMENTATION**  
 **🛑 EMBEDDED STANDARDS MUST BE APPLIED**
 
 ## CORE PRINCIPLES (APPLY THROUGHOUT)
 
 ### Build-First Development
-- Implementation before tests
+- Implementation only - no tests
 - Focus on working demos
 - Demo commands prove functionality works
 - Real integration throughout
@@ -27,7 +27,7 @@
 - ACTUAL WORKING COMMANDS REQUIRED - NO CLAIMS
 - REAL INTEGRATION PROOF REQUIRED
 - STANDARDS COMPLIANCE EXAMPLES REQUIRED
-- ONE SMOKE TEST THAT PROVES IT WORKS
+- DEMO COMMAND THAT PROVES IT WORKS
 
 ### Composition-First Enforcement
 - Does this task do exactly ONE thing?
@@ -305,7 +305,7 @@ FOR SINGLE TASK:
 
 FOR GROUPED TASKS:
 - KEY commands that prove the feature works
-- Can test individual pieces AND the whole
+- Can verify individual pieces AND the whole
 - All integration points verified
 
 SUCCESS DEMONSTRATION:
@@ -378,7 +378,7 @@ FOR SINGLE TASK:
 FOR GROUPED TASKS:
 - Implement common patterns first
 - Build each task incrementally  
-- Test as you go
+- Verify as you go
 - Reuse code across tasks
 - Touch each file minimally
 
@@ -397,18 +397,18 @@ VERIFICATION: Show files created and basic functionality working
 REQUIRED: Connect to existing system:
 - Wire up to existing APIs/services
 - Ensure data flows correctly
-- Test with actual running services
+- Verify with actual running services
 - Verify doesn't break existing features
 
 FOR GROUPED TASKS:
-- Test each individual task works
-- Test they work together coherently
+- Verify each individual task works
+- Verify they work together coherently
 - Verify no regressions
 - Check all integration points
 
 INTEGRATION CHECKLIST:
 - Start required services (docker-compose up)
-- Test actual service communication
+- Verify actual service communication
 - Verify data persistence works
 - Check existing features still function
 
@@ -478,7 +478,7 @@ FOR GROUPED TASKS:
 - VERIFY consistent behavior across all tasks
 - DEMONSTRATE complete feature functionality
 
-LIVE SYSTEM TESTING:
+LIVE SYSTEM VERIFICATION:
 - Real HTTP requests to running services
 - Actual database operations
 - WebSocket connections if applicable
@@ -506,8 +506,8 @@ FOR GROUPED TASKS:
 ✅ No inconsistencies between tasks
 
 ⚠️ TASK STATUS REMAINS: 🔄 In Progress
-⚠️ DO NOT MARK AS COMPLETE
-⚠️ Task completion happens separately after testing
+⚠️ DO NOT MARK AS COMPLETE - USE /complete-task FOR THAT
+⚠️ THIS COMMAND ONLY BUILDS - NEVER CHANGES STATUS
 
 WHAT'S BUILT:
 - Code is written and working
@@ -516,7 +516,7 @@ WHAT'S BUILT:
 
 WHAT'S NOT DONE:
 - Task NOT marked complete in TASKS.md
-- Testing phase may still be needed
+- Tests can be written later with /plan-test
 - Final completion step still required
 
 VERIFICATION: Implementation code complete, task remains in progress
@@ -574,12 +574,14 @@ Use Edit or MultiEdit tool to update ONLY the "Discovered During Implementation"
 - **Risk Assessment:** [Update HIGH/LOW assessments]
 
 ⚠️ CRITICAL: DO NOT CHANGE TASK STATUS
-⚠️ CRITICAL: DO NOT MARK TASKS AS COMPLETE
+⚠️ CRITICAL: DO NOT MARK TASKS AS COMPLETE  
+⚠️ CRITICAL: DO NOT CHANGE "🔄 In Progress" TO "✅ Complete"
 ⚠️ CRITICAL: ONLY UPDATE THE DISCOVERIES SECTION
+⚠️ CRITICAL: LEAVE THE TASK STATUS LINE UNTOUCHED
 
-Task status changes happen separately during task completion phase.
+Task status changes happen ONLY with the /complete-task command, NEVER during /plan-task.
 
-This captures real implementation insights for testing.
+This captures real implementation insights for future reference.
 DO NOT PROCEED until you've updated ONLY the discoveries in {project-root}/.workflow/artifacts/TASKS.md
 ```
 
@@ -593,7 +595,7 @@ DO NOT PROCEED until you've updated ONLY the discoveries in {project-root}/.work
 
 ### Integration Requirements
 - Use real services from start
-- Test with live system
+- Verify with live system
 - Verify end-to-end workflows
 - No mocking internal components
 
