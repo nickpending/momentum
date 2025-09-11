@@ -30,15 +30,21 @@
 **🛑 ACTUAL CODE EXAMPLES AND DATA STRUCTURES**  
 **🛑 ONE SMOKE TEST PER TASK - NO TDD THEATER**
 
-## ⚠️ CRITICAL: RESEARCH SPIKE REQUIREMENTS ⚠️
+## ⚠️ CRITICAL: TASK TYPE REQUIREMENTS ⚠️
 
+### Research Spikes
 **🛑 RESEARCH SPIKES MUST PRODUCE WORKING CODE:**
-
 - Time-boxed exploration (1-2 hours max)
 - Concrete working code artifact (not just documentation)
 - Throwaway code is acceptable for learning
 - Must test actual integration/approach through building
 - Decision criteria based on what actually works in practice
+
+### Design Tasks
+**🛑 DESIGN TASKS PRODUCE ARTIFACTS:**
+- Output goes to `.workflow/artifacts/designs/`
+- Time-boxed design exploration
+- Creates artifacts that guide implementation
 
 ## ⚠️ CRITICAL: THINK ⚠️
 
@@ -61,7 +67,6 @@ REQUIRED: Read and acknowledge ALL foundation files:
 - {project-root}/.workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
 - {project-root}/.workflow/artifacts/APP_CONTEXT.md (if exists) - Current system understanding
 - $WORKFLOW_PROJECTS/{projectname}/later.md (if exists) - Later items to consider
-- $WORKFLOW_PROJECTS/{projectname}/designs/ (if exists) - Design artifacts and decisions
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
 ```
@@ -273,6 +278,7 @@ TASK DISCOVERY QUESTIONS:
 
 TASK TYPE IDENTIFICATION:
 - Implementation tasks: Known approach, clear patterns
+- Design tasks: Architecture, UI/UX, data model, or API design needed
 - Research spikes: Time-boxed exploration (1-2 hours max)
 - Integration tasks: Connect components to existing system
 - Wiring tasks: Configuration and orchestration

@@ -91,8 +91,9 @@ NOW load detailed context for your grouped tasks:
 
 IF SINGLE TASK:
 - READ detailed requirements for task $TASK_NUMBER in TASKS.md
-- EXTRACT deliverables, demo commands, dependencies
+- EXTRACT task type, deliverables, demo commands, dependencies
 - VERIFY dependencies are met
+- CHECK TASK TYPE (Implementation/Design/Research/Integration/Wiring)
 
 IF GROUPED TASKS:
 - READ detailed requirements for ALL grouped tasks
@@ -100,6 +101,7 @@ IF GROUPED TASKS:
 - EXTRACT all deliverables and demo commands
 - VERIFY all dependencies are met
 - NOTE which files will be touched multiple times
+- CHECK TASK TYPES (should be consistent for grouped tasks)
 
 ALSO REQUIRED:
 - READ {project-root}/.workflow/artifacts/ITERATION.md (embedded standards)
@@ -123,14 +125,19 @@ REQUIRED ACTIONS:
 - Use Glob to find relevant files for your task
 - Read the actual implementation files you'll be working with
 - Read files that do similar things to what you're building
-- Understand the patterns, not just the documentation
+- Understand the context, not just the documentation
 
 VERIFICATION GATE: 
 - List specific files you read (with paths)
-- State the patterns you found
-- Explain how existing code does similar things
+- State what you learned about the system
+- Explain the context your task operates in
 
 FAILURE MODE: If you haven't read actual code, STOP. You cannot proceed.
+
+NOTE FOR DESIGN TASKS:
+- Output goes to {project-root}/.workflow/artifacts/designs/task-{number}.md
+- You're reading for context, not constraints
+- Feel free to reimagine and improve
 ```
 
 **CHECKPOINT 2: Task Value Validation**

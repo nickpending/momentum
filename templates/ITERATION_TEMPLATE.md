@@ -72,7 +72,9 @@ Examples:
 
 ### 1. [specific_component_feature_name] 📋 Planned
 
-**Type**: Implementation Task / Research Spike / Integration Task / Wiring Task **Depends on**: None / Task N **Estimated time**: N hours
+**Type**: Implementation Task / Design Task / Research Spike / Integration Task / Wiring Task
+**Depends on**: None / Task N  
+**Estimated time**: N hours
 
 **What to build**: [1-2_sentences_of_what_not_why]
 
