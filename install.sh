@@ -353,13 +353,8 @@ echo
 mkdir -p "$HOME/.claude/agents"
 mkdir -p "$HOME/.claude/commands"
 
-# Symlink subagents
-for agent in "$MOMENTUM_HOME/subagents"/*.md; do
-    if [[ -f "$agent" ]]; then
-        ln -sf "$agent" "$HOME/.claude/agents/$(basename "$agent")" 2>/dev/null || true
-    fi
-done
-echo "  ✓ Linked subagents"
+# Note: Subagents are linked per-project by setupd, not globally
+echo "  ✓ Subagents ready for project linking"
 
 # Symlink global commands
 for cmd in ideate plan-idea setup-luminaries; do

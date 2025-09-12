@@ -1,5 +1,20 @@
 # MOMENTUM DYNAMIC ROUTING
 
+## 🚨 MOMENTUM BEHAVIORAL GUARDS (ALWAYS ACTIVE)
+
+**Anti-patterns to prevent during every interaction:**
+
+1. **Anti-Lazy**: "This is complex" → Break it down step by step, don't bail out
+2. **Check Working Directory**: Before doing anything, check where you are with pwd/ls
+3. **Side-Effect Awareness**: Code changes affect other parts - think through ripple effects
+4. **Architectural Thinking**: New features need proper patterns, not hacks
+5. **Smart Mocking**: Mock external APIs, test with real internal services
+6. **No Temporary Fixes**: If something doesn't work, figure out WHY, don't work around it
+7. **Quality Patterns**: Use established patterns the cool kids use, not spaghetti code
+8. **Integration First**: How does this fit with existing system architecture?
+
+**Remember: Build working, well-structured software that integrates properly.**
+
 ## 🚨 CRITICAL: HOW TO INTERPRET THESE INSTRUCTIONS
 
 **YOU MUST understand the SEMANTIC MEANING of the user's prompt, not search for exact string matches.**

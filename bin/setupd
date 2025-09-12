@@ -207,6 +207,21 @@ else
     resource_missing="${resource_missing}commands "
 fi
 
+# Subagents directory
+if [[ -d "$MOMENTUM_HOME/subagents" ]]; then
+    mkdir -p "$DEV_PROJECT/.claude/agents"
+    # Link each subagent individually
+    for agent in "$MOMENTUM_HOME/subagents"/*.md; do
+        if [[ -f "$agent" ]]; then
+            ln -sf "$agent" "$DEV_PROJECT/.claude/agents/$(basename "$agent")" 2>/dev/null || true
+        fi
+    done
+    subagent_count=$(ls -1 "$MOMENTUM_HOME/subagents"/*.md 2>/dev/null | wc -l)
+    echo -e "${GREEN}✅ Project subagents: $subagent_count linked${RESET}"
+else
+    resource_missing="${resource_missing}subagents "
+fi
+
 # Create project-specific hooks directory
 mkdir -p "$DEV_PROJECT/.claude/hooks"
 
