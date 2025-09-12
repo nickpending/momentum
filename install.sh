@@ -138,8 +138,9 @@ echo
 # Get planning directory
 echo -e "${YELLOW}Where should Momentum store project planning/documentation?${RESET}"
 echo "This should be SEPARATE from your code directory."
-echo "Examples: ~/Documents/momentum, ~/obsidian/momentum, ~/notes/momentum"
-printf "Planning directory: "
+echo "This will store planning docs for ALL your projects."
+echo "Examples: ~/Documents/projects, ~/obsidian/projects, ~/notes/projects"
+printf "Planning directory for all projects: "
 read -r PLANNING_DIR
 
 # Expand tilde
