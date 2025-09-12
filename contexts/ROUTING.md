@@ -12,14 +12,14 @@ When you receive a user prompt:
 
 ## CONTEXT LOADING RULES
 
-### 🔍 Exploration & Ideation
+### 🔍 Exploration
 
 **WHEN THE USER IS ASKING ABOUT (semantic understanding):**
-- Exploring a new idea or concept
-- Brainstorming solutions
+- Exploring a codebase or system
+- Understanding how something works
+- Investigating options or approaches
 - Thinking through problems
-- Wanting to discuss possibilities
-- Early stage ideation
+- Discussing possibilities
 
 **Example phrases that indicate this context:**
 - "let's explore", "I'm thinking about", "what if we"
