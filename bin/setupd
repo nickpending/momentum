@@ -207,6 +207,54 @@ else
     resource_missing="${resource_missing}commands "
 fi
 
+# Create project-specific hooks directory
+mkdir -p "$DEV_PROJECT/.claude/hooks"
+
+# Link the momentum hook from installation
+if [[ -f "$MOMENTUM_HOME/hooks/momentum-hook.ts" ]]; then
+    rm -f "$DEV_PROJECT/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
+    ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$DEV_PROJECT/.claude/hooks/momentum-hook.ts"
+    
+    # Also copy routing and contexts (these need to be copies for placeholder replacement)
+    mkdir -p "$DEV_PROJECT/.claude/contexts"
+    cp -r "$MOMENTUM_HOME/contexts/"* "$DEV_PROJECT/.claude/contexts/" 2>/dev/null || true
+    
+    # Replace placeholders in contexts
+    for file in "$DEV_PROJECT/.claude/contexts/"*.md; do
+        if [[ -f "$file" ]]; then
+            sed -i '' "s|PROJECT_NAME_PLACEHOLDER|$PROJECT_NAME|g" "$file"
+            sed -i '' "s|WORKFLOW_PROJECTS_PLACEHOLDER|$WORKFLOW_PROJECTS|g" "$file"
+        fi
+    done
+    
+    echo -e "${GREEN}✅ Project hooks: Momentum hook linked${RESET}"
+else
+    echo -e "${RED}❌ Error: Momentum hook not found at $MOMENTUM_HOME/hooks/momentum-hook.ts${RESET}"
+    echo "Installation may be incomplete. Re-run install.sh"
+    exit 1
+fi
+
+# Create project-specific Claude settings to activate the hook
+cat > "$DEV_PROJECT/.claude/settings.json" << 'SETTINGSEOF'
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-hook.ts"
+          }
+        ]
+      }
+    ]
+  }
+}
+SETTINGSEOF
+
+echo -e "${GREEN}✅ Claude settings: Hook activated${RESET}"
+
 # Templates directory
 if [[ -d "$MOMENTUM_HOME/templates" ]]; then
     rm -rf "$DEV_PROJECT/.workflow/templates" 2>/dev/null || true

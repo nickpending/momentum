@@ -49,6 +49,15 @@ else
     exit 1
 fi
 
+# Check for bun (optional but recommended for hooks)
+if command -v bun &> /dev/null; then
+    echo -e "${GREEN}✅ Bun runtime found${RESET} (hooks enabled)"
+else
+    echo -e "${YELLOW}⚠️  Bun not found${RESET} (optional - needed for context hooks)"
+    echo "   To enable dynamic context hooks, install with:"
+    echo "   ${BLUE}curl -fsSL https://bun.sh/install | bash${RESET}"
+fi
+
 echo
 
 # Step 2: Detect shell
@@ -229,6 +238,12 @@ if [[ ! -d "$MOMENTUM_HOME/subagents" ]]; then
 fi
 if [[ ! -d "$MOMENTUM_HOME/user-commands" ]]; then
     cp -r "$MOMENTUM_SOURCE/user-commands" "$MOMENTUM_HOME/" && echo "  ✓ User commands"
+fi
+if [[ ! -d "$MOMENTUM_HOME/hooks" ]]; then
+    cp -r "$MOMENTUM_SOURCE/hooks" "$MOMENTUM_HOME/" && echo "  ✓ Hooks"
+fi
+if [[ ! -d "$MOMENTUM_HOME/contexts" ]]; then
+    cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_HOME/" && echo "  ✓ Contexts"
 fi
 
 # Create configuration

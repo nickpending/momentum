@@ -208,6 +208,23 @@ Rapid development commands in Momentum mode:
 </details>
 
 <details>
+<summary>Dynamic Context Hooks (Experimental)</summary>
+
+Momentum includes experimental support for dynamic context injection through hooks:
+
+- **Semantic Routing** - Automatically loads relevant context based on what you're exploring
+- **Exploration Mode** - Enhanced exploration conversations with context-aware guidance
+- **Auto-save Explorations** - Say "save this exploration" and it knows where to put it
+
+**Requirements:**
+- Bun runtime (`curl -fsSL https://bun.sh/install | bash`)
+- Hooks are installed per-project by setupd
+
+**How it works:**
+When you say things like "let's explore X" or "save this exploration", hooks detect the semantic patterns and inject appropriate context to guide the conversation.
+</details>
+
+<details>
 <summary>Directory Structure</summary>
 
 Momentum uses two directories:
