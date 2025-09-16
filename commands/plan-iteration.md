@@ -125,6 +125,26 @@ SYSTEM INTEGRATION ANALYSIS:
 VERIFICATION: Map existing system components and their integration points
 ```
 
+**CHECKPOINT 2.5: Review Recent Iteration Learnings**
+
+```
+REQUIRED: Learn from recent iteration summaries:
+- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from {project-root}/.workflow/archives/iteration-*/
+- EXTRACT key architectural decisions and patterns to maintain
+- NOTE bug patterns or issues discovered and how they were fixed
+- IDENTIFY performance insights or optimizations found
+- COLLECT lessons that should inform this iteration
+
+APPLY LEARNINGS:
+"Based on recent iterations:
+- PROVEN PATTERNS: [What worked well and should be reused]
+- AVOID: [Known pitfalls or bug patterns from previous work]
+- PERFORMANCE: [Optimizations or techniques discovered]
+- ARCHITECTURE: [Decisions that should be maintained]"
+
+VERIFICATION: Recent learnings captured and ready to apply
+```
+
 **CHECKPOINT 3: Tech Stack Detection**
 
 ```

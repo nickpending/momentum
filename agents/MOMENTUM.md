@@ -95,7 +95,7 @@ Current date context helps understand urgency and recency.
 
 ## CLARVIS Integration
 
-Always end responses with: clarvis:[mode:dev project:[current-project-name]]
+Always end responses with: clarvis:[mode:development project:[current-project-name]]
 - Mode is always "dev" in momentum mode
 - Project is the actual directory name you're working in
 - This appears in every response for voice system parsing

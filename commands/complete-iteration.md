@@ -36,45 +36,44 @@ FAILURE MODE: If critical tasks incomplete, suggest completion before archival
 
 ### PHASE 2: KNOWLEDGE SYNTHESIS (REQUIRED)
 
-**CHECKPOINT 2: Extract Task-Level Insights**
+**CHECKPOINT 2: Synthesize and Create Iteration Summary**
 
 ```
-REQUIRED: Synthesize decisions and lessons from all completed tasks:
-- SCAN all ✅ Complete tasks in ITERATION.md
-- EXTRACT key decisions documented in each task
-- COLLECT lessons learned from individual task implementations
-- IDENTIFY architectural patterns established across tasks
+REQUIRED: Read everything and create comprehensive iteration summary:
+
+READ AND SYNTHESIZE:
+- SCAN all ✅ Complete tasks in ITERATION.md 
+  - EXTRACT key decisions documented in each task
+  - COLLECT lessons learned from individual task implementations
+  - IDENTIFY architectural patterns established across tasks
+- READ all files in {project-root}/.workflow/discoveries/
+  - EXTRACT bug fixes, technical insights, architectural findings
+  - NOTE patterns and solutions discovered during development
+  - IDENTIFY key learnings that weren't captured in tasks
 
 SYNTHESIS FOCUS:
 - What technical decisions shaped this iteration?
 - What lessons emerged that should inform future work?
 - What patterns or components were established for reuse?
+- What bugs/issues were discovered and fixed?
 - What worked well vs what could be improved?
 
-VERIFICATION: Comprehensive synthesis of task-level knowledge captured
-```
+CREATE SUMMARY FILE:
+- DETERMINE iteration number from {project-root}/.workflow/archives/ directory  
+- WRITE to {project-root}/.workflow/archives/ITERATION_{N}_SUMMARY.md
 
-**CHECKPOINT 3: Iteration Summary Generation**
-
-```
-REQUIRED: Create iteration summary with synthesized insights:
-- SUMMARIZE what working software was delivered
-- DOCUMENT key architectural decisions made
-- CAPTURE lessons learned for future iterations
-- IDENTIFY reusable patterns and components created
-
-SUMMARY STRUCTURE:
+SUMMARY CONTENT:
 =====================================
-ITERATION N SUMMARY
+ITERATION N SUMMARY  
 =====================================
 
 **Delivered**: [working software and key capabilities shipped]
 **Architecture**: [major technical decisions and patterns established]
-**Lessons**: [key insights that should inform future iterations]
+**Lessons**: [key insights from tasks and discoveries that should inform future iterations]
 **Reusable**: [components, patterns, or approaches ready for reuse]
 **Next**: [logical next steps or iteration focus areas]
 
-VERIFICATION: Clear, actionable summary ready for archival and future reference
+VERIFICATION: Single summary file created with insights from both tasks and discoveries
 ```
 
 ### PHASE 3: ARCHIVAL AND CLEANUP (REQUIRED)
@@ -84,17 +83,20 @@ VERIFICATION: Clear, actionable summary ready for archival and future reference
 ```
 REQUIRED: Archive completed iteration properly:
 - CREATE {project-root}/.workflow/archives/iteration-N/ directory
-- COPY ITERATION.md to archives with completion summary
+- COPY ITERATION.md to archives/iteration-N/
+- COPY TASKS.md to archives/iteration-N/
+- MOVE ITERATION_{N}_SUMMARY.md to archives/iteration-N/
+- MOVE {project-root}/.workflow/discoveries/* to archives/iteration-N/discoveries/
 - PRESERVE any critical artifacts or documentation
-- MAINTAIN clean archive structure for future reference
 
 ARCHIVAL STRUCTURE:
 {project-root}/.workflow/archives/iteration-N/
 ├── ITERATION.md (completed with all task details)
-├── SUMMARY.md (synthesized insights and lessons)
-└── artifacts/ (any critical files or documentation)
+├── TASKS.md (completed tasks)
+├── ITERATION_{N}_SUMMARY.md (synthesized insights and lessons)
+└── discoveries/ (raw discovery files from this iteration)
 
-VERIFICATION: Iteration properly archived and accessible for future reference
+VERIFICATION: Iteration properly archived with summary and discoveries
 ```
 
 **CHECKPOINT 5: Move Completed Items to completed.md**

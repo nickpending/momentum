@@ -218,14 +218,18 @@ VERIFICATION: Document initial risk assessment to guide implementation
 COMPLEXITY INDICATORS:
 □ Single file change → NO subagents
 □ Adding field/column → NO subagents
-□ Following existing pattern → NO subagents
-□ New feature/system → CONSIDER subagents
-□ Multiple component integration → CONSIDER subagents
-□ Cross-cutting changes → YES subagents
+□ Following existing pattern exactly → NO subagents
+□ New component/module → YES architecture-analyst
+□ Database changes → YES architecture-analyst
+□ API changes → YES architecture-analyst
+□ Multiple component integration → YES architecture-analyst
+□ Cross-cutting changes → YES both agents
+□ External integrations → YES architecture-analyst
 
 SUBAGENT DECISION:
 - Simple implementation tasks: Skip analysis, implement directly
-- Complex features: Use architecture-analyst for structure
+- New components/modules: Use architecture-analyst for placement
+- Database/API changes: Use architecture-analyst for structure
 - Technical unknowns: Use implementation-analyst for approach
 - Major systems: Use both agents in parallel
 

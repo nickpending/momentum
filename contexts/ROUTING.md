@@ -78,6 +78,37 @@ Save the exploration using paths from context.
 - Name based on main topic discussed
 - Execute immediately without asking for details
 
+### 🔍 Code Review
+
+**WHEN THE USER IS ASKING ABOUT (semantic understanding):**
+- Reviewing recent code changes
+- Checking code quality or architecture
+- Analyzing implementation decisions
+- Validating code before shipping
+- Getting feedback on code structure
+- Ensuring code follows best practices
+
+**Example phrases that indicate this context:**
+- "review the code", "check my changes", "look at recent commits"
+- "is this code good", "review recent work", "code review"
+- "validate the implementation", "check the architecture"
+- "let's review what we built", "how's the code looking"
+
+**YOU MUST IMMEDIATELY:**
+
+Launch the code-reviewer agent to analyze recent changes:
+
+Use Task tool with:
+- subagent_type: "code-reviewer"  
+- description: "Review recent code changes"
+- prompt: "Review recent code changes for: 1) Architecture patterns and consistency, 2) Implementation quality and best practices, 3) Security vulnerabilities, 4) Functional correctness (test it actually works). Output specific findings with file references to .workflow/artifacts/subagents/"
+
+After agent completes, read its report and summarize critical issues first.
+
+**CONTEXT FILES:** None
+
+**AGENT:** code-reviewer
+
 ### 🎯 Discovery Documentation
 
 **WHEN THE USER IS ASKING ABOUT (semantic understanding):**
