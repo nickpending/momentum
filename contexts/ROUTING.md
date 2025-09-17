@@ -4,6 +4,7 @@
 
 **Anti-patterns to prevent during every interaction:**
 
+0. **Time Management**: You are an AI assistant and don't eat, sleep or get tired.
 1. **Anti-Lazy**: "This is complex" → Break it down step by step, don't bail out
 2. **Check Working Directory**: Before doing anything, check where you are with pwd/ls
 3. **Side-Effect Awareness**: Code changes affect other parts - think through ripple effects
@@ -108,6 +109,46 @@ After agent completes, read its report and summarize critical issues first.
 **CONTEXT FILES:** None
 
 **AGENT:** code-reviewer
+
+### 🔧 Task Planning with Setup Check
+
+**WHEN THE USER TYPES (literal match):**
+- `/plan-task` followed by a number
+
+**YOU MUST IMMEDIATELY:**
+
+Check if {project-root}/.workflow/artifacts/TESTING.md exists:
+- If missing: Load TEST_SETUP context to create it
+- If exists: Say "🎯 Task mode activated. Let's ship working software." then proceed
+
+**CONTEXT FILES:**
+- `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md` (only if TESTING.md missing)
+
+**AGENT:** None
+
+### 🔒 Project Security Setup
+
+**WHEN THE USER IS ASKING ABOUT (semantic understanding):**
+- Setting up gitignore or project security
+- Protecting secrets or private files
+- Initializing or setting up a project
+- Configuring project basics
+- First time running commands in a new project
+
+**Example phrases that indicate this context:**
+- "set up gitignore", "configure gitignore", "update gitignore"
+- "protect secrets", "keep files private", "secure this project"
+- "initialize project", "set up project", "configure project"
+- "make sure nothing sensitive gets committed"
+
+**YOU MUST IMMEDIATELY:**
+
+Load gitignore setup context to create/update .gitignore
+
+**CONTEXT FILES:**
+- `MOMENTUM_CONTEXTS_PATH/GITIGNORE_SETUP.md` ✅
+
+**AGENT:** None
 
 ### 🎯 Discovery Documentation
 

@@ -71,38 +71,34 @@ REQUIRED: Read and acknowledge ALL foundation files:
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
 ```
 
-**CHECKPOINT 1.5: Analyze and Recommend Later Items (if exists)**
+**CHECKPOINT 1.5: Review Later Items (if exists)**
 
 ```
 IF later.md exists:
 - READ all later items
-- ANALYZE relevance to current iteration goals from IDEA.md
-- IDENTIFY critical bugs that should be fixed
-- SPOT todos that align with features being built
-- NOTE aging items (>30 days old) that might need attention
+- PRESENT to user in simple format
 
-PROACTIVE RECOMMENDATION:
-"Based on later.md and our iteration goals, I recommend including:
+SIMPLE PRESENTATION:
+"Found [N] items in later.md:
 
-CRITICAL BUGS (should fix):
-- bug:: [Description] - captured [X days ago]
-  Why: [Blocks feature Y / Affects user experience]
+RECENT BUGS (last 30 days):
+- bug:: [Description] (captured [date])
 
-ALIGNED TODOS (natural fit):  
-- todo:: [Description] - captured [date]
-  Why: [Relates to feature we're building / Quick win]
+OLDER BUGS (30+ days):
+- bug:: [Description] (captured [date])
 
-WORTH CONSIDERING:
-- idea:: [Description] - captured [date]
-  Why: [Could enhance what we're building]
+RECENT IDEAS/TODOS:
+- todo:: [Description] (captured [date])
+- idea:: [Description] (captured [date])
 
-AGING ITEMS (need attention):
-- [Type]:: [Description] - captured [60+ days ago]
-  Why: [Has been waiting too long]
+AGING ITEMS (60+ days):
+- [type]:: [Description] (captured [date])
 
-Should we include these in the iteration?"
+Which of these interest you for this iteration?"
 
-VERIFICATION: Provide smart recommendations based on later.md analysis
+WAIT FOR USER SELECTION - no automatic recommendations
+
+VERIFICATION: User selects which later items to include
 ```
 
 **CHECKPOINT 2: System State Analysis**
@@ -130,19 +126,22 @@ VERIFICATION: Map existing system components and their integration points
 ```
 REQUIRED: Learn from recent iteration summaries:
 - READ the last 2-3 ITERATION_{N}_SUMMARY.md files from {project-root}/.workflow/archives/iteration-*/
-- EXTRACT key architectural decisions and patterns to maintain
-- NOTE bug patterns or issues discovered and how they were fixed
-- IDENTIFY performance insights or optimizations found
-- COLLECT lessons that should inform this iteration
+- EXTRACT insights from actual summary structure:
+  - Task Insights: Implementation decisions, patterns established, development friction
+  - Discovery Insights: Bug patterns, performance learnings, integration insights, technical debt
+  - Cross-Cutting Themes: Patterns that emerged across multiple areas
+  - Methodology Learnings: What worked/didn't work in development approach
+  - Architecture Evolution: How system structure and patterns changed
 
 APPLY LEARNINGS:
 "Based on recent iterations:
-- PROVEN PATTERNS: [What worked well and should be reused]
-- AVOID: [Known pitfalls or bug patterns from previous work]
-- PERFORMANCE: [Optimizations or techniques discovered]
-- ARCHITECTURE: [Decisions that should be maintained]"
+- ESTABLISHED PATTERNS: [From Task Insights - patterns to reuse]
+- AVOID: [From Discovery Insights - bug patterns and friction to prevent]
+- PERFORMANCE: [From Discovery Insights - optimizations discovered]
+- ARCHITECTURE: [From Architecture Evolution - decisions to maintain]
+- PROCESS: [From Methodology Learnings - workflow improvements to apply]"
 
-VERIFICATION: Recent learnings captured and ready to apply
+VERIFICATION: Recent learnings captured from actual summary structure and ready to apply
 ```
 
 **CHECKPOINT 3: Tech Stack Detection**
@@ -497,46 +496,6 @@ VERIFICATION GATE: Before finalizing ITERATION.md, confirm:
 FAILURE MODE: If missing interview details or using generic descriptions, REGENERATE
 ```
 
-### PHASE 4.5: TEST INFRASTRUCTURE (First Iteration Only)
-
-**CHECKPOINT 14: Create TESTING.md**
-
-```
-ONLY IF FIRST ITERATION (no .workflow/archives/ directory):
-
-1. CHECK: Does {project-root}/.workflow/artifacts/TESTING.md exist?
-   - If yes → skip this phase
-   - If no → create it
-
-2. IDENTIFY tech stack from ITERATION.md you just created
-
-3. READ the appropriate claudex standard:
-   - ~/.claudex/standards/claudex-python.md for Python
-   - ~/.claudex/standards/claudex-typescript.md for TypeScript  
-   - ~/.claudex/standards/claudex-golang.md for Go
-   - ~/.claudex/standards/claudex-rust.md for Rust
-   - etc.
-
-4. EXTRACT testing information from the claudex standard:
-   - Test framework and commands
-   - Directory structure (language-specific!)
-   - Dependency installation
-   - Environment setup
-   - Common patterns and examples
-
-5. LOAD {project-root}/.workflow/templates/TESTING_TEMPLATE.md
-
-6. POPULATE the template with extracted information:
-   - Replace placeholders with actual values from claudex
-   - Keep language-specific conventions (e.g., Go's *_test.go)
-   - Include real examples from the standard
-   - Make commands concrete and runnable
-
-7. WRITE to {project-root}/.workflow/artifacts/TESTING.md
-
-VERIFICATION: TESTING.md exists with concrete test setup
-```
-
 ### PHASE 5: COMPLETION STATEMENT
 
 ```
@@ -551,7 +510,6 @@ ITERATION PLANNED WITH INTERVIEW GOLD PRESERVED
 ✅ Exact success verification commands
 ✅ All integration points mapped
 ✅ Selected items moved to active.md
-✅ TESTING.md created (if first iteration)
 
 No generic descriptions - everything concrete from interview.
 

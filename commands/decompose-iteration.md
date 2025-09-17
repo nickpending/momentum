@@ -59,17 +59,16 @@ VERIFICATION: List discovered patterns tasks must follow
 ```
 REQUIRED: Every task MUST pass ALL validation gates:
 
-SCOPE VALIDATION:
-- Modifies 1-2 files maximum? (new file + test counts as 2)
-- Implements exactly ONE thing? (one endpoint/component/function)
-- Results in less than 100 lines of code?
-- Can be completed in one focused session?
-
 DELIVERABLE VALIDATION:
 - Has ONE concrete deliverable?
-- Can be demoed with ONE command?
+- Can be demoed independently?
 - Produces something independently verifiable?
 - Doesn't require reading other tasks to understand?
+
+SCOPE VALIDATION:
+- Implements exactly ONE thing? (one endpoint/component/function)
+- Can be completed in one focused session?
+- Natural file boundaries (don't artificially split related changes)?
 
 NAMING VALIDATION:
 - Uses pattern: "X.Y: [Action] [Target] [Purpose]"?

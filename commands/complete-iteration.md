@@ -36,49 +36,120 @@ FAILURE MODE: If critical tasks incomplete, suggest completion before archival
 
 ### PHASE 2: KNOWLEDGE SYNTHESIS (REQUIRED)
 
-**CHECKPOINT 2: Synthesize and Create Iteration Summary**
+**CHECKPOINT 2: Systematic Task-Level Extraction**
 
 ```
-REQUIRED: Read everything and create comprehensive iteration summary:
+REQUIRED: Extract structured insights from completed tasks:
+- SCAN all ✅ Complete tasks in ITERATION.md
+- FOR EACH TASK extract:
+  - Implementation decisions made and why
+  - Architectural patterns established or followed
+  - Blockers encountered and how solved
+  - Performance/integration insights discovered
+  - What worked well vs what caused friction
 
-READ AND SYNTHESIZE:
-- SCAN all ✅ Complete tasks in ITERATION.md 
-  - EXTRACT key decisions documented in each task
-  - COLLECT lessons learned from individual task implementations
-  - IDENTIFY architectural patterns established across tasks
+STRUCTURED EXTRACTION:
+## Task-Level Insights (Internal - Don't Write Yet)
+
+### Implementation Decisions
+- Task X.Y: [Decision Made] → [Reasoning] → [Outcome]
+- Task X.Z: [Decision Made] → [Reasoning] → [Outcome]
+
+### Architectural Patterns
+- Established: [Pattern Name] used in tasks X.Y, X.Z
+- Modified: [Existing Pattern] adapted for [Reason] in task X.Y
+- Avoided: [Anti-pattern] after discovering [Issue] in task X.Y
+
+### Development Friction
+- Blockers: [Issue] in task X.Y solved by [Solution]
+- Smooth: [What worked easily] in tasks X.Y, X.Z
+- Unexpected: [Surprise finding] during task X.Y implementation
+
+VERIFICATION: Systematic extraction completed for all tasks
+```
+
+**CHECKPOINT 3: Systematic Discovery-Level Extraction**
+
+```
+REQUIRED: Extract structured insights from discovery files:
 - READ all files in {project-root}/.workflow/discoveries/
-  - EXTRACT bug fixes, technical insights, architectural findings
-  - NOTE patterns and solutions discovered during development
-  - IDENTIFY key learnings that weren't captured in tasks
+- FOR EACH DISCOVERY extract:
+  - Bug patterns found and root causes
+  - Performance insights and optimizations applied
+  - Integration learnings and solutions
+  - Technical debt identified and addressed
+  - Unexpected system behaviors discovered
 
-SYNTHESIS FOCUS:
-- What technical decisions shaped this iteration?
-- What lessons emerged that should inform future work?
-- What patterns or components were established for reuse?
-- What bugs/issues were discovered and fixed?
-- What worked well vs what could be improved?
+STRUCTURED EXTRACTION:
+## Discovery-Level Insights (Internal - Don't Write Yet)
+
+### Bug Patterns
+- [Pattern Name]: Found in [Context] → Root cause: [Cause] → Fixed by: [Solution]
+- [Pattern Name]: Found in [Context] → Root cause: [Cause] → Fixed by: [Solution]
+
+### Performance Learnings
+- [Insight]: [Measurement/Observation] → [Optimization Applied] → [Result]
+- [Bottleneck]: [Where Found] → [Solution] → [Improvement]
+
+### Integration Insights
+- [Component A + B]: [Challenge] → [Solution] → [Pattern Established]
+- [External Service]: [Behavior Discovered] → [Adaptation Made]
+
+### Technical Debt
+- Identified: [Debt Item] → [Impact] → [Mitigation Strategy]
+- Resolved: [Previous Debt] → [Solution Applied] → [Benefit Gained]
+
+VERIFICATION: Systematic extraction completed for all discoveries
+```
+
+**CHECKPOINT 4: Unified Synthesis into Single Summary**
+
+```
+REQUIRED: Synthesize all extracted insights into comprehensive iteration summary:
+
+SYNTHESIS PROCESS:
+- COMBINE task-level and discovery-level insights
+- IDENTIFY cross-cutting patterns and themes
+- DETERMINE what should inform future iterations
+- RECOGNIZE architectural evolution and system changes
+- ASSESS overall iteration effectiveness
 
 CREATE SUMMARY FILE:
-- DETERMINE iteration number from {project-root}/.workflow/archives/ directory  
+- DETERMINE iteration number from {project-root}/.workflow/archives/ directory
 - WRITE to {project-root}/.workflow/archives/ITERATION_{N}_SUMMARY.md
 
-SUMMARY CONTENT:
+COMPREHENSIVE SUMMARY STRUCTURE:
 =====================================
-ITERATION N SUMMARY  
+ITERATION N SUMMARY
 =====================================
 
 **Delivered**: [working software and key capabilities shipped]
-**Architecture**: [major technical decisions and patterns established]
-**Lessons**: [key insights from tasks and discoveries that should inform future iterations]
-**Reusable**: [components, patterns, or approaches ready for reuse]
-**Next**: [logical next steps or iteration focus areas]
 
-VERIFICATION: Single summary file created with insights from both tasks and discoveries
+**Task Insights**:
+- Implementation Decisions: [key decisions that shaped the code]
+- Patterns Established: [reusable patterns created for future use]
+- Development Friction: [what slowed us down and how we solved it]
+
+**Discovery Insights**:
+- Bug Patterns: [systematic issues found and patterns to avoid]
+- Performance Learnings: [optimizations discovered and applied]
+- Integration Insights: [how components connect and what we learned]
+- Technical Debt: [debt identified, resolved, and mitigation strategies]
+
+**Architecture Evolution**: [how the system structure and patterns changed]
+
+**Cross-Cutting Themes**: [patterns that emerged across multiple tasks/discoveries]
+
+**Next**: [logical next steps enabled by this iteration's foundations]
+
+**Methodology Learnings**: [what worked/didn't work in our development approach]
+
+VERIFICATION: Single comprehensive summary created with structured insights from both tasks and discoveries
 ```
 
 ### PHASE 3: ARCHIVAL AND CLEANUP (REQUIRED)
 
-**CHECKPOINT 4: Iteration Archival**
+**CHECKPOINT 5: Iteration Archival**
 
 ```
 REQUIRED: Archive completed iteration properly:
@@ -99,7 +170,7 @@ ARCHIVAL STRUCTURE:
 VERIFICATION: Iteration properly archived with summary and discoveries
 ```
 
-**CHECKPOINT 5: Move Completed Items to completed.md**
+**CHECKPOINT 6: Move Completed Items to completed.md**
 
 ```
 REQUIRED: Move active items to completed tracking:
@@ -125,7 +196,7 @@ TRACKING:
 VERIFICATION: All completed items moved from active.md to completed.md
 ```
 
-**CHECKPOINT 6: Workspace Preparation**
+**CHECKPOINT 7: Workspace Preparation**
 
 ```
 REQUIRED: Prepare clean workspace for next iteration:
@@ -155,7 +226,7 @@ VERIFICATION: Only IDEA.md and APP_CONTEXT.md remain in artifacts
 
 ### PHASE 4: TRANSITION GUIDANCE (REQUIRED)
 
-**CHECKPOINT 7: Next Iteration Preparation**
+**CHECKPOINT 8: Next Iteration Preparation**
 
 ```
 REQUIRED: Provide clear guidance for next iteration:
