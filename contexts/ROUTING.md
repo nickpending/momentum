@@ -83,8 +83,7 @@ Save the exploration using paths from context.
 
 **WHEN THE USER IS ASKING ABOUT (semantic understanding):**
 - Reviewing recent code changes
-- Checking code quality or architecture
-- Analyzing implementation decisions
+- Checking implementation quality
 - Validating code before shipping
 - Getting feedback on code structure
 - Ensuring code follows best practices
@@ -92,15 +91,14 @@ Save the exploration using paths from context.
 **Example phrases that indicate this context:**
 - "review the code", "check my changes", "look at recent commits"
 - "is this code good", "review recent work", "code review"
-- "validate the implementation", "check the architecture"
-- "let's review what we built", "how's the code looking"
+- "validate the implementation", "how's the code looking"
 
 **YOU MUST IMMEDIATELY:**
 
 Launch the code-reviewer agent to analyze recent changes:
 
 Use Task tool with:
-- subagent_type: "code-reviewer"  
+- subagent_type: "code-reviewer"
 - description: "Review recent code changes"
 - prompt: "Review recent code changes for: 1) Architecture patterns and consistency, 2) Implementation quality and best practices, 3) Security vulnerabilities, 4) Functional correctness (test it actually works). Output specific findings with file references to .workflow/artifacts/subagents/"
 
@@ -109,6 +107,36 @@ After agent completes, read its report and summarize critical issues first.
 **CONTEXT FILES:** None
 
 **AGENT:** code-reviewer
+
+### 🏗️ Architecture Review
+
+**WHEN THE USER IS ASKING ABOUT (semantic understanding):**
+- Reviewing system architecture or design decisions
+- Checking for over-engineering or unnecessary complexity
+- Evaluating whether solutions fit problem complexity
+- Assessing architectural drift from original plans
+- Looking for technical debt or coupling issues
+
+**Example phrases that indicate this context:**
+- "review the architecture", "is this over-engineered", "too complex"
+- "check the design", "architectural issues", "system design review"
+- "evaluate the solution", "does this fit the problem", "architecture drift"
+- "technical debt", "coupling problems", "boundary issues"
+
+**YOU MUST IMMEDIATELY:**
+
+Launch the architecture-reviewer agent to evaluate implemented architecture:
+
+Use Task tool with:
+- subagent_type: "architecture-reviewer"
+- description: "Review implemented architecture"
+- prompt: "Review the implemented architecture for: 1) Appropriate complexity for problem size, 2) Over-engineering and unnecessary abstractions, 3) Architectural drift from original design, 4) Technical debt and coupling issues. Output detailed assessment with specific recommendations to .workflow/artifacts/subagents/"
+
+After agent completes, read its report and summarize key architectural concerns first.
+
+**CONTEXT FILES:** None
+
+**AGENT:** architecture-reviewer
 
 ### 🔧 Task Planning with Setup Check
 
