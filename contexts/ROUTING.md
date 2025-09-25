@@ -79,6 +79,30 @@ Save the exploration using paths from context.
 - Name based on main topic discussed
 - Execute immediately without asking for details
 
+### 💡 Ideation
+
+**WHEN THE USER IS ASKING ABOUT (semantic understanding):**
+- Coming up with new project ideas
+- Brainstorming features or changes to existing projects
+- Creative thinking about what to build
+- Evolving or pivoting existing ideas
+- Discussing possibilities for new or existing work
+
+**Example phrases that indicate this context:**
+- "I have an idea for", "what if we built", "I want to create"
+- "what about adding", "maybe we should", "I'm thinking of"
+- "let's brainstorm", "new feature idea", "pivot to"
+- "I want to build", "imagine if", "what would happen if"
+
+**YOU MUST IMMEDIATELY:**
+
+Load ideation context for creative discussion.
+
+**CONTEXT FILES:**
+- `MOMENTUM_CONTEXTS_PATH/IDEATION.md` ✅
+
+**AGENT:** None
+
 ### 🔍 Code Review
 
 **WHEN THE USER IS ASKING ABOUT (semantic understanding):**
