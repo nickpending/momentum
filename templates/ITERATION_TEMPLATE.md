@@ -85,39 +85,23 @@ path/to/specific/file.py - [what_this_file_does]
 path/to/another/file.ts - [what_this_file_does]
 ```
 
-**Core functionality**:
+**Design Decision**: [Architecture chosen: e.g., "JWT parallel to existing session auth"]
 
-```python
-# ACTUAL code structure discovered in interview
-class SpecificThing:
-    async def concrete_method(self, real_param: dict) -> ActualReturn:
-        # Core logic described in interview
+**Investigation Context**:
+- Current approach: [What exists: "Session-based auth in middleware/auth.py"]
+- Integration points: [Where it connects: "Auth middleware, user service"]
+- Pattern to follow: [If applicable: "Similar to existing API key validation"]
 ```
 
-**Data structures** (from interview):
+**Integration Requirements**:
+- Receives: [What it needs: "User credentials from login form"]
+- Produces: [What it outputs: "JWT token with user claims"]
+- Depends on: [What must exist: "User service, bcrypt validation"]
 
-```json
-{
-  "actual": "example",
-  "from": "interview",
-  "with": ["real", "structure"]
-}
-```
-
-**Integration points**:
-
-- Receives: [exact_message_api_format_from_existing_system]
-- Sends: [exact_format_this_component_outputs]
-- Database: [specific_tables_queries_needed]
-
-**One smoke test**:
-
-```python
-async def test_[feature]_actually_works():
-    # Real integration test pattern
-    # Uses actual services, not mocks
-    # Tests the ONE thing that proves this task succeeded
-```
+**Success Criteria**:
+- [ ] [User-facing outcome: "Users can log in and receive JWT token"]
+- [ ] [Technical outcome: "Token validates in middleware"]
+- [ ] [Integration verified: "Protected endpoints accept token"]
 
 **Success verification**:
 
@@ -130,48 +114,38 @@ curl -X POST localhost:8000/specific/endpoint -d '{"real": "data"}'
 
 ### 2. [next_specific_component] 📋 Planned
 
-**Type**: Implementation Task / Research Spike / Integration Task / Wiring Task **Depends on**: Task 1 **Estimated time**: N hours
+**Type**: Implementation Task / Research Spike / Integration Task / Wiring Task
+**Depends on**: Task 1
+**Estimated time**: N hours
 
-**What to build**: [clear_description]
+**What to build**: [clear_user_facing_description]
 
 **Key files**:
-
 ```
 path/to/file.py - [purpose]
 ```
 
-**Core functionality**:
+**Design Decision**: [If complex: architecture chosen]
 
-```python
-# Actual code structure from interview
-```
+**Investigation Context**:
+- Current approach: [What exists if pattern-based]
+- Integration points: [Where it connects]
+- Pattern to follow: [If applicable]
 
-**Data structures** (from interview):
+**Integration Requirements**:
+- Receives: [What it needs]
+- Produces: [What it outputs]
+- Depends on: [What must exist]
 
-```json
-{
-  "real": "examples"
-}
-```
-
-**Integration points**:
-
-- Receives: [exact_format]
-- Sends: [exact_format]
-- Database: [specific_needs]
-
-**One smoke test**:
-
-```python
-async def test_feature_works():
-    # Real test that proves this works
-```
+**Success Criteria**:
+- [ ] [User-facing outcome]
+- [ ] [Technical outcome]
+- [ ] [Integration verified]
 
 **Success verification**:
-
 ```bash
-# Command to verify
-# Expected result
+# Command to verify it works
+# Expected user-visible result
 ```
 
 ### 3. [another_component] 📋 Planned
@@ -248,10 +222,10 @@ curl -X POST localhost:8000/auth/login -d '{"username": "test", "password": "tes
 
 This template emphasizes:
 
-1. **Concrete over abstract** - Actual code, real data structures
-2. **Interview preservation** - Capture specific discoveries
-3. **Testable outcomes** - Exact commands and expected results
-4. **Scope control** - What's NOT included is as important as what is
-5. **Real integration tests** - One smoke test per task, no mock theater
+1. **Decisions over implementation** - Capture WHAT and WHY, not HOW in detail
+2. **Investigation preservation** - Document findings and context from analysis
+3. **User-visible outcomes** - Focus on what users can do, not code structure
+4. **Architecture choices** - Record decisions made during planning
+5. **Success criteria** - Clear verification without prescribing tests
 
-Each task should be specific enough that an LLM can implement without guessing.
+Each task should capture enough context for implementation while leaving technical details to be determined during coding.

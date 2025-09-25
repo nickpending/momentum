@@ -45,19 +45,19 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 
 ### Investigation Over Assumption
 - Find what exists before designing what should exist
-- Use agents for complex investigations
-- Present discoveries, not prescriptions
+- Run ALL investigations concurrently for speed
+- Present complete findings for informed decisions
 
-### Progressive Design
-- Complex features: Investigate upfront via agents
-- Pattern features: Find one example to follow
-- Simple features: Handle during implementation
+### Progressive Investigation Depth
+- Complex features: Full architectural analysis via agents
+- Pattern features: Find examples and integration points
+- Simple features: Minimal investigation, obvious approach
 
 ### Collaborative Decision-Making
-- "I found X, should we Y or Z?"
-- Present trade-offs clearly
-- Capture decisions explicitly
-- No detailed implementation code in tasks
+- Present ALL findings at once (simple, pattern, complex)
+- Complex items include multiple architectural options
+- User reviews everything and makes informed decisions
+- Capture decisions explicitly for ITERATION.md
 
 ## Task Complexity Classification
 
@@ -213,32 +213,40 @@ FAILURE MODE: If you cannot list specific patterns from each standard, you MUST 
 **CHECKPOINT 5: Complexity Triage and Investigation**
 
 ```
-FOR each COMPLEX item:
-  DETERMINE what needs investigation:
-    - Existing patterns to find?
-    - Integration points to check?
-    - Data models to understand?
-    - Current implementation to review?
+CLASSIFY all items by complexity:
+  SIMPLE: Clear fixes, small changes, obvious implementation
+  PATTERN: Follows existing pattern in codebase
+  COMPLEX: Multiple valid approaches, architectural decisions needed
 
-  LAUNCH focused agent investigation:
+FOR COMPLEX items (run concurrently):
+  LAUNCH architecture-analyst agents IN PARALLEL:
     Task with architecture-analyst:
-      "Investigate [specific aspect] for [feature]
+      "Investigate architectural options for [specific feature].
+
+       Context: [Brief description of what user wants]
+
        Focus on:
-       - Current [specific pattern] implementation
-       - Integration with [specific component]
-       - Database schema for [specific area]
-       Report findings and options"
+       - Finding existing patterns in codebase
+       - Identifying 2-3 viable structural approaches
+       - Integration points with current system
+       - File organization and boundaries
 
-  WAIT for agent response
-  CAPTURE findings
+       Present architectural options with trade-offs."
 
-FOR each PATTERN item:
-  FIND one good example:
-    - Grep for similar feature
-    - Read the implementation
-    - Note pattern to follow
+  COLLECT all agent responses as they complete
+  READ generated artifacts from {project-root}/.workflow/artifacts/subagents/
 
-VERIFICATION: Have concrete findings for complex items
+FOR PATTERN items (run concurrently):
+  FIND examples IN PARALLEL:
+    - Grep for similar features
+    - Read relevant implementations
+    - Note patterns to follow
+    - Identify integration points
+
+FOR SIMPLE items:
+  NOTE for minimal detail in iteration
+
+VERIFICATION: All investigations complete before proceeding
 ```
 
 **CHECKPOINT 2.5: Review Recent Iteration Learnings**
@@ -386,44 +394,72 @@ Based on your analysis, prepare ONLY essential questions for interview:
 VERIFICATION: You have a proposed architecture AND invariant sketch ready BEFORE interviewing
 ```
 
-**CHECKPOINT 6: Present Investigation Findings and Get Decisions**
+**CHECKPOINT 6: Present Complete Investigation Findings**
 
 ```
-FOR each COMPLEX item:
-  PRESENT investigation findings:
-    "[Feature] Investigation Results:
+PRESENT comprehensive findings organized by complexity:
 
-    WHAT I FOUND:
-    - Current implementation: [specific files and patterns]
-    - Integration points: [actual APIs/services]
-    - Data model: [existing schema]
+"I've analyzed all [N] features for this iteration:
 
-    OPTIONS:
-    1. [Approach A]: [pros/cons]
-    2. [Approach B]: [pros/cons]
+SIMPLE TASKS ([count]):
+- [Task]: [One-line description]
+- [Task]: [One-line description]
+These have obvious implementations and will be handled straightforwardly.
 
-    QUESTIONS:
-    - Which approach aligns with your vision?
-    - Any constraints I should know about?
-    - Preferences on [specific technical choice]?"
+PATTERN-BASED TASKS ([count]):
+- [Task]: Follows [existing file/pattern]
+  - Current example: [specific file reference]
+  - Integration: [where it connects]
+- [Task]: Matches [pattern]
+  - Current example: [specific file reference]
+  - Integration: [where it connects]
 
-  WAIT for decision
-  CAPTURE: Chosen approach and rationale
+COMPLEX TASKS ([count]) - Architectural analysis completed:
 
-FOR each PATTERN item:
-  CONFIRM pattern:
-    "[Feature] will follow the pattern from [example]:
-    - Structure: [what you found]
-    - Location: [where it goes]
-    OK to follow this pattern?"
+[For each COMPLEX item, present agent findings concisely:]
 
-FOR SIMPLE items:
-  QUICK confirm:
-    "Including these simple tasks:
-    - [list of simple items]
-    Will handle details during implementation. OK?"
+1. [Feature Name] - ARCHITECTURAL OPTIONS:
 
-VERIFICATION: Have explicit decisions for all complex items
+   Current State: [Brief description of what exists]
+
+   Option A: [Approach name]
+   - Approach: [2-3 sentence description]
+   - Pros: [Key benefits]
+   - Cons: [Key drawbacks]
+   - Effort: [Low/Medium/High]
+
+   Option B: [Approach name]
+   - Approach: [2-3 sentence description]
+   - Pros: [Key benefits]
+   - Cons: [Key drawbacks]
+   - Effort: [Low/Medium/High]
+
+   Option C: [If applicable]
+   - Approach: [2-3 sentence description]
+   - Pros: [Key benefits]
+   - Cons: [Key drawbacks]
+   - Effort: [Low/Medium/High]
+
+   Recommendation: [Agent's recommendation with brief rationale]
+
+[Repeat for each complex item]
+
+DESIGN DECISIONS NEEDED:
+For the complex items above, please specify your preferred approach:
+- [Feature 1]: Which option (A/B/C)?
+- [Feature 2]: Which option (A/B/C)?
+- [etc.]
+
+Any additional constraints or preferences I should know about?"
+
+WAIT for user decisions on all complex items
+CAPTURE all decisions explicitly
+
+NOTE: User may request additional analysis at this point via natural language
+(e.g., "Actually, let's analyze the caching approach too")
+If so, pause and wait for that analysis to complete before continuing
+
+VERIFICATION: Have explicit approach decisions for all complex items
 ```
 
 **CHECKPOINT 4: Invariant Analysis**
@@ -473,25 +509,29 @@ APPROVAL CHECKPOINT:
 INVESTIGATION COMPLETE - READY TO PLAN
 =====================================
 
-Features Selected: [count]
-- Simple: [count] (handle during implementation)
-- Pattern: [count] (following existing examples)
-- Complex: [count] (investigated and decided)
+All [N] features investigated and classified:
+- Simple: [count] tasks with obvious implementation
+- Pattern: [count] tasks following existing patterns
+- Complex: [count] tasks with architectural options analyzed
 
-Design Decisions Captured:
-- [Feature A]: Using [chosen approach] because [rationale]
-- [Feature B]: Following [pattern] from [example]
+Your Design Decisions:
+[For each complex item:]
+- [Feature]: Option [A/B/C] - [Brief description of chosen approach]
+
+Pattern Confirmations:
+[For each pattern item:]
+- [Feature]: Following [specific file/pattern]
 
 Invariants Identified:
 - Must preserve: [critical properties]
 - High risk areas: [what could break]
 - Acceptable variance: [what's flexible]
 
-Tech Stack:
-- Detected: [technologies found]
-- Standards loaded: [claudex files read]
+Tech Stack & Standards:
+- Technologies: [list detected]
+- Standards loaded: [claudex files read and embedded]
 
-Ready to generate ITERATION.md with YOUR decisions?
+Ready to generate ITERATION.md with these decisions?
 
 Please respond with YES or NO.
 ```

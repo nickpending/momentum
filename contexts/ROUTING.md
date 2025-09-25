@@ -95,14 +95,24 @@ Save the exploration using paths from context.
 
 **YOU MUST IMMEDIATELY:**
 
-Launch the code-reviewer agent to analyze recent changes:
+Confirm intent before launching review:
 
-Use Task tool with:
-- subagent_type: "code-reviewer"
-- description: "Review recent code changes"
-- prompt: "Review recent code changes for: 1) Architecture patterns and consistency, 2) Implementation quality and best practices, 3) Security vulnerabilities, 4) Functional correctness (test it actually works). Output specific findings with file references to .workflow/artifacts/subagents/"
+"I can review recent code changes for architecture patterns, implementation quality, security issues, and functional correctness. This will analyze your recent commits and test that the code actually works.
 
-After agent completes, read its report and summarize critical issues first.
+Should I proceed with the code review?"
+
+IF USER CONFIRMS (yes/proceed/do it/go ahead/etc):
+  Launch the code-reviewer agent:
+
+  Use Task tool with:
+  - subagent_type: "code-reviewer"
+  - description: "Review code changes"
+  - prompt: "Review code changes for: [SPECIFIC FOCUS FROM USER CONTEXT - e.g., 'the OAuth implementation', 'last 5 commits', 'iteration 3 tasks']. Focus on: 1) Architecture patterns and consistency, 2) Implementation quality and best practices, 3) Security vulnerabilities, 4) Functional correctness (test it actually works). SCOPE: Review only the specified area, not the entire codebase. Output specific findings with file references to .workflow/artifacts/subagents/"
+
+  After agent completes, read its report and summarize critical issues first.
+
+IF USER DECLINES:
+  Continue with conversation normally.
 
 **CONTEXT FILES:** None
 
@@ -125,18 +135,108 @@ After agent completes, read its report and summarize critical issues first.
 
 **YOU MUST IMMEDIATELY:**
 
-Launch the architecture-reviewer agent to evaluate implemented architecture:
+Confirm intent before launching review:
 
-Use Task tool with:
-- subagent_type: "architecture-reviewer"
-- description: "Review implemented architecture"
-- prompt: "Review the implemented architecture for: 1) Appropriate complexity for problem size, 2) Over-engineering and unnecessary abstractions, 3) Architectural drift from original design, 4) Technical debt and coupling issues. Output detailed assessment with specific recommendations to .workflow/artifacts/subagents/"
+"I can review the implemented architecture for appropriate complexity, over-engineering, architectural drift, and technical debt. This will evaluate whether the solution fits the problem size.
 
-After agent completes, read its report and summarize key architectural concerns first.
+Should I proceed with the architecture review?"
+
+IF USER CONFIRMS (yes/proceed/do it/go ahead/etc):
+  Launch the architecture-reviewer agent:
+
+  Use Task tool with:
+  - subagent_type: "architecture-reviewer"
+  - description: "Review implemented architecture"
+  - prompt: "Review the architecture of: [SPECIFIC FOCUS FROM USER CONTEXT - e.g., 'the notification system', 'iteration 2 features', 'the new API endpoints']. Evaluate: 1) Appropriate complexity for problem size, 2) Over-engineering and unnecessary abstractions, 3) Architectural drift from original design, 4) Technical debt and coupling issues. SCOPE: Focus only on the specified area's architecture. Output detailed assessment with specific recommendations to .workflow/artifacts/subagents/"
+
+  After agent completes, read its report and summarize key architectural concerns first.
+
+IF USER DECLINES:
+  Continue with conversation normally.
 
 **CONTEXT FILES:** None
 
 **AGENT:** architecture-reviewer
+
+### 🎨 Architecture Analysis
+
+**WHEN THE USER IS ASKING ABOUT (semantic understanding):**
+- Analyzing architectural options for a feature
+- Exploring different approaches to structure something
+- Wanting multiple design alternatives
+- Needing to understand trade-offs between approaches
+- Requesting deeper investigation of how to build something
+
+**Example phrases that indicate this context:**
+- "analyze the architecture for", "architectural options for", "different approaches for"
+- "how should we structure", "what are the trade-offs", "explore options for"
+- "investigate how to build", "design alternatives for", "architecture analysis"
+- "I need options for", "let's dig deeper into", "analyze approaches"
+
+**YOU MUST IMMEDIATELY:**
+
+Confirm intent before launching analysis:
+
+"I can analyze architectural options for [FEATURE] to present different approaches with trade-offs. This will investigate existing patterns and generate 2-3 viable options.
+
+Should I proceed with the architectural analysis?"
+
+IF USER CONFIRMS (yes/proceed/do it/go ahead/etc):
+  Launch the architecture-analyst agent:
+
+  Use Task tool with:
+  - subagent_type: "architecture-analyst"
+  - description: "Analyze architecture options"
+  - prompt: "Investigate architectural options for [FEATURE]. Focus on: 1) Finding existing patterns in the codebase, 2) Identifying 2-3 viable approaches, 3) Analyzing trade-offs for each option, 4) Recommending best fit for this project. Present findings with clear pros/cons to .workflow/artifacts/subagents/"
+
+  After agent completes, read its report and present the options clearly.
+
+IF USER DECLINES:
+  Continue with conversation normally.
+
+**CONTEXT FILES:** None
+
+**AGENT:** architecture-analyst
+
+### 💻 Implementation Analysis
+
+**WHEN THE USER IS ASKING ABOUT (semantic understanding):**
+- How to implement a specific feature technically
+- Code-level approaches for a task
+- Algorithm or data structure options
+- Technical trade-offs for implementation
+- Different ways to code something
+
+**Example phrases that indicate this context:**
+- "how should I implement", "implementation options for", "technical approaches for"
+- "what's the best way to code", "algorithm options", "data structure choices"
+- "different ways to implement", "code-level analysis", "technical implementation"
+- "analyze the implementation", "coding approaches", "technical solutions"
+
+**YOU MUST IMMEDIATELY:**
+
+Confirm intent before launching analysis:
+
+"I can analyze technical implementation options for [FEATURE/TASK] to present different coding approaches. This will investigate algorithms, data structures, and performance trade-offs.
+
+Should I proceed with the implementation analysis?"
+
+IF USER CONFIRMS (yes/proceed/do it/go ahead/etc):
+  Launch the implementation-analyst agent:
+
+  Use Task tool with:
+  - subagent_type: "implementation-analyst"
+  - description: "Analyze implementation options"
+  - prompt: "Investigate technical implementation options for [FEATURE/TASK]. Focus on: 1) Finding existing code patterns and algorithms, 2) Identifying 2-3 technical approaches (simple/balanced/optimized), 3) Analyzing performance and complexity trade-offs, 4) Recommending best approach for this use case. Present findings with concrete technical details to .workflow/artifacts/subagents/"
+
+  After agent completes, read its report and present the technical options clearly.
+
+IF USER DECLINES:
+  Continue with conversation normally.
+
+**CONTEXT FILES:** None
+
+**AGENT:** implementation-analyst
 
 ### 🔧 Task Planning with Setup Check
 
