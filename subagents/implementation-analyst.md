@@ -1,6 +1,7 @@
 ---
 name: implementation-analyst
 description: Analyzes tasks and creates technical implementation guidance. Determines algorithms, data structures, and step-by-step approaches.\n\nExamples:\n- <example>\n  Context: User needs technical analysis before coding\n  user: "Add rate limiting feature to the API endpoints"\n  assistant: "I'll use the implementation-analyst agent to analyze this task and create implementation guidance"\n  <commentary>\n  Before writing code, use implementation-analyst to determine technical approach.\n  </commentary>\n</example>
+tools: Read, Grep, Glob  # READ-ONLY for safety
 color: pink
 ---
 

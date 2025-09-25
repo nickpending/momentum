@@ -1,6 +1,7 @@
 ---
 name: architecture-reviewer
 description: Reviews implemented architecture for over-engineering, unnecessary complexity, and architectural drift. Evaluates whether built solutions match the problem complexity.\n\nExamples:\n- <example>\n  Context: After implementing a feature or completing an iteration\n  user: "Review the architecture of what we just built"\n  assistant: "I'll use the architecture-reviewer agent to evaluate the implemented architecture"\n  <commentary>\n  After implementation, review architecture for complexity and fitness.\n  </commentary>\n</example>
+tools: Read, Grep, Glob  # READ-ONLY for safety
 color: purple
 ---
 

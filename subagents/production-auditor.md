@@ -11,6 +11,7 @@ Examples:
   Use production-auditor periodically to maintain code quality and identify release blockers.
   </commentary>
 </example>
+tools: Read, Grep, Glob, Task  # Needs Task to orchestrate other agents
 color: red
 ---
 
