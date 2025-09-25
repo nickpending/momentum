@@ -1,4 +1,8 @@
-# Interview-based iteration planning with embedded standards
+# Collaborative iteration planning through investigation
+
+## Purpose
+
+Plan iterations by investigating the codebase, presenting findings as options, and collaborating on design decisions - not prescribing solutions.
 
 ## Environment Context
 
@@ -11,48 +15,80 @@
 
 ## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
 
-**🛑 STOP AFTER INTERVIEW. DO NOT GENERATE ARTIFACTS.**  
-**🛑 ASK QUESTIONS ONE AT A TIME - BUILD ON ANSWERS**  
-**🛑 ALWAYS END WITH: "Ready to generate ITERATION.md with embedded context?"**  
+**🛑 STOP AFTER INTERVIEW. DO NOT GENERATE ARTIFACTS.**
+**🛑 ASK QUESTIONS ONE AT A TIME - BUILD ON ANSWERS**
+**🛑 ALWAYS END WITH: "Ready to generate ITERATION.md with embedded context?"**
 **🛑 WAIT FOR EXPLICIT APPROVAL BEFORE CREATING ITERATION.MD**
 
 ## ⚠️ CRITICAL: STANDARDS MUST BE LOADED AND EMBEDDED ⚠️
 
-**🛑 NO ITERATION.MD WITHOUT STANDARDS VERIFICATION**  
-**🛑 LIST EVERY STANDARDS FILE PATH READ**  
-**🛑 QUOTE SPECIFIC PATTERNS FROM EACH STANDARD**  
+**🛑 NO ITERATION.MD WITHOUT STANDARDS VERIFICATION**
+**🛑 LIST EVERY STANDARDS FILE PATH READ**
+**🛑 QUOTE SPECIFIC PATTERNS FROM EACH STANDARD**
 **🛑 EMBED ALL CONTEXT - NO EXTERNAL REFERENCES**
 
 ## ⚠️ CRITICAL: PRESERVE INTERVIEW GOLD ⚠️
 
-**🛑 CAPTURE CONCRETE DETAILS DISCOVERED IN INTERVIEW**  
-**🛑 NO GENERIC TASK DESCRIPTIONS**  
-**🛑 ACTUAL CODE EXAMPLES AND DATA STRUCTURES**  
+**🛑 CAPTURE CONCRETE DETAILS DISCOVERED IN INTERVIEW**
+**🛑 NO GENERIC TASK DESCRIPTIONS**
+**🛑 ACTUAL CODE EXAMPLES AND DATA STRUCTURES**
 **🛑 ONE SMOKE TEST PER TASK - NO TDD THEATER**
 
-## ⚠️ CRITICAL: TASK TYPE REQUIREMENTS ⚠️
+## ⚠️ CRITICAL: COLLABORATIVE APPROACH ⚠️
 
-### Research Spikes
-**🛑 RESEARCH SPIKES MUST PRODUCE WORKING CODE:**
-- Time-boxed exploration (1-2 hours max)
-- Concrete working code artifact (not just documentation)
-- Throwaway code is acceptable for learning
-- Must test actual integration/approach through building
-- Decision criteria based on what actually works in practice
+**🛑 INVESTIGATE, DON'T ASSUME**
+**🛑 PRESENT FINDINGS AS OPTIONS**
+**🛑 CAPTURE DECISIONS, DON'T MAKE THEM**
+**🛑 USE AGENTS FOR COMPLEX INVESTIGATION**
 
-### Design Tasks
-**🛑 DESIGN TASKS PRODUCE ARTIFACTS:**
-- Output goes to `.workflow/artifacts/designs/`
-- Time-boxed design exploration
-- Creates artifacts that guide implementation
+## Core Principles
 
-## ⚠️ CRITICAL: THINK ⚠️
+### Investigation Over Assumption
+- Find what exists before designing what should exist
+- Use agents for complex investigations
+- Present discoveries, not prescriptions
 
-### PHASE 0: PREPARATION
+### Progressive Design
+- Complex features: Investigate upfront via agents
+- Pattern features: Find one example to follow
+- Simple features: Handle during implementation
 
-- READ EVERYTHING 3 TIMES BEFORE DOING ANYTHING
-- WHEN YOU MAKE A PLAN - REVIEW IT INTERNALLY FIRST TO CHECK FOR OMISSIONS, OVERSIGHTS AND MISTAKES
-- ENSURE YOU CAPTURE ALL TECHNOLOGY MENTIONED IN IDEA.md - REVIEW IT 3 TIMES
+### Collaborative Decision-Making
+- "I found X, should we Y or Z?"
+- Present trade-offs clearly
+- Capture decisions explicitly
+- No detailed implementation code in tasks
+
+## Task Complexity Classification
+
+### SIMPLE Tasks
+- Clear bug fixes
+- Small UI changes
+- Documentation updates
+- Version bumps
+**Approach**: Include with minimal detail, handle during implementation
+
+### PATTERN Tasks
+- New endpoint matching existing ones
+- Another form/component like existing
+- Similar feature in different area
+**Approach**: Find one good example, note pattern to follow
+
+### COMPLEX Tasks
+- Architectural decisions
+- New subsystems
+- Integration changes
+- Cross-cutting concerns
+**Approach**: Investigate via agents, present findings, get decisions
+
+## ⚠️ CRITICAL: THINK BEFORE ACTING ⚠️
+
+- READ all context files thoroughly
+- CLASSIFY tasks by complexity accurately
+- INVESTIGATE complex items properly
+- ASK for decisions, don't make them
+
+## MANDATORY EXECUTION SEQUENCE - NO SKIPPING
 
 ## MANDATORY EXECUTION SEQUENCE - NO SKIPPING
 
@@ -71,7 +107,7 @@ REQUIRED: Read and acknowledge ALL foundation files:
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
 ```
 
-**CHECKPOINT 1.5: Review Later Items (if exists)**
+**CHECKPOINT 1.5: Review Later Items and Gather Goals**
 
 ```
 IF later.md exists:
@@ -96,7 +132,10 @@ AGING ITEMS (60+ days):
 
 Which of these interest you for this iteration?"
 
-WAIT FOR USER SELECTION - no automatic recommendations
+ELSE:
+- ASK: "What features should we build in this iteration?"
+
+WAIT FOR USER SELECTION/INPUT - capture selected items
 
 VERIFICATION: User selects which later items to include
 ```
@@ -104,21 +143,102 @@ VERIFICATION: User selects which later items to include
 **CHECKPOINT 2: System State Analysis**
 
 ```
-REQUIRED: Analyze current system architecture and existing components:
-- SCAN {project-root}/.workflow/archives/ directory for completed iterations
-- IDENTIFY what services/APIs/components exist from previous work
-- ASSESS current system architecture and data flows
-- ANALYZE existing interfaces and integration points
-- UNDERSTAND what infrastructure is already running
+REQUIRED: Analyze current system for context:
+- SCAN {project-root}/.workflow/archives/ for completed iterations
+- IDENTIFY existing services/APIs/components
+- NOTE current architecture and data flows
+- UNDERSTAND existing integration points
 
-SYSTEM INTEGRATION ANALYSIS:
-- What services were built in previous iterations?
-- What APIs/endpoints are available for integration?
-- What databases/storage systems exist?
-- What configuration/deployment infrastructure exists?
-- How do existing components communicate with each other?
+FOCUS: Just gather context, don't design yet
+VERIFICATION: Have map of what exists
+```
 
-VERIFICATION: Map existing system components and their integration points
+**CHECKPOINT 2.5: Review Recent Iteration Learnings**
+
+```
+REQUIRED: Learn from recent iteration summaries:
+- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from {project-root}/.workflow/archives/iteration-*/
+- EXTRACT insights from actual summary structure:
+  - Task Insights: Implementation decisions, patterns established, development friction
+  - Discovery Insights: Bug patterns, performance learnings, integration insights, technical debt
+  - Cross-Cutting Themes: Patterns that emerged across multiple areas
+  - Methodology Learnings: What worked/didn't work in development approach
+  - Architecture Evolution: How system structure and patterns changed
+
+APPLY LEARNINGS:
+"Based on recent iterations:
+- ESTABLISHED PATTERNS: [From Task Insights - patterns to reuse]
+- AVOID: [From Discovery Insights - bug patterns and friction to prevent]
+- PERFORMANCE: [From Discovery Insights - optimizations discovered]
+- ARCHITECTURE: [From Architecture Evolution - decisions to maintain]
+- PROCESS: [From Methodology Learnings - workflow improvements to apply]"
+
+VERIFICATION: Recent learnings captured from actual summary structure and ready to apply
+```
+
+**CHECKPOINT 3: Tech Stack Detection**
+
+```
+REQUIRED: Analyze IDEA.md and detect ALL technologies mentioned
+- Scan for: languages, frameworks, databases, deployment tools
+- List EVERY technology found
+- Identify primary stack (e.g., "Python web API with PostgreSQL")
+
+!!CRITICAL!!
+- READ IDEA.md INTERNALLY 10 times to identify technologies you may have missed!
+- DO NOT GREP!!
+
+VERIFICATION: List all detected technologies explicitly
+```
+
+**CHECKPOINT 4: Standards Loading (MANDATORY)**
+
+```
+REQUIRED: For EACH detected technology, read corresponding standards:
+- Check ~/.claudex/standards/ directory for claudex-{technology}.md files
+- Pattern: claudex-python.md, claudex-golang.md, claudex-react.md, etc.
+- Read ALL relevant standards for technologies detected in the project
+
+NOTE: IT *REALLY* is ~/.claudex/standards/ and NOT ~/.workflow/standards/
+
+VERIFICATION GATE: You MUST list:
+1. Every standards file path read
+2. Key patterns from each standard
+3. Version requirements from each standard
+4. Quality gates from each standard
+
+FAILURE MODE: If you cannot list specific patterns from each standard, you MUST re-read the files
+```
+
+**CHECKPOINT 5: Complexity Triage and Investigation**
+
+```
+FOR each COMPLEX item:
+  DETERMINE what needs investigation:
+    - Existing patterns to find?
+    - Integration points to check?
+    - Data models to understand?
+    - Current implementation to review?
+
+  LAUNCH focused agent investigation:
+    Task with architecture-analyst:
+      "Investigate [specific aspect] for [feature]
+       Focus on:
+       - Current [specific pattern] implementation
+       - Integration with [specific component]
+       - Database schema for [specific area]
+       Report findings and options"
+
+  WAIT for agent response
+  CAPTURE findings
+
+FOR each PATTERN item:
+  FIND one good example:
+    - Grep for similar feature
+    - Read the implementation
+    - Note pattern to follow
+
+VERIFICATION: Have concrete findings for complex items
 ```
 
 **CHECKPOINT 2.5: Review Recent Iteration Learnings**
@@ -178,7 +298,7 @@ VERIFICATION GATE: You MUST list:
 FAILURE MODE: If you cannot list specific patterns from each standard, you MUST re-read the files
 ```
 
-### PHASE 2: SCOPE INTERVIEW (REQUIRED)
+### PHASE 2: COLLABORATIVE DESIGN (REQUIRED)
 
 **CHECKPOINT 5: Later Items Integration (if user accepted recommendations)**
 
@@ -200,7 +320,29 @@ TRACKING FORMAT:
 VERIFICATION: Map each selected later item to specific iteration task
 ```
 
-**CHECKPOINT 6: Architectural & Invariant Analysis (THINK BEFORE INTERVIEWING)**
+**CHECKPOINT 1.6: Complexity Triage**
+
+```
+REQUIRED: Classify each selected item by complexity:
+
+FOR each item:
+  CLASSIFY as:
+    SIMPLE: Clear fix, small change, documentation
+    PATTERN: Follows existing pattern in codebase
+    COMPLEX: Needs architecture decision, new subsystem, integration
+
+PRESENT:
+"Planning to implement:
+- [SIMPLE] Fix typo in README
+- [PATTERN] Add delete endpoint matching existing CRUD
+- [COMPLEX] Implement OAuth authentication system
+
+Does this classification look right?"
+
+VERIFICATION: User agrees with complexity assessment
+```
+
+**CHECKPOINT 2: Investigation Phase**
 
 ```
 REQUIRED: Analyze the architecture AND invariants BEFORE the interview:
@@ -244,108 +386,112 @@ Based on your analysis, prepare ONLY essential questions for interview:
 VERIFICATION: You have a proposed architecture AND invariant sketch ready BEFORE interviewing
 ```
 
-**CHECKPOINT 7: Consolidated Interview (VALIDATE YOUR ANALYSIS)**
+**CHECKPOINT 6: Present Investigation Findings and Get Decisions**
 
 ```
-REQUIRED: Interview to VALIDATE architecture and gather specifics:
+FOR each COMPLEX item:
+  PRESENT investigation findings:
+    "[Feature] Investigation Results:
 
-PRESENT BOTH ARCHITECTURAL AND INVARIANT ANALYSIS:
-"Based on my analysis, I understand [architecture]. I propose [approach].
-Here are the properties I think must be preserved: [invariants]
-Here's what I think could go wrong: [risks]"
+    WHAT I FOUND:
+    - Current implementation: [specific files and patterns]
+    - Integration points: [actual APIs/services]
+    - Data model: [existing schema]
 
-THEN VALIDATE WITH USER:
-Invariant Validation:
-- "What must NEVER break in this feature?"
-- "What would ruin a user's day if it failed?"
-- "What data loss is acceptable vs unacceptable?"
-- "What failure modes have you seen before?"
+    OPTIONS:
+    1. [Approach A]: [pros/cons]
+    2. [Approach B]: [pros/cons]
 
-Integration Questions (if still unclear after analysis):
-- "What exact APIs/endpoints will this connect to?"
-- "Show me the message format this will receive"
-- "What database tables/queries does this need?"
+    QUESTIONS:
+    - Which approach aligns with your vision?
+    - Any constraints I should know about?
+    - Preferences on [specific technical choice]?"
 
-Implementation Specifics:
-- "What specific user action triggers this feature?"
-- "What exact data do we receive/send?" (get JSON examples)
-- "Show me what success looks like" (get exact output)
-- "What's the ONE test that proves this works?"
+  WAIT for decision
+  CAPTURE: Chosen approach and rationale
 
-CAPTURE DURING INTERVIEW:
-## Interview Discoveries
-- Architecture validation: [confirmed/adjusted understanding]
-- Invariant validation: [confirmed/refined invariants and risks]
-- Integration details: {exact endpoints, formats}
-- Data structures: {real JSON/models from discussion}
-- Success criteria: {exact expected output}
-- Test scenario: {the one integration test that matters}
+FOR each PATTERN item:
+  CONFIRM pattern:
+    "[Feature] will follow the pattern from [example]:
+    - Structure: [what you found]
+    - Location: [where it goes]
+    OK to follow this pattern?"
 
-VERIFICATION: Architecture validated, invariants refined, specifics gathered
+FOR SIMPLE items:
+  QUICK confirm:
+    "Including these simple tasks:
+    - [list of simple items]
+    Will handle details during implementation. OK?"
+
+VERIFICATION: Have explicit decisions for all complex items
 ```
 
-**CHECKPOINT 8: Task Decomposition Interview**
+**CHECKPOINT 4: Invariant Analysis**
 
 ```
-REQUIRED: Break features into <4 hour concrete tasks:
+REQUIRED: Identify what must be preserved and what could break:
 
-TASK DISCOVERY QUESTIONS:
-- "What's the first working piece we can ship?"
-- "What files need to be created/modified?"
-- "Are there any unknowns requiring research spikes?"
-- "What's the critical path of dependencies?"
+SYSTEM INVARIANTS (properties that must NEVER break):
+  ASK: "What properties must this feature preserve?"
+  - Data integrity: What data loss is unacceptable?
+  - User trust: What would make users lose faith?
+  - Core functionality: What must always work?
 
-TASK TYPE IDENTIFICATION:
-- Implementation tasks: Known approach, clear patterns
-- Design tasks: Architecture, UI/UX, data model, or API design needed
-- Research spikes: Time-boxed exploration (1-2 hours max)
-- Integration tasks: Connect components to existing system
-- Wiring tasks: Configuration and orchestration
+BEHAVIORAL BOUNDS (acceptable variance):
+  ASK: "What variation is acceptable?"
+  - Performance: Response time thresholds
+  - Accuracy: Acceptable error rates
+  - Availability: Uptime requirements
 
-VERIFICATION: Each task has single responsibility and clear deliverable
+RISK ASSESSMENT:
+  HIGH RISK (could ruin user's day):
+    - What failures would be catastrophic?
+    - What would cause data loss?
+    - What breaks core workflows?
+
+  LOW RISK (cosmetic/minor):
+    - What's just annoying?
+    - What has workarounds?
+
+EXPECTED FAILURES:
+  ASK: "What will inevitably go wrong?"
+  - Network issues
+  - Race conditions
+  - External service failures
+
+CAPTURE all for embedding in ITERATION.md
+VERIFICATION: Clear understanding of what can't break
 ```
 
-### PHASE 3: MANDATORY INTERVIEW COMPLETION
+### PHASE 3: ITERATION APPROVAL
 
 **⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️**
 
 ```
-MANDATORY CLOSING STATEMENT:
+APPROVAL CHECKPOINT:
 =====================================
-INTERVIEW COMPLETE - NO ARTIFACTS GENERATED
+INVESTIGATION COMPLETE - READY TO PLAN
 =====================================
 
-Tech Stack Detected: [list with versions]
-Standards Loaded:
-- Python: [specific patterns loaded]
-- React: [specific patterns loaded]
-- [etc for each tech]
+Features Selected: [count]
+- Simple: [count] (handle during implementation)
+- Pattern: [count] (following existing examples)
+- Complex: [count] (investigated and decided)
 
-System Integration Mapped:
-- Existing APIs: [list]
-- Database tables: [list]
-- Message formats: [list]
+Design Decisions Captured:
+- [Feature A]: Using [chosen approach] because [rationale]
+- [Feature B]: Following [pattern] from [example]
 
-Interview Discoveries Captured:
-- User workflows: [key insights]
-- Data structures: [key formats]
-- Integration points: [key connections]
-- Test scenarios: [key validations]
-- Invariant refinements: [confirmed/discovered properties]
-- Risk assessment: [high/low risk areas identified]
+Invariants Identified:
+- Must preserve: [critical properties]
+- High risk areas: [what could break]
+- Acceptable variance: [what's flexible]
 
-Selected from later.md: [count] items
-- Bugs to fix: [count]
-- Todos to implement: [count]
-- Ideas to explore: [count]
+Tech Stack:
+- Detected: [technologies found]
+- Standards loaded: [claudex files read]
 
-Proposed Tasks: [count] tasks
-- Implementation: [count]
-- Research Spikes: [count]
-- Integration: [count]
-- Wiring: [count]
-
-Ready to generate ITERATION.md with embedded context?
+Ready to generate ITERATION.md with YOUR decisions?
 
 Please respond with YES or NO.
 ```
@@ -354,7 +500,7 @@ Please respond with YES or NO.
 
 ### PHASE 4: ITERATION GENERATION (AFTER APPROVAL)
 
-**CHECKPOINT 8: Move Selected Items to active.md**
+**CHECKPOINT 5: Move Selected Items to active.md**
 
 ```
 IF items were selected from later.md:
@@ -382,7 +528,7 @@ ACTIVE.MD FORMAT:
 VERIFICATION: Confirm items moved to active.md and removed from later.md
 ```
 
-**CHECKPOINT 9: Update Feature Status in IDEA.md**
+**CHECKPOINT 6: Update Feature Status in IDEA.md**
 
 ```
 REQUIRED: Update IDEA.md with iteration progress:
@@ -393,29 +539,55 @@ REQUIRED: Update IDEA.md with iteration progress:
 VERIFICATION: Confirm feature status updates applied
 ```
 
-**CHECKPOINT 10: Generate ITERATION.md Using Template**
+**CHECKPOINT 7: Generate ITERATION.md**
 
 ```
-REQUIRED: Create ITERATION.md preserving ALL interview discoveries:
+REQUIRED: Create ITERATION.md with captured decisions:
 - LOAD {project-root}/.workflow/templates/ITERATION_TEMPLATE.md
-- POPULATE with concrete details from interview discoveries
-- EMBED all loaded tech standards directly
-- PRESERVE exact data structures, commands, examples
-- CREATE tasks with specific implementation details
+- POPULATE with investigation findings and decisions
+- EMBED tech standards for reference
+- INCLUDE invariant analysis
 
-MANDATORY SECTIONS TO POPULATE:
-1. Working Software Goal (what users can DO)
-2. Context from Previous Iterations (built, current, infrastructure)
-3. Tech Stack & Embedded Standards (paste actual patterns)
-4. Integration Architecture (exact APIs and data flows)
-5. Tasks with ALL interview details preserved
-6. Quality Gates (from standards)
-7. Success Demo (exact commands)
+KEY DIFFERENCES from old approach:
+- Tasks describe WHAT, not HOW in detail
+- Include [DESIGN DECISION: approach] for complex items
+- Reference patterns for pattern items
+- Minimal detail for simple items
+- NO detailed implementation code
+- NO assumed class structures
+- Capture investigation findings for reference
 
-VERIFICATION: Every interview discovery appears in final ITERATION.md
+TASK FORMAT REQUIREMENTS:
+- NO detailed implementation code in tasks
+- NO assumed class structures or method signatures
+- NO prescriptive "you will implement X like this"
+- YES capture design decisions made
+- YES reference investigation findings
+- YES note patterns to follow
+
+TASK TEMPLATE:
+### N. [Feature Name] 📋 Planned
+
+**Type**: Implementation Task / Research Spike / Integration Task
+**Depends on**: None / Task X
+**Estimated time**: N hours
+
+**What to build**: [Clear user-facing outcome, no implementation details]
+
+[FOR COMPLEX ITEMS]:
+**Design Decision**: [Approach chosen during interview: JWT parallel to existing auth]
+**Investigation Context**: [Key findings: current auth in middleware/auth.go, uses 24hr tokens]
+
+[FOR PATTERN ITEMS]:
+**Pattern Reference**: [Follow existing pattern from src/endpoints/users.go POST handler]
+
+**Key files**: [General areas, not specific implementations]
+**Success criteria**: [How to verify it works - user action or API call]
+
+VERIFICATION: Tasks guide without prescribing implementation
 ```
 
-**CHECKPOINT 11: Task Construction with Interview Details**
+**CHECKPOINT 8: Embed Standards and Context**
 
 ```
 REQUIRED: Transform interview discoveries into concrete tasks:
@@ -459,10 +631,18 @@ EXAMPLE:
 [EXACT curl command from interview]
 ```
 
-**CHECKPOINT 12: Embed Standards in Context**
-
 ```
 REQUIRED: Paste actual standards patterns in Tech Stack section:
+
+## Tech Stack & Embedded Standards
+
+### [Technology]
+[PASTE actual patterns from ~/.claudex/standards/claudex-{tech}.md]
+- **Key Pattern**: [Specific requirement from standards]
+- **Version**: [Required version]
+- **Quality Gate**: [Testing/linting requirement]
+
+VERIFICATION: Standards are embedded, not referenced
 
 ## Tech Stack & Embedded Standards
 
@@ -480,50 +660,47 @@ REQUIRED: Paste actual standards patterns in Tech Stack section:
 VERIFICATION: Standards are embedded, not referenced
 ```
 
-**CHECKPOINT 13: Final Validation**
+**CHECKPOINT 9: Final Validation**
 
 ```
-VERIFICATION GATE: Before finalizing ITERATION.md, confirm:
-- [ ] All interview discoveries preserved in tasks
-- [ ] Standards embedded with specific patterns
-- [ ] Each task has concrete implementation details
-- [ ] Integration points include exact formats
-- [ ] One smoke test per task defined
-- [ ] Success commands are exact (not generic)
-- [ ] Task types and dependencies clear
-- [ ] Time estimates realistic (<4 hours)
+VERIFICATION GATE: Before finalizing ITERATION.md:
+- [ ] Design decisions captured, not assumed
+- [ ] Complex items have investigation findings
+- [ ] Pattern items reference real examples
+- [ ] Simple items not over-specified
+- [ ] Invariants documented
+- [ ] Standards embedded for reference
+- [ ] Tasks describe WHAT not HOW in detail
 
-FAILURE MODE: If missing interview details or using generic descriptions, REGENERATE
+FAILURE MODE: If making assumptions instead of using findings, REVISE
 ```
 
 ### PHASE 5: COMPLETION STATEMENT
 
 ```
 =====================================
-ITERATION PLANNED WITH INTERVIEW GOLD PRESERVED
+ITERATION PLANNED COLLABORATIVELY
 =====================================
 
-✅ [X] concrete tasks with implementation details
-✅ [Y] interview discoveries preserved  
-✅ [Z] standards embedded with patterns
-✅ One smoke test per task
-✅ Exact success verification commands
-✅ All integration points mapped
-✅ Selected items moved to active.md
+✅ [X] features selected and triaged
+✅ Complex items investigated via agents
+✅ Design decisions captured from user
+✅ Invariants and risks identified
+✅ Standards embedded for reference
+✅ Tasks ready for implementation
 
-No generic descriptions - everything concrete from interview.
+Designs are YOUR decisions, not my assumptions.
 
-Ready for implementation with /plan-task 1
-
+Ready for: /decompose-iteration
 ```
 
 ## ENFORCEMENT MECHANISMS
 
 ### Interview Preservation Gates
 
-- Must capture concrete examples during interview
-- Must preserve exact data formats and commands
-- Must include real code snippets discussed
+- Must capture concrete decisions from interview
+- Must preserve investigation findings
+- Must reference real patterns found
 - No generic task descriptions allowed
 
 ### Standards Compliance Gates
@@ -535,16 +712,17 @@ Ready for implementation with /plan-task 1
 
 ### Task Quality Gates
 
-- Each task must have single responsibility
-- Must include exact implementation details
-- Must have one concrete smoke test
-- Must be completable in <4 hours
+- Each task has clear user outcome
+- Design decisions captured, not prescribed
+- No detailed implementation code
+- No assumed class structures
+- Pattern items reference real examples
 
 ## FAILURE MODES & RECOVERY
 
-**If interview too vague:** Ask more concrete questions  
-**If standards not loaded:** STOP and read required files  
-**If tasks generic:** Re-read interview discoveries and add specifics  
-**If no concrete examples:** Request exact commands/data from user
-**If later.md not found:** Continue without backlog items
-**If active.md not found:** Create it when moving items from later.md
+**If agent investigation vague:** Send more specific prompts
+**If user unsure of decision:** Present clearer trade-offs
+**If complexity unclear:** Default to COMPLEX and investigate
+**If pattern not found:** Treat as COMPLEX, needs design
+**If standards missing:** Note and continue (warn user)
+**If later.md not found:** Ask for features directly
