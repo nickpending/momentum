@@ -1,149 +1,249 @@
 # Momentum
 
-**Ship working software every iteration.**
+<div align="center">
 
-A development workflow that turns ideas into working software through rapid iterations. Built for Claude Code.
+  **Your development workflow partner that ships working software every iteration**
 
-## What is Momentum?
+  [GitHub](https://github.com/nickpending/momentum) | [Issues](https://github.com/nickpending/momentum/issues) | [Roadmap](#roadmap)
 
-Momentum is a workflow system that helps you:
-- **Start with ideas**, not boilerplate
-- **Ship working code** every iteration
-- **Never lose context** when Claude runs out of memory
-- **Embed quality** directly into your workflow
+  [![Status](https://img.shields.io/badge/Status-Active-green?style=flat)](#status-active)
+  [![Built for](https://img.shields.io/badge/Built%20for-Claude%20Code-blueviolet?style=flat)](https://claude.ai/download)
+  [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Instead of planning everything upfront or coding without structure, Momentum guides you through a proven iteration cycle that produces working software quickly.
+</div>
 
-## Quick Start
+---
 
-### Prerequisites
-- [Claude Code CLI](https://claude.ai/download)
-- macOS or Linux
-- Bash or Zsh shell
+**Momentum** transforms scattered ideas into shipped software through evidence-based iterations. It partners with Claude Code to maintain forward progress, preserve context across memory limits, and embed quality directly into your workflow.
 
-### Install
+Think of it as having a development partner who never forgets context and always ships working code.
+
+## Status: Active
+
+**This is production-ready software in active daily use.** It's been shipping working software for months across multiple projects. Each iteration strengthens the workflow patterns.
+
+## ✨ Features
+
+- 🚀 **Context-Aware Conversations** - Dynamic hooks detect semantic patterns and inject relevant context
+- 🧠 **Evidence-Based Planning** - AI agents investigate and present options instead of prescriptive solutions
+- 🎯 **Working Software First** - Ship functional code every iteration, test after to prove it works
+- 📦 **Memory Management** - Save/restore state across Claude's context limits without losing progress
+- 🔒 **Quality Embedded** - Risk-based testing and verification built into task completion
+- ⚡ **Micro-Tasks** - Each task fits in one conversation, no endless context juggling
+- 🎨 **Expert Guidance** - Luminary system provides domain-specific advice from programming legends
+- 🛡️ **Behavioral Guards** - Anti-speculation and anti-lazy enforcement prevents hallucination
+
+## 🎬 Quick Start
 
 ```bash
-git clone https://github.com/yourusername/momentum.git
+# Install Momentum
+git clone https://github.com/nickpending/momentum.git
 cd momentum
 ./install.sh
-```
 
-The installer will ask where you keep your code and where to store project documentation.
-
-### Your First Project
-
-```bash
-# 1. Start Claude with Momentum (from anywhere - home dir is fine)
+# Start exploring ideas (from anywhere)
 cd ~
 momentum
 
-# 2. In Claude, explore your idea
-/ideate "app that tracks daily habits"
+# In Claude, start exploring
+"I have an idea for a habit tracking app"
+# (Momentum automatically detects ideation and guides the conversation)
 
-# 3. Turn exploration into a project
-/plan-idea
+# Create the project
+"save this idea"
+# (Creates project in configured directory)
 
-# 4. Set up project (in terminal)
+# Set up development (in terminal)
 setupd habit-tracker
 cd ~/development/projects/habit-tracker
 
-# 5. Build your first iteration (in Claude - from project dir)
+# Start building (from project directory)
 momentum
 /plan-iteration
-/decompose-iteration  
-/plan-task 1
 ```
 
-That's it! You're building.
+That's it! You're shipping working software.
 
-## How It Works
+## 🎮 How It Works
 
 Momentum follows a simple cycle:
 
 ```
-IDEATE → PLAN → BUILD → SHIP → LEARN → REPEAT
+EXPLORE → DECIDE → BUILD → SHIP → LEARN → REPEAT
 ```
 
-Each iteration produces working software. No endless planning. No coding without direction.
+### Semantic Interaction
+
+No need to memorize commands. Just talk naturally:
+
+**For Ideation:**
+- "I have an idea for..." → Automatic ideation mode
+- "What if we built..." → Creative brainstorming
+- "Save this exploration" → Captures ideas in the right place
+
+**For Building:**
+- `/plan-iteration` → Collaborative iteration planning
+- `/plan-task 1` → Evidence-based task execution
+- "Review the code" → Launches code reviewer with confirmation
+
+**For Analysis:**
+- "Analyze the architecture" → Multi-option architectural analysis (planning phase)
+- "Is this over-engineered?" → Post-implementation architecture review
+- "Check for production issues" → Comprehensive audit orchestration
 
 ### The Commands
 
-Commands run in two places:
-
 **In Terminal:**
 - `momentum` - Start Claude with Momentum mode
-- `setupd projectname` - Set up a new project
+- `setupd projectname` - Set up a new project structure
 
 **In Claude Code:**
-- `/ideate` - Explore an idea through conversation
-- `/plan-idea` - Convert exploration to project vision
-- `/plan-iteration` - Plan what to build next
-- `/decompose-iteration` - Break features into tasks
-- `/plan-task N` - Build specific task
-- `/plan-test N` - Write tests for completed task
-- `/complete-task N` - Mark task done with evidence
-- `/complete-iteration` - Ship and archive
-- `/save-state` - Save progress when context fills
-- `/restore-state` - Resume from saved state
+- `/plan-iteration` - Collaboratively plan what to build next
+- `/decompose-iteration` - Break iteration into micro-tasks
+- `/plan-task N` - Execute specific task with evidence
+- `/complete-iteration` - Ship and archive with verification
+- `/save-state` / `/restore-state` - Manage context across sessions
 
-**💡 Important:** Where you run `momentum` matters:
-- **For exploration** (`/ideate`): Run from home dir or anywhere
-- **For building** (`/plan-iteration`, `/plan-task`): Run from project directory
-- Claude creates `.claude/` in your current directory, so project commands need project context
+**💡 Important:** Location matters:
+- **For exploration**: Run `momentum` from anywhere - ideas don't need project context
+- **For building**: Run from project directory - commands need project artifacts
 
-### The Magic: Context Management
+## 🏗️ Architecture
 
-Claude has limited memory. Previous workflows died when hitting context limits. Momentum solves this:
+Momentum uses a multi-agent architecture optimized for evidence-based decisions:
 
-- **Micro-tasks** - Each task fits in one conversation
-- **State saving** - `/save-state` when context fills up
-- **State restoration** - `/restore-state` to continue exactly where you left off
-- **Smart grouping** - Related tasks batch together when it makes sense
+```
+Natural Language Input    Semantic Routing         Specialized Agents
+        │                      │                         │
+"I have an idea" ──► Ideation Context ──► Creative Discussion
+"Review the code" ──► Confirmation ──► Code Reviewer Agent
+"Analyze options" ──► Analysis Request ──► Architecture Analyst
+        │                      │                         │
+        └──► Evidence Collection ──► Options Presentation
+```
 
-You can work on complex projects without losing progress.
+- **Semantic Routing**: Detects intent from natural language, loads appropriate context
+- **Evidence-Based Agents**: Investigate actual code, present multiple verified options
+- **Context Management**: Preserves state across Claude's memory limitations
+- **Quality Embedded**: Verification and standards built into task completion
 
-## Common Workflows
+## 🔧 Installation
 
-### Starting Fresh (Exploring Ideas)
+### Prerequisites
+
+- **macOS or Linux**
+- **Claude Code CLI** - [Download here](https://claude.ai/download)
+- **Bash or Zsh shell**
+- **Bun runtime** (optional) - For dynamic context hooks
+
+### Install from Source
+
 ```bash
-cd ~                 # Start from home dir for exploration
-momentum             # Start Claude
-/ideate "your idea"  # Explore
-/plan-idea          # Create project vision
-# Exit Claude
-setupd projectname  # Set up directories (in terminal)
-cd ~/development/projects/projectname
-momentum            # Restart Claude in project dir
-/plan-iteration     # Start building
+git clone https://github.com/nickpending/momentum.git
+cd momentum
+./install.sh
+```
+
+The installer will ask where you keep code and documentation.
+
+### Configuration
+
+Momentum follows XDG-like patterns:
+- Config: `~/.config/momentum/`
+- Projects: `~/obsidian/projects/` (configurable)
+- Code: `~/development/projects/` (configurable)
+
+## 🚀 Usage Patterns
+
+### Starting Fresh
+```bash
+cd ~                          # From anywhere for exploration
+momentum
+"I have an idea for X"        # Natural conversation triggers ideation
+"save this idea"              # Creates project in configured location
+
+setupd project-name          # Set up development structure
+cd ~/development/projects/project-name
+momentum
+/plan-iteration              # Start building
 ```
 
 ### Continuing Work
 ```bash
-cd ~/development/projects/myproject  # Always from project dir
+cd ~/development/projects/myproject
 momentum
-/load-app-context    # Get oriented
-/plan-task 3         # Continue where you left off
+/plan-task 3                 # Continue specific task
 ```
 
-### When Context Fills Up
+### When Context Fills
 ```bash
-/save-state          # Save current progress
+/save-state                  # Preserve current progress
 # Start new conversation
 momentum
-/restore-state       # Pick up exactly where you left off
+/restore-state               # Resume exactly where you left off
 ```
 
-## Philosophy
+## 🧪 Advanced Features
 
-**Ship working software.** Not perfect software. Working software.
+### Specialized Agents
 
-- Build first, test after (tests prove it works)
-- Use real services (no mocking internals)
-- Complete = it runs and users can use it
-- Learn from usage, not speculation
+Momentum includes specialized AI agents for deep analysis:
 
-## Troubleshooting
+```bash
+# In conversation - these trigger automatically with confirmation
+"Review the code"               # → code-reviewer agent (evidence-based)
+"Analyze the architecture"      # → architecture-analyst agent (planning)
+"Is this over-engineered?"      # → architecture-reviewer agent (post-implementation)
+"Check for production issues"   # → production-auditor agent (comprehensive)
+```
+
+**Available Agents:**
+- **architecture-analyst** - Presents multiple architectural options with trade-offs (planning phase)
+- **implementation-analyst** - Technical approaches for algorithms and data structures
+- **architecture-reviewer** - Post-implementation analysis for over-engineering and complexity
+- **architecture-auditor** - Identifies drift between planned and actual architecture
+- **production-auditor** - Comprehensive production-readiness assessment
+- **code-reviewer** - Evidence-based security, quality, and functional correctness review
+
+### Expert Guidance (Luminaries)
+
+Get domain-specific advice from programming legends:
+
+```bash
+# After running setupd, configure experts
+/setup-luminaries
+
+# Quick expert guidance during development
+qlum                    # Poses relevant question from experts
+qwwld                   # "What would the luminaries do?"
+```
+
+Experts are automatically selected based on your project type (e.g., Rob Pike for CLI tools, John Carmack for performance-critical code).
+
+### Quick Commands
+
+Rapid development shortcuts in Momentum mode:
+
+```bash
+# Development
+qcheck     # Code review by skeptical senior engineer
+qtest      # Write one integration test for current work
+qcom       # Stage all changes and commit with conventional message
+qpush      # Push to origin main
+qfix       # Debug and fix provided error
+
+# Planning
+qback      # Add idea/todo/bug to project backlog
+qnext      # Suggest logical next step based on current work
+qsweep     # Check what needs attention (active tasks, old items)
+
+# Analysis
+qenv       # Check environment variable usage vs .env.example
+qwhy       # Explain why last command failed and how to fix
+qalt       # Suggest alternative approach to current problem
+```
+
+## 🔧 Troubleshooting
 
 ### "Command not found: setupd"
 ```bash
@@ -164,120 +264,108 @@ cd ~/development/projects/myproject
 momentum
 ```
 
-## Advanced Features
+### Semantic routing not working
+Ensure Bun is installed for dynamic context hooks:
+```bash
+curl -fsSL https://bun.sh/install | bash
+source ~/.bashrc
+```
 
-<details>
-<summary>Expert Guidance System (Luminaries)</summary>
+Visit the project directory for comprehensive guides and examples:
 
-Get domain-specific expertise in your project:
+- **Core Concepts**: Understanding iterations, tasks, and evidence-based completion
+- **Agent System**: How specialized agents investigate and present options
+- **Context Management**: Preserving state across Claude's memory limitations
+- **Quality Embedding**: Built-in verification and standards enforcement
+
+## 🤝 Contributing
+
+Momentum is built through its own workflow - we ship improvements iteratively:
 
 ```bash
-/setup-luminaries    # Configure experts for your project
-qlum                # Quick expert sanity check during coding
-qwwjd               # "What would [expert] do?"
+# Fork and clone
+git fork https://github.com/nickpending/momentum.git
+cd momentum
+
+# Start exploring improvements
+momentum
+"I have an idea to improve X"
+
+# Build and test
+setupd momentum-improvement
+cd ~/development/projects/momentum-improvement
+momentum
+/plan-iteration
 ```
 
-Momentum selects relevant experts based on your project type (e.g., Rob Pike for CLI tools, John Carmack for game servers).
-</details>
+Areas where we'd love contributions:
+- Additional specialized agents for domain-specific analysis
+- Enhanced semantic routing patterns for natural language detection
+- Integration patterns for additional development tools
+- Quality embedding patterns for different languages/frameworks
 
-<details>
-<summary>Custom Subagents</summary>
+## 📈 Why Momentum?
 
-Specialized agents for deep analysis:
-- `architecture-analyst` - System structure and patterns
-- `implementation-analyst` - Algorithms and technical approaches  
-- `architecture-auditor` - Find drift between plan and implementation
-- `production-auditor` - Production readiness assessment
-</details>
+**The Problem**: Development workflows are either too rigid (waterfall) or too chaotic (just start coding). Context gets lost when Claude's memory fills. Quality is an afterthought.
 
-<details>
-<summary>Quick Commands</summary>
+**The Solution**: Momentum guides evidence-based iterations that always ship working software. Context preserves across sessions. Quality is embedded in completion criteria.
 
-Rapid development commands in Momentum mode:
+**The Philosophy**: Your development partner should help you think through problems, present options, and ship working code - not make decisions for you.
 
-**Development:**
-- `qcheck` - Code review
-- `qtest` - Write one test
-- `qcom` - Commit changes
-- `qfix` - Debug error
-
-**Planning:**
-- `qback` - Add to backlog
-- `qnext` - What's next?
-- `qsweep` - Check todos
-</details>
-
-<details>
-<summary>Dynamic Context Hooks (Experimental)</summary>
-
-Momentum includes experimental support for dynamic context injection through hooks:
-
-- **Semantic Routing** - Automatically loads relevant context based on what you're exploring
-- **Exploration Mode** - Enhanced exploration conversations with context-aware guidance
-- **Auto-save Explorations** - Say "save this exploration" and it knows where to put it
-
-**Requirements:**
-- Bun runtime (`curl -fsSL https://bun.sh/install | bash`)
-- Hooks are installed per-project by setupd
-
-**How it works:**
-When you say things like "let's explore X" or "save this exploration", hooks detect the semantic patterns and inject appropriate context to guide the conversation.
-</details>
-
-<details>
-<summary>Directory Structure</summary>
-
-Momentum uses two directories:
+## Project Structure
 
 ```
-~/obsidian/projects/          # Project documentation
-├── explorations/            # Ideas being explored
-├── projects/                # Active projects
-│   └── myproject/
-│       ├── IDEA.md         # Project vision
-│       ├── later.md        # Backlog
-│       ├── active.md       # Current work
-│       └── completed.md    # Done items
-└── archive/                # Completed projects
-
-~/development/projects/       # Actual code
-└── myproject/
-    ├── .workflow/
-    │   ├── artifacts/       # Current iteration
-    │   ├── state/          # Saved contexts
-    │   └── archives/       # Past iterations
-    └── [your code]
-```
-</details>
-
-<details>
-<summary>Configuration</summary>
-
-Edit `~/.config/momentum/config` to customize paths:
-
-```bash
-export WORKFLOW_DEV="/your/code/directory"
-export WORKFLOW_PROJECTS="/your/docs/directory"
+momentum/
+├── commands/           # Core workflow commands
+├── contexts/          # Semantic routing contexts
+├── subagents/         # Specialized analysis agents
+├── templates/         # Project scaffolding templates
+├── scripts/           # Installation and setup utilities
+└── hooks/            # Dynamic context injection (experimental)
 ```
 
-After changing, run `setupd` again for existing projects to update symlinks.
-</details>
+## 🎯 Roadmap
 
-## Learn More
+**Current** (Active Development):
+- [x] Evidence-based agent verification system with anti-hallucination guards
+- [x] Semantic routing for natural language interaction via TypeScript hooks
+- [x] Collaborative iteration planning (vs prescriptive approaches)
+- [x] Multi-option architectural analysis with trade-off presentation
+- [x] Post-implementation architecture review for over-engineering detection
+- [x] Risk-based testing philosophy over coverage metrics
+- [x] Dynamic context injection with Miessler-inspired patterns
+- [x] Behavioral guards preventing speculation and lazy analysis
 
-- [Full Documentation](docs/) (coming soon)
-- [Example Projects](examples/) (coming soon)
-- [Video Walkthrough](https://youtube.com/) (coming soon)
+**Next** (v2.0):
+- [ ] Enhanced context preservation across longer projects
+- [ ] Integration with additional development tools
+- [ ] Pattern learning from successful project workflows
+- [ ] Cross-project insight sharing
+- [ ] Enhanced semantic routing accuracy
 
-## Contributing
+**Future** (v3.0+):
+- [ ] Language-specific quality patterns
+- [ ] Team collaboration workflows
+- [ ] Integration with CI/CD pipelines
+- [ ] Workflow analytics and optimization
 
-Momentum is built through momentum. We ship improvements iteratively:
+## 📄 License
 
-1. Fork the repo
-2. Create your feature branch
-3. Ship working improvements
-4. Submit a PR with evidence it works
+[MIT](LICENSE) - Use it, fork it, make it better through momentum.
+
+## 🙏 Acknowledgments
+
+Built for and with:
+- [Claude Code](https://claude.ai/download) - The AI development environment that makes this possible
+- Evidence-based planning principles from successful software teams
+- The iteration-first philosophy proven across hundreds of shipped projects
 
 ---
 
-**Remember:** The goal is not perfect software. It's software that solves real problems and evolves quickly.
+<div align="center">
+
+  **Stop planning everything upfront. Start shipping working software.**
+
+  [Get Started](#-quick-start) | [Star on GitHub](https://github.com/nickpending/momentum)
+
+</div>
