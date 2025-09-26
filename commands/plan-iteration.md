@@ -249,6 +249,35 @@ FOR SIMPLE items:
 VERIFICATION: All investigations complete before proceeding
 ```
 
+## Task Type Determination
+
+After investigation, determine the appropriate task type for each item:
+
+### Implementation Tasks (Ship Working Code)
+- **When**: You know HOW to build it
+- **Output**: Working, integrated feature
+- **Completion**: Code ships and users can use it
+- **Structure**: Include code examples, integration points, tests
+
+### Design Tasks (Create Artifacts)
+- **When**: Need to figure out UI/UX, architecture, data models DURING iteration
+- **Output**: Design document in `.workflow/artifacts/designs/task-N.md`
+- **Completion**: Artifact created that guides implementation
+- **Structure**: Goals, constraints, explorations, decisions, mockups/diagrams
+- **Examples**: UI mockups, API design, data model, system architecture
+
+### Research Spikes (Test Feasibility)
+- **When**: Need to prove something CAN work before committing
+- **Output**: Working prototype code (throwaway acceptable)
+- **Completion**: Question answered with working code proof
+- **Structure**: Hypothesis, test approach, working code, findings
+- **Examples**: "Can we integrate Stripe?", "Will WebSockets scale?", "Does this library work?"
+
+**CRITICAL**:
+- Design Tasks produce ARTIFACTS not CODE
+- Research Spikes produce CODE not JUST DOCUMENTATION
+- Implementation Tasks produce SHIPPABLE CODE not PROTOTYPES
+
 **CHECKPOINT 2.5: Review Recent Iteration Learnings**
 
 ```
@@ -608,15 +637,25 @@ TASK FORMAT REQUIREMENTS:
 TASK TEMPLATE:
 ### N. [Feature Name] 📋 Planned
 
-**Type**: Implementation Task / Research Spike / Integration Task
+**Type**: Implementation Task / Design Task / Research Spike
 **Depends on**: None / Task X
 **Estimated time**: N hours
 
 **What to build**: [Clear user-facing outcome, no implementation details]
 
-[FOR COMPLEX ITEMS]:
+[FOR IMPLEMENTATION TASKS]:
 **Design Decision**: [Approach chosen during interview: JWT parallel to existing auth]
 **Investigation Context**: [Key findings: current auth in middleware/auth.go, uses 24hr tokens]
+
+[FOR DESIGN TASKS]:
+**What to design**: [UI flow, architecture, data model, API spec]
+**Constraints**: [Technical, business, user requirements]
+**Output artifact**: `.workflow/artifacts/designs/task-N.md`
+
+[FOR RESEARCH SPIKES]:
+**Question to answer**: [Can we do X? Will Y scale? Does Z integrate?]
+**Success criteria**: [Working prototype that proves feasibility]
+**Time box**: [1-2 hours max]
 
 [FOR PATTERN ITEMS]:
 **Pattern Reference**: [Follow existing pattern from src/endpoints/users.go POST handler]

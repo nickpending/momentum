@@ -22,9 +22,16 @@
 
 ## Detailed Task Breakdown
 
+**Choose the appropriate template based on task type:**
+- Implementation Task: For building shippable code
+- Design Task: For creating design artifacts/documents
+- Research Spike: For testing feasibility with prototypes
+
 ## Feature 1: [Full Feature Name from ITERATION.md]
 
-### 1.1: [Specific Task Name]
+[Use appropriate template below based on task type]
+
+### 1.1: [Specific Implementation Task Name]
 
 - **Status:** 📋 Not Started
 - **Files:** `[exact file paths to create/modify]`
@@ -52,75 +59,41 @@
   - HIGH: [If this task affects HIGH risk areas]
   - LOW: [If this task is LOW risk]
 
-### 1.2: [Specific Task Name]
+### 1.2: [Another Implementation Task]
+[Same structure as above]
+
+## Feature 2: Design [What's Being Designed]
+
+### 2.1: Design [What] for [Purpose]
 
 - **Status:** 📋 Not Started
-- **Files:** `[exact file paths]`
-- **Architecture Context:**
-  - Patterns: [Existing patterns to follow, conventions to maintain]
-  - State: [Where state lives, how it flows, what changes]
-  - Data: [Schema, format, source of truth, validation rules]
-  - Integration: [APIs used, services called, events handled]
-  - Constraints: [Performance needs, security requirements, limits]
-- **Error Scenarios:** [Specific failures to handle gracefully]
-- **Deliverable:** [What this produces]
-- **Demo:** `[verification command]`
-- **Dependencies:** 1.1
-- **Validation:** [How to verify this works correctly]
-- **Notes:** [Any notes]
+- **Type:** Design Task
+- **Output:** `.workflow/artifacts/designs/[filename].md`
+- **Sections to include:**
+  - [List key sections the design document should cover]
+  - [e.g., User flow, Component hierarchy, State management]
+- **Key decisions:**
+  - [What architectural/UX decisions need to be made]
+  - [What tradeoffs to evaluate]
+- **Deliverable:** Complete design document for [what]
+- **Demo:** `cat .workflow/artifacts/designs/[filename].md`
+- **Dependencies:** None OR [list task numbers]
+- **Context:** [Why this design is needed now]
 
-### 1.3: [Specific Task Name]
+## Feature 3: Research [What's Being Researched]
 
-- **Status:** 📋 Not Started
-- **Files:** `[exact file paths]`
-- **Architecture Context:**
-  - Patterns: [Existing patterns to follow, conventions to maintain]
-  - State: [Where state lives, how it flows, what changes]
-  - Data: [Schema, format, source of truth, validation rules]
-  - Integration: [APIs used, services called, events handled]
-  - Constraints: [Performance needs, security requirements, limits]
-- **Error Scenarios:** [Specific failures to handle gracefully]
-- **Deliverable:** [What this produces]
-- **Demo:** `[verification command]`
-- **Dependencies:** 1.1, 1.2
-- **Validation:** [How to verify this works correctly]
-- **Notes:** [Any notes]
-
-## Feature 2: [Full Feature Name from ITERATION.md]
-
-### 2.1: [Specific Task Name]
+### 3.1: Research [Technology/Approach] for [Purpose]
 
 - **Status:** 📋 Not Started
-- **Files:** `[exact file paths]`
-- **Architecture Context:**
-  - Patterns: [Existing patterns to follow, conventions to maintain]
-  - State: [Where state lives, how it flows, what changes]
-  - Data: [Schema, format, source of truth, validation rules]
-  - Integration: [APIs used, services called, events handled]
-  - Constraints: [Performance needs, security requirements, limits]
-- **Error Scenarios:** [Specific failures to handle gracefully]
-- **Deliverable:** [What this produces]
-- **Demo:** `[verification command]`
-- **Dependencies:** None
-- **Validation:** [How to verify this works correctly]
-- **Notes:** [Any notes]
-
-### 2.2: [Specific Task Name]
-
-- **Status:** 📋 Not Started
-- **Files:** `[exact file paths]`
-- **Architecture Context:**
-  - Patterns: [Existing patterns to follow, conventions to maintain]
-  - State: [Where state lives, how it flows, what changes]
-  - Data: [Schema, format, source of truth, validation rules]
-  - Integration: [APIs used, services called, events handled]
-  - Constraints: [Performance needs, security requirements, limits]
-- **Error Scenarios:** [Specific failures to handle gracefully]
-- **Deliverable:** [What this produces]
-- **Demo:** `[verification command]`
-- **Dependencies:** 2.1
-- **Validation:** [How to verify this works correctly]
-- **Notes:** [Any notes]
+- **Type:** Research Spike
+- **Question:** [Specific question to answer]
+- **Success criteria:** [What proves feasibility]
+- **Prototype location:** `spikes/[name]/`
+- **Deliverable:** Working proof that [technology] can [do what]
+- **Demo:** `[command to run prototype]`
+- **Dependencies:** None OR [list task numbers]
+- **Constraints:** [Time-box, resource limits, scope boundaries]
+- **Notes:** [Why we need to test this]
 
 ## Implementation Order
 

@@ -134,10 +134,25 @@ VERIFICATION GATE:
 
 FAILURE MODE: If you haven't read actual code, STOP. You cannot proceed.
 
-NOTE FOR DESIGN TASKS:
+TASK TYPE ROUTING:
+Based on the task type found in TASKS.md:
+
+FOR DESIGN TASKS:
 - Output goes to {project-root}/.workflow/artifacts/designs/task-{number}.md
-- You're reading for context, not constraints
-- Feel free to reimagine and improve
+- Focus on artifact creation, not code implementation
+- Skip implementation phases, go to design creation
+- Success = complete design document
+
+FOR RESEARCH SPIKES:
+- Prototype goes to spikes/{name}/
+- Focus on answering the question, not shipping
+- Throwaway code is acceptable
+- Success = feasibility proven with working prototype
+
+FOR IMPLEMENTATION TASKS:
+- Continue with normal workflow below
+- Focus on shippable code
+- Success = working feature that passes tests
 ```
 
 **CHECKPOINT 2: Task Value Validation**

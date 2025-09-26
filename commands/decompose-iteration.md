@@ -70,6 +70,11 @@ SCOPE VALIDATION:
 - Can be completed in one focused session?
 - Natural file boundaries (don't artificially split related changes)?
 
+TASK TYPE VALIDATION:
+- Implementation Tasks → decompose into code deliverables
+- Design Tasks → keep as ONE task (produces complete artifact)
+- Research Spikes → keep as ONE task (answers specific question)
+
 NAMING VALIDATION:
 - Uses pattern: "X.Y: [Action] [Target] [Purpose]"?
 - Specifies exact files/functions/methods?
@@ -107,12 +112,13 @@ VERIFICATION: Dependency graph is simple and linear
 ```
 REQUIRED: For each feature in ITERATION.md:
 
-1. ANALYZE feature scope and deliverables
-2. IDENTIFY smallest valuable piece
-3. BREAK into concrete file modifications
-4. CREATE numbered tasks following X.Y pattern
-5. VALIDATE each task against gates
-6. ORDER by dependency
+1. ANALYZE feature scope and type (Design/Research/Implementation)
+2. For Implementation: IDENTIFY smallest valuable pieces
+3. For Implementation: BREAK into concrete file modifications
+4. For Design/Research: Keep as SINGLE task
+5. CREATE numbered tasks following X.Y pattern
+6. VALIDATE each task against gates
+7. ORDER by dependency
 
 CRITICAL QUESTION: Is this really ONE thing or am I bundling?
 
@@ -121,20 +127,29 @@ CRITICAL: DO NOT create separate test tasks!
 - Focus on features/functionality only
 - Testing is built into every task implementation
 
-EXAMPLE BREAKDOWN:
-Feature: "Frontend: Audio Manager with Per-Room Ambience"
-BAD TASKS:
-  2.1: Implement audio manager ❌ (too big)
-  2.5: Write tests for audio manager ❌ (tests are automatic)
+EXAMPLE BREAKDOWNS BY TYPE:
 
-GOOD TASKS:
+Implementation Feature: "Frontend: Audio Manager with Per-Room Ambience"
+→ DECOMPOSE into micro-tasks:
   2.1: Create useAudioManager hook with play() method
   2.2: Add stop() method to useAudioManager
   2.3: Add single Audio instance management
   2.4: Connect WebSocket room-change events
   2.5: Add room-to-sound mapping logic
 
-VERIFICATION: Each feature becomes 5-15 specific tasks (NO test tasks)
+Design Feature: "Design: Combat System UX Flow"
+→ KEEP AS ONE TASK:
+  3.1: Design combat system UX flow document
+
+Research Feature: "Spike: Test WebRTC for real-time multiplayer"
+→ KEEP AS ONE TASK:
+  4.1: Research WebRTC multiplayer feasibility
+
+VERIFICATION:
+- Implementation features → 5-15 specific tasks
+- Design features → 1 task producing artifact
+- Research features → 1 task answering question
+(NO separate test tasks)
 ```
 
 **CHECKPOINT 5.5: Map Invariants to Tasks**
@@ -254,69 +269,17 @@ TEMPLATE LOCATION: {project-root}/.workflow/templates/TASKS_TEMPLATE.md
 
 TASK ENTRY REQUIREMENTS:
 - Status: Always starts as "📋 Not Started"
-- Files: Exact file paths (no wildcards)
-- Deliverable: One sentence describing what gets built
+- Files: Exact file paths (no wildcards) for Implementation tasks
+- Deliverable: One sentence describing what gets built/created
 - Demo: Actual command that proves it works
 - Dependencies: List task numbers or "None"
-- Architecture: Data model assumptions, integration points, error scenarios
 - Invariants: Pre-populate with mapped invariants from ITERATION.md
 - Notes: Implementation hints without over-specifying
 
-ARCHITECTURE-HEAVY TASK TEMPLATE:
-### X.Y: [Action] [Target] [Purpose]
-- **Status:** 📋 Not Started
-- **Files:** `exact/file/paths.ts`
-- **Architecture Context:**
-  - Patterns: [Existing patterns to follow, conventions to maintain]
-  - State: [Where state lives, how it flows, what changes]
-  - Data: [Schema, format, source of truth, validation rules]
-  - Integration: [APIs used, services called, events handled]
-  - Constraints: [Performance needs, security requirements, limits]
-- **Error Scenarios:** [Specific failures to handle gracefully]
-- **Deliverable:** [One sentence describing what gets built]
-- **Demo:** `command that proves it works`
-- **Dependencies:** X.X, X.X or "None"
-- **Validation:** [How to verify this works correctly]
-- **Notes:** [Implementation hints without over-specifying]
-
-**Discovered During Implementation:**
-- **Invariants (from iteration planning):**
-  - [Mapped invariants from ITERATION.md that this task could affect]
-- **Additional Invariants (found during building):**
-  - [None discovered yet]
-- **Failure Modes:**
-  - [None encountered yet]
-- **Risk Assessment:**
-  - HIGH: [If this task affects HIGH risk areas]
-  - LOW: [If this task is LOW risk]
-
-EXAMPLE TASK ENTRY:
-### 2.3: Connect room change events to audio manager
-- **Status:** 📋 Not Started
-- **Files:** `src/hooks/useAudioManager.ts`
-- **Architecture Context:**
-  - Patterns: Follow existing WebSocket subscription pattern from useGameState hook
-  - State: Room state in Redux store, audio state local to hook
-  - Data: WebSocket emits {type: 'game_update', room: {id, name, ambience_url}}
-  - Integration: WebSocket service (ws.on), AudioManager singleton (.stop/.play)
-  - Constraints: Audio must crossfade within 500ms, handle Safari autoplay policy
-- **Error Scenarios:** Missing ambience_url (use silence), network failure (keep playing current), audio load failure (retry 3x with backoff)
-- **Deliverable:** Audio manager stops current sound and plays new room's ambient when player moves
-- **Demo:** `npm test -- useAudioManager.test.ts -t "changes audio on room transition"`
-- **Dependencies:** 2.1, 2.2
-- **Validation:** Move between rooms in dev mode, verify audio transitions smoothly without gaps
-- **Notes:** Subscribe to 'game_update', compare old vs new room_id, handle transitions
-
-**Discovered During Implementation:**
-- **Invariants (from iteration planning):**
-  - "Audio transitions smoothly": < 500ms crossfade (affects user experience)
-- **Additional Invariants (found during building):**
-  - [None discovered yet]
-- **Failure Modes:**
-  - [None encountered yet]
-- **Risk Assessment:**
-  - HIGH: Audio transition timing (poor UX if jarring)
-  - LOW: [None for this task]
+TASK TYPE HANDLING:
+- Implementation Tasks: Use full template with files, architecture context
+- Design Tasks: Mark as "Type: Design Task", output to designs/
+- Research Spikes: Mark as "Type: Research Spike", focus on question to answer
 
 LOCATION: Create in {project-root}/.workflow/artifacts/
 VERIFICATION: TASKS.md follows template structure exactly

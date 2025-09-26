@@ -45,12 +45,12 @@ fi
 if [[ "$PROJECT_NAME" == */* ]]; then
     PARENT_PROJECT="${PROJECT_NAME%/*}"
     SUB_PROJECT="${PROJECT_NAME##*/}"
-    OBSIDIAN_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
+    PLANNING_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
     DEV_PROJECT="$WORKFLOW_DEV/$PROJECT_NAME"
     
     echo -e "${BLUE}🔍 Nested project detected: $PARENT_PROJECT/$SUB_PROJECT${RESET}"
 else
-    OBSIDIAN_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
+    PLANNING_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
     DEV_PROJECT="$WORKFLOW_DEV/$PROJECT_NAME"
 fi
 
@@ -62,17 +62,17 @@ if [[ -z "$WORKFLOW_PROJECTS" ]] || [[ -z "$WORKFLOW_DEV" ]]; then
 fi
 
 # Check if obsidian project exists
-OBSIDIAN_EXISTS=true
+PLANNING_EXISTS=true
 
 if [[ "$PROJECT_NAME" == */* ]]; then
     # Nested project - might be an extracted tool
-    if [[ ! -d "$OBSIDIAN_PROJECT" ]]; then
-        echo -e "${YELLOW}⚠️  Planning directory not found: $OBSIDIAN_PROJECT${RESET}"
+    if [[ ! -d "$PLANNING_PROJECT" ]]; then
+        echo -e "${YELLOW}⚠️  Planning directory not found: $PLANNING_PROJECT${RESET}"
         echo -e "${CYAN}This is normal for extracted tools that don't need separate planning.${RESET}"
-        OBSIDIAN_EXISTS=false
+        PLANNING_EXISTS=false
     else
-        if [[ ! -f "$OBSIDIAN_PROJECT/IDEA.md" ]]; then
-            echo -e "${YELLOW}⚠️  IDEA.md not found in $OBSIDIAN_PROJECT${RESET}"
+        if [[ ! -f "$PLANNING_PROJECT/IDEA.md" ]]; then
+            echo -e "${YELLOW}⚠️  IDEA.md not found in $PLANNING_PROJECT${RESET}"
             echo
             echo "Create it first with:"
             echo "  1. Run: momentum (in terminal)"
@@ -85,8 +85,8 @@ if [[ "$PROJECT_NAME" == */* ]]; then
     fi
 else
     # Flat project - should exist in obsidian
-    if [[ ! -d "$OBSIDIAN_PROJECT" ]]; then
-        echo -e "${RED}❌ Project not found: $OBSIDIAN_PROJECT${RESET}"
+    if [[ ! -d "$PLANNING_PROJECT" ]]; then
+        echo -e "${RED}❌ Project not found: $PLANNING_PROJECT${RESET}"
         echo
         
         # Try to find similar projects
@@ -118,8 +118,8 @@ else
     fi
     
     # Check for IDEA.md
-    if [[ ! -f "$OBSIDIAN_PROJECT/IDEA.md" ]]; then
-        echo -e "${RED}❌ IDEA.md not found in $OBSIDIAN_PROJECT${RESET}"
+    if [[ ! -f "$PLANNING_PROJECT/IDEA.md" ]]; then
+        echo -e "${RED}❌ IDEA.md not found in $PLANNING_PROJECT${RESET}"
         echo
         echo "IDEA.md is required to set up a project."
         echo "Create it with:"
@@ -148,7 +148,7 @@ fi
 
 echo
 echo -e "${MAGENTA}🚀 Setting up: $PROJECT_NAME${RESET}"
-echo -e "${CYAN}📁 Planning: $OBSIDIAN_PROJECT${RESET}"
+echo -e "${CYAN}📁 Planning: $PLANNING_PROJECT${RESET}"
 echo -e "${CYAN}💻 Development: $DEV_PROJECT${RESET}"
 echo
 
@@ -160,16 +160,16 @@ mkdir -p "$DEV_PROJECT/.workflow/state"
 
 # Symlink planning artifacts from Obsidian (if they exist)
 obsidian_count=0
-if [[ "$OBSIDIAN_EXISTS" == "true" ]]; then
+if [[ "$PLANNING_EXISTS" == "true" ]]; then
     # Link IDEA.md
-    if [[ -f "$OBSIDIAN_PROJECT/IDEA.md" ]]; then
-        ln -sf "$OBSIDIAN_PROJECT/IDEA.md" "$DEV_PROJECT/.workflow/artifacts/IDEA.md" 2>/dev/null || true
+    if [[ -f "$PLANNING_PROJECT/IDEA.md" ]]; then
+        ln -sf "$PLANNING_PROJECT/IDEA.md" "$DEV_PROJECT/.workflow/artifacts/IDEA.md" 2>/dev/null || true
         ((obsidian_count++))
     fi
     
     # Link COMPOSITION_ARCHITECTURE.md if it exists
-    if [[ -f "$OBSIDIAN_PROJECT/COMPOSITION_ARCHITECTURE.md" ]]; then
-        ln -sf "$OBSIDIAN_PROJECT/COMPOSITION_ARCHITECTURE.md" "$DEV_PROJECT/.workflow/artifacts/COMPOSITION_ARCHITECTURE.md" 2>/dev/null || true
+    if [[ -f "$PLANNING_PROJECT/COMPOSITION_ARCHITECTURE.md" ]]; then
+        ln -sf "$PLANNING_PROJECT/COMPOSITION_ARCHITECTURE.md" "$DEV_PROJECT/.workflow/artifacts/COMPOSITION_ARCHITECTURE.md" 2>/dev/null || true
         ((obsidian_count++))
     fi
     
@@ -230,29 +230,27 @@ if [[ -f "$MOMENTUM_HOME/hooks/momentum-hook.ts" ]]; then
     rm -f "$DEV_PROJECT/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
     ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$DEV_PROJECT/.claude/hooks/momentum-hook.ts"
     
-    # Also copy routing and contexts (these need to be copies for placeholder replacement)
-    mkdir -p "$DEV_PROJECT/.claude/contexts"
-    cp -r "$MOMENTUM_HOME/contexts/"* "$DEV_PROJECT/.claude/contexts/" 2>/dev/null || true
-    
-    # Replace placeholders in contexts
-    for file in "$DEV_PROJECT/.claude/contexts/"*.md; do
-        if [[ -f "$file" ]]; then
-            sed -i '' "s|PROJECT_NAME_PLACEHOLDER|$PROJECT_NAME|g" "$file"
-            sed -i '' "s|WORKFLOW_PROJECTS_PLACEHOLDER|$WORKFLOW_PROJECTS|g" "$file"
-        fi
-    done
-    
+    # Symlink contexts to .workflow (hook will do placeholder replacement at runtime)
+    rm -rf "$DEV_PROJECT/.workflow/contexts" 2>/dev/null || true
+    ln -sf "$MOMENTUM_HOME/contexts" "$DEV_PROJECT/.workflow/contexts"
+
     echo -e "${GREEN}✅ Project hooks: Momentum hook linked${RESET}"
+    echo -e "${GREEN}✅ Project contexts: Symlinked to .workflow${RESET}"
 else
     echo -e "${RED}❌ Error: Momentum hook not found at $MOMENTUM_HOME/hooks/momentum-hook.ts${RESET}"
     echo "Installation may be incomplete. Re-run install.sh"
     exit 1
 fi
 
-# Create project-specific Claude settings to activate the hook
-cat > "$DEV_PROJECT/.claude/settings.json" << 'SETTINGSEOF'
+# Create project-specific Claude settings to activate the hook and grant permissions
+SETTINGS_FILE="$DEV_PROJECT/.claude/settings.json"
+
+# Always create fresh settings file
+if [[ "$PLANNING_EXISTS" == "true" ]]; then
+    # Include planning directory in permissions
+    cat > "$SETTINGS_FILE" << EOF
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
     "UserPromptSubmit": [
       {
@@ -264,11 +262,42 @@ cat > "$DEV_PROJECT/.claude/settings.json" << 'SETTINGSEOF'
         ]
       }
     ]
+  },
+  "permissions": {
+    "additionalDirectories": [
+      ".workflow/",
+      "$PLANNING_PROJECT"
+    ]
   }
 }
-SETTINGSEOF
-
-echo -e "${GREEN}✅ Claude settings: Hook activated${RESET}"
+EOF
+    echo -e "${GREEN}✅ Claude settings: Hook activated with planning access${RESET}"
+else
+    # No planning directory, just workflow access
+    cat > "$SETTINGS_FILE" << EOF
+{
+  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-hook.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "additionalDirectories": [
+      ".workflow/"
+    ]
+  }
+}
+EOF
+    echo -e "${GREEN}✅ Claude settings: Hook activated${RESET}"
+fi
 
 # Templates directory
 if [[ -d "$MOMENTUM_HOME/templates" ]]; then

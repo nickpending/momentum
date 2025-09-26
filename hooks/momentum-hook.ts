@@ -47,25 +47,30 @@ async function main() {
     const cwd = process.cwd();
     const projectName = cwd.split('/').pop() || 'unknown';
     
-    // Get contexts from project directory (they have project-specific values)
-    const projectContextsPath = join(cwd, '.claude', 'contexts');
-    const routingPath = join(projectContextsPath, 'ROUTING.md');
-    
-    // Load routing file
+    // Try project contexts first, fallback to global
+    let contextsPath = join(cwd, '.workflow', 'contexts');
+    let routingPath = join(contextsPath, 'ROUTING.md');
+
+    // If no project contexts, use global momentum contexts
     if (!existsSync(routingPath)) {
-      // Silent fail if no routing file
-      process.exit(0);
+      contextsPath = join(process.env.HOME!, '.config', 'momentum', 'contexts');
+      routingPath = join(contextsPath, 'ROUTING.md');
+
+      if (!existsSync(routingPath)) {
+        // No routing file found anywhere - silent fail
+        process.exit(0);
+      }
     }
-    
+
     let routingContent = readFileSync(routingPath, 'utf-8');
-    
+
     // Get workflow projects path from environment
     const workflowProjects = process.env.WORKFLOW_PROJECTS || `${process.env.HOME}/projects`;
-    
+
     // Replace placeholders with actual values
     routingContent = routingContent.replace(/PROJECT_NAME_PLACEHOLDER/g, projectName);
     routingContent = routingContent.replace(/WORKFLOW_PROJECTS_PLACEHOLDER/g, workflowProjects);
-    routingContent = routingContent.replace(/MOMENTUM_CONTEXTS_PATH/g, projectContextsPath);
+    routingContent = routingContent.replace(/MOMENTUM_CONTEXTS_PATH/g, contextsPath);
     
     // Output the entire routing for Claude to interpret
     console.log(routingContent);
