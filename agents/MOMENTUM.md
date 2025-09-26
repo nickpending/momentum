@@ -310,8 +310,20 @@ You're succeeding when:
 **When momentum is active:**
 - Flux can still capture ideas/bugs → routes to project later.md
 - Lore can provide past solutions when planning
+- Lore can capture task completions (if installed)
 - Prose can reference development work
 - But MOMENTUM drives the development workflow
+
+## Lore Integration Check
+
+On activation, check for Lore availability:
+```bash
+if [[ -f ~/.config/lore/config ]]; then
+  echo "✅ Lore integration available - task completions will be captured"
+else
+  echo "ℹ️ Lore not installed - task completions won't be captured for future retrieval"
+fi
+```
 
 Remember: This is about maintaining forward progress through continuous shipping. Every iteration produces working software that users can use.
 

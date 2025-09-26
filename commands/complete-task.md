@@ -71,6 +71,51 @@ EXAMPLE:
 VERIFICATION: Task marked complete with useful implementation details
 ```
 
+### PHASE 2.5: CAPTURE TO LORE (IF AVAILABLE)
+
+**CHECKPOINT 2.5: Generate Lore Event**
+
+```
+CHECK LORE AVAILABILITY:
+First check if Lore is installed:
+- Run: test -f ~/.config/lore/config && echo "LORE_AVAILABLE" || echo "LORE_NOT_INSTALLED"
+
+IF LORE_AVAILABLE:
+Based on the task you just completed and the implementation notes, generate a JSON event
+capturing the knowledge gained. Think about what would be valuable to remember for
+future similar tasks.
+
+GENERATE THIS JSON EVENT:
+{
+  "event": "task_completed",
+  "project": "{current-project-name}",
+  "data": {
+    "task_name": "[Task name from TASKS.md]",
+    "problem_solved": "[Core problem this task addressed]",
+    "solution_pattern": "[Reusable pattern or approach that worked]",
+    "code_snippet": "[Key code snippet if applicable, or null]",
+    "discoveries": [
+      "[Discovery 1 - something learned]",
+      "[Discovery 2 - unexpected finding]"
+    ],
+    "deviations": "[How implementation differed from plan]",
+    "reusable_pattern": "[Pattern that could be used elsewhere]",
+    "keywords": ["[keyword1]", "[keyword2]", "[keyword3]"],
+    "tech_used": ["[library1]", "[framework1]", "[tool1]"],
+    "difficulty_notes": "[What made this tricky or easy]"
+  }
+}
+
+APPEND TO LORE LOG using Bash tool:
+echo '[YOUR GENERATED JSON ON ONE LINE]' | lore-append
+
+VERIFICATION: Event captured to Lore for future knowledge retrieval
+
+IF LORE_NOT_INSTALLED:
+- Skip this phase entirely
+- Continue to Phase 3
+```
+
 ### PHASE 3: PROGRESS REPORT (REQUIRED)
 
 **CHECKPOINT 3: Workflow Guidance**
