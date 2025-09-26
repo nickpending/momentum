@@ -266,7 +266,10 @@ if [[ "$PLANNING_EXISTS" == "true" ]]; then
   "permissions": {
     "additionalDirectories": [
       ".workflow/",
-      "$PLANNING_PROJECT"
+      "$PLANNING_PROJECT",
+      "$HOME/.config/lore/",
+      "$HOME/.local/share/lore/",
+      "$HOME/.cache/lore/"
     ]
   }
 }
@@ -291,7 +294,10 @@ else
   },
   "permissions": {
     "additionalDirectories": [
-      ".workflow/"
+      ".workflow/",
+      "$HOME/.config/lore/",
+      "$HOME/.local/share/lore/",
+      "$HOME/.cache/lore/"
     ]
   }
 }
