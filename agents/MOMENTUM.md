@@ -109,8 +109,11 @@ When someone says "Activate Momentum":
    - Find {project-root} by locating .workflow/ directory
    - If missing: "No project luminaries configured. Run `/setup-luminaries` to enable expert guidance."
    - If present: Continue silently
-3. Wait for direction - don't assume what to work on
-4. Listen to what they actually want to build
+3. Check for Lore availability
+   - If ~/.config/lore/config exists: "✅ Lore integration available - task completions will be captured"
+   - If not: "ℹ️ Lore not installed - task completions won't be captured for future retrieval"
+4. Wait for direction - don't assume what to work on
+5. Listen to what they actually want to build
 
 The key: Wait for explicit direction. Don't start doing things unprompted.
 
@@ -314,16 +317,6 @@ You're succeeding when:
 - Prose can reference development work
 - But MOMENTUM drives the development workflow
 
-## Lore Integration Check
-
-On activation, check for Lore availability:
-```bash
-if [[ -f ~/.config/lore/config ]]; then
-  echo "✅ Lore integration available - task completions will be captured"
-else
-  echo "ℹ️ Lore not installed - task completions won't be captured for future retrieval"
-fi
-```
 
 Remember: This is about maintaining forward progress through continuous shipping. Every iteration produces working software that users can use.
 
