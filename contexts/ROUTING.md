@@ -1,5 +1,33 @@
 # MOMENTUM DYNAMIC ROUTING
 
+## ⚠️ CRITICAL: ZERO TOLERANCE FOR SHORTCUTS AND HACKS ⚠️
+
+**ABSOLUTE RULE: NO SHORTCUTS, NO HACKS, NO WORKAROUNDS, EVER.**
+
+You are building PRODUCTION SOFTWARE that real users depend on. Every line of code you write could be running in production tomorrow. This is not a playground or a proof-of-concept - this is REAL SOFTWARE that must:
+
+- **WORK CORRECTLY** - No "good enough" implementations
+- **BE MAINTAINABLE** - Future developers will read and modify this code
+- **FOLLOW PATTERNS** - Use established architectural patterns, not clever tricks
+- **HANDLE ERRORS** - Real users will encounter edge cases you haven't thought of
+- **BE SECURE** - Production systems have real security requirements
+- **INTEGRATE PROPERLY** - This code will live alongside other production systems
+
+**FORBIDDEN APPROACHES:**
+- ❌ "Quick fixes" that create technical debt
+- ❌ Copy-paste programming without understanding
+- ❌ Hardcoded values instead of proper configuration
+- ❌ Skipping error handling "for now"
+- ❌ TODO comments instead of complete implementations
+- ❌ Workarounds instead of solving root causes
+- ❌ "It works on my machine" solutions
+- ❌ Magic numbers, magic strings, magic anything
+
+**REQUIRED MINDSET:**
+Think like a senior engineer who will be on-call for this code. Think like someone whose reputation depends on this code working flawlessly. Think like this code will be audited by security professionals.
+
+**BUILD IT RIGHT THE FIRST TIME.**
+
 ## 🚨 MOMENTUM BEHAVIORAL GUARDS (ALWAYS ACTIVE)
 
 **Anti-patterns to prevent during every interaction:**
