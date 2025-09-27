@@ -102,6 +102,28 @@ echo
 echo -e "${CYAN}Step 3: Setting up workspace directories${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
+
+# Check for existing configuration
+EXISTING_CONFIG="$HOME/.config/momentum/config"
+EXISTING_DEV=""
+EXISTING_PLANNING=""
+
+if [[ -f "$EXISTING_CONFIG" ]]; then
+    # Source existing config to get current values
+    source "$EXISTING_CONFIG" 2>/dev/null || true
+    EXISTING_DEV="$WORKFLOW_DEV"
+    EXISTING_PLANNING="$WORKFLOW_PROJECTS"
+
+    if [[ -n "$EXISTING_DEV" && -n "$EXISTING_PLANNING" ]]; then
+        echo -e "${GREEN}📋 Found existing configuration:${RESET}"
+        echo "   Development: $EXISTING_DEV"
+        echo "   Planning: $EXISTING_PLANNING"
+        echo
+        echo "Press ENTER to keep current paths, or type new ones:"
+        echo
+    fi
+fi
+
 echo "Momentum uses two separate directories:"
 echo "  📝 Planning directory - for project documentation and ideas"
 echo "  💻 Development directory - for your actual code"
@@ -110,8 +132,17 @@ echo
 # Get development directory
 echo -e "${YELLOW}Where do you keep your code projects?${RESET}"
 echo "Examples: ~/code, ~/projects, ~/development"
-printf "Development directory: "
+if [[ -n "$EXISTING_DEV" ]]; then
+    printf "Development directory [$EXISTING_DEV]: "
+else
+    printf "Development directory: "
+fi
 read -r DEV_DIR
+
+# Use existing value if no input provided
+if [[ -z "$DEV_DIR" && -n "$EXISTING_DEV" ]]; then
+    DEV_DIR="$EXISTING_DEV"
+fi
 
 # Expand tilde
 DEV_DIR="${DEV_DIR/#\~/$HOME}"
@@ -140,8 +171,17 @@ echo -e "${YELLOW}Where should Momentum store project planning/documentation?${R
 echo "This should be SEPARATE from your code directory."
 echo "This will store planning docs for ALL your projects."
 echo "Examples: ~/Documents/projects, ~/obsidian/projects, ~/notes/projects"
-printf "Planning directory for all projects: "
+if [[ -n "$EXISTING_PLANNING" ]]; then
+    printf "Planning directory for all projects [$EXISTING_PLANNING]: "
+else
+    printf "Planning directory for all projects: "
+fi
 read -r PLANNING_DIR
+
+# Use existing value if no input provided
+if [[ -z "$PLANNING_DIR" && -n "$EXISTING_PLANNING" ]]; then
+    PLANNING_DIR="$EXISTING_PLANNING"
+fi
 
 # Expand tilde
 PLANNING_DIR="${PLANNING_DIR/#\~/$HOME}"
