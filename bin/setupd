@@ -23,6 +23,114 @@ else
     exit 1
 fi
 
+# Function to refresh/create project symlinks and settings
+refresh_project_links() {
+    local dev_project=$1
+    local planning_project=$2
+    local planning_exists=$3
+    local quiet=${4:-false}
+
+    # Commands directory
+    if [[ -d "$MOMENTUM_HOME/commands" ]]; then
+        mkdir -p "$dev_project/.claude"
+        rm -rf "$dev_project/.claude/commands" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/commands" "$dev_project/.claude/commands"
+    fi
+
+    # Subagents directory
+    if [[ -d "$MOMENTUM_HOME/subagents" ]]; then
+        mkdir -p "$dev_project/.claude/agents"
+        for agent in "$MOMENTUM_HOME/subagents"/*.md; do
+            if [[ -f "$agent" ]]; then
+                ln -sf "$agent" "$dev_project/.claude/agents/$(basename "$agent")" 2>/dev/null || true
+            fi
+        done
+    fi
+
+    # Hooks and contexts
+    mkdir -p "$dev_project/.claude/hooks"
+    if [[ -f "$MOMENTUM_HOME/hooks/momentum-hook.ts" ]]; then
+        rm -f "$dev_project/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$dev_project/.claude/hooks/momentum-hook.ts"
+
+        rm -rf "$dev_project/.workflow/contexts" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/contexts" "$dev_project/.workflow/contexts"
+    fi
+
+    # Templates and resources
+    if [[ -d "$MOMENTUM_HOME/templates" ]]; then
+        rm -rf "$dev_project/.workflow/templates" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/templates" "$dev_project/.workflow/templates"
+    fi
+
+    if [[ -d "$MOMENTUM_HOME/resources" ]]; then
+        rm -rf "$dev_project/.workflow/resources" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/resources" "$dev_project/.workflow/resources"
+    fi
+
+    # Settings file
+    local settings_file="$dev_project/.claude/settings.json"
+    if [[ "$planning_exists" == "true" ]]; then
+        cat > "$settings_file" << EOF
+{
+  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-hook.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "additionalDirectories": [
+      ".workflow/",
+      "$planning_project",
+      "$HOME/.config/lore/",
+      "$HOME/.local/share/lore/",
+      "$HOME/.cache/lore/"
+    ]
+  }
+}
+EOF
+    else
+        cat > "$settings_file" << EOF
+{
+  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-hook.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "additionalDirectories": [
+      ".workflow/",
+      "$HOME/.config/lore/",
+      "$HOME/.local/share/lore/",
+      "$HOME/.cache/lore/"
+    ]
+  }
+}
+EOF
+    fi
+
+    # Update version
+    if [[ -f "$MOMENTUM_HOME/VERSION" ]]; then
+        cp "$MOMENTUM_HOME/VERSION" "$dev_project/.workflow/version"
+    fi
+}
+
 # Check for switch mode
 if [[ "$1" == "--switch" ]]; then
     PROJECT_NAME=$2
@@ -39,7 +147,37 @@ if [[ "$1" == "--switch" ]]; then
     PLANNING_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
 
     if [[ -d "$DEV_PROJECT/.workflow" ]]; then
-        # Project exists and is set up
+        # Project exists - check version and update if needed
+        PROJECT_VERSION=""
+        MOMENTUM_VERSION=""
+
+        if [[ -f "$DEV_PROJECT/.workflow/version" ]]; then
+            PROJECT_VERSION=$(cat "$DEV_PROJECT/.workflow/version")
+        fi
+
+        if [[ -f "$MOMENTUM_HOME/VERSION" ]]; then
+            MOMENTUM_VERSION=$(cat "$MOMENTUM_HOME/VERSION")
+        fi
+
+        # Update project if version mismatch
+        if [[ -n "$MOMENTUM_VERSION" ]] && [[ "$PROJECT_VERSION" != "$MOMENTUM_VERSION" ]]; then
+            if [[ -z "$PROJECT_VERSION" ]]; then
+                echo "Initializing project version to $MOMENTUM_VERSION..."
+            else
+                echo "Updating project from $PROJECT_VERSION to $MOMENTUM_VERSION..."
+            fi
+
+            # Determine if planning exists for this project
+            needs_planning="false"
+            if [[ -d "$PLANNING_PROJECT" ]] && [[ -f "$PLANNING_PROJECT/IDEA.md" ]]; then
+                needs_planning="true"
+            fi
+
+            # Refresh symlinks to latest momentum installation
+            refresh_project_links "$DEV_PROJECT" "$PLANNING_PROJECT" "$needs_planning" true
+            echo "✅ Project updated to $MOMENTUM_VERSION"
+        fi
+
         echo "READY: Project '$PROJECT_NAME' is set up and ready"
         echo "ACTION: cd $DEV_PROJECT"
         exit 0
@@ -229,138 +367,36 @@ else
 fi
 
 # Link workflow resources from momentum installation
-resource_count=0
-resource_missing=""
+refresh_project_links "$DEV_PROJECT" "$PLANNING_PROJECT" "$PLANNING_EXISTS" false
 
-# Commands directory
-if [[ -d "$MOMENTUM_HOME/commands" ]]; then
-    mkdir -p "$DEV_PROJECT/.claude"
-    rm -rf "$DEV_PROJECT/.claude/commands" 2>/dev/null || true
-    ln -sf "$MOMENTUM_HOME/commands" "$DEV_PROJECT/.claude/commands"
-    ((resource_count++))
-else
+# Validate installation
+resource_missing=""
+if [[ ! -d "$MOMENTUM_HOME/commands" ]]; then
     resource_missing="${resource_missing}commands "
 fi
-
-# Subagents directory
-if [[ -d "$MOMENTUM_HOME/subagents" ]]; then
-    mkdir -p "$DEV_PROJECT/.claude/agents"
-    # Link each subagent individually
-    for agent in "$MOMENTUM_HOME/subagents"/*.md; do
-        if [[ -f "$agent" ]]; then
-            ln -sf "$agent" "$DEV_PROJECT/.claude/agents/$(basename "$agent")" 2>/dev/null || true
-        fi
-    done
-    subagent_count=$(ls -1 "$MOMENTUM_HOME/subagents"/*.md 2>/dev/null | wc -l)
-    echo -e "${GREEN}✅ Project subagents: $subagent_count linked${RESET}"
-else
+if [[ ! -d "$MOMENTUM_HOME/subagents" ]]; then
     resource_missing="${resource_missing}subagents "
 fi
-
-# Create project-specific hooks directory
-mkdir -p "$DEV_PROJECT/.claude/hooks"
-
-# Link the momentum hook from installation
-if [[ -f "$MOMENTUM_HOME/hooks/momentum-hook.ts" ]]; then
-    rm -f "$DEV_PROJECT/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
-    ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$DEV_PROJECT/.claude/hooks/momentum-hook.ts"
-    
-    # Symlink contexts to .workflow (hook will do placeholder replacement at runtime)
-    rm -rf "$DEV_PROJECT/.workflow/contexts" 2>/dev/null || true
-    ln -sf "$MOMENTUM_HOME/contexts" "$DEV_PROJECT/.workflow/contexts"
-
-    echo -e "${GREEN}✅ Project hooks: Momentum hook linked${RESET}"
-    echo -e "${GREEN}✅ Project contexts: Symlinked to .workflow${RESET}"
-else
-    echo -e "${RED}❌ Error: Momentum hook not found at $MOMENTUM_HOME/hooks/momentum-hook.ts${RESET}"
-    echo "Installation may be incomplete. Re-run install.sh"
-    exit 1
-fi
-
-# Create project-specific Claude settings to activate the hook and grant permissions
-SETTINGS_FILE="$DEV_PROJECT/.claude/settings.json"
-
-# Always create fresh settings file
-if [[ "$PLANNING_EXISTS" == "true" ]]; then
-    # Include planning directory in permissions
-    cat > "$SETTINGS_FILE" << EOF
-{
-  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun .claude/hooks/momentum-hook.ts"
-          }
-        ]
-      }
-    ]
-  },
-  "permissions": {
-    "additionalDirectories": [
-      ".workflow/",
-      "$PLANNING_PROJECT",
-      "$HOME/.config/lore/",
-      "$HOME/.local/share/lore/",
-      "$HOME/.cache/lore/"
-    ]
-  }
-}
-EOF
-    echo -e "${GREEN}✅ Claude settings: Hook activated with planning access${RESET}"
-else
-    # No planning directory, just workflow access
-    cat > "$SETTINGS_FILE" << EOF
-{
-  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "hooks": {
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun .claude/hooks/momentum-hook.ts"
-          }
-        ]
-      }
-    ]
-  },
-  "permissions": {
-    "additionalDirectories": [
-      ".workflow/",
-      "$HOME/.config/lore/",
-      "$HOME/.local/share/lore/",
-      "$HOME/.cache/lore/"
-    ]
-  }
-}
-EOF
-    echo -e "${GREEN}✅ Claude settings: Hook activated${RESET}"
-fi
-
-# Templates directory
-if [[ -d "$MOMENTUM_HOME/templates" ]]; then
-    rm -rf "$DEV_PROJECT/.workflow/templates" 2>/dev/null || true
-    ln -sf "$MOMENTUM_HOME/templates" "$DEV_PROJECT/.workflow/templates"
-    ((resource_count++))
-else
+if [[ ! -d "$MOMENTUM_HOME/templates" ]]; then
     resource_missing="${resource_missing}templates "
 fi
-
-# Resources directory
-if [[ -d "$MOMENTUM_HOME/resources" ]]; then
-    rm -rf "$DEV_PROJECT/.workflow/resources" 2>/dev/null || true
-    ln -sf "$MOMENTUM_HOME/resources" "$DEV_PROJECT/.workflow/resources"
-    ((resource_count++))
-else
+if [[ ! -d "$MOMENTUM_HOME/resources" ]]; then
     resource_missing="${resource_missing}resources "
 fi
 
-# Track version
-if [[ -f "$MOMENTUM_HOME/VERSION" ]]; then
-    cp "$MOMENTUM_HOME/VERSION" "$DEV_PROJECT/.workflow/version"
+# Report subagent count
+if [[ -d "$MOMENTUM_HOME/subagents" ]]; then
+    subagent_count=$(ls -1 "$MOMENTUM_HOME/subagents"/*.md 2>/dev/null | wc -l)
+    echo -e "${GREEN}✅ Project subagents: $subagent_count linked${RESET}"
+fi
+
+echo -e "${GREEN}✅ Project hooks: Momentum hook linked${RESET}"
+echo -e "${GREEN}✅ Project contexts: Symlinked to .workflow${RESET}"
+
+if [[ "$PLANNING_EXISTS" == "true" ]]; then
+    echo -e "${GREEN}✅ Claude settings: Hook activated with planning access${RESET}"
+else
+    echo -e "${GREEN}✅ Claude settings: Hook activated${RESET}"
 fi
 
 # Check if all resources linked
