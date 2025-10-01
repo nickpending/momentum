@@ -23,22 +23,57 @@ else
     exit 1
 fi
 
-# Check for project name
-PROJECT_NAME=$1
+# Check for switch mode
+if [[ "$1" == "--switch" ]]; then
+    PROJECT_NAME=$2
+    SWITCH_MODE=true
 
-if [[ -z "$PROJECT_NAME" ]]; then
-    echo -e "${RED}❌ Error: Project name required${RESET}"
-    echo
-    echo "Usage: setupd <project-name>"
-    echo
-    echo "Examples:"
-    echo "  setupd myapp"
-    echo "  setupd tools/mytool  (for nested projects)"
-    echo
-    echo "Note: Run this AFTER creating IDEA.md with:"
-    echo "  1. /ideate (in Claude Code)"
-    echo "  2. /plan-idea (in Claude Code)"
-    exit 1
+    if [[ -z "$PROJECT_NAME" ]]; then
+        echo -e "${RED}❌ Error: Project name required${RESET}"
+        echo "Usage: setupd --switch <project-name>"
+        exit 1
+    fi
+
+    # Check if project has momentum setup
+    DEV_PROJECT="$WORKFLOW_DEV/$PROJECT_NAME"
+    PLANNING_PROJECT="$WORKFLOW_PROJECTS/$PROJECT_NAME"
+
+    if [[ -d "$DEV_PROJECT/.workflow" ]]; then
+        # Project exists and is set up
+        echo "READY: Project '$PROJECT_NAME' is set up and ready"
+        echo "ACTION: cd $DEV_PROJECT"
+        exit 0
+    elif [[ -f "$PLANNING_PROJECT/IDEA.md" ]]; then
+        # Has idea, needs setup
+        echo "SETUP: Found IDEA.md for '$PROJECT_NAME', creating project structure..."
+        # Continue to setup flow
+    else
+        # No project, no idea
+        echo "ERROR: No project '$PROJECT_NAME' found and no IDEA.md exists"
+        echo "HELP: Create with 'setupd $PROJECT_NAME' or start with ideation"
+        exit 1
+    fi
+else
+    # Normal setup mode
+    PROJECT_NAME=$1
+    SWITCH_MODE=false
+
+    if [[ -z "$PROJECT_NAME" ]]; then
+        echo -e "${RED}❌ Error: Project name required${RESET}"
+        echo
+        echo "Usage: setupd <project-name>"
+        echo "       setupd --switch <project-name>"
+        echo
+        echo "Examples:"
+        echo "  setupd myapp"
+        echo "  setupd tools/mytool  (for nested projects)"
+        echo "  setupd --switch myapp  (check and switch to project)"
+        echo
+        echo "Note: Run this AFTER creating IDEA.md with:"
+        echo "  1. /ideate (in Claude Code)"
+        echo "  2. /plan-idea (in Claude Code)"
+        exit 1
+    fi
 fi
 
 # Parse project name for nested structure
@@ -323,6 +358,11 @@ else
     resource_missing="${resource_missing}resources "
 fi
 
+# Track version
+if [[ -f "$MOMENTUM_HOME/VERSION" ]]; then
+    cp "$MOMENTUM_HOME/VERSION" "$DEV_PROJECT/.workflow/version"
+fi
+
 # Check if all resources linked
 if [[ -n "$resource_missing" ]]; then
     echo -e "${RED}❌ Missing components: $resource_missing${RESET}"
@@ -388,3 +428,10 @@ echo
 echo -e "${YELLOW}Remember: All /commands run in Claude Code, not terminal!${RESET}"
 echo
 echo -e "${GREEN}Ship working software every iteration! 🚀${RESET}"
+
+# If in switch mode, output simple status
+if [[ "$SWITCH_MODE" == "true" ]]; then
+    echo
+    echo "READY: Project '$PROJECT_NAME' created and ready"
+    echo "ACTION: cd $DEV_PROJECT"
+fi

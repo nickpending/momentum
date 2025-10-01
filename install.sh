@@ -281,10 +281,18 @@ if [[ ! -d "$MOMENTUM_HOME/user-commands" ]]; then
     cp -r "$MOMENTUM_SOURCE/user-commands" "$MOMENTUM_HOME/" && echo "  ✓ User commands"
 fi
 if [[ ! -d "$MOMENTUM_HOME/hooks" ]]; then
-    cp -r "$MOMENTUM_SOURCE/hooks" "$MOMENTUM_HOME/" && echo "  ✓ Hooks"
+    mkdir -p "$MOMENTUM_HOME/hooks"
 fi
+# Always copy the hook to get latest version
+cp "$MOMENTUM_SOURCE/hooks/momentum-hook.ts" "$MOMENTUM_HOME/hooks/" && echo "  ✓ Hooks (updated)"
+chmod +x "$MOMENTUM_HOME/hooks/momentum-hook.ts"
+
 if [[ ! -d "$MOMENTUM_HOME/contexts" ]]; then
     cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_HOME/" && echo "  ✓ Contexts"
+else
+    # Always update MOMENTUM_ROUTING.md to get latest version
+    cp "$MOMENTUM_SOURCE/contexts/MOMENTUM_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ MOMENTUM_ROUTING.md (updated)"
+    cp "$MOMENTUM_SOURCE/contexts/HOME_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ HOME_ROUTING.md (updated)"
 fi
 
 # Create configuration
@@ -322,6 +330,10 @@ get_project_name() {
 EOF
 
 echo -e "${GREEN}✅ Configuration written${RESET}"
+
+# Write installed version
+cp "$MOMENTUM_SOURCE/VERSION" "$MOMENTUM_HOME/VERSION" 2>/dev/null || echo "1.0.0" > "$MOMENTUM_HOME/VERSION"
+echo "✅ Version tracked"
 echo
 
 # Step 5: Install setupd
@@ -335,8 +347,58 @@ chmod +x "$HOME/.local/bin/setupd"
 echo -e "${GREEN}✅ Installed setupd to ~/.local/bin${RESET}"
 echo
 
-# Step 6: Configure shell
-echo -e "${CYAN}Step 6: Configuring your shell${RESET}"
+# Step 6: Set up Momentum Home
+echo -e "${CYAN}Step 6: Setting up Momentum Home${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+# Create home directory structure (minimal - only what Claude needs)
+HOME_DIR="$HOME/.local/share/momentum/home"
+mkdir -p "$HOME_DIR/.claude/hooks"
+
+echo "Setting up Momentum Home at $HOME_DIR..."
+
+# Symlink commands and agents from installation
+ln -sf "$MOMENTUM_HOME/commands" "$HOME_DIR/.claude/commands" 2>/dev/null || true
+ln -sf "$MOMENTUM_HOME/agents" "$HOME_DIR/.claude/agents" 2>/dev/null || true
+
+# Symlink hook (the smart mode-aware one)
+ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$HOME_DIR/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
+
+# Create home settings.json with proper paths
+cat > "$HOME_DIR/.claude/settings.json" << EOF
+{
+  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-hook.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "additionalDirectories": [
+      "$DEV_DIR",
+      "$PLANNING_DIR",
+      "$HOME/.config/momentum/",
+      "$HOME/.config/lore/",
+      "$HOME/.local/share/lore/",
+      "$HOME/.cache/lore/"
+    ]
+  }
+}
+EOF
+
+echo -e "${GREEN}✅ Momentum Home configured${RESET}"
+echo
+
+# Step 7: Configure shell
+echo -e "${CYAN}Step 7: Configuring your shell${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
@@ -347,10 +409,10 @@ add_to_shell() {
     if [[ -f "$file" ]]; then
         if ! grep -Fq "$line" "$file" 2>/dev/null; then
             echo "$line" >> "$file"
-            return 0
         fi
     fi
-    return 1
+    # Always return 0 to not trigger set -e
+    return 0
 }
 
 # Add configuration based on shell type
@@ -368,7 +430,7 @@ set -x MOMENTUM_HOME "$HOME/.config/momentum"
 source $MOMENTUM_HOME/config
 
 # Momentum alias
-alias momentum 'claude --append-system-prompt (cat $MOMENTUM_HOME/agents/MOMENTUM.md) "Activate Momentum"'
+alias momentum 'cd ~/.local/share/momentum/home && claude --append-system-prompt (cat $MOMENTUM_HOME/agents/ASSISTANT.md) "Activate Assistant"'
 EOF
         ;;
     *)
@@ -377,7 +439,7 @@ EOF
         add_to_shell "$SHELL_CONFIG" ""
         add_to_shell "$SHELL_CONFIG" "# Momentum Configuration"
         add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_HOME/config"
-        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'claude --append-system-prompt "$(cat $MOMENTUM_HOME/agents/MOMENTUM.md)" "Activate Momentum"'"'"
+        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'cd ~/.local/share/momentum/home && claude --append-system-prompt "$(cat $MOMENTUM_HOME/agents/ASSISTANT.md)" "Activate Assistant"'"'"
         ;;
 esac
 

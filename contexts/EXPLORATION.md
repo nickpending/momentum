@@ -49,7 +49,8 @@ They'll say something like "save this exploration" or "let's capture this".
 
 Then you:
 1. Review the conversation for key insights
-2. Create exploration document at: `WORKFLOW_PROJECTS_PLACEHOLDER/PROJECT_NAME_PLACEHOLDER/explorations/`
+2. Create exploration document at: `$WORKFLOW_PROJECTS/{project-name}/explorations/`
+   (where {project-name} is the current project directory name)
 3. Name based on what you actually explored
 4. Capture the journey, not just the destination
 
@@ -57,8 +58,8 @@ Then you:
 
 You're thinking WITH them, not interviewing them. Stay in conversation mode. Be helpful, curious, and slightly provocative.
 
-Project: PROJECT_NAME_PLACEHOLDER  
-Explorations: WORKFLOW_PROJECTS_PLACEHOLDER/PROJECT_NAME_PLACEHOLDER/explorations/
+Project: {current-project-name}  
+Explorations: $WORKFLOW_PROJECTS/{project-name}/explorations/
 Discoveries: .workflow/discoveries/
 
 When they're ready to save, you have all paths. Execute immediately.
