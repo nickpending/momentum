@@ -22,6 +22,39 @@ Think of it as having a development partner who never forgets context and always
 
 **This is production-ready software in active daily use.** It's been shipping working software for months across multiple projects. Each iteration strengthens the workflow patterns.
 
+## 🚨 Breaking Changes in 2.0
+
+**If you're upgrading from 1.x, your workflow has changed:**
+
+### What Changed
+- **`momentum` now starts in Home mode** - Portfolio command center, not project mode
+- **Navigation is semantic** - Say "work on projectname" to switch to project
+- **Two-mode system** - Home (assistant) for planning, Project (momentum) for building
+
+### Old Workflow (1.x)
+```bash
+cd ~/development/projects/myproject
+momentum                          # Started directly in project mode
+/plan-iteration                   # Immediately available
+```
+
+### New Workflow (2.0)
+```bash
+momentum                          # Starts in Home mode (from anywhere)
+"work on myproject"               # Switches to project mode
+/plan-iteration                   # Now available
+```
+
+### Why This Change
+The home mode provides a portfolio-level command center. You can:
+- Navigate to any project semantically
+- Query across all projects
+- Start ideation without project context
+- Get development guidance before diving in
+
+### Migration
+Re-run `install.sh` to update your shell alias. The new alias includes temporal context and home mode activation.
+
 ## ✨ Features
 
 - 🚀 **Context-Aware Conversations** - Dynamic hooks detect semantic patterns and inject relevant context
@@ -41,72 +74,102 @@ git clone https://github.com/nickpending/momentum.git
 cd momentum
 ./install.sh
 
-# Start exploring ideas (from anywhere)
-cd ~
+# Start Momentum (from anywhere - enters Home mode)
 momentum
 
-# In Claude, start exploring
+# In Claude Home mode, explore an idea
 "I have an idea for a habit tracking app"
-# (Momentum automatically detects ideation and guides the conversation)
+# (Automatically detects ideation, guides creative conversation)
 
-# Create the project
 "save this idea"
-# (Creates project in configured directory)
+# (Creates IDEA.md in configured planning directory)
 
-# Set up development (in terminal)
-setupd habit-tracker
-cd ~/development/projects/habit-tracker
+# Set up project development structure
+"work on habit-tracker"
+# (Runs setupd --switch, creates project if needed, switches to project mode)
 
-# Start building (from project directory)
-momentum
+# Now in Project mode - start building
 /plan-iteration
+# (Collaboratively plan what to build)
+
+/plan-task 1
+# (Execute first task with evidence-based completion)
 ```
+
+**Two modes, seamless flow:**
+- **Home mode** - Portfolio command center (ideation, navigation, guidance)
+- **Project mode** - Development partner (building, testing, shipping)
 
 That's it! You're shipping working software.
 
 ## 🎮 How It Works
 
-Momentum follows a simple cycle:
+Momentum operates in two modes, each optimized for different types of work:
+
+### The Two-Mode System
+
+**Home Mode (Assistant)** - Your portfolio command center
+- Start from anywhere: `momentum`
+- Navigate projects: "work on projectname"
+- Explore ideas without project context
+- Query across all projects
+- Get high-level development guidance
+
+**Project Mode (Momentum)** - Your development partner
+- Accessed via: "work on projectname" from Home mode
+- Plan iterations collaboratively
+- Execute tasks with evidence-based completion
+- Ship working software every iteration
+
+### Development Cycle
 
 ```
-EXPLORE → DECIDE → BUILD → SHIP → LEARN → REPEAT
+HOME: IDEATE → NAVIGATE → PROJECT: BUILD → SHIP → HOME: REFLECT → REPEAT
 ```
 
 ### Semantic Interaction
 
 No need to memorize commands. Just talk naturally:
 
-**For Ideation:**
-- "I have an idea for..." → Automatic ideation mode
-- "What if we built..." → Creative brainstorming
-- "Save this exploration" → Captures ideas in the right place
+**In Home Mode:**
+- "work on projectname" → Switch to project development
+- "show projects" → List all your projects
+- "what should I work on" → Get guidance on priorities
+- "I have an idea for..." → Start ideation conversation
+- "I'm stuck" → Get debugging help or suggestions
 
-**For Building:**
+**In Project Mode:**
 - `/plan-iteration` → Collaborative iteration planning
-- `/plan-task 1` → Evidence-based task execution
-- "Review the code" → Launches code reviewer with confirmation
-
-**For Analysis:**
-- "Analyze the architecture" → Multi-option architectural analysis (planning phase)
-- "Is this over-engineered?" → Post-implementation architecture review
-- "Check for production issues" → Comprehensive audit orchestration
+- `/plan-task N` → Evidence-based task execution
+- "let's explore" → Load exploration context
+- "save this exploration" → Capture exploration to file
+- "review the code" → Launch code reviewer (with confirmation)
+- "is this over-engineered?" → Architecture review for complexity
+- "analyze the architecture for X" → Multi-option architectural analysis
+- "how should I implement X" → Technical implementation options
+- "set up gitignore" → Configure project security
+- "that fixed it!" → Auto-document discovery
+- "back to home" → Return to home mode
 
 ### The Commands
 
 **In Terminal:**
-- `momentum` - Start Claude with Momentum mode
-- `setupd projectname` - Set up a new project structure
+- `momentum` - Start Claude in Home mode (from anywhere)
+- `setupd projectname` - Set up a new project structure (rarely needed - "work on X" handles this)
 
-**In Claude Code:**
+**In Home Mode:**
+- "work on projectname" - Switch to project development
+- "show projects" - List all projects
+- "what should I work on" - Get guidance on priorities
+- Natural ideation conversations
+
+**In Project Mode:**
 - `/plan-iteration` - Collaboratively plan what to build next
-- `/decompose-iteration` - Break iteration into micro-tasks
 - `/plan-task N` - Execute specific task with evidence
 - `/complete-iteration` - Ship and archive with verification
 - `/save-state` / `/restore-state` - Manage context across sessions
 
-**💡 Important:** Location matters:
-- **For exploration**: Run `momentum` from anywhere - ideas don't need project context
-- **For building**: Run from project directory - commands need project artifacts
+**💡 The Flow:** Start with `momentum` (Home mode), then say "work on projectname" to switch to Project mode for building.
 
 ## 🏗️ Architecture
 
