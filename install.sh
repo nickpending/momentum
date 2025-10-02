@@ -429,8 +429,8 @@ case "$DETECTED_SHELL" in
 set -x MOMENTUM_HOME "$HOME/.config/momentum"
 source $MOMENTUM_HOME/config
 
-# Momentum alias
-alias momentum 'cd ~/.local/share/momentum/home && claude --append-system-prompt (cat $MOMENTUM_HOME/agents/ASSISTANT.md) "Activate Assistant"'
+# Momentum alias with date injection
+alias momentum 'cd ~/.local/share/momentum/home && claude --append-system-prompt (cat $MOMENTUM_HOME/agents/ASSISTANT.md) "TODAY IS: "(date +%Y-%m-%d)". Activate Assistant"'
 EOF
         ;;
     *)
@@ -439,7 +439,7 @@ EOF
         add_to_shell "$SHELL_CONFIG" ""
         add_to_shell "$SHELL_CONFIG" "# Momentum Configuration"
         add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_HOME/config"
-        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'cd ~/.local/share/momentum/home && claude --append-system-prompt "$(cat $MOMENTUM_HOME/agents/ASSISTANT.md)" "Activate Assistant"'"'"
+        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'cd ~/.local/share/momentum/home && claude --append-system-prompt "$(cat $MOMENTUM_HOME/agents/ASSISTANT.md)" "TODAY IS: $(date +%Y-%m-%d). Activate Assistant"'"'"
         ;;
 esac
 

@@ -106,11 +106,17 @@ async function main() {
     routingContent = routingContent.replace(/MOMENTUM_CONTEXTS_PATH/g, contextsPath);
     routingContent = routingContent.replace(/MODEFILE_PLACEHOLDER/g, modeFile);
     
+    // Get current date in ISO format
+    const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+    const currentDateTime = new Date().toISOString(); // Full ISO timestamp
+
     // Output the entire routing for Claude to interpret
     console.log(routingContent);
-    
+
     // Add metadata for debugging and inject MODEFILE variable
     console.log('\n<!-- HOOK: Momentum routing loaded -->');
+    console.log(`<!-- CURRENT_DATE: ${currentDate} -->`);
+    console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
     console.log(`<!-- MODEFILE: ${modeFile} -->`);
     console.log(`<!-- MODE: ${mode} -->`);
     console.log(`<!-- PROJECT: ${projectName} -->`);
