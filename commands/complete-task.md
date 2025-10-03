@@ -77,10 +77,9 @@ VERIFICATION: Task marked complete with useful implementation details
 
 ```
 CHECK LORE AVAILABILITY:
-First check if Lore is installed:
-- Run: test -f ~/.config/lore/config && echo "LORE_AVAILABLE" || echo "LORE_NOT_INSTALLED"
+Check the LORE_AVAILABLE metadata from the hook (in the user prompt submit hook output).
 
-IF LORE_AVAILABLE:
+IF LORE_AVAILABLE is true:
 Based on the task you just completed and the implementation notes, generate a JSON event
 capturing the knowledge gained. Think about what would be valuable to remember for
 future similar tasks.

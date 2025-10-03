@@ -110,6 +110,10 @@ async function main() {
     const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     const currentDateTime = new Date().toISOString(); // Full ISO timestamp
 
+    // Check for Lore availability
+    const loreConfigPath = join(process.env.HOME!, '.config', 'lore', 'config');
+    const loreAvailable = existsSync(loreConfigPath);
+
     // Output the entire routing for Claude to interpret
     console.log(routingContent);
 
@@ -120,6 +124,7 @@ async function main() {
     console.log(`<!-- MODEFILE: ${modeFile} -->`);
     console.log(`<!-- MODE: ${mode} -->`);
     console.log(`<!-- PROJECT: ${projectName} -->`);
+    console.log(`<!-- LORE_AVAILABLE: ${loreAvailable} -->`);
     console.log(`<!-- USER_PROMPT: ${data.prompt} -->`);
 
     process.exit(0);
