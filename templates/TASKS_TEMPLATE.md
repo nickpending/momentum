@@ -68,7 +68,7 @@
 
 - **Status:** 📋 Not Started
 - **Type:** Design Task
-- **Output:** `.workflow/artifacts/designs/[filename].md`
+- **Output:** `$WORKFLOW_PROJECTS/{project}/explorations/` (via exploration save)
 - **Sections to include:**
   - [List key sections the design document should cover]
   - [e.g., User flow, Component hierarchy, State management]
@@ -76,7 +76,7 @@
   - [What architectural/UX decisions need to be made]
   - [What tradeoffs to evaluate]
 - **Deliverable:** Complete design document for [what]
-- **Demo:** `cat .workflow/artifacts/designs/[filename].md`
+- **Demo:** Link to exploration document in task completion
 - **Dependencies:** None OR [list task numbers]
 - **Context:** [Why this design is needed now]
 

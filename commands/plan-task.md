@@ -138,10 +138,10 @@ TASK TYPE ROUTING:
 Based on the task type found in TASKS.md:
 
 FOR DESIGN TASKS:
-- Output goes to {project-root}/.workflow/artifacts/designs/task-{number}.md
-- Focus on artifact creation, not code implementation
-- Skip implementation phases, go to design creation
-- Success = complete design document
+- Enter scoped exploration mode (dialogue-driven)
+- Capture to $WORKFLOW_PROJECTS/{project}/explorations/ via exploration save
+- Think WITH the human - explore options, trade-offs, implications
+- Success = design decisions documented with rationale
 
 FOR RESEARCH SPIKES:
 - Prototype goes to spikes/{name}/
@@ -350,42 +350,87 @@ VERIFICATION GATE: Have concrete success criteria before starting
 FAILURE MODE: If success criteria vague, clarify with concrete examples
 ```
 
-### PHASE 2.5: MANDATORY APPROVAL
+### PHASE 2.5: TASK TYPE ROUTING
 
-**⚠️ PLANNING COMPLETE - NO IMPLEMENTATION YET ⚠️**
+**⚠️ DIFFERENT TASK TYPES FLOW DIFFERENTLY ⚠️**
 
 ```
-MANDATORY PLANNING SUMMARY:
-=====================================
-TASK PLANNING COMPLETE - NO IMPLEMENTATION STARTED
-=====================================
+IF DESIGN TASK:
+  =====================================
+  DESIGN EXPLORATION READY
+  =====================================
 
-GROUPING DECISION: [SINGLE TASK X.Y / GROUP TASKS X.Y-X.Z]
-Tasks: [List all tasks being implemented]
-Rationale: [Why these tasks are grouped/not grouped]
+  GROUPING DECISION: [SINGLE TASK X.Y / GROUP TASKS X.Y-X.Z]
+  Tasks: [List design tasks]
 
-Type: [Implementation/Research Spike/Integration/Wiring]
-Complexity: [Simple/Medium/Complex]
-Subagent Analysis: [Used/Skipped - with reasoning]
+  ⚠️ VERIFICATION - Files Read:
+  [List files you read to understand context]
 
-Approach: [Implementation strategy]
-Common Patterns: [For grouped tasks - shared patterns]
-Integration: [How this connects to existing system components]
+  What I learned:
+  [Key findings from codebase that inform the design]
 
-Success Criteria: [Specific demonstration requirements]
-Standards Applied: [Embedded patterns to be used]
-Services Required: [What existing services need to be running]
+  Context: [What this design task is about]
 
-Key Insights (if subagents used):
-- Architecture: [key decisions from {project-root}/.workflow/artifacts/ARCHITECTURE.md]
-- Implementation: [key approaches from {project-root}/.workflow/artifacts/IMPLEMENTATION.md]
+  ---
+  DESIGN QUESTIONS TO EXPLORE:
 
-Ready to begin implementation?
+  [Present the design questions that need discussion, formatted as specific questions]
+  [Example: "Should we use X or Y approach? Trade-offs are..."]
+  [Example: "How should we handle edge case Z?"]
 
-Please respond with YES or NO.
+  Let's explore these design decisions together.
+
+  → ENTERING EXPLORATION MODE (dialogue, not approval)
+
+
+IF RESEARCH SPIKE:
+  =====================================
+  RESEARCH SPIKE READY
+  =====================================
+
+  GROUPING DECISION: [SINGLE TASK X.Y / GROUP TASKS X.Y-X.Z]
+  Question to answer: [What needs validation]
+  Time-box: 1-2 hours
+  Prototype path: spikes/{name}/
+
+  Ready to build prototype?
+
+  Please respond with YES or NO.
+
+  **🛑 STOP HERE - WAIT FOR APPROVAL**
+
+
+IF IMPLEMENTATION TASK:
+  =====================================
+  IMPLEMENTATION PLANNING COMPLETE - NO CODE WRITTEN YET
+  =====================================
+
+  GROUPING DECISION: [SINGLE TASK X.Y / GROUP TASKS X.Y-X.Z]
+  Tasks: [List all tasks being implemented]
+  Rationale: [Why these tasks are grouped/not grouped]
+
+  Type: [Implementation/Integration/Wiring]
+  Complexity: [Simple/Medium/Complex]
+  Subagent Analysis: [Used/Skipped - with reasoning]
+
+  Approach: [Implementation strategy]
+  Common Patterns: [For grouped tasks - shared patterns]
+  Integration: [How this connects to existing system components]
+
+  Success Criteria: [Specific demonstration requirements]
+  Standards Applied: [Embedded patterns to be used]
+  Services Required: [What existing services need to be running]
+
+  Key Insights (if subagents used):
+  - Architecture: [key decisions from {project-root}/.workflow/artifacts/ARCHITECTURE.md]
+  - Implementation: [key approaches from {project-root}/.workflow/artifacts/IMPLEMENTATION.md]
+
+  Ready to begin implementation?
+
+  Please respond with YES or NO.
+
+  **🛑 STOP HERE - WAIT FOR APPROVAL**
 ```
-
-**🛑 STOP HERE - WAIT FOR APPROVAL**
 
 ### PHASE 3: IMPLEMENTATION EXECUTION (BUILD FIRST)
 

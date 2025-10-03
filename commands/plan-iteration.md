@@ -261,8 +261,8 @@ After investigation, determine the appropriate task type for each item:
 
 ### Design Tasks (Create Artifacts)
 - **When**: Need to figure out UI/UX, architecture, data models DURING iteration
-- **Output**: Design document in `.workflow/artifacts/designs/task-N.md`
-- **Completion**: Artifact created that guides implementation
+- **Output**: Exploration document in `$WORKFLOW_PROJECTS/{project}/explorations/`
+- **Completion**: Design decisions documented that guide implementation
 - **Structure**: Goals, constraints, explorations, decisions, mockups/diagrams
 - **Examples**: UI mockups, API design, data model, system architecture
 
@@ -650,7 +650,7 @@ TASK TEMPLATE:
 [FOR DESIGN TASKS]:
 **What to design**: [UI flow, architecture, data model, API spec]
 **Constraints**: [Technical, business, user requirements]
-**Output artifact**: `.workflow/artifacts/designs/task-N.md`
+**Output artifact**: `$WORKFLOW_PROJECTS/{project}/explorations/` (via exploration save)
 
 [FOR RESEARCH SPIKES]:
 **Question to answer**: [Can we do X? Will Y scale? Does Z integrate?]

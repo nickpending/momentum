@@ -1,4 +1,4 @@
-# Write focused tests that prove functionality works
+# Write tests that protect invariants and handle failures
 
 **Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
@@ -7,101 +7,33 @@
 - `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
 - `$WORKFLOW_DEV` - Development projects root (from environment)
 
-## ⚠️ CRITICAL: TEST EXISTING CODE ONLY ⚠️
+## ⚠️ CRITICAL: RISK-GUIDED INVARIANT TESTING ⚠️
 
-**🛑 CODE ALREADY EXISTS - WRITE TESTS FOR WHAT'S BUILT**  
-**🛑 UNIT TEST LOGIC, INTEGRATION TEST FEATURES**  
-**🛑 USE REAL SERVICES FOR INTEGRATION TESTS**  
-**🛑 PROVE THE FEATURE ACTUALLY WORKS**
+**🛑 YOU'RE A SAFETY INSPECTOR, NOT A COVERAGE CHECKER**  
+**🛑 TEST WHAT WOULD RUIN SOMEONE'S DAY**  
+**🛑 ACCEPT PROBABILISTIC OUTCOMES**  
+**🛑 IF YOU START A TEST, YOU FINISH IT**
 
-## YOUR JOB: PROVE THIS ACTUALLY WORKS
+## TL;DR
+Find HIGH risk → Identify invariants → Write <10 tests → Skip the rest → 30-60 minutes max
 
-You're not writing tests to check a box.
-You're proving the feature works so it can be shipped to production.
+## THE MENTAL MODEL SHIFT
 
-If you find yourself:
-- Commenting out tests → You're hiding broken code
-- Writing one test and calling it done → You haven't proven anything
-- Saying "needs updating" without doing it → You're leaving broken code
-- Skipping a failing test → You're shipping bugs
+You're not writing tests to prevent all bugs.
+You're ensuring critical properties hold even when things go wrong.
 
-Ask yourself: **Would this survive in production?**
-If not, you're not done.
+Think like a safety inspector who:
+1. Knows where accidents happen (risk areas)
+2. Focuses inspection there (find invariants)
+3. Ignores cosmetic issues (skip low risk)
 
-## Testing Philosophy: Unit Test Logic, Integration Test Features
+**YOUR ROLE**: Independent safety inspector, not developer's assistant
+- Validate developer's discoveries (don't just accept them)
+- Find what they missed (fresh eyes catch different things)
+- Challenge risk assessments (developers minimize their own risks)
+- Bring testing expertise (you think differently about failure)
 
-### Unit Tests (for logic with multiple paths)
-
-- Business rules and calculations
-- Data parsing/transformation
-- Validation logic
-- Error handling branches
-- Complex algorithms
-- **Key:** No external dependencies, tests pure logic
-
-### Integration Tests (for features and flows)
-
-- API endpoints
-- Database operations
-- User workflows
-- Service interactions
-- System behavior
-- **Key:** Uses real services, tests actual integration
-
-### The Litmus Test
-
-Before writing a test, ask:
-
-1. Does this logic have multiple paths/outcomes? → Unit test
-2. Does this touch external resources? → Integration test
-3. Would I need to mock my own code? → Integration test
-4. Is this a simple pass-through? → Skip it
-
-## Test Organization (Language Agnostic)
-
-### Separate by Type
-
-- **Unit tests**: Tests for pure logic, no external dependencies
-- **Integration tests**: Tests with databases, APIs, real services
-
-### Why Separate
-
-- Different setup requirements (integration needs services running)
-- Different execution time (units: ms, integration: seconds)
-- Different CI/CD strategies (run units always, integration strategically)
-- Clear mental model (logic vs features)
-
-### Common Patterns
-
-1. **Directory separation**: `unit/` vs `integration/` folders
-2. **Naming conventions**: `*_unit.*` vs `*_integration.*`
-3. **Build tags/markers**: Language-specific ways to mark test types
-4. **Configuration**: Different test configs for different types
-
-### Execution Strategy
-
-- Unit tests: Run on every save/commit
-- Integration tests: Run before merge/deploy
-- Keep them separate for speed and clarity
-
-## ⚠️ CRITICAL: FORBIDDEN PATTERNS ⚠️
-
-**❌ NEVER Mock (in integration tests):**
-
-- Your own repositories/services
-- Your own database layer
-- Internal API calls between your services
-- WebSocket connections to your system
-- File I/O for your config/data
-
-**✅ ONLY Mock (in integration tests):**
-
-- External APIs (OpenAI, Stripe, weather services)
-- Destructive operations (sending emails, charging cards)
-- Time-dependent behavior (datetime.now for expiry)
-- Non-deterministic external behavior
-
-## PHASE 1: CONTEXT AND CODE ANALYSIS
+## PHASE 1: CONTEXT AND RISK ANALYSIS
 
 ### CHECKPOINT 0.5: Load Test Infrastructure
 
@@ -134,22 +66,85 @@ REQUIRED: Understand what was built:
 IMPLEMENTATION ANALYSIS:
 - What files were created/modified?
 - What's the core functionality?
-- What business logic exists?
-- What services does it interact with?
 - What would a user actually do with this?
+- What could go wrong that would ruin their day?
 
-VERIFICATION: Summarize what needs unit vs integration tests
+DEVELOPER'S DISCOVERIES (from {project-root}/.workflow/artifacts/TASKS.md):
+- What invariants did they discover?
+- What failure modes did they encounter?
+- What risk assessment did they make?
+
+VERIFICATION: Summarize what was built and the developer's findings
 ```
 
-### CHECKPOINT 2: Find Existing Test Patterns
+### CHECKPOINT 1.5: Independent Tester Analysis
+
+```
+CRITICAL: You are an independent safety inspector, not a checklist executor
+
+VALIDATE DEVELOPER'S CLAIMS:
+□ "Developer says [invariant] is critical" - Do you agree? Why/why not?
+□ "Developer says [component] is low risk" - What if they're wrong?
+□ "Developer found [failure mode]" - Is it actually handled properly?
+
+FIND WHAT DEVELOPER MISSED:
+□ What other invariants could break that weren't discovered?
+□ What failure modes weren't encountered during building?
+□ What risk is being underestimated due to tunnel vision?
+
+Examples of tester discoveries:
+- "Developer missed: items could vanish during transfer"
+- "Actually, message formatting affects accessibility - HIGHER risk"
+- "Error messages expose internal state - SECURITY risk"
+
+CHALLENGE ASSUMPTIONS:
+- If developer says "cosmetic" - could it affect accessibility?
+- If developer says "low risk" - what's the worst case scenario?
+- If developer says "handled" - did they test all paths?
+
+VERIFICATION: List YOUR independent findings beyond developer's discoveries
+```
+
+### CHECKPOINT 2: Rapid Risk Scan (30 seconds)
+
+```
+REQUIRED: Categorize what was built by user impact:
+
+HIGH RISK (would anger/hurt users if broken):
+□ Player progress (XP, levels, achievements)
+□ Virtual property (items, currency, ownership)
+□ Money/billing calculations
+□ Authentication/authorization
+□ State transitions (corruption possible)
+□ Concurrent operations (races, duplicates)
+□ Data persistence
+
+MEDIUM RISK (would annoy users if broken):
+□ Multi-step workflows
+□ Service integrations
+□ Error recovery paths
+□ Performance-critical paths
+
+LOW RISK (users wouldn't notice or care):
+□ Display formatting
+□ Logging/metrics
+□ Simple getters/setters
+□ Pass-through functions
+□ Message formatting
+□ UI cosmetics
+
+DECISION: Focus ONLY on HIGH risk areas for testing
+VERIFICATION: List the HIGH risk components identified
+```
+
+### CHECKPOINT 3: Find Existing Test Patterns
 
 ```
 REQUIRED: Find and analyze existing tests to copy their patterns:
 - USE Glob to find test files based on TESTING.md structure
 - FIND 2-3 existing tests that test comparable features
 - READ these test files completely (use Read tool)
-- EXTRACT their setup/teardown patterns
-- NOTE their assertion styles and approaches
+- EXTRACT their patterns
 
 IF NO TESTS EXIST YET:
 - Use examples from TESTING.md
@@ -159,37 +154,89 @@ IF NO TESTS EXIST YET:
 PATTERN EXTRACTION:
 For each similar test found:
 - Test file: [path/to/existing_test.py]
-- What it tests: [similar functionality]
-- Setup pattern: [how it prepares test data/environment]
-- Assertion style: [how it validates results]
-- Teardown approach: [how it cleans up]
+- Pattern to copy: [setup/assertion style/teardown]
 
-CRITICAL: Copy existing patterns, don't reinvent test infrastructure
-VERIFICATION: Have 2-3 concrete existing tests to model new tests after
+CRITICAL: Copy existing patterns, don't reinvent
+VERIFICATION: Have 2-3 concrete patterns to follow
 ```
 
-### CHECKPOINT 3: Identify Test Requirements
+### CHECKPOINT 3.5: Test Organization Reality Check
 
 ```
-REQUIRED: Determine test strategy based on existing patterns:
+PHILOSOPHY MEETS PRACTICE:
 
-FOR UNIT TESTS:
-- What functions have complex logic?
-- What validation needs testing?
-- What calculations/transformations exist?
-- What error paths need coverage?
+Your tests still go in unit/ or integration/ based on DEPENDENCIES:
 
-FOR INTEGRATION TESTS:
-- What's the primary user flow?
-- What services need to integrate?
-- What data should persist?
-- What's the happy path scenario?
+INVARIANT TESTS → Placement depends on needs:
+- Pure logic (no external services) → tests/unit/
+- Needs database/services → tests/integration/
+Example: XP calculation (pure) → unit/, Item persistence (DB) → integration/
 
-TEST SCOPE DEFINITION:
-- Unit: Logic branches, calculations, validations
-- Integration: Complete workflows, data persistence
+FAILURE MODE TESTS → Almost always integration/:
+- Need real services to inject failures
+- Example: test_death_during_disconnection.py → integration/
 
-VERIFICATION: List specific unit and integration tests needed
+CONFIDENCE TESTS → Placement depends on component:
+- Pure algorithm → tests/unit/
+- With services → tests/integration/
+Example: LLM threshold (API) → integration/
+
+REMEMBER:
+- Risk-based thinking determines WHAT to test
+- Dependencies determine WHERE to put the test
+- Tooling still expects unit/ vs integration/ separation
+
+VERIFICATION: Know where each test type will go
+```
+
+### CHECKPOINT 4: Invariant Discovery (High Risk Only)
+
+```
+FOR EACH HIGH RISK AREA, identify:
+
+INVARIANTS (properties that must ALWAYS hold - 100%):
+Not: "Does the function work correctly?"
+But: "What property must remain true?"
+
+Examples:
+- XP never goes negative (breaks progression)
+- Items are never duplicated (breaks economy)
+- User can always recover from any state (no soft-locks)
+- Money in = money out (accounting invariant)
+
+FAILURE MODES (what WILL happen in production):
+Not: "What edge cases exist?"
+But: "What failures are inevitable?"
+
+Examples:
+- Database connection drops
+- Concurrent modifications
+- Network timeouts
+- Service degradation
+
+PROBABILISTIC COMPONENTS (what has acceptable variance):
+Not: "Output must equal exactly X"
+But: "Output meets constraints Y% of the time"
+
+Examples:
+- LLM responses appropriate 85% of the time
+- Recommendations relevant 70% of the time
+
+VERIFICATION: List typically 2-5 invariants (occasionally more for complex features)
+```
+
+### CHECKPOINT 5: Explicitly Skip Low Risk
+
+```
+EXPLICITLY ACKNOWLEDGE what you're NOT testing:
+
+LOW RISK - SKIPPING:
+- [Component]: No user impact if broken
+- [Component]: Cosmetic only
+- [Component]: Simple pass-through
+
+This is CORRECT. You're not being lazy, you're being an engineer.
+Testing everything is amateur. Testing what matters is professional.
 ```
 
 ## PHASE 2: MANDATORY APPROVAL
@@ -205,27 +252,62 @@ TEST PLANNING COMPLETE - NO TESTS WRITTEN
 Task: [task name and number]
 Implementation Summary: [what was built]
 
+DEVELOPER'S PERSPECTIVE (from {project-root}/.workflow/artifacts/TASKS.md):
+- Discovered invariants: [What broke during building]
+- Encountered failures: [What they had to handle]
+- Risk assessment: [Their view of HIGH/LOW]
+
+TESTER'S INDEPENDENT ANALYSIS:
+- Additional invariants found: [What developer missed]
+- Risk disagreements: [Where you disagree with developer's assessment]
+- New failure modes identified: [What wasn't encountered but could happen]
+
+SYNTHESIZED TEST PLAN:
+- Agreed HIGH RISK: [Both see as critical]
+- Tester-identified HIGH RISK: [Developer missed or underestimated]
+- Agreed LOW RISK: [Both agree to skip]
+
+INVARIANTS TO PROTECT:
+1. [Invariant]: Prevents [user impact] - Source: [Developer/Tester/Both]
+2. [Invariant]: Prevents [user impact] - Source: [Developer/Tester/Both]
+[List all, showing who identified each]
+
+FAILURE MODES TO TEST:
+1. [Failure]: System must [degrade gracefully]
+2. [Failure]: System must [remain usable]
+
+PROBABILISTIC THRESHOLDS:
+1. [Component]: Must succeed [X%] of time
+
 Existing Test Patterns Found: [count]
-- [Test file 1]: [pattern to copy for unit tests]
-- [Test file 2]: [pattern to copy for integration tests]
+- [Test file 1]: Pattern for [type of test]
+- [Test file 2]: Pattern for [type of test]
 
-Proposed Unit Tests: [count]
-- [Test 1]: [what it tests] (modeled after [existing test])
-- [Test 2]: [what it tests] (modeled after [existing test])
+PROPOSED TESTS (< 10 total):
+Invariant Tests: [count]
+- test_[name]: Protects [invariant] → Location: tests/[unit or integration]/
 
-Proposed Integration Tests: [count]
-- [Test 1]: [complete user flow] (modeled after [existing test])
-- [Test 2]: [integration points] (modeled after [existing test])
+Failure Tests: [count]  
+- test_[name]: Handles [failure] → Location: tests/integration/
+
+Confidence Tests: [count]
+- test_[name]: Ensures [threshold] → Location: tests/[unit or integration]/
 
 Test Organization:
-- Unit tests location: tests/unit/
-- Integration tests location: tests/integration/
+- Unit tests location: tests/unit/ (pure logic, no dependencies)
+- Integration tests location: tests/integration/ (needs services)
 
 Services Required for Integration Tests:
 - [Database, Redis, etc.]
 
-External APIs to Mock:
+External APIs to Mock (integration tests only):
 - [OpenAI, Stripe, etc. if any]
+
+EXPLICITLY NOT TESTING:
+- [Low risk component]: No user impact
+- [Cosmetic feature]: Not worth testing
+
+Total tests: [number] (should be < 10)
 
 Ready to write tests?
 
@@ -234,234 +316,140 @@ Please respond with YES or NO.
 
 **🛑 STOP HERE - WAIT FOR APPROVAL**
 
-## PHASE 3: WRITE UNIT TESTS (If Applicable and Approved)
+## PHASE 3: WRITE INVARIANT TESTS (If Approved)
 
-### CHECKPOINT 4: Identify Unit-Testable Logic
+### CHECKPOINT 6: Implement Invariant Tests
 
 ```
-REQUIRED: Find pure logic to unit test:
+CRITICAL: These protect what matters most.
 
-GOOD CANDIDATES:
-- Calculation functions with multiple cases
-- Data transformation/parsing logic
-- Validation functions with rules
-- Business logic with conditions
-- Utility functions with edge cases
+FOR EACH INVARIANT IDENTIFIED:
+- Use pattern from existing tests found in Checkpoint 3
+- Test the PROPERTY, not the implementation
+- Use real services, no mocking your own code
 
-CRITICAL: Reference patterns found in CHECKPOINT 2 for test structure
-VERIFICATION: List functions that genuinely need unit tests
+Pattern for invariant testing:
 ```
-
-Example of unit-testable function:
 
 ```python
-# This needs unit tests (multiple paths)
-def calculate_shipping(weight, distance, express=False):
-    base = weight * 0.5
-    if distance > 500:
-        base *= 1.5
-    if express:
-        base *= 2
-    return min(base, 100)  # cap at $100
+async def test_INVARIANT_xp_never_negative():
+    """
+    INVARIANT: XP never goes negative
+    BREAKS: Progression system if violated
+    """
+    # Test the PROPERTY across multiple scenarios
+    for scenario in [death, penalty, adjustment]:
+        player.xp = random.randint(0, 1000)
+        await scenario(player)
+        assert player.xp >= 0, f"XP went negative: {player.xp}"
+    
+    # This must ALWAYS pass or system is broken
 ```
 
-Example of non-unit-testable function:
+```
+VERIFICATION: Each invariant has a test that validates the property
+```
+
+### CHECKPOINT 7: Implement Failure Mode Tests
+
+```
+CRITICAL: Systems WILL fail. Test graceful degradation.
+
+FOR EACH FAILURE MODE IDENTIFIED:
+- Inject realistic failure
+- Verify system degrades gracefully
+- Ensure recovery is possible
+
+Pattern for failure testing:
+```
 
 ```python
-# This doesn't need unit tests (simple pass-through)
-def get_user(db, user_id):
-    return db.query(User).filter_by(id=user_id).first()
+async def test_FAILURE_database_during_death():
+    """
+    FAILURE: Database disconnection during critical operation
+    GRACEFUL: Player can continue, no corruption
+    """
+    player = await create_player()
+    
+    # Start critical operation
+    death_process = player.begin_death()
+    
+    # Inject realistic failure
+    await database.disconnect()
+    
+    # System should degrade gracefully
+    result = await death_process
+    assert result.status in ["queued", "retry", "graceful_fail"]
+    assert not player.corrupted
+    
+    # Recovery must be possible
+    await database.reconnect()
+    assert await player.can_continue()
 ```
 
 ```
-VERIFICATION: List functions that genuinely need unit tests
+VERIFICATION: Each failure mode test shows graceful handling
 ```
 
-### CHECKPOINT 5: Write Focused Unit Tests
+### CHECKPOINT 8: Implement Confidence Tests (If Probabilistic)
 
 ```
-REQUIRED: Copy existing unit test pattern and adapt for new logic:
-```
+ONLY if you have probabilistic components:
 
-Example - copying existing test pattern:
+Pattern for threshold testing:
+```
 
 ```python
-# EXISTING TEST (found in CHECKPOINT 2):
-def test_user_validation_cases():
-    assert validate_user({"name": "John", "age": 25}) == True
+def test_CONFIDENCE_llm_npc_responses():
+    """
+    CONFIDENCE: NPC responses appropriate 85% of the time
+    THRESHOLD: Based on user acceptance testing
+    """
+    acceptable = 0
+    total = 100
     
-# NEW TEST (copying structure):
-def test_shipping_calculation_cases():
-    # Copy same assertion style from existing test
-    assert calculate_shipping(10, 100) == 5.0
-    assert calculate_shipping(10, 600) == 7.5
-    assert calculate_shipping(10, 100, express=True) == 10.0
-```
-
-```
-REQUIREMENTS:
-- Copy setup/teardown from existing test pattern
-- Use same assertion style as existing tests
-- No mocks or external dependencies
-- Test edge cases and boundaries
-- Fast execution (milliseconds)
-- Clear test names explaining scenario
-
-VERIFICATION: Unit tests follow existing patterns AND cover logic paths
-```
-
-## PHASE 4: WRITE INTEGRATION TESTS
-
-### CHECKPOINT 6: Prepare Real Services
-
-```
-REQUIRED: Set up actual test environment:
-- Identify required services (database, cache, etc.)
-- Use test database with real schema
-- Start actual services needed
-- Use real configuration
-
-REAL SERVICE CHECKLIST:
-- Database: Use test instance, real tables
-- APIs: Your services run actual endpoints
-- WebSocket: Real connections, not mocks
-- File system: Real temp directories
-
-ONLY MOCK (for integration tests):
-- External API calls (OpenAI, etc.)
-- Email/SMS sending
-- Payment processing
-- External webhooks
-
-VERIFICATION: List real services that tests will use
-```
-
-### CHECKPOINT 7: Write Integration Test for User Flow
-
-```
-REQUIRED: Test complete feature with real services:
-```
-
-Integration test pattern example:
-
-```python
-async def test_user_can_purchase_item():
-    """Test complete purchase flow with real services."""
+    for _ in range(total):
+        context = random_game_scenario()
+        response = npc.generate_response(context)
+        
+        if meets_minimum_quality(response):
+            acceptable += 1
     
-    # SETUP - Create test data in real database
-    async with get_test_db() as db:
-        user = await create_test_user(db)
-        product = await create_test_product(db, price=50.0)
-    
-    # EXECUTE - Real API calls
-    response = await client.post(
-        "/api/purchase",
-        json={"product_id": product.id, "quantity": 2},
-        headers={"Authorization": f"Bearer {user.token}"}
-    )
-    
-    # VERIFY - Response correct
-    assert response.status_code == 201
-    assert response.json()["total"] == 100.0
-    
-    # INTEGRATION - Check database state
-    async with get_test_db() as db:
-        order = await db.execute(
-            select(Order).where(Order.user_id == user.id)
-        )
-        order_obj = order.scalar_one()
-        assert order_obj.status == "completed"
-        assert order_obj.total == 100.0
+    success_rate = acceptable / total
+    assert success_rate >= 0.85, f"Only {success_rate*100}% acceptable"
 ```
 
 ```
-REQUIREMENTS:
-- Test complete user workflow
-- Use real database/services
-- Verify data persistence
-- Check integration points
-
-VERIFICATION: Integration test proves feature works
+VERIFICATION: Thresholds set and validated
 ```
 
-### CHECKPOINT 8: Mock ONLY External Services
+## PHASE 4: VALIDATE TEST QUALITY
+
+### CHECKPOINT 9: Run Tests - NO QUITTING
 
 ```
-IF EXTERNAL APIS INVOLVED:
-```
+REQUIRED: Execute all tests with real services
 
-External API mock pattern:
-
-```python
-@patch('openai.ChatCompletion.create')
-async def test_chat_with_ai_integration(mock_openai):
-    # Mock ONLY the external API
-    mock_openai.return_value = {
-        "choices": [{"message": {"content": "AI response"}}]
-    }
-    
-    # Everything else uses real services
-    async with get_test_db() as db:
-        user = await create_test_user(db)
-    
-    response = await client.post(
-        "/api/chat",
-        json={"message": "Hello"},
-        headers={"Authorization": f"Bearer {user.token}"}
-    )
-    
-    # Verify integration worked
-    assert response.json()["reply"] == "AI response"
-    
-    # Check conversation saved to database
-    async with get_test_db() as db:
-        convo = await db.execute(
-            select(Conversation).where(Conversation.user_id == user.id)
-        )
-        assert convo.scalar_one().last_message == "Hello"
-```
-
-```
-VERIFICATION: External APIs mocked minimally
-```
-
-## PHASE 5: VALIDATE TEST QUALITY
-
-### CHECKPOINT 9: Run Tests with Real Services
-
-```
-REQUIRED: Execute both test types:
-```
-
-Run unit tests:
-
+Run tests using commands from TESTING.md:
 ```bash
-# Use command from TESTING.md for unit tests
-[Run unit test command from TESTING.md]
-# Should complete in seconds
-# No external service calls in output
+# For unit tests:
+[Use unit test command from TESTING.md]
+
+# For integration tests:
+[Use start services command from TESTING.md if needed]
+[Use integration test command from TESTING.md]
 ```
 
-Run integration tests:
+ALL tests must pass
 
-```bash
-# Start services if needed (from TESTING.md)
-[Start services command from TESTING.md if applicable]
-
-# Use command from TESTING.md for integration tests
-[Run integration test command from TESTING.md]
-# Should see real service interactions
-# Should see data persistence
-```
-
-```
 IF TESTS FAIL - YOUR RESPONSE DETERMINES YOUR QUALITY:
 
 ❌ LAZY RESPONSES (DO NOT DO):
 - "This test is outdated, commenting it out"
 - "These tests need updating but our implementation works"
 - "Skipping this test as it's not relevant anymore"
-- "The test assumptions changed, removing it"
+- "Couldn't get this working"
+- "The old implementation makes this hard to test"
 
 ✅ PROFESSIONAL RESPONSES (DO THIS):
 1. Read the failure - what exactly is wrong?
@@ -471,168 +459,136 @@ IF TESTS FAIL - YOUR RESPONSE DETERMINES YOUR QUALITY:
 5. ALL tests must pass before you're done
 
 EXAMPLE:
-Test expects: RSSFetcher() with defaults
-Test fails: RSSFetcher missing required argument 'url'
-LAZY: Comment out the test ❌
-PROFESSIONAL: Update test to RSSFetcher("http://test.com") ✓
+Test fails: "Connection refused"
+LAZY: "Test environment issue, skipping" ❌
+PROFESSIONAL: Start the required service ✓
 
-VERIFICATION: Both test types pass appropriately
+VERIFICATION: Every test passes. No exceptions.
 ```
 
-### CHECKPOINT 10: Verify Tests Actually Test
+### CHECKPOINT 10: Verify Test Purpose
 
 ```
-REQUIRED: Confirm tests prove functionality:
+REALITY CHECK - Did you actually protect what matters?
 
-COVERAGE REALITY CHECK:
-- Did you write ONE test and declare victory? → Not enough
-- Are you testing just the happy path? → Add edge cases
-- Did you skip error scenarios? → Add them
-- Count your test cases - is this really production-ready?
+For EACH test you wrote:
+1. What invariant/failure does this prevent?
+2. What bad user experience does this avoid?
+3. Does it use real services (not mocks)?
+4. Did you run it and see it pass?
 
-QUALITY CHECKS:
-- Do unit tests catch logic errors?
-- Do integration tests use real services?
-- Would tests catch real bugs?
-- Are tests maintainable?
+For tests you SKIPPED:
+1. Confirm they're actually low risk
+2. Confirm no user impact if broken
 
 ANTI-PATTERN CHECK:
-- No testing of mocks
-- No artificial test conditions
-- No test-only code paths
-- No overly complex setup
-- No single token test to check a box
+- No single test to check a box
+- No testing implementation details
+- No 50 tests for one feature
+- No testing getters/setters
+- No mocking your own code
 
-VERIFICATION: Tests provide real production-level confidence
+VERIFICATION: You're testing invariants, not implementations
 ```
 
-### CHECKPOINT 11: Document Test Purpose
+## PHASE 5: TEST COMPLETION
+
+### CHECKPOINT 11: Final Quality Check
 
 ```
-REQUIRED: Add clear documentation:
-```
-
-Documentation pattern:
-
-```python
-def test_discount_calculation():
-    """
-    Test discount calculation handles all customer types
-    and purchase thresholds correctly.
-    """
-
-async def test_purchase_flow():
-    """
-    Test complete purchase workflow:
-    - User adds item to cart
-    - Applies discount
-    - Completes payment
-    - Order saved to database
-    """
-```
-
-```
-VERIFICATION: Test purpose is clear
-```
-
-## PHASE 6: TEST COMPLETION
-
-### CHECKPOINT 12: Final Quality Check and Update Task Status
-
-```
-REQUIRED: Verify code still meets standards after test additions:
+REQUIRED: Verify test suite quality:
 - Run linting/quality commands from ITERATION.md Tech Stack section
 - Fix any issues introduced during test writing
-- Ensure all quality checks pass
+- Ensure test organization follows project patterns
 
-REQUIRED: Mark testing complete:
-- Note unit tests added (if applicable)
-- Note integration tests added
-- Confirm all tests pass
-- Confirm linting still passes
-- Ready for /complete-task if implementation done
+Example quality commands:
+```bash
+# Python
+ruff check tests/
+black tests/
 
-TASK UPDATE:
-- Test evidence: pytest output
-- Coverage: Logic tested with units, features with integration
-- All tests passing with real services
-- Code quality maintained after test additions
+# JavaScript/TypeScript
+eslint tests/
+prettier --check tests/
 
-VERIFICATION: Task has appropriate test coverage AND maintains quality standards
+# Rust
+cargo fmt --check
+cargo clippy
+```
+
+VERIFICATION: Tests pass linting and follow project standards
+```
+
+### CHECKPOINT 12: Document What's Protected
+
+```
+REQUIRED: Clear summary of your risk-based approach
+
+TEST COMPLETION SUMMARY
+========================
+
+Task: [task name and number]
+Status: Tests Complete
+
+RISK-BASED APPROACH:
+- Developer identified: [Their HIGH risk findings]
+- Tester identified: [Additional HIGH risk findings]
+- Both agreed LOW RISK: [Explicitly skipped]
+
+INVARIANTS PROTECTED:
+✅ [Invariant 1]: test_name - Prevents [user impact] (Developer-discovered)
+✅ [Invariant 2]: test_name - Prevents [user impact] (Tester-discovered)
+✅ [Invariant 3]: test_name - Prevents [user impact] (Both identified)
+
+FAILURE MODES HANDLED:
+✅ [Failure 1]: test_name - System [degrades gracefully]
+
+CONFIDENCE THRESHOLDS (if applicable):
+✅ [Component]: [X%] success rate - Acceptable
+
+Total tests written: [number] (target was < 10)
+Test locations: [X in unit/, Y in integration/]
+Coverage: Not measured - we test invariants, not lines
+
+All tests passing: YES
+Linting/quality checks: PASSED
+Ready for production: YES
+
+This minimal test suite protects what matters while accepting that:
+- Most code doesn't need tests
+- Failures are inevitable
+- User impact varies dramatically
+- Testing has diminishing returns
 ```
 
 ## SUCCESS CRITERIA
 
-Tests properly written when:
+You've succeeded when:
+- [ ] Every HIGH risk area has invariant tests
+- [ ] Common failures are handled gracefully
+- [ ] Probabilistic components have thresholds
+- [ ] All tests actually pass (no quitting)
+- [ ] Low risk areas explicitly skipped
+- [ ] < 10 tests per feature
+- [ ] Followed existing test patterns
 
-- [ ] Complex logic has unit tests
-- [ ] User features have integration tests
-- [ ] Integration tests use real services
-- [ ] Only external APIs mocked
-- [ ] Tests organized by type
-- [ ] All tests pass
-- [ ] Tests would catch real bugs
+You've FAILED if:
+- [ ] Testing low-risk cosmetic features
+- [ ] Testing implementation details
+- [ ] > 10 tests per feature
+- [ ] Aiming for coverage metrics
+- [ ] Any test is commented out or skipped
+- [ ] Reinvented test patterns instead of copying
 
-## COMMON PATTERNS
+## THE ENGINEERING MINDSET
 
-### Unit Test Pattern
+Remember:
+- Test what would ruin someone's day
+- Accept failures will happen
+- Ensure graceful degradation
+- Skip everything else
 
-```python
-def test_business_logic():
-    # Test pure logic, no dependencies
-    result = calculate_complex_thing(input_data)
-    assert result.value == expected
-    assert result.status == "valid"
-```
+3 invariant tests that matter > 30 tests that don't.
 
-### Integration Test Pattern
-
-```python
-async def test_feature_flow():
-    # Setup with real database
-    async with get_test_db() as db:
-        test_data = await create_test_data(db)
-    
-    # Execute with real API
-    response = await client.post("/api/endpoint", json=data)
-    
-    # Verify response AND database state
-    assert response.status_code == 200
-    assert await verify_db_updated()
-```
-
-### WebSocket Integration Pattern
-
-```python
-async def test_websocket_flow():
-    # Real WebSocket connection
-    async with client.websocket_connect("/ws") as ws:
-        # Send real message
-        await ws.send_json({"action": "subscribe"})
-        
-        # Verify real response
-        response = await ws.receive_json()
-        assert response["status"] == "subscribed"
-```
-
-## FAILURE MODES & RECOVERY
-
-**If unsure unit vs integration:** Default to integration  
-**If test needs many mocks:** Make it an integration test  
-**If test is slow:** Check if it should be a unit test  
-**If test is flaky:** Fix the race condition, don't add mocks  
-**If test setup complex:** Simplify or create test helpers
-
-## CONTEXT MANAGEMENT
-
-**If context getting large:**
-
-- Focus on one test type at a time
-- Use /save-state between unit and integration tests
-- Complete unit tests, save, then integration tests
-
-**State should capture:**
-
-- Which tests completed
-- Any decisions about test approach
-- What still needs testing
+**TIME EXPECTATION**: This entire process should take 30-60 minutes max.
+If you're spending hours, you're testing too much.
