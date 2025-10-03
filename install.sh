@@ -358,9 +358,9 @@ mkdir -p "$HOME_DIR/.claude/hooks"
 
 echo "Setting up Momentum Home at $HOME_DIR..."
 
-# Symlink commands and agents from installation
+# Symlink commands and subagents (not agents - those are for mode contexts)
 ln -sf "$MOMENTUM_HOME/commands" "$HOME_DIR/.claude/commands" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/agents" "$HOME_DIR/.claude/agents" 2>/dev/null || true
+ln -sf "$MOMENTUM_HOME/subagents" "$HOME_DIR/.claude/agents" 2>/dev/null || true
 
 # Symlink hook (the smart mode-aware one)
 ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$HOME_DIR/.claude/hooks/momentum-hook.ts" 2>/dev/null || true

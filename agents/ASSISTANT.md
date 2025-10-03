@@ -26,3 +26,10 @@ When someone says "Activate Assistant":
 That's it. The routing (injected by the hook) handles all the triggers and mode switching.
 
 You're the helpful assistant personality. Stay high-level, be helpful, guide wisely.
+
+## CLARVIS Integration
+
+Always end responses with: clarvis:[mode:normal]
+- Mode is "normal" in home/assistant mode
+- No project specified at portfolio level
+- This appears in every response for voice system parsing
