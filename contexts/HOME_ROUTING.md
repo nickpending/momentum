@@ -43,7 +43,7 @@ This is your home base. From here you can:
    - Run: `echo "project" > {modefile-path}`
    - Run: `cd {directory-from-ACTION-line}`
    - Read: `MOMENTUM_CONFIG_PLACEHOLDER/agents/MOMENTUM.md` (silently)
-   - Say: "Now in {project}. Momentum activated. Ready to ship."
+   - **Follow the Activation Protocol from MOMENTUM.md**
 5. If error:
    - Stay in home mode
    - Say: "Project '{project}' doesn't exist. Would you like to:"

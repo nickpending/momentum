@@ -49,9 +49,21 @@ refresh_project_links() {
 
     # Hooks and contexts
     mkdir -p "$dev_project/.claude/hooks"
-    if [[ -f "$MOMENTUM_HOME/hooks/momentum-hook.ts" ]]; then
-        rm -f "$dev_project/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$dev_project/.claude/hooks/momentum-hook.ts"
+    # Clean up old hook symlink
+    rm -f "$dev_project/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
+
+    if [[ -f "$MOMENTUM_HOME/hooks/momentum-session-start-hook.ts" ]]; then
+        rm -f "$dev_project/.claude/hooks/momentum-session-start-hook.ts" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/hooks/momentum-session-start-hook.ts" "$dev_project/.claude/hooks/momentum-session-start-hook.ts"
+
+        rm -f "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/hooks/momentum-user-prompt-submit-hook.ts" "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts"
+
+        rm -f "$dev_project/.claude/hooks/momentum-context-compression-hook.ts" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/hooks/momentum-context-compression-hook.ts" "$dev_project/.claude/hooks/momentum-context-compression-hook.ts"
+
+        rm -rf "$dev_project/.claude/hooks/shared" 2>/dev/null || true
+        ln -sf "$MOMENTUM_HOME/hooks/shared" "$dev_project/.claude/hooks/shared"
 
         rm -rf "$dev_project/.workflow/contexts" 2>/dev/null || true
         ln -sf "$MOMENTUM_HOME/contexts" "$dev_project/.workflow/contexts"
@@ -75,12 +87,42 @@ refresh_project_links() {
 {
   "\$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-hook.ts"
+            "command": "bun .claude/hooks/momentum-user-prompt-submit-hook.ts"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-context-compression-hook.ts"
           }
         ]
       }
@@ -92,7 +134,8 @@ refresh_project_links() {
       "$planning_project",
       "$HOME/.config/lore/",
       "$HOME/.local/share/lore/",
-      "$HOME/.cache/lore/"
+      "$HOME/.cache/lore/",
+      "/tmp/"
     ]
   }
 }
@@ -102,12 +145,42 @@ EOF
 {
   "\$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-hook.ts"
+            "command": "bun .claude/hooks/momentum-user-prompt-submit-hook.ts"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-context-compression-hook.ts"
           }
         ]
       }
@@ -118,7 +191,8 @@ EOF
       ".workflow/",
       "$HOME/.config/lore/",
       "$HOME/.local/share/lore/",
-      "$HOME/.cache/lore/"
+      "$HOME/.cache/lore/",
+      "/tmp/"
     ]
   }
 }

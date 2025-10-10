@@ -283,9 +283,17 @@ fi
 if [[ ! -d "$MOMENTUM_HOME/hooks" ]]; then
     mkdir -p "$MOMENTUM_HOME/hooks"
 fi
-# Always copy the hook to get latest version
-cp "$MOMENTUM_SOURCE/hooks/momentum-hook.ts" "$MOMENTUM_HOME/hooks/" && echo "  ✓ Hooks (updated)"
-chmod +x "$MOMENTUM_HOME/hooks/momentum-hook.ts"
+# Always copy all hooks to get latest versions
+cp "$MOMENTUM_SOURCE/hooks/momentum-session-start-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Session start hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-user-prompt-submit-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ User prompt submit hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-context-compression-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Context compression hook (updated)"
+# Copy shared utilities
+if [[ -d "$MOMENTUM_SOURCE/hooks/shared" ]]; then
+    cp -r "$MOMENTUM_SOURCE/hooks/shared" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Shared voice utilities (updated)"
+fi
+# Legacy hook for backward compatibility
+cp "$MOMENTUM_SOURCE/hooks/momentum-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Legacy hook (for compatibility)"
+chmod +x "$MOMENTUM_HOME/hooks"/*.ts 2>/dev/null || true
 
 if [[ ! -d "$MOMENTUM_HOME/contexts" ]]; then
     cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_HOME/" && echo "  ✓ Contexts"
@@ -362,20 +370,55 @@ echo "Setting up Momentum Home at $HOME_DIR..."
 ln -sf "$MOMENTUM_HOME/commands" "$HOME_DIR/.claude/commands" 2>/dev/null || true
 ln -sf "$MOMENTUM_HOME/subagents" "$HOME_DIR/.claude/agents" 2>/dev/null || true
 
-# Symlink hook (the smart mode-aware one)
+# Symlink all momentum hooks
+ln -sf "$MOMENTUM_HOME/hooks/momentum-session-start-hook.ts" "$HOME_DIR/.claude/hooks/momentum-session-start-hook.ts" 2>/dev/null || true
+ln -sf "$MOMENTUM_HOME/hooks/momentum-user-prompt-submit-hook.ts" "$HOME_DIR/.claude/hooks/momentum-user-prompt-submit-hook.ts" 2>/dev/null || true
+ln -sf "$MOMENTUM_HOME/hooks/momentum-context-compression-hook.ts" "$HOME_DIR/.claude/hooks/momentum-context-compression-hook.ts" 2>/dev/null || true
+ln -sf "$MOMENTUM_HOME/hooks/shared" "$HOME_DIR/.claude/hooks/shared" 2>/dev/null || true
+# Legacy hook for backward compatibility
 ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$HOME_DIR/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
 
-# Create home settings.json with proper paths
+# Create home settings.json with complete hook ecosystem
 cat > "$HOME_DIR/.claude/settings.json" << EOF
 {
   "\$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+          }
+        ]
+      }
+    ],
     "UserPromptSubmit": [
       {
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-hook.ts"
+            "command": "bun .claude/hooks/momentum-user-prompt-submit-hook.ts"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-context-compression-hook.ts"
           }
         ]
       }
@@ -388,7 +431,8 @@ cat > "$HOME_DIR/.claude/settings.json" << EOF
       "$HOME/.config/momentum/",
       "$HOME/.config/lore/",
       "$HOME/.local/share/lore/",
-      "$HOME/.cache/lore/"
+      "$HOME/.cache/lore/",
+      "/tmp/"
     ]
   }
 }
@@ -429,7 +473,7 @@ case "$DETECTED_SHELL" in
 set -x MOMENTUM_HOME "$HOME/.config/momentum"
 source $MOMENTUM_HOME/config
 
-# Momentum alias with date injection
+# Momentum alias - hook injects metadata, alias loads ASSISTANT.md
 alias momentum 'cd ~/.local/share/momentum/home && claude --append-system-prompt (cat $MOMENTUM_HOME/agents/ASSISTANT.md) "TODAY IS: "(date +%Y-%m-%d)". Activate Assistant"'
 EOF
         ;;

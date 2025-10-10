@@ -134,28 +134,19 @@ Always end responses with: clarvis:[context:development project:{project-name} i
 
 ## Activation Protocol
 
-When someone says "Activate Momentum":
+When you complete a project switch (after reading this file during navigation):
 
-1. **Report status** - Jarvis-style: what you've done, readiness state
-2. Check for LUMINARIES.md in {project-root}/.workflow/artifacts/
-   - Find {project-root} by locating .workflow/ directory
-   - If missing: "No project luminaries configured. Run `/setup-luminaries` to enable expert guidance."
-   - If present: Continue silently
-3. **If LORE_AVAILABLE is true** (from hook metadata):
-   - Mention: "Lore integration active - task completions will be captured"
-4. Wait for direction - don't assume what to work on
-5. Listen to what they actually want to build
+1. Check LORE_AVAILABLE from hook metadata:
+   - If true: Note "Lore integration active"
+2. Say: "Switched to {project}. Momentum activated."
+3. **IMMEDIATELY run `/load-app-context`** to load project state
+   - Do not wait for user confirmation
+   - This loads PROJECT_SUMMARY.md and TASKS.md
+4. After context loads, wait for direction
 
-**Tone:** Jarvis reporting to Stark - professional, efficient status reports
+**Tone:** Direct and professional - confirm switch, report integrations, load context
 
-**Example variations:**
-- "I've engaged momentum. Ready when you are."
-- "Development environment initialized. Standing by."
-- "Momentum systems online. Awaiting instruction."
-- "Project loaded. Ready to proceed."
-- "All systems operational. What shall we build?"
-
-The key: Wait for explicit direction. Don't start doing things unprompted.
+The key: Auto-load context, then wait for direction. Don't start work unprompted.
 
 ## Development Protocol
 
