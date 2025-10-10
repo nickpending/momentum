@@ -87,25 +87,21 @@ DO NOT PROCEED WITHOUT EXPLICIT GROUPING DECISION
 **CHECKPOINT 1: Load Task(s) Context Based on Grouping Decision**
 
 ```
-NOW load detailed context for your grouped tasks:
+USE already loaded PROJECT_SUMMARY.md and TASKS.md from /load-app-context
 
 IF SINGLE TASK:
-- READ detailed requirements for task $TASK_NUMBER in TASKS.md
+- EXTRACT task $TASK_NUMBER details from TASKS.md
 - EXTRACT task type, deliverables, demo commands, dependencies
 - VERIFY dependencies are met
 - CHECK TASK TYPE (Implementation/Design/Research/Integration/Wiring)
 
 IF GROUPED TASKS:
-- READ detailed requirements for ALL grouped tasks
+- EXTRACT detailed requirements for ALL grouped tasks
 - IDENTIFY common patterns across the tasks
 - EXTRACT all deliverables and demo commands
 - VERIFY all dependencies are met
 - NOTE which files will be touched multiple times
 - CHECK TASK TYPES (should be consistent for grouped tasks)
-
-ALSO REQUIRED:
-- READ {project-root}/.workflow/artifacts/ITERATION.md (embedded standards)
-- READ {project-root}/.workflow/artifacts/APP_CONTEXT.md (integration patterns)
 
 SYSTEM INTEGRATION CONTEXT:
 - What existing services/components does this task need to integrate with?

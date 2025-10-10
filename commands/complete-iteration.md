@@ -208,7 +208,7 @@ ARTIFACTS CLEANUP ({project-root}/.workflow/artifacts/):
   - Any subagent artifacts (ARCHITECTURE-*.md, IMPLEMENTATION-*.md, etc.)
 - PRESERVE project-level files:
   - IDEA.md (project vision)
-  - APP_CONTEXT.md (if exists - project patterns)
+  - PROJECT_SUMMARY.md (lightweight project context)
   - Any other project-wide documentation
 
 STATE CLEANUP ({project-root}/.workflow/state/):
@@ -221,12 +221,18 @@ CLEANUP COMMANDS:
 - rm {project-root}/.workflow/artifacts/subagents/*.md (if directory exists)
 - rm {project-root}/.workflow/state/*.md (if any exist)
 
-VERIFICATION: Only IDEA.md and APP_CONTEXT.md remain in artifacts
+VERIFICATION: Only IDEA.md and PROJECT_SUMMARY.md remain in artifacts
+```
+
+**CHECKPOINT 8: Update Project Summary**
+
+```
+REQUIRED: Run /update-project-summary to refresh PROJECT_SUMMARY.md after archival
 ```
 
 ### PHASE 4: TRANSITION GUIDANCE (REQUIRED)
 
-**CHECKPOINT 8: Next Iteration Preparation**
+**CHECKPOINT 9: Next Iteration Preparation**
 
 ```
 REQUIRED: Provide clear guidance for next iteration:

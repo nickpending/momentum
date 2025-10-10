@@ -754,6 +754,12 @@ VERIFICATION GATE: Before finalizing ITERATION.md:
 FAILURE MODE: If making assumptions instead of using findings, REVISE
 ```
 
+**CHECKPOINT 10: Update Project Summary**
+
+```
+REQUIRED: Run /update-project-summary to capture new iteration in PROJECT_SUMMARY.md
+```
+
 ### PHASE 5: COMPLETION STATEMENT
 
 ```

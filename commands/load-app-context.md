@@ -7,13 +7,12 @@
 - `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
 - `$WORKFLOW_DEV` - Development projects root (from environment)
 
-## Step 1: Essential Context ONLY
+## Step 1: Load Context
 
-**LOAD FILES** (in order, if they exist):
+**READ**:
 
-1. **READ** `{project-root}/.workflow/artifacts/TASKS.md` - current iteration with embedded context and task status
-2. **READ** `{project-root}/.workflow/artifacts/IDEA.md` - understand overall project vision and goals  
-3. **READ** `{project-root}/.workflow/artifacts/APP_CONTEXT.md` - project-specific integration patterns (if exists)
+1. `{project-root}/.workflow/artifacts/PROJECT_SUMMARY.md`
+2. `{project-root}/.workflow/artifacts/TASKS.md`
 
 ## Step 2: Report Status
 
@@ -36,11 +35,10 @@ Files read: [list actual files loaded]
 What would you like to do?
 ```
 
-### If only IDEA.md (and optionally APP_CONTEXT.md) exist:
+### If only PROJECT_SUMMARY.md exists:
 ```
 **PROJECT CONTEXT LOADED**
-Project: [Brief project description from IDEA.md]
-[Include "Integration patterns loaded" if APP_CONTEXT.md found]
+Project: [Brief project description from PROJECT_SUMMARY.md]
 No active iteration - run `/decompose-iteration` to create tasks
 Files read: [list actual files loaded]
 
@@ -55,19 +53,13 @@ No project files found in {project-root}/.workflow/artifacts/
 To get started:
 - Create IDEA.md in obsidian for project vision
 - Run `/decompose-iteration` to create tasks
-- Run `/create-app-context` to generate integration patterns
 
 What would you like to do?
 ```
 
 ## Step 3: Wait for Direction
 
-**DO NOT START WORK** - this is an entry point for any command:
-
-## Guidelines
-
-- **MINIMAL LOADING**: Only the two essential files needed to understand project + current iteration
-- **FAST AND LIGHT**: Quick project orientation, nothing more
+**DO NOT START WORK** - this is an entry point for any command.
 
 ## Error Handling
 
