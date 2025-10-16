@@ -12,51 +12,80 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+import { debugLog } from './debug-log.ts';
 
 interface VoiceConfig {
-  provider: 'elevenlabs' | 'system';
+  provider?: string;
   voice_id?: string;
+  api_key?: string;
 }
 
 /**
- * Parse TOML-like config to extract voice configuration
- * Simple parser for the specific clarvis config structure we need
+ * Parse voice profile name from main clarvis config
  */
-function parseVoiceConfig(configContent: string): VoiceConfig | null {
+function parseVoiceProfileName(configContent: string): string | null {
   try {
     const lines = configContent.split('\n');
+    let inClarvisSection = false;
+
+    for (const line of lines) {
+      const trimmed = line.trim();
+
+      if (trimmed === '[clarvis]') {
+        inClarvisSection = true;
+        continue;
+      }
+
+      if (trimmed.startsWith('[') && trimmed !== '[clarvis]') {
+        inClarvisSection = false;
+        continue;
+      }
+
+      if (inClarvisSection && trimmed && !trimmed.startsWith('#')) {
+        if (trimmed.startsWith('voice = ')) {
+          const value = trimmed.split('=')[1].trim().replace(/"/g, '');
+          return value.split('#')[0].trim();
+        }
+      }
+    }
+
+    return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+/**
+ * Parse voice configuration from voice profile file
+ */
+function parseVoiceConfig(profileContent: string): VoiceConfig | null {
+  try {
+    const lines = profileContent.split('\n');
     let inVoiceSection = false;
     const config: Partial<VoiceConfig> = {};
 
     for (const line of lines) {
       const trimmed = line.trim();
 
-      // Track if we're in [voice] section
       if (trimmed === '[voice]') {
         inVoiceSection = true;
         continue;
       }
 
-      // Exit voice section when we hit another section
       if (trimmed.startsWith('[') && trimmed !== '[voice]') {
         inVoiceSection = false;
         continue;
       }
 
-      // Parse voice section lines
       if (inVoiceSection && trimmed && !trimmed.startsWith('#')) {
         if (trimmed.startsWith('provider = ')) {
           const value = trimmed.split('=')[1].trim().replace(/"/g, '');
-          if (value === 'elevenlabs' || value === 'system') {
-            config.provider = value;
-          }
+          config.provider = value.split('#')[0].trim();
         } else if (trimmed.startsWith('voice_id = ')) {
           const value = trimmed.split('=')[1].trim().replace(/"/g, '');
-          // Remove inline comments (everything after #)
           config.voice_id = value.split('#')[0].trim();
         } else if (trimmed.startsWith('api_key = ')) {
           const value = trimmed.split('=')[1].trim().replace(/"/g, '');
-          // Remove inline comments (everything after #)
           config.api_key = value.split('#')[0].trim();
         }
       }
@@ -69,28 +98,43 @@ function parseVoiceConfig(configContent: string): VoiceConfig | null {
 }
 
 /**
- * Load voice configuration from clarvis config
- * Falls back to system voice if config unavailable
+ * Load voice configuration from clarvis config and voice profile
+ * Returns empty config if unavailable (lspeak will use default)
  */
 function loadVoiceConfig(): VoiceConfig {
   const homeDir = process.env.HOME;
   if (!homeDir) {
-    return { provider: 'system' };
+    return {};
   }
 
   const configPath = join(homeDir, '.config', 'clarvis', 'config.toml');
 
   if (!existsSync(configPath)) {
-    return { provider: 'system' };
+    return {};
   }
 
   try {
+    // Read main config to get voice profile name
     const configContent = readFileSync(configPath, 'utf-8');
-    const voiceConfig = parseVoiceConfig(configContent);
+    const profileName = parseVoiceProfileName(configContent);
 
-    return voiceConfig || { provider: 'system' };
+    if (!profileName) {
+      return {};
+    }
+
+    // Load voice profile
+    const profilePath = join(homeDir, '.config', 'clarvis', 'voices', `${profileName}.toml`);
+
+    if (!existsSync(profilePath)) {
+      return {};
+    }
+
+    const profileContent = readFileSync(profilePath, 'utf-8');
+    const voiceConfig = parseVoiceConfig(profileContent);
+
+    return voiceConfig || {};
   } catch (error) {
-    return { provider: 'system' };
+    return {};
   }
 }
 
@@ -104,28 +148,59 @@ function loadVoiceConfig(): VoiceConfig {
 export async function sendDirectVoiceNotification(message: string): Promise<void> {
   try {
     const voiceConfig = loadVoiceConfig();
-    const lspeakArgs = ['lspeak'];
+    debugLog('Voice', 'sendDirectVoiceNotification called', { message: message.substring(0, 50), voiceConfig });
 
-    // Build command based on voice provider configuration
-    if (voiceConfig.provider === 'elevenlabs' && voiceConfig.voice_id) {
-      lspeakArgs.push('--provider', 'elevenlabs');
-      lspeakArgs.push('--voice', voiceConfig.voice_id);
-    } else if (voiceConfig.provider === 'system') {
-      // System voice doesn't need additional args
+    // Use Bun.which to find lspeak in PATH (proper way for Bun.spawn)
+    const lspeakPath = Bun.which('lspeak');
+    if (!lspeakPath) {
+      debugLog('Voice', 'lspeak not found in PATH');
+      return;
     }
+    debugLog('Voice', 'Found lspeak', { path: lspeakPath });
 
-    lspeakArgs.push(message);
+    // Split message into sentences
+    const sentences = message.match(/[^.!?]+[.!?]+/g) || [message];
 
-    // Execute lspeak with appropriate configuration
-    // Uses ignore flags to prevent output interference with hook communication
-    await Bun.spawn(lspeakArgs, {
-      stdout: 'ignore',
-      stderr: 'ignore'
-    });
+    // Speak each sentence separately
+    for (const sentence of sentences) {
+      const trimmed = sentence.trim();
+      if (!trimmed) continue;
+
+      const lspeakArgs = [lspeakPath];
+
+      // Add provider if specified
+      if (voiceConfig.provider) {
+        lspeakArgs.push('--provider', voiceConfig.provider);
+      }
+
+      // Add voice ID if specified (except for system provider)
+      if (voiceConfig.voice_id && voiceConfig.provider !== 'system') {
+        lspeakArgs.push('--voice', voiceConfig.voice_id);
+      }
+
+      lspeakArgs.push(trimmed);
+
+      // Set environment for elevenlabs if needed
+      const env: Record<string, string> = {};
+      if (voiceConfig.provider === 'elevenlabs' && voiceConfig.api_key) {
+        env.ELEVENLABS_API_KEY = voiceConfig.api_key;
+      }
+
+      debugLog('Voice', 'Executing lspeak', { command: lspeakArgs.join(' ') });
+
+      // Execute lspeak
+      const proc = Bun.spawn(lspeakArgs, {
+        stdout: 'ignore',
+        stderr: 'ignore',
+        env
+      });
+      await proc.exited;
+
+      debugLog('Voice', 'lspeak completed', { exitCode: proc.exitCode });
+    }
   } catch (error) {
-    // Voice failures are non-critical for hook functionality
-    // Fail silently to avoid breaking hook execution flow
-    // Don't log errors to avoid cluttering hook output streams
+    // Log errors for debugging but don't throw
+    debugLog('Voice', 'sendDirectVoiceNotification error', { error: String(error) });
   }
 }
 
@@ -166,24 +241,35 @@ export async function sendRandomVoiceMessage(messages: string[]): Promise<void> 
  */
 export async function isVoiceAvailable(): Promise<boolean> {
   try {
-    const voiceConfig = loadVoiceConfig();
-    const testArgs = ['lspeak'];
+    // Use Bun.which to find lspeak in PATH (proper way for Bun.spawn)
+    const lspeakPath = Bun.which('lspeak');
+    if (!lspeakPath) {
+      return false;
+    }
 
-    // Build test command based on voice provider configuration
-    if (voiceConfig.provider === 'elevenlabs' && voiceConfig.voice_id) {
-      testArgs.push('--provider', 'elevenlabs');
+    const voiceConfig = loadVoiceConfig();
+    const testArgs = [lspeakPath];
+
+    // Add provider if specified
+    if (voiceConfig.provider) {
+      testArgs.push('--provider', voiceConfig.provider);
+    }
+
+    // Add voice ID if specified (except for system provider)
+    if (voiceConfig.voice_id && voiceConfig.provider !== 'system') {
       testArgs.push('--voice', voiceConfig.voice_id);
     }
 
     testArgs.push('--help');
 
-    // Test lspeak with user's configured provider
-    const result = await Bun.spawn(testArgs, {
+    // Test lspeak with user's configured voice
+    const proc = Bun.spawn(testArgs, {
       stdout: 'ignore',
       stderr: 'ignore'
     });
+    await proc.exited;
 
-    return result.exitCode === 0;
+    return proc.exitCode === 0;
   } catch (error) {
     return false;
   }

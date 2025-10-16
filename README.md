@@ -22,38 +22,36 @@ Think of it as having a development partner who never forgets context and always
 
 **This is production-ready software in active daily use.** It's been shipping working software for months across multiple projects. Each iteration strengthens the workflow patterns.
 
-## 🚨 Breaking Changes in 2.0
+## 🚨 Breaking Changes in 3.1.0
 
-**If you're upgrading from 1.x, your workflow has changed:**
+**If you're upgrading from 2.x, the architecture has evolved:**
 
 ### What Changed
-- **`momentum` now starts in Home mode** - Portfolio command center, not project mode
-- **Navigation is semantic** - Say "work on projectname" to switch to project
-- **Two-mode system** - Home (assistant) for planning, Project (momentum) for building
+- **Three-mode system** - Assistant (router), Portfolio (multi-project), Project (development)
+- **`momentum` starts in Assistant mode** - Central router for all navigation
+- **Cleaner file structure** - Removed user-commands/, consolidated to commands/
+- **Skills support** - Experimental capability packages (optional)
 
-### Old Workflow (1.x)
+### Old Workflow (2.x)
 ```bash
-cd ~/development/projects/myproject
-momentum                          # Started directly in project mode
-/plan-iteration                   # Immediately available
+momentum                          # Started in Home mode
+"work on myproject"               # Switched to project mode
 ```
 
-### New Workflow (2.0)
+### New Workflow (3.1.0)
 ```bash
-momentum                          # Starts in Home mode (from anywhere)
-"work on myproject"               # Switches to project mode
-/plan-iteration                   # Now available
+momentum                          # Starts in Assistant mode (router)
+"work on myproject"               # Switches to Project mode
+"show projects"                   # Enters Portfolio mode
 ```
 
-### Why This Change
-The home mode provides a portfolio-level command center. You can:
-- Navigate to any project semantically
-- Query across all projects
-- Start ideation without project context
-- Get development guidance before diving in
+### Three Modes
+- **Assistant** - Central router and command center
+- **Portfolio** - Multi-project management and ideation
+- **Project** - Single-project development and shipping
 
 ### Migration
-Re-run `install.sh` to update your shell alias. The new alias includes temporal context and home mode activation.
+Re-run `install.sh` to update to 3.1.0. The new structure separates routing (assistant) from portfolio management and project work.
 
 ## ✨ Features
 
@@ -74,19 +72,12 @@ git clone https://github.com/nickpending/momentum.git
 cd momentum
 ./install.sh
 
-# Start Momentum (from anywhere - enters Home mode)
+# Start Momentum (from anywhere - enters Assistant mode)
 momentum
 
-# In Claude Home mode, explore an idea
-"I have an idea for a habit tracking app"
-# (Automatically detects ideation, guides creative conversation)
-
-"save this idea"
-# (Creates IDEA.md in configured planning directory)
-
-# Set up project development structure
+# Navigate to project for development
 "work on habit-tracker"
-# (Runs setupd --switch, creates project if needed, switches to project mode)
+# (Switches to Project mode, runs setupd if needed)
 
 # Now in Project mode - start building
 /plan-iteration
@@ -96,27 +87,33 @@ momentum
 # (Execute first task with evidence-based completion)
 ```
 
-**Two modes, seamless flow:**
-- **Home mode** - Portfolio command center (ideation, navigation, guidance)
+**Three modes, seamless flow:**
+- **Assistant mode** - Central router and navigation
+- **Portfolio mode** - Multi-project management and ideation
 - **Project mode** - Development partner (building, testing, shipping)
 
 That's it! You're shipping working software.
 
 ## 🎮 How It Works
 
-Momentum operates in two modes, each optimized for different types of work:
+Momentum operates in three modes, each optimized for different types of work:
 
-### The Two-Mode System
+### The Three-Mode System
 
-**Home Mode (Assistant)** - Your portfolio command center
+**Assistant Mode** - Your central router
 - Start from anywhere: `momentum`
-- Navigate projects: "work on projectname"
-- Explore ideas without project context
-- Query across all projects
-- Get high-level development guidance
+- Navigate to projects: "work on projectname"
+- Enter portfolio view: "show projects"
+- Quick command center for all momentum operations
 
-**Project Mode (Momentum)** - Your development partner
-- Accessed via: "work on projectname" from Home mode
+**Portfolio Mode** - Multi-project management
+- Ideation and creative exploration
+- Cross-project queries and insights
+- High-level development guidance
+- Project portfolio management
+
+**Project Mode** - Your development partner
+- Accessed via: "work on projectname"
 - Plan iterations collaboratively
 - Execute tasks with evidence-based completion
 - Ship working software every iteration
@@ -124,19 +121,21 @@ Momentum operates in two modes, each optimized for different types of work:
 ### Development Cycle
 
 ```
-HOME: IDEATE → NAVIGATE → PROJECT: BUILD → SHIP → HOME: REFLECT → REPEAT
+ASSISTANT → PORTFOLIO: IDEATE → ASSISTANT → PROJECT: BUILD → SHIP → REPEAT
 ```
 
 ### Semantic Interaction
 
 No need to memorize commands. Just talk naturally:
 
-**In Home Mode:**
+**In Assistant Mode:**
 - "work on projectname" → Switch to project development
-- "show projects" → List all your projects
-- "what should I work on" → Get guidance on priorities
+- "show projects" → Enter portfolio mode
+
+**In Portfolio Mode:**
 - "I have an idea for..." → Start ideation conversation
-- "I'm stuck" → Get debugging help or suggestions
+- "what should I work on" → Get guidance on priorities
+- "save this idea" → Create IDEA.md for new project
 
 **In Project Mode:**
 - `/plan-iteration` → Collaborative iteration planning
@@ -149,19 +148,22 @@ No need to memorize commands. Just talk naturally:
 - "how should I implement X" → Technical implementation options
 - "set up gitignore" → Configure project security
 - "that fixed it!" → Auto-document discovery
-- "back to home" → Return to home mode
+- "back to assistant" → Return to assistant mode
 
 ### The Commands
 
 **In Terminal:**
-- `momentum` - Start Claude in Home mode (from anywhere)
+- `momentum` - Start Claude in Assistant mode (from anywhere)
 - `setupd projectname` - Set up a new project structure (rarely needed - "work on X" handles this)
 
-**In Home Mode:**
+**In Assistant Mode:**
 - "work on projectname" - Switch to project development
-- "show projects" - List all projects
-- "what should I work on" - Get guidance on priorities
-- Natural ideation conversations
+- "show projects" - Enter portfolio mode
+
+**In Portfolio Mode:**
+- "I have an idea for..." - Start ideation
+- "save this idea" - Create IDEA.md
+- Natural creative conversations
 
 **In Project Mode:**
 - `/plan-iteration` - Collaboratively plan what to build next
@@ -169,7 +171,7 @@ No need to memorize commands. Just talk naturally:
 - `/complete-iteration` - Ship and archive with verification
 - `/save-state` / `/restore-state` - Manage context across sessions
 
-**💡 The Flow:** Start with `momentum` (Home mode), then say "work on projectname" to switch to Project mode for building.
+**💡 The Flow:** Start with `momentum` (Assistant mode), say "work on projectname" to switch to Project mode, or "show projects" for Portfolio mode.
 
 ## 🏗️ Architecture
 
@@ -315,7 +317,7 @@ source ~/.zshrc  # or ~/.bashrc
 
 ### "Command not found: momentum"
 ```bash
-echo 'alias momentum="claude --append-system-prompt \"$(cat ~/.config/momentum/agents/MOMENTUM.md)\" \"Activate Momentum\""' >> ~/.zshrc
+echo 'alias momentum="cd ~/.local/share/momentum/home && claude --append-system-prompt \"$(cat ~/.config/momentum/agents/ASSISTANT.md)\" \"TODAY IS: $(date +%Y-%m-%d). Activate Assistant\""' >> ~/.zshrc
 source ~/.zshrc
 ```
 
@@ -379,38 +381,38 @@ Areas where we'd love contributions:
 
 ```
 momentum/
-├── commands/           # Core workflow commands
-├── contexts/          # Semantic routing contexts
+├── agents/            # Mode agents (ASSISTANT.md, PORTFOLIO.md, PROJECT.md)
+├── commands/          # Core workflow slash commands
+├── contexts/          # Semantic routing contexts for each mode
 ├── subagents/         # Specialized analysis agents
+├── skills/            # Agent skills (experimental capability packages)
 ├── templates/         # Project scaffolding templates
-├── scripts/           # Installation and setup utilities
-└── hooks/            # Dynamic context injection (experimental)
+├── bin/               # setupd and other executables
+└── hooks/             # Dynamic context injection hooks
 ```
 
 ## 🎯 Roadmap
 
-**Current** (Active Development):
-- [x] Evidence-based agent verification system with anti-hallucination guards
-- [x] Semantic routing for natural language interaction via TypeScript hooks
-- [x] Collaborative iteration planning (vs prescriptive approaches)
-- [x] Multi-option architectural analysis with trade-off presentation
-- [x] Post-implementation architecture review for over-engineering detection
-- [x] Risk-based testing philosophy over coverage metrics
-- [x] Dynamic context injection with Miessler-inspired patterns
-- [x] Behavioral guards preventing speculation and lazy analysis
+**v3.1.0** (Current):
+- [x] Three-mode architecture (Assistant/Portfolio/Project)
+- [x] Semantic routing with dynamic context injection
+- [x] Evidence-based agent verification system
+- [x] Collaborative iteration planning
+- [x] Multi-option architectural analysis
+- [x] Skills support (experimental)
+- [x] Behavioral guards preventing speculation
 
-**Next** (v2.0):
-- [ ] Enhanced context preservation across longer projects
-- [ ] Integration with additional development tools
-- [ ] Pattern learning from successful project workflows
+**Next** (v3.2+):
+- [ ] Refine skills architecture for capability packages
+- [ ] Enhanced progressive disclosure for routing
+- [ ] Pattern learning from successful workflows
 - [ ] Cross-project insight sharing
-- [ ] Enhanced semantic routing accuracy
 
-**Future** (v3.0+):
+**Future** (v4.0+):
 - [ ] Language-specific quality patterns
 - [ ] Team collaboration workflows
 - [ ] Integration with CI/CD pipelines
-- [ ] Workflow analytics and optimization
+- [ ] Workflow analytics
 
 ## 📄 License
 

@@ -277,8 +277,8 @@ fi
 if [[ ! -d "$MOMENTUM_HOME/subagents" ]]; then
     cp -r "$MOMENTUM_SOURCE/subagents" "$MOMENTUM_HOME/" && echo "  ✓ Subagents"
 fi
-if [[ ! -d "$MOMENTUM_HOME/user-commands" ]]; then
-    cp -r "$MOMENTUM_SOURCE/user-commands" "$MOMENTUM_HOME/" && echo "  ✓ User commands"
+if [[ ! -d "$MOMENTUM_HOME/skills" ]]; then
+    cp -r "$MOMENTUM_SOURCE/skills" "$MOMENTUM_HOME/" && echo "  ✓ Skills"
 fi
 if [[ ! -d "$MOMENTUM_HOME/hooks" ]]; then
     mkdir -p "$MOMENTUM_HOME/hooks"
@@ -286,7 +286,7 @@ fi
 # Always copy all hooks to get latest versions
 cp "$MOMENTUM_SOURCE/hooks/momentum-session-start-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Session start hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-user-prompt-submit-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ User prompt submit hook (updated)"
-cp "$MOMENTUM_SOURCE/hooks/momentum-context-compression-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Context compression hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-precompact-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ PreCompact hook (updated)"
 # Copy shared utilities
 if [[ -d "$MOMENTUM_SOURCE/hooks/shared" ]]; then
     cp -r "$MOMENTUM_SOURCE/hooks/shared" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Shared voice utilities (updated)"
@@ -298,9 +298,10 @@ chmod +x "$MOMENTUM_HOME/hooks"/*.ts 2>/dev/null || true
 if [[ ! -d "$MOMENTUM_HOME/contexts" ]]; then
     cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_HOME/" && echo "  ✓ Contexts"
 else
-    # Always update MOMENTUM_ROUTING.md to get latest version
-    cp "$MOMENTUM_SOURCE/contexts/MOMENTUM_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ MOMENTUM_ROUTING.md (updated)"
-    cp "$MOMENTUM_SOURCE/contexts/HOME_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ HOME_ROUTING.md (updated)"
+    # Always update routing files to get latest versions
+    cp "$MOMENTUM_SOURCE/contexts/ASSISTANT_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ ASSISTANT_ROUTING.md (updated)"
+    cp "$MOMENTUM_SOURCE/contexts/PORTFOLIO_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ PORTFOLIO_ROUTING.md (updated)"
+    cp "$MOMENTUM_SOURCE/contexts/PROJECT_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ PROJECT_ROUTING.md (updated)"
 fi
 
 # Create configuration
@@ -362,21 +363,20 @@ echo
 
 # Create home directory structure (minimal - only what Claude needs)
 HOME_DIR="$HOME/.local/share/momentum/home"
-mkdir -p "$HOME_DIR/.claude/hooks"
+mkdir -p "$HOME_DIR/.claude"
 
 echo "Setting up Momentum Home at $HOME_DIR..."
 
-# Symlink commands and subagents (not agents - those are for mode contexts)
+# Symlink commands, subagents, skills, and hooks directories
+# Remove existing symlinks first to prevent ln from following them
+rm -f "$HOME_DIR/.claude/commands" 2>/dev/null || true
+rm -f "$HOME_DIR/.claude/agents" 2>/dev/null || true
+rm -rf "$HOME_DIR/.claude/skills" 2>/dev/null || true
+rm -rf "$HOME_DIR/.claude/hooks" 2>/dev/null || true
 ln -sf "$MOMENTUM_HOME/commands" "$HOME_DIR/.claude/commands" 2>/dev/null || true
 ln -sf "$MOMENTUM_HOME/subagents" "$HOME_DIR/.claude/agents" 2>/dev/null || true
-
-# Symlink all momentum hooks
-ln -sf "$MOMENTUM_HOME/hooks/momentum-session-start-hook.ts" "$HOME_DIR/.claude/hooks/momentum-session-start-hook.ts" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/hooks/momentum-user-prompt-submit-hook.ts" "$HOME_DIR/.claude/hooks/momentum-user-prompt-submit-hook.ts" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/hooks/momentum-context-compression-hook.ts" "$HOME_DIR/.claude/hooks/momentum-context-compression-hook.ts" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/hooks/shared" "$HOME_DIR/.claude/hooks/shared" 2>/dev/null || true
-# Legacy hook for backward compatibility
-ln -sf "$MOMENTUM_HOME/hooks/momentum-hook.ts" "$HOME_DIR/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
+ln -sf "$MOMENTUM_HOME/skills" "$HOME_DIR/.claude/skills" 2>/dev/null || true
+ln -sf "$MOMENTUM_HOME/hooks" "$HOME_DIR/.claude/hooks" 2>/dev/null || true
 
 # Create home settings.json with complete hook ecosystem
 cat > "$HOME_DIR/.claude/settings.json" << EOF
@@ -389,7 +389,7 @@ cat > "$HOME_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts startup"
           }
         ]
       },
@@ -398,7 +398,16 @@ cat > "$HOME_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-session-start-hook.ts"
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts clear"
+          }
+        ]
+      },
+      {
+        "matcher": "compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-session-start-hook.ts compact"
           }
         ]
       }
@@ -415,10 +424,11 @@ cat > "$HOME_DIR/.claude/settings.json" << EOF
     ],
     "PreCompact": [
       {
+        "matcher": "",
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-context-compression-hook.ts"
+            "command": "bun .claude/hooks/momentum-precompact-hook.ts"
           }
         ]
       }
@@ -490,29 +500,6 @@ esac
 echo -e "${GREEN}✅ Shell configuration updated${RESET}"
 echo
 
-# Step 7: Set up Claude Code integration
-echo -e "${CYAN}Step 7: Setting up Claude Code integration${RESET}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo
-
-# Create .claude directory structure
-mkdir -p "$HOME/.claude/agents"
-mkdir -p "$HOME/.claude/commands"
-
-# Note: Subagents are linked per-project by setupd, not globally
-echo "  ✓ Subagents ready for project linking"
-
-# Symlink global commands
-for cmd in ideate plan-idea setup-luminaries; do
-    if [[ -f "$MOMENTUM_HOME/user-commands/$cmd.md" ]]; then
-        ln -sf "$MOMENTUM_HOME/user-commands/$cmd.md" "$HOME/.claude/commands/$cmd.md" 2>/dev/null || true
-    fi
-done
-echo "  ✓ Linked global commands"
-
-echo -e "${GREEN}✅ Claude Code integration complete${RESET}"
-echo
-
 # Final instructions
 echo
 echo -e "${GREEN}╔════════════════════════════════════════╗${RESET}"
@@ -536,21 +523,18 @@ echo -e "${MAGENTA}WHERE TO RUN COMMANDS:${RESET}"
 echo "┌─────────────────┬──────────────────────┐"
 echo "│ In Terminal     │ In Claude Code       │"
 echo "├─────────────────┼──────────────────────┤"
-echo "│ momentum        │ /ideate              │"
-echo "│ setupd          │ /plan-idea           │"
-echo "│                 │ /plan-iteration      │"
-echo "│                 │ /plan-task           │"
+echo "│ momentum        │ /plan-iteration      │"
+echo "│ setupd          │ /plan-task           │"
 echo "└─────────────────┴──────────────────────┘"
 echo
 echo -e "${MAGENTA}STEP-BY-STEP FIRST PROJECT:${RESET}"
 echo "1. Start Momentum mode:"
 echo -e "   ${CYAN}momentum${RESET}"
 echo
-echo "2. In Claude Code, explore idea:"
-echo -e "   ${CYAN}/ideate 'your project idea'${RESET}"
+echo "2. Describe your project idea in natural language"
+echo "   Assistant will help you refine it"
 echo
-echo "3. Transform to project vision:"
-echo -e "   ${CYAN}/plan-idea${RESET}"
+echo "3. When ready, tell assistant to save the idea"
 echo
 echo "4. In terminal, set up project:"
 echo -e "   ${CYAN}setupd project-name${RESET}"

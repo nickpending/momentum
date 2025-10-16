@@ -32,6 +32,14 @@ Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key inform
 - **DATABASE_INFO**: Database type and key patterns (if mentioned)
 - **KEY_CONSTRAINTS**: From Constraints section (top 3-5 only)
 
+### From Directory Structure
+
+Run `ls -la` to map project organization:
+- **SOURCE_DIRS**: Main source code directories (src/, lib/, app/, etc.)
+- **CONFIG_DIRS**: Configuration locations (.claude/, .workflow/, config/)
+- **BUILD_ARTIFACTS**: Build outputs (dist/, build/, target/)
+- **KEY_FILES**: Important root files (package.json, README.md, etc.)
+
 ### From ITERATION.md (if exists)
 
 - **ITERATION_NUMBER**: Extract from heading
@@ -57,6 +65,10 @@ Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key inform
 {ARCHITECTURE_TYPE} → architecture pattern (e.g., "Command-driven workflow orchestration")
 {DATABASE_INFO} → database type and key info (e.g., "SQLite with WAL mode")
 {KEY_CONSTRAINTS} → bullet list of top constraints (3-5 items)
+{SOURCE_DIRS} → main source directories (e.g., "src/, hooks/, commands/")
+{CONFIG_DIRS} → configuration directories (e.g., ".claude/, .workflow/")
+{BUILD_ARTIFACTS} → build output directories (if present)
+{KEY_FILES} → important root files (package.json, README.md, etc.)
 {ITERATION_NUMBER} → current iteration number
 {ITERATION_NAME} → iteration name
 {ITERATION_GOAL} → iteration goal (1 sentence)

@@ -1,30 +1,51 @@
-# Capture discoveries, decisions, and progress for resumption
+# Capture discoveries, decisions, and progress for seamless resumption
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+## ⚠️ CRITICAL: OUTPUT ONLY ⚠️
 
-**Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
-- `$WORKFLOW_DEV` - Development projects root (from environment)
+**🛑 OUTPUT MARKDOWN TO STDOUT**
+**🛑 DO NOT WRITE FILES**
+**🛑 DO NOT USE WRITE TOOL**
 
-## Usage
-
-```bash
-/save-state                    # Save current context
-/save-state "switching focus"  # Save with reason
-```
+Your output will be captured by the calling context (PreCompact hook or routing layer).
 
 ## ⚠️ CRITICAL: CAPTURE CONVERSATION ESSENCE ⚠️
 
-**🛑 PRESERVE KEY DECISIONS AND DISCOVERIES**  
-**🛑 MAINTAIN THREAD OF CONVERSATION**  
-**🛑 ENABLE SEAMLESS RESUMPTION**  
+**🛑 PRESERVE KEY DECISIONS AND DISCOVERIES**
+**🛑 MAINTAIN THREAD OF CONVERSATION**
+**🛑 ENABLE SEAMLESS RESUMPTION**
 **🛑 ADAPT TO CONTEXT TYPE**
+
+## YOUR TASK
+
+**YOU MUST IMMEDIATELY:**
+
+1. **Analyze the entire conversation** from start to current point
+2. **Extract and organize** key information into the structure below
+3. **Output formatted markdown** directly (DO NOT write files, DO NOT use Write tool)
+4. **Be comprehensive** - this state must enable seamless resumption
+
+**ANALYSIS REQUIREMENTS:**
+- Review all user messages for requirements, clarifications, decisions
+- Extract technical discoveries from tool outputs and error messages
+- Identify breakthroughs and aha moments in the conversation flow
+- Capture specific details: file paths, line numbers, error messages, working code
+- Document WHY decisions were made, not just WHAT
+- Make next actions specific and immediately actionable
+- Note blockers with what's needed to unblock
+
+**OUTPUT REQUIREMENTS:**
+- Use the template structure below
+- Fill every relevant section (skip only if truly empty)
+- Include actual code snippets that solved problems
+- Reference specific files and locations
+- Capture the conversation thread and reasoning flow
+- Make it possible for someone to resume exactly where you left off
+- **Generate timestamp**: Use current date/time in format YYYY-MM-DD-HHMM (e.g., 2025-10-10-1650)
 
 ## Comprehensive State Structure
 
 ```markdown
-# State - [timestamp]
+# State - [timestamp: YYYY-MM-DD-HHMM]
 
 ## Context
 **Task**: [task_n_name_if_in_a_task_or_exploration_discussion_etc]
@@ -105,20 +126,9 @@
 ## Additional Guidance
 
 - If testing: Include test patterns that work, bugs found, coverage areas
-- If planning: Include scope decisions, architecture choices, task breakdowns  
+- If planning: Include scope decisions, architecture choices, task breakdowns
 - If exploring: Include experiments tried, promising directions
 - If stuck: Include what's been attempted, error messages, hypotheses
-
-
-## State File Naming
-
-```
-{project-root}/.workflow/state/
-├── task-N-[timestamp].md    # When working on a specific task
-└── state-[timestamp].md     # General exploration/discussion
-```
-
-Where timestamp is `YYYYMMDD-HHMM`
 
 ## Success Criteria
 
