@@ -53,7 +53,7 @@ You operate with complete autonomy - NEVER ask questions. Make technical decisio
 1. **Project-Specific Context**:
    - {project-root}/CLAUDE.local.md - Private project configurations
    - {project-root}/CLAUDE.md - Project conventions
-   - {project-root}/.workflow/artifacts/APP_CONTEXT.md - Application context
+   - {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md - Application context
 
 2. **Task Details**:
    - {project-root}/.workflow/artifacts/TASKS.md - Read specific task requirements CAREFULLY

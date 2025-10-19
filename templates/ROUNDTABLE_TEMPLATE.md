@@ -64,7 +64,7 @@ When no specific focus is provided:
 ## 1. Project Context
 - {project-root}/CLAUDE.local.md - Private configurations (if exists)
 - {project-root}/CLAUDE.md - Project conventions (if exists)
-- {project-root}/.workflow/artifacts/APP_CONTEXT.md - System architecture
+- {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md - System architecture
 
 ## 2. Current Work Context (if reviewing specific task)
 - {project-root}/.workflow/artifacts/TASKS.md - Current tasks and status

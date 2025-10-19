@@ -280,17 +280,22 @@ function setTerminalTitle(mode: string, projectName?: string): void {
   console.error(`📍 Terminal title set: ${title}`);
 }
 
-async function handleAssistantMode(sessionId: string): Promise<void> {
+async function handleAssistantMode(sessionId: string, restoreCommand: string | null = null): Promise<void> {
   // Get current date
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const currentDateTime = new Date().toISOString();
 
   // Output metadata only - ASSISTANT.md loaded via alias
-  const additionalContext = `<!-- HOOK: Momentum SessionStart -->
+  let additionalContext = `<!-- HOOK: Momentum SessionStart -->
 <!-- CURRENT_DATE: ${currentDate} -->
 <!-- CURRENT_DATETIME: ${currentDateTime} -->
 <!-- SESSION_ID: ${sessionId} -->
 <!-- MODE: assistant -->`;
+
+  // Append restore command if present
+  if (restoreCommand) {
+    additionalContext += `\n\nRun the ${restoreCommand}`;
+  }
 
   const output = {
     hookSpecificOutput: {
@@ -310,17 +315,22 @@ async function handleAssistantMode(sessionId: string): Promise<void> {
   await sendDirectVoiceNotification(greeting);
 }
 
-async function handlePortfolioMode(sessionId: string): Promise<void> {
+async function handlePortfolioMode(sessionId: string, restoreCommand: string | null = null): Promise<void> {
   // Get current date
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const currentDateTime = new Date().toISOString();
 
   // Output metadata
-  const additionalContext = `<!-- HOOK: Momentum SessionStart -->
+  let additionalContext = `<!-- HOOK: Momentum SessionStart -->
 <!-- CURRENT_DATE: ${currentDate} -->
 <!-- CURRENT_DATETIME: ${currentDateTime} -->
 <!-- SESSION_ID: ${sessionId} -->
 <!-- MODE: portfolio -->`;
+
+  // Append restore command if present
+  if (restoreCommand) {
+    additionalContext += `\n\nRun the ${restoreCommand}`;
+  }
 
   const output = {
     hookSpecificOutput: {
@@ -340,18 +350,23 @@ async function handlePortfolioMode(sessionId: string): Promise<void> {
   await sendDirectVoiceNotification(greeting);
 }
 
-async function handleProjectMode(sessionId: string, projectName: string): Promise<void> {
+async function handleProjectMode(sessionId: string, projectName: string, restoreCommand: string | null = null): Promise<void> {
   // Get current date
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const currentDateTime = new Date().toISOString();
 
   // Output metadata
-  const additionalContext = `<!-- HOOK: Momentum SessionStart -->
+  let additionalContext = `<!-- HOOK: Momentum SessionStart -->
 <!-- CURRENT_DATE: ${currentDate} -->
 <!-- CURRENT_DATETIME: ${currentDateTime} -->
 <!-- SESSION_ID: ${sessionId} -->
 <!-- MODE: project -->
 <!-- PROJECT: ${projectName} -->`;
+
+  // Append restore command if present
+  if (restoreCommand) {
+    additionalContext += `\n\nRun the ${restoreCommand}`;
+  }
 
   const output = {
     hookSpecificOutput: {
@@ -371,17 +386,17 @@ async function handleProjectMode(sessionId: string, projectName: string): Promis
   await sendDirectVoiceNotification(greeting);
 }
 
-async function handleAutoRestore(sessionType: string): Promise<boolean> {
+async function handleAutoRestore(sessionType: string): Promise<string | null> {
   const projectRoot = findProjectRoot();
 
   if (!projectRoot) {
-    return false; // Not in a project
+    return null; // Not in a project
   }
 
   const stateDir = join(projectRoot, '.workflow', 'state');
 
   if (!existsSync(stateDir)) {
-    return false; // No state directory
+    return null; // No state directory
   }
 
   // Both "clear" and "compact" use the same logic: restore from latest state file
@@ -393,16 +408,15 @@ async function handleAutoRestore(sessionType: string): Promise<boolean> {
 
   if (stateFiles.length > 0) {
     const latestState = stateFiles[0].replace('.md', '');
-    console.log(`/restore-state ${latestState}`);
-
     const reason = sessionType === 'compact' ? 'after compaction' : 'from saved state';
-    console.error(`✅ Auto-restore ${reason}: ${latestState}`);
 
+    console.error(`✅ Auto-restore ${reason}: ${latestState}`);
     debugLog('SessionStart', `Auto-restore triggered: ${latestState}`, { sessionType });
-    return true;
+
+    return `/restore-state ${latestState}`;
   }
 
-  return false;
+  return null;
 }
 
 function findProjectRoot(): string | null {
@@ -474,14 +488,13 @@ async function main(): Promise<void> {
     const sessionType = process.argv[2] || 'startup';
     debugLog('SessionStart', `Session type: "${sessionType}"`);
 
-    // Only attempt restore for clear/compact, not startup (new sessions)
+    // Check for auto-restore (don't exit early - pass command to mode handlers)
+    let restoreCommand: string | null = null;
     if (sessionType === 'clear' || sessionType === 'compact') {
       debugLog('SessionStart', `Session type ${sessionType} detected, checking for auto-restore`);
-      const restored = await handleAutoRestore(sessionType);
-      if (restored) {
-        debugLog('SessionStart', 'Auto-restore triggered, exiting early');
-        // Auto-restore triggered, exit early
-        process.exit(0);
+      restoreCommand = await handleAutoRestore(sessionType);
+      if (restoreCommand) {
+        debugLog('SessionStart', `Auto-restore will be passed to mode handler: ${restoreCommand}`);
       } else {
         debugLog('SessionStart', 'Auto-restore conditions not met');
       }
@@ -504,20 +517,20 @@ async function main(): Promise<void> {
       currentMode
     });
 
-    // Mode-specific initialization
+    // Mode-specific initialization with optional restore command
     if (currentMode === 'assistant') {
       debugLog('SessionStart', 'Handling assistant mode');
-      await handleAssistantMode(data.session_id);
+      await handleAssistantMode(data.session_id, restoreCommand);
     } else if (currentMode === 'portfolio') {
       debugLog('SessionStart', 'Handling portfolio mode');
-      await handlePortfolioMode(data.session_id);
+      await handlePortfolioMode(data.session_id, restoreCommand);
     } else if (currentMode === 'project') {
       debugLog('SessionStart', 'Handling project mode');
-      await handleProjectMode(data.session_id, projectName);
+      await handleProjectMode(data.session_id, projectName, restoreCommand);
     } else {
       // Default to assistant for unknown modes
       debugLog('SessionStart', `Unknown mode "${currentMode}", defaulting to assistant`);
-      await handleAssistantMode(data.session_id);
+      await handleAssistantMode(data.session_id, restoreCommand);
     }
 
     // Log completion

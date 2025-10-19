@@ -147,6 +147,12 @@ function loadVoiceConfig(): VoiceConfig {
  */
 export async function sendDirectVoiceNotification(message: string): Promise<void> {
   try {
+    // Check for suppression flag (used in subprocess calls to avoid duplicate notifications)
+    if (process.env.MOMENTUM_SUPPRESS_VOICE === 'true') {
+      debugLog('Voice', 'Voice suppressed by MOMENTUM_SUPPRESS_VOICE env var');
+      return;
+    }
+
     const voiceConfig = loadVoiceConfig();
     debugLog('Voice', 'sendDirectVoiceNotification called', { message: message.substring(0, 50), voiceConfig });
 

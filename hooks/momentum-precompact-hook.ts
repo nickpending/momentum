@@ -137,13 +137,17 @@ async function main(): Promise<void> {
 
       debugLog('PreCompact', 'Invoking claude CLI');
 
-      // Generate state via claude
+      // Generate state via claude (suppress voice notifications via env var)
       const stateContent = execSync(
         `cat "${tempPromptFile}" | claude -p "Generate state"`,
         {
           encoding: 'utf-8',
           cwd: projectRoot,
-          maxBuffer: 10 * 1024 * 1024
+          maxBuffer: 10 * 1024 * 1024,
+          env: {
+            ...process.env,
+            MOMENTUM_SUPPRESS_VOICE: 'true'
+          }
         }
       );
 

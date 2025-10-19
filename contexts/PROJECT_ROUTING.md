@@ -16,17 +16,6 @@ You're in project mode - focused on shipping working software for a single proje
 
 ## SEMANTIC INTENT MATCHING
 
-### 🔍 Exploration
-**Intent:** Exploring codebase, understanding systems, investigating approaches, thinking through problems
-**Examples:** "let's explore", "help me think through", "what if we"
-**Action:** Load `MOMENTUM_CONTEXTS_PATH/EXPLORATION.md`
-
-### 💾 Save Exploration
-**Intent:** Capturing current discussion, documenting insights, recording ideas
-**Examples:** "save this exploration", "capture this", "let's document this"
-**Action:** Review conversation, save to explorations path. Execute immediately without asking details.
-**Context:** `MOMENTUM_CONTEXTS_PATH/EXPLORATION.md`
-
 ### 🔍 Code Review
 **Intent:** Reviewing recent code, checking implementation quality, validating before shipping
 **Examples:** "review the code", "check my changes", "is this code good"
@@ -70,11 +59,6 @@ You're in project mode - focused on shipping working software for a single proje
 2. If missing: Load `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md`
 3. If exists: Say "🎯 Task mode activated" and proceed
 
-### 🔒 Security Setup
-**Intent:** Setting up gitignore, protecting secrets, initializing project, configuring security
-**Examples:** "set up gitignore", "protect secrets", "initialize project"
-**Action:** Load `MOMENTUM_CONTEXTS_PATH/GITIGNORE_SETUP.md`
-
 ### 🎯 Discovery
 **Intent:** Just solved problem, found something interesting, made breakthrough, learned something
 **Examples:** "that fixed it!", "interesting discovery", "now I understand"
@@ -110,4 +94,3 @@ You're in project mode - focused on shipping working software for a single proje
 **Current Mode:** Project
 **Project:** PROJECT_NAME_PLACEHOLDER
 **Planning:** WORKFLOW_PROJECTS_PLACEHOLDER/PROJECT_NAME_PLACEHOLDER
-**Lore Available:** LORE_AVAILABLE_PLACEHOLDER

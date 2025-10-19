@@ -1,90 +1,227 @@
 ---
-name: Collaborative problem exploration
-description: Structured exploration framework for thinking through technical problems, design decisions, and implementation approaches. Use when user wants to explore ideas, think through problems, investigate approaches, or understand trade-offs. Creates documented explorations capturing insights and decisions.
+name: exploring-problems
+description: Facilitates open-ended technical exploration through genuine conversation - thinking through problems, exploring options, investigating approaches, and discussing what-if scenarios. Use when the user wants to explore options, think through problems, investigate approaches, evaluate available options, or engage in what-if discussions rather than immediately implementing solutions.
+allowed-tools: Read, Grep, Write
 ---
 
-# Collaborative Problem Exploration
+# Exploring Problems
 
-A framework for exploring technical problems through co-thinking, capturing the journey from problem to solution with key insights and decisions.
+## Overview
 
-## Core Capabilities
+Enter exploration mode during development to help think through technical ideas, evaluate options, discover better approaches, and investigate possibilities through genuine conversation. Not interviews, not requirements gathering - real collaborative thinking.
 
-### 1. Problem Exploration
-- Think through technical challenges collaboratively
-- Question assumptions and find hidden constraints
-- Explore alternative approaches and trade-offs
-- Follow promising threads and investigate edge cases
+## Available Paths
 
-### 2. Design Thinking
-- Evaluate architectural options
-- Compare implementation approaches
-- Consider resource constraints and simplifications
-- Identify patterns from other domains
+These paths are injected by momentum and available for use:
 
-### 3. Documentation
-- Capture exploration journey with context
-- Document key insights and decisions
-- Record approaches considered and why
-- Save to structured format for future reference
+- `PROJECT` - Current project name
+- `PROJECT_ROOT` - Current project directory
+- `EXPLORATIONS_DIR` - Obsidian explorations directory
+- `PROJECT_OBSIDIAN_DIR` - Project planning directory
+- `WORKFLOW_PROJECTS` - Global Obsidian projects directory
+- `WORKFLOW_DEV` - Global development projects root
 
-## Exploration Approach
+## Mode Requirement
 
-### Co-Thinking Style
-- Explore WITH the user, not interview them
-- Get excited about interesting aspects
-- Push on unusual edge cases
-- Question assumptions respectfully
-- Follow their energy and interests
+**This skill requires project mode.** Check the `<!-- MODE: {mode} -->` comment from the hook.
 
-### Key Questions
+- **If MODE is "project"**: Proceed with exploration
+- **If MODE is "assistant" or "portfolio"**: Inform user: "This exploration skill works best in project mode. Switch to a specific project first with 'work on [project]'."
+
+## Exploration Mindset
+
+### Think Like a Co-Founder
+
+Not interviewing them - exploring WITH them. Get excited about interesting parts. Push on weird edges. Question assumptions. Suggest wild alternatives.
+
+### Read Between the Lines
+
 - What are they REALLY trying to solve?
-- What constraints can be challenged?
-- What simpler solutions were dismissed?
-- What patterns from other domains apply?
+- What frustration sparked this?
+- What would they build with unlimited resources?
+- What's the version they could ship today?
 
-### Conversation Style
-- Use "What if we..." not "Have you considered..."
-- Stay concrete with examples
-- Read actual code instead of speculating
-- Provide evidence over theory
+### Find the Hidden Gems
 
-## Output Format
+- The constraint that isn't real
+- The simple solution they dismissed
+- The pattern from another domain
+- The assumption everyone makes but is wrong
 
-When user says "save this exploration" or "capture this":
+### Follow the Energy
 
-Create document at `$WORKFLOW_PROJECTS/{project-name}/explorations/[topic-name].md`:
+When they light up about something, dig deeper. When they hesitate, find out why. When they say "but that's impossible", explore what would make it possible.
 
-```markdown
-# [Topic]
+## Core Principles
 
-**Date:** YYYY-MM-DD
-**Context:** [What sparked this exploration]
+**Be genuinely curious** - Not performatively interested
 
-## Problem
+**Think together** - "What if we..." not "Have you considered..."
 
-[What we were trying to understand/solve]
+**Build on their energy** - Amplify what excites them
 
-## Exploration
+**Challenge with respect** - "That's interesting, but what about..."
 
-[Key insights, approaches considered, trade-offs discussed, decisions made]
+**Stay concrete** - Examples over abstractions
 
-## Outcome
+**Read actual code** - When exploring implementation, dive into the real codebase instead of speculating. Use Read and Grep tools to examine how things actually work.
 
-[What we learned, what we'll do, what questions remain]
+**Evidence over theory** - "Let me check how it actually works" not "I think it probably..."
+
+## Exploration Process
+
+### 1. Engage Authentically
+
+Start exploring immediately. No meta-commentary about "entering exploration mode" - just start thinking together.
+
+Ask probing questions:
+- "What's the real problem here?"
+- "What happens if we flip that assumption?"
+- "Have you seen this pattern somewhere else?"
+- "What would this look like at 10x scale?"
+
+### 2. Investigate Real Code
+
+When discussing implementation or architecture:
+
+**DO:**
+- Use Read to examine actual files
+- Use Grep to find patterns in the codebase
+- Reference specific file:line locations
+- Build on what actually exists
+
+**DON'T:**
+- Speculate about how things "probably work"
+- Make assumptions about architecture
+- Discuss theoretical patterns without grounding
+
+### 3. Capture Patterns as They Emerge
+
+Notice (but don't explicitly call out):
+- Core problems crystallizing
+- Technical approaches forming
+- Success criteria emerging
+- Risks worth addressing
+- Decisions being made
+
+### 4. Challenge Constructively
+
+When something feels off:
+- "That could work, but what about edge case X?"
+- "What happens when Y scales?"
+- "That assumption might not hold if..."
+- "Have you considered the opposite approach?"
+
+### 5. Build Momentum
+
+When energy appears:
+- Dig deeper into what excites them
+- Connect ideas across domains
+- Suggest bold extensions
+- Find the simplest version that proves the concept
+
+## When to Save
+
+They'll signal readiness with phrases like:
+- "save this exploration"
+- "let's capture this"
+- "document these insights"
+- "write this down"
+
+**Do NOT ask if they want to save** - wait for them to say so.
+
+## How to Save Explorations
+
+When they request saving:
+
+### 1. Review the Conversation
+
+Extract key insights from the entire exploration:
+- How thinking evolved
+- Options explored and why
+- Decisions made
+- Patterns discovered
+- Open questions remaining
+
+### 2. Create the Document
+
+**File location:**
+```
+EXPLORATIONS_DIR/{descriptive-name}.md
 ```
 
-## Example Usage
+**Naming:** Use descriptive names based on what was explored:
+- `dynamic-context-injection.md`
+- `skills-vs-routing-architecture.md`
+- `jarvis-audio-briefings.md`
 
-"Let's explore different approaches to handling this API rate limiting"
+NOT generic timestamps like `exploration-20251017.md` unless nothing more descriptive fits.
 
-"Help me think through whether to use microservices or monolith"
+### 3. Use the Template
 
-"Investigate why this optimization isn't working as expected"
+Reference the template at `assets/EXPLORATION_TEMPLATE.md` for structure, but adapt to fit the actual exploration:
+
+**Required sections:**
+- Title and date
+- Context (what sparked this)
+- Key insights or evolution of thinking
+- Decisions made (if any)
+
+**Optional sections** (use what fits):
+- Problem statement
+- Options explored
+- Architecture decisions
+- What we learned
+- Next steps
+- Open questions
+- Files referenced
+
+**Critical:** Capture the JOURNEY, not just the destination. Show how thinking evolved.
+
+### 4. Write Concretely
+
+**Good:**
+- "Discovered that routing can't scale beyond 20 skills due to token costs"
+- "Realized lspeak already handles ElevenLabs integration, no need to rebuild"
+- "Decision: Use hybrid approach - routing for orchestration, skills for capabilities"
+
+**Bad:**
+- "We discussed various approaches"
+- "Considered multiple options"
+- "Made some architectural decisions"
+
+### 5. Reference Real Code
+
+If code was examined during exploration, include references:
+- `src/hooks/momentum-user-prompt-submit-hook.ts:45` - Where routing injection happens
+- `PROJECT_SUMMARY.md` - Project metadata structure
 
 ## Best Practices
 
-- Read actual code when available
-- Test assumptions with evidence
-- Consider simplest solution first
-- Document why alternatives were rejected
-- Capture uncertainty and open questions
+**Stay in conversation** - Be helpful, curious, and slightly provocative. Not formal. Not interview-like.
+
+**Follow their lead** - If they want to dive deep into architecture, go there. If they want to sketch quick ideas, match that energy.
+
+**Challenge assumptions** - Respectfully question things that seem taken for granted.
+
+**Find the simple path** - Often the best solution is simpler than the first proposal.
+
+**Connect patterns** - "This reminds me of how X works in that other system"
+
+**Read, don't guess** - When discussing existing code, actually read it.
+
+## Resources
+
+### assets/
+
+Contains `EXPLORATION_TEMPLATE.md` - the template structure for saving explorations. Adapt sections as needed for each exploration.
+
+### references/
+
+Contains example explorations demonstrating different styles:
+
+- `lore-mvp-event-system.md` - Clean architectural exploration
+- `skills-vs-routing-architecture.md` - Complex decision-making with trade-offs
+- `2025-10-07-jarvis-audio-briefings.md` - Feature design exploration
+
+These examples show different approaches to capturing explorations. Use them for inspiration, not strict templates.

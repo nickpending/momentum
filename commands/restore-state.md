@@ -44,7 +44,7 @@
 ### Extended Context for Resumption
 
 3. **READ** `{project-root}/.workflow/artifacts/ITERATION.md` - Complete iteration with embedded standards
-4. **READ** `{project-root}/.workflow/artifacts/APP_CONTEXT.md` (if exists) - System integration context
+4. **READ** `{project-root}/.workflow/artifacts/PROJECT_SUMMARY.md` (if exists) - System integration context
 5. **READ** `CLAUDE.md` (if exists) - Project development context
 
 ### Verify Current Environment

@@ -61,18 +61,11 @@ async function main() {
     const sessionId = data.session_id || 'default';
     const modeFile = `/tmp/momentum-mode-${sessionId}`;
     let mode = 'assistant'; // Default to assistant mode for new sessions
-    let routingLoaded = false;
 
     if (existsSync(modeFile)) {
       const modeFileContent = readFileSync(modeFile, 'utf-8').trim().split('\n');
       mode = modeFileContent[0] || 'assistant';
-      // Check if routing loaded for THIS specific mode (search entire file)
-      routingLoaded = modeFileContent.includes(`${mode}-routing-loaded`);
-      debugLog('UserPromptSubmit', 'Mode file found', {
-        mode,
-        routingLoaded,
-        modeFileContent
-      });
+      debugLog('UserPromptSubmit', 'Mode file found', { mode });
     } else {
       // Create mode file for new session
       require('fs').writeFileSync(modeFile, 'assistant');
@@ -148,35 +141,53 @@ async function main() {
     const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     const currentDateTime = new Date().toISOString(); // Full ISO timestamp
 
-    // Smart routing injection: full on first message, lightweight after
-    if (routingLoaded) {
-      debugLog('UserPromptSubmit', 'Routing already loaded, lightweight injection');
-      // Lightweight metadata only - routing already loaded for this mode
-      console.log('<!-- Routing loaded. Parse user intent semantically. -->');
-    } else {
-      debugLog('UserPromptSubmit', 'First routing load for this mode, full injection');
-      // Full routing injection on first message or mode switch
-      console.log(routingContent);
+    // Always inject full routing for consistent semantic intent matching
+    debugLog('UserPromptSubmit', 'Full routing injection');
+    console.log(routingContent);
 
-      // Mark routing as loaded for THIS specific mode (only if not already present)
-      const currentContent = readFileSync(modeFile, 'utf-8');
-      if (!currentContent.includes(`${mode}-routing-loaded`)) {
-        const { appendFileSync } = require('fs');
-        appendFileSync(modeFile, `\n${mode}-routing-loaded`);
-        debugLog('UserPromptSubmit', 'Marked routing as loaded');
-      } else {
-        debugLog('UserPromptSubmit', 'Routing marker already present');
-      }
-    }
+    // Calculate project-specific paths
+    const projectRoot = cwd;
+    const workflowDir = join(projectRoot, '.workflow');
+    const artifactsDir = join(workflowDir, 'artifacts');
+    const stateDir = join(workflowDir, 'state');
+    const projectObsidianDir = join(workflowProjects, projectName);
+    const explorationsDir = join(projectObsidianDir, 'explorations');
 
-    // Always output metadata for context awareness
+    // Lore paths if available
+    const loreConfig = loreAvailable ? join(process.env.HOME!, '.config', 'lore') : null;
+    const loreData = loreAvailable ? join(process.env.HOME!, '.local', 'share', 'lore') : null;
+    const loreCache = loreAvailable ? join(process.env.HOME!, '.cache', 'lore') : null;
+
+    // Always output metadata and paths for context awareness
     console.log('\n<!-- HOOK: Momentum routing loaded -->');
     console.log(`<!-- CURRENT_DATE: ${currentDate} -->`);
     console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
-    console.log(`<!-- MODEFILE: ${modeFile} -->`);
+    console.log(`<!-- SESSION_ID: ${sessionId} -->`);
     console.log(`<!-- MODE: ${mode} -->`);
     console.log(`<!-- PROJECT: ${projectName} -->`);
+    console.log('');
+    console.log('<!-- PATH VARIABLES -->');
+    console.log(`<!-- PROJECT_ROOT: ${projectRoot} -->`);
+    console.log(`<!-- WORKFLOW_DIR: ${workflowDir} -->`);
+    console.log(`<!-- ARTIFACTS_DIR: ${artifactsDir} -->`);
+    console.log(`<!-- STATE_DIR: ${stateDir} -->`);
+    console.log(`<!-- CONTEXTS_PATH: ${contextsPath} -->`);
+    console.log(`<!-- MOMENTUM_CONFIG: ${momentumConfig} -->`);
+    console.log(`<!-- MOMENTUM_HOME_DIR: ${momentumHomeDir} -->`);
+    console.log(`<!-- WORKFLOW_PROJECTS: ${workflowProjects} -->`);
+    console.log(`<!-- WORKFLOW_DEV: ${workflowDev} -->`);
+    console.log(`<!-- PROJECT_OBSIDIAN_DIR: ${projectObsidianDir} -->`);
+    console.log(`<!-- EXPLORATIONS_DIR: ${explorationsDir} -->`);
+    console.log(`<!-- MODEFILE: ${modeFile} -->`);
+    if (loreAvailable) {
+      console.log(`<!-- LORE_CONFIG: ${loreConfig} -->`);
+      console.log(`<!-- LORE_DATA: ${loreData} -->`);
+      console.log(`<!-- LORE_CACHE: ${loreCache} -->`);
+    }
+    console.log('');
+    console.log('<!-- CAPABILITIES -->');
     console.log(`<!-- LORE_AVAILABLE: ${loreAvailable} -->`);
+    console.log(`<!-- SETUPD_AVAILABLE: true -->`);
 
     debugLog('UserPromptSubmit', 'Hook completed successfully');
     process.exit(0);

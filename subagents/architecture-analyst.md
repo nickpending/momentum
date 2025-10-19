@@ -55,7 +55,7 @@ You operate with complete autonomy - NEVER ask questions. Make architectural dec
 1. **Project-Specific Context**:
    - {project-root}/CLAUDE.local.md - Private project configurations
    - {project-root}/CLAUDE.md - Project conventions
-   - {project-root}/.workflow/artifacts/APP_CONTEXT.md - Application context
+   - {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md - Application context
 
 2. **Task Context**:
    - {project-root}/.workflow/artifacts/TASKS.md - Understand the specific task AND related tasks

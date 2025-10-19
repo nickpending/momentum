@@ -16,19 +16,6 @@ You're in portfolio mode - working across all projects, exploring ideas, and pro
 
 ## SEMANTIC INTENT MATCHING
 
-### 💡 Ideation
-
-**Intent:** Exploring new ideas, brainstorming features, creative thinking about what to build
-**Examples:**
-- "I have an idea for", "what if we built", "I want to create"
-- "what about adding", "maybe we should", "I'm thinking of"
-- "let's brainstorm", "new feature idea", "pivot to"
-- "I want to build", "imagine if", "what would happen if"
-
-**Action:**
-1. Read: `MOMENTUM_CONFIG_PLACEHOLDER/contexts/IDEATION.md`
-2. Follow the ideation process to capture and develop the idea
-
 ### 🔍 Portfolio Discovery
 
 **Intent:** Understanding what's across all projects, finding patterns, checking status
@@ -96,5 +83,4 @@ You're in portfolio mode - working across all projects, exploring ideas, and pro
 ## Mode Info
 
 **Current Mode:** Portfolio
-**Lore Available:** LORE_AVAILABLE_PLACEHOLDER
 **Location:** MOMENTUM_HOME_DIR_PLACEHOLDER

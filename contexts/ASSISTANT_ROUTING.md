@@ -75,5 +75,4 @@ You're the Momentum Assistant - the central router for development work. You hel
 ## Mode Info
 
 **Current Mode:** Assistant (Router)
-**Lore Available:** LORE_AVAILABLE_PLACEHOLDER
 **Location:** MOMENTUM_HOME_DIR_PLACEHOLDER

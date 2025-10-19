@@ -101,7 +101,7 @@ REQUIRED: Read and acknowledge ALL foundation files:
 - {project-root}/.workflow/resources/DESIGN_PRINCIPLES.md
 - {project-root}/.workflow/resources/IMPLEMENTATION_GUIDELINES.md
 - {project-root}/.workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
-- {project-root}/.workflow/artifacts/APP_CONTEXT.md (if exists) - Current system understanding
+- {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md (if exists) - Current system understanding
 - $WORKFLOW_PROJECTS/{projectname}/later.md (if exists) - Later items to consider
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach

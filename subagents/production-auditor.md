@@ -50,7 +50,7 @@ You operate as an orchestrator that coordinates specialist subagents to perform 
 
 1. **Project Structure Analysis**:
    - Scan entire project directory structure
-   - {project-root}/.workflow/artifacts/APP_CONTEXT.md - Application context
+   - {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md - Application context
    - {project-root}/CLAUDE.md - Project conventions (if exists)
    - {project-root}/.gitignore - What should/shouldn't be tracked
 

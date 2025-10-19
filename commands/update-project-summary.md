@@ -53,6 +53,43 @@ Run `ls -la` to map project organization:
 - **COMPLETED**: Count of ✅ Complete tasks
 - **TOTAL**: Total task count
 
+### From Project Commands & Utilities
+
+**Document what the project provides and how to work with it:**
+
+1. **Installed Commands** - What users actually run:
+   - Check README.md or IDEA.md for main commands
+   - Check for binaries installed to ~/.local/bin or /usr/local/bin
+   - Check install scripts for what they set up
+   - Format: `command-name [args]` - What it does
+   - Example: `setupd --switch <project>` - Switch between projects
+
+2. **Setup/Installation**:
+   - Installation scripts: `./install.sh`, `./setup.py`, etc.
+   - Configuration needed after install
+
+3. **Development Commands** - Build, test, run:
+   - If Makefile: Key targets (install, build, test, clean)
+   - If package.json: Key scripts (dev, build, test)
+   - If Cargo.toml: Key commands (build, test, run)
+   - If pyproject.toml: Key commands (uv sync, uv run)
+   - Format: `command` - Purpose
+   - Example: `make install` - Install binaries to ~/.local/bin
+
+**Output format for COMMANDS_USAGE variable:**
+```
+## How to Use
+- `{main-command} [args]` - Primary usage
+- `./{install-script}` - Installation
+
+## Development
+- `{build-command}` - Build the project
+- `{test-command}` - Run tests
+- `{install-command}` - Install locally
+```
+
+**Balance detail with brevity** - Include enough for the model to work effectively (5-8 key commands), skip exhaustive listings.
+
 ## Step 3: Populate Template
 
 **READ** template and replace all variables:
@@ -76,11 +113,13 @@ Run `ls -la` to map project organization:
 {TOTAL} → total task count
 {MAIN_SERVICES} → bullet list of main services (3-5 items)
 {DATA_FLOW_SUMMARY} → brief data flow (2-3 lines)
+{COMMANDS_USAGE} → categorized list of project commands with usage examples
 ```
 
 **Handle missing data gracefully:**
 - If no ITERATION.md: Use "No active iteration" for iteration fields
 - If no TASKS.md: Use "0/0" for progress
+- If no commands found: Use "Standard development tools only" or omit section
 - If sections missing: Use "N/A" or omit
 
 ## Step 4: Write PROJECT_SUMMARY.md
@@ -123,6 +162,5 @@ This command should be called by:
 
 ## Success Criteria
 
-- PROJECT_SUMMARY.md is 40-50 lines (not bloated)
+- PROJECT_SUMMARY.md is 50-100 lines (concise but complete)
 - All key project info is captured
-- Suitable for context loading without full IDEA.md/APP_CONTEXT.md
