@@ -57,22 +57,34 @@ export function processTranscript(jsonlContent: string): string {
               if (toolUse) {
                 output.push(`\n**Tool: ${toolUse.name}**`);
 
-                // Show more detail for file operations
-                if (toolUse.name === 'Edit' || toolUse.name === 'Write' || toolUse.name === 'Read') {
-                  output.push(`File: ${toolUse.input.file_path}`);
-                  if (toolUse.name === 'Edit') {
-                    output.push(`Edit: ${truncateContent(toolUse.input.old_string, 100)} → ${truncateContent(toolUse.input.new_string, 100)}`);
+                // Tool-specific result handling for minimal output
+                if (toolUse.name === 'Read') {
+                  const lines = toolResult.content.split('\n').length;
+                  output.push(`File: ${toolUse.input.file_path} (${lines} lines)`);
+                } else if (toolUse.name === 'Edit') {
+                  output.push(`File: ${toolUse.input.file_path} (modified)`);
+                } else if (toolUse.name === 'Write') {
+                  output.push(`File: ${toolUse.input.file_path} (written)`);
+                } else if (toolUse.name === 'Glob' || toolUse.name === 'Grep') {
+                  const resultLines = toolResult.content.split('\n').filter(l => l.trim());
+                  output.push(`Found ${resultLines.length} results`);
+                  if (resultLines.length > 0 && resultLines.length <= 5) {
+                    output.push(`Results: ${resultLines.join(', ')}`);
+                  }
+                } else if (toolUse.name === 'Bash') {
+                  output.push(`Input: \`${JSON.stringify(toolUse.input)}\``);
+                  if (toolResult.is_error) {
+                    output.push(`Error: ${truncateContent(toolResult.content, 200)}`);
+                  } else {
+                    output.push(`Result: ${truncateContent(toolResult.content, 100)}`);
                   }
                 } else {
+                  // Other tools - show minimal input and truncated output
                   output.push(`Input: \`${JSON.stringify(toolUse.input)}\``);
-                }
-
-                if (toolResult.is_error) {
-                  output.push(`Error: ${truncateContent(toolResult.content, 300)}`);
-                } else {
-                  const resultPreview = truncateContent(toolResult.content, 300);
-                  if (resultPreview) {
-                    output.push(`Result: ${resultPreview}`);
+                  if (toolResult.is_error) {
+                    output.push(`Error: ${truncateContent(toolResult.content, 200)}`);
+                  } else {
+                    output.push(`Result: ${truncateContent(toolResult.content, 100)}`);
                   }
                 }
               }
