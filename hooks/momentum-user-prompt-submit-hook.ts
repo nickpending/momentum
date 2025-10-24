@@ -8,6 +8,8 @@ import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { debugLog, debugLogSeparator } from './shared/debug-log.ts';
+import { loadConfig } from './shared/config-loader.ts';
+import { loadVoiceStyle, loadVerbosityLevel, buildVoiceInstructions } from './shared/voice-loader.ts';
 
 interface HookInput {
   session_id: string;
@@ -75,7 +77,8 @@ async function main() {
     // Determine which routing to load based on mode
     let contextsPath: string;
     let routingPath: string;
-    const momentumConfig = process.env.MOMENTUM_HOME || `${process.env.HOME}/.config/momentum`;
+    const config = loadConfig();
+    const momentumConfig = config.momentum.install;
 
     debugLog('UserPromptSubmit', 'Determining routing path', { mode, momentumConfig });
 
@@ -107,13 +110,13 @@ async function main() {
     debugLog('UserPromptSubmit', 'Reading routing file', { routingPath });
     let routingContent = readFileSync(routingPath, 'utf-8');
 
-    // Get workflow paths from environment
-    const workflowProjects = process.env.WORKFLOW_PROJECTS || `${process.env.HOME}/projects`;
-    const workflowDev = process.env.WORKFLOW_DEV || `${process.env.HOME}/development/projects`;
-    const momentumHomeDir = join(process.env.HOME!, '.local', 'share', 'momentum', 'home');
+    // Get workflow paths from config
+    const workflowProjects = config.paths.projects;
+    const workflowDev = config.paths.dev;
+    const momentumHomeDir = config.momentum.workspace;
 
     // Check for Lore availability first (needed for placeholder replacement)
-    const loreConfigPath = join(process.env.HOME!, '.config', 'lore', 'config');
+    const loreConfigPath = join(config.lore.config, 'config');
     const loreAvailable = existsSync(loreConfigPath);
 
     debugLog('UserPromptSubmit', 'Replacing placeholders', {
@@ -141,9 +144,41 @@ async function main() {
     const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
     const currentDateTime = new Date().toISOString(); // Full ISO timestamp
 
+    // Check for .gitignore in project mode
+    let gitignoreWarning = '';
+    if (mode === 'project') {
+      const gitignorePath = join(cwd, '.gitignore');
+      if (!existsSync(gitignorePath)) {
+        gitignoreWarning = '\n\n**⚠️ GITIGNORE MISSING**: This project has no .gitignore file. Run the gitignore skill immediately to protect against committing sensitive data.\n';
+        debugLog('UserPromptSubmit', 'Gitignore check failed', { gitignorePath });
+      } else {
+        debugLog('UserPromptSubmit', 'Gitignore check passed', { gitignorePath });
+      }
+    }
+
     // Always inject full routing for consistent semantic intent matching
     debugLog('UserPromptSubmit', 'Full routing injection');
     console.log(routingContent);
+
+    // Inject gitignore warning if needed
+    if (gitignoreWarning) {
+      console.log(gitignoreWarning);
+    }
+
+    // Load and inject voice instructions
+    try {
+      const momentumHome = config.momentum.install;
+      const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
+      const verbosityLevel = config.voice.verbosity[mode as 'assistant' | 'portfolio' | 'project'] || 'normal';
+      const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
+      const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
+
+      console.log(`\n${voiceInstructions}`);
+      debugLog('UserPromptSubmit', 'Voice instructions injected', { mode, style: config.voice.style, verbosity: verbosityLevel });
+    } catch (error) {
+      debugLog('UserPromptSubmit', 'Failed to load voice instructions', { error: String(error) });
+      // Continue without voice instructions - they're optional
+    }
 
     // Calculate project-specific paths
     const projectRoot = cwd;
@@ -153,10 +188,13 @@ async function main() {
     const projectObsidianDir = join(workflowProjects, projectName);
     const explorationsDir = join(projectObsidianDir, 'explorations');
 
-    // Lore paths if available
-    const loreConfig = loreAvailable ? join(process.env.HOME!, '.config', 'lore') : null;
-    const loreData = loreAvailable ? join(process.env.HOME!, '.local', 'share', 'lore') : null;
-    const loreCache = loreAvailable ? join(process.env.HOME!, '.cache', 'lore') : null;
+    // Lore paths from config if available
+    const loreConfig = loreAvailable ? config.lore.config : null;
+    const loreData = loreAvailable ? config.lore.data : null;
+    const loreCache = loreAvailable ? config.lore.cache : null;
+
+    // Get user name from config
+    const userName = config.personalization.name;
 
     // Always output metadata and paths for context awareness
     console.log('\n<!-- HOOK: Momentum routing loaded -->');
@@ -165,6 +203,7 @@ async function main() {
     console.log(`<!-- SESSION_ID: ${sessionId} -->`);
     console.log(`<!-- MODE: ${mode} -->`);
     console.log(`<!-- PROJECT: ${projectName} -->`);
+    console.log(`<!-- NAME: ${userName} -->`);
     console.log('');
     console.log('<!-- PATH VARIABLES -->');
     console.log(`<!-- PROJECT_ROOT: ${projectRoot} -->`);

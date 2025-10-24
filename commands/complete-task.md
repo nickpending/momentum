@@ -1,11 +1,11 @@
 # Validate task completion with evidence of working functionality
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
 - `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
-- `$WORKFLOW_DEV` - Development projects root (from environment)
+- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
+- WORKFLOW_DEV - Development projects root (injected)
 
 ## ⚠️ CRITICAL: MARK TASK COMPLETE AND DOCUMENT ⚠️
 
@@ -32,6 +32,42 @@ DO NOT:
 - Repeat validation already done
 
 VERIFICATION: Task ready to be marked complete
+```
+
+**CHECKPOINT 1.5: Review Changes (Human Sanity Check)**
+
+```
+REQUIRED: Show what changed for human review:
+
+IF git repo exists:
+  1. RUN: `git diff --stat` to show which files changed
+  2. RUN: `git diff` to show actual changes
+  3. SUMMARIZE: In plain language what changed and why (based on task requirements)
+
+OUTPUT FORMAT:
+**Files Changed:**
+[output of git diff --stat]
+
+**Change Summary:**
+- [File]: [What changed and why it was needed for this task]
+- [File]: [What changed and why it was needed for this task]
+
+**Sanity Check Questions:**
+- Does this match what the task asked for?
+- Are there any unexpected changes?
+- Is anything obviously missing?
+- Any files modified that shouldn't have been?
+
+**APPROVAL GATE:**
+After showing the diff, ask user: "Proceed with marking complete and committing these changes?"
+- If NO: STOP immediately - output "Cancelled" and exit
+- If YES: Continue to CHECKPOINT 2
+
+ERROR HANDLING:
+- If not a git repo: Skip diff, ask "Proceed with marking complete?" (no commit will happen)
+- If no changes: Show "No changes detected" and ask to proceed
+
+PURPOSE: Human reviews changes and approves before any modifications
 ```
 
 ### PHASE 2: MARK COMPLETE WITH IMPLEMENTATION NOTES (REQUIRED)
@@ -84,35 +120,38 @@ Based on the task you just completed and the implementation notes, generate a JS
 capturing the knowledge gained. Think about what would be valuable to remember for
 future similar tasks.
 
-GENERATE THIS JSON EVENT:
-{
-  "event": "task_completed",
-  "project": "{current-project-name}",
-  "data": {
-    "task_name": "[Task name from TASKS.md]",
-    "problem_solved": "[Core problem this task addressed]",
-    "solution_pattern": "[Reusable pattern or approach that worked]",
-    "code_snippet": "[Key code snippet if applicable, or null]",
-    "discoveries": [
-      "[Discovery 1 - something learned]",
-      "[Discovery 2 - unexpected finding]"
-    ],
-    "deviations": "[How implementation differed from plan]",
-    "reusable_pattern": "[Pattern that could be used elsewhere]",
-    "keywords": ["[keyword1]", "[keyword2]", "[keyword3]"],
-    "tech_used": ["[library1]", "[framework1]", "[tool1]"],
-    "difficulty_notes": "[What made this tricky or easy]"
-  }
-}
+APPEND TO LORE LOG using Bash tool with lore_task_complete function:
 
-APPEND TO LORE LOG using Bash tool:
-echo '[YOUR GENERATED JSON ON ONE LINE]' | lore-append
+lore_task_complete \
+  "{current-project-name}" \
+  "[Task name from TASKS.md]" \
+  "[Core problem this task addressed]" \
+  "[Reusable pattern or approach that worked]" \
+  "[Key code snippet if applicable, or empty string]" \
+  "[discovery1,discovery2,discovery3]" \
+  "[How implementation differed from plan]" \
+  "[Pattern that could be used elsewhere]" \
+  "[keyword1 keyword2 keyword3]" \
+  "[library1,framework1,tool1]" \
+  "[What made this tricky or easy]"
+
+NOTE: If lore_task_complete function not available, source lib/events.sh first:
+source ~/development/projects/lore/lib/events.sh
 
 VERIFICATION: Event captured to Lore for future knowledge retrieval
 
 IF LORE_NOT_INSTALLED:
 - Skip this phase entirely
-- Continue to Phase 3
+- Continue to Phase 2.6
+```
+
+### PHASE 2.6: COMMIT AND PUSH
+
+**CHECKPOINT 2.6: Commit Approved Changes**
+
+```
+IF GIT REPO:
+  Commit and push the changes that were approved in CHECKPOINT 1.5
 ```
 
 ### PHASE 3: PROGRESS REPORT (REQUIRED)
@@ -127,7 +166,7 @@ REQUIRED: Report progress and suggest next steps:
 
 COMPLETION REPORT:
 =====================================
-TASK $TASK_NUMBER COMPLETED ✅
+TASK {task-number} COMPLETED ✅
 =====================================
 
 Task: [task name and key accomplishment]

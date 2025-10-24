@@ -1,11 +1,11 @@
 # Synthesize iteration learnings, update statuses, and archive
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
 - `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
-- `$WORKFLOW_DEV` - Development projects root (from environment)
+- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
+- WORKFLOW_DEV - Development projects root (injected)
 
 ## ⚠️ CRITICAL: ITERATION CLOSURE AND KNOWLEDGE SYNTHESIS ⚠️
 
@@ -174,8 +174,8 @@ VERIFICATION: Iteration properly archived with summary and discoveries
 
 ```
 REQUIRED: Move active items to completed tracking:
-- READ $WORKFLOW_PROJECTS/{projectname}/active.md
-- READ $WORKFLOW_PROJECTS/{projectname}/completed.md (create if not exists)
+- READ WORKFLOW_PROJECTS/{projectname}/active.md
+- READ WORKFLOW_PROJECTS/{projectname}/completed.md (create if not exists)
 - MOVE all checked items from active.md to completed.md
 - FORMAT with completion timestamp
 

@@ -14,6 +14,8 @@ Parse user prompts semantically. Understand MEANING, not string matching.
 
 You're in project mode - focused on shipping working software for a single project. This is where implementation happens.
 
+**Note:** Check available skills before using other tools - they provide specialized capabilities.
+
 ## SEMANTIC INTENT MATCHING
 
 ### 🔍 Code Review
@@ -62,7 +64,7 @@ You're in project mode - focused on shipping working software for a single proje
 ### 🎯 Discovery
 **Intent:** Just solved problem, found something interesting, made breakthrough, learned something
 **Examples:** "that fixed it!", "interesting discovery", "now I understand"
-**Action:** Document immediately to `$WORKFLOW_PROJECTS/{project}/explorations/EXPLORATION-[YYYY-MM-DD]-[topic].md` without asking
+**Action:** Document immediately to `WORKFLOW_PROJECTS/{project}/explorations/EXPLORATION-[YYYY-MM-DD]-[topic].md` without asking
 
 ### 💾 Save State and Quit
 **Intent:** Saving work and stopping, preserving state, taking a break

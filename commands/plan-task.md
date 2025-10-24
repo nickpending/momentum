@@ -1,11 +1,11 @@
 # Create implementation plan with linting and quality checks
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
 - `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
-- `$WORKFLOW_DEV` - Development projects root (from environment)
+- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
+- WORKFLOW_DEV - Development projects root (injected)
 
 ## ⚠️ CRITICAL: GROUP RELATED TASKS FIRST ⚠️
 
@@ -55,12 +55,12 @@
 
 MANDATORY FIRST STEP - DO NOT SKIP:
 
-1. IDENTIFY the feature number for task $TASK_NUMBER
+1. IDENTIFY the feature number for task {task-number}
 2. READ ALL TASKS in that feature (scan titles and deliverables only)
 3. COUNT: "I scanned ___ tasks in Feature X"
 
 GROUPING DECISION GATE:
-Ask: "Would a user care if I completed ONLY task $TASK_NUMBER?"
+Ask: "Would a user care if I completed ONLY task {task-number}?"
 
 □ NO - Tasks must be grouped for meaningful delivery
   → List all related tasks that should be grouped
@@ -76,7 +76,7 @@ COMPLETION QUALITY ASSESSMENT:
 🥉 BRONZE: Empty structures/imports/setup (AVOID - not real completions)
 
 ⚠️ TYPE YOUR DECISION ⚠️
-"GROUPING DECISION: [SINGLE TASK $TASK_NUMBER / GROUP TASKS X.Y-X.Z]"
+"GROUPING DECISION: [SINGLE TASK {task-number} / GROUP TASKS X.Y-X.Z]"
 "RATIONALE: [Why this grouping makes sense for users]"
 
 DO NOT PROCEED WITHOUT EXPLICIT GROUPING DECISION
@@ -90,7 +90,7 @@ DO NOT PROCEED WITHOUT EXPLICIT GROUPING DECISION
 USE already loaded PROJECT_SUMMARY.md and TASKS.md from /load-app-context
 
 IF SINGLE TASK:
-- EXTRACT task $TASK_NUMBER details from TASKS.md
+- EXTRACT task {task-number} details from TASKS.md
 - EXTRACT task type, deliverables, demo commands, dependencies
 - VERIFY dependencies are met
 - CHECK TASK TYPE (Implementation/Design/Research/Integration/Wiring)
@@ -135,7 +135,7 @@ Based on the task type found in TASKS.md:
 
 FOR DESIGN TASKS:
 - Enter scoped exploration mode (dialogue-driven)
-- Capture to $WORKFLOW_PROJECTS/{project}/explorations/ via exploration save
+- Capture to WORKFLOW_PROJECTS/{project}/explorations/ via exploration save
 - Think WITH the human - explore options, trade-offs, implications
 - Success = design decisions documented with rationale
 

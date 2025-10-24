@@ -6,8 +6,9 @@
 
 import { readFileSync, existsSync, writeFileSync } from 'fs';
 import { join } from 'path';
-import { sendDirectVoiceNotification } from './shared/voice-utils.ts';
 import { debugLog, debugLogSeparator } from './shared/debug-log.ts';
+import { loadConfig } from './shared/config-loader.ts';
+import { loadVoiceStyle, loadVerbosityLevel, buildVoiceInstructions } from './shared/voice-loader.ts';
 
 interface SessionStartInput {
   session_id: string;
@@ -22,143 +23,11 @@ interface SystemValidation {
   required: boolean;
 }
 
-interface TimeBasedGreetings {
-  early: string[];    // 5-8 AM
-  morning: string[];  // 9-11 AM
-  midday: string[];   // 12-17 PM
-  evening: string[];  // 18-22 PM
-  late: string[];     // 23-4 AM
-}
-
-const ASSISTANT_GREETINGS: TimeBasedGreetings = {
-  early: [
-    "Early start. Which project would you like to work on?",
-    "Assistant ready. What needs attention today?",
-    "Good morning. What shall we focus on?",
-    "Early session active. Where should we begin?",
-    "Morning. What's the priority?"
-  ],
-  morning: [
-    "Assistant mode active. Which project needs work?",
-    "Good morning. What would you like to tackle?",
-    "Ready to help. What's on the agenda?",
-    "Morning. Where shall we start?",
-    "Welcome back. What needs attention?",
-    "At your service. Which project?",
-    "Standing by. What's the focus?"
-  ],
-  midday: [
-    "Assistant ready. What would you like to work on?",
-    "At your service. Which project?",
-    "Standing by. What's the priority?",
-    "Ready when you are. What's next?",
-    "What can I help with?",
-    "Which project needs attention?",
-    "What shall we tackle?"
-  ],
-  evening: [
-    "Evening session. What would you like to work on?",
-    "Good evening. Which project?",
-    "Evening mode active. What's the focus?",
-    "Ready for evening work. What's the plan?",
-    "What needs attention tonight?"
-  ],
-  late: [
-    "Working late? What needs attention?",
-    "Late session active. Which project?",
-    "Evening work mode. What's urgent?",
-    "What requires focus?"
-  ]
-};
-
-const PORTFOLIO_GREETINGS: TimeBasedGreetings = {
-  early: [
-    "Early portfolio review. What needs attention?",
-    "Morning. Which projects should we examine?",
-    "Portfolio view active. What's the priority?",
-    "Early start. Let's review your work."
-  ],
-  morning: [
-    "Portfolio mode active. What shall we review?",
-    "Good morning. Let's examine your projects.",
-    "Portfolio view ready. What needs analysis?",
-    "Morning. What would you like to explore?"
-  ],
-  midday: [
-    "Portfolio view active. What shall we examine?",
-    "Ready to review projects. What's the focus?",
-    "Multi-project view loaded. Where to start?",
-    "Portfolio ready. What needs attention?"
-  ],
-  evening: [
-    "Evening portfolio review. What shall we examine?",
-    "Good evening. Let's review your work.",
-    "Portfolio mode active. What's the priority?",
-    "Evening session. Which projects need focus?"
-  ],
-  late: [
-    "Late portfolio review. What needs attention?",
-    "Evening work. What shall we examine?",
-    "Portfolio view active. What's urgent?"
-  ]
-};
-
-const PROJECT_GREETINGS: TimeBasedGreetings = {
-  early: [
-    "Early development session. What shall we build?",
-    "Systems online. Ready to ship code.",
-    "Development environment ready. What's the priority?",
-    "Early start today. What needs attention?",
-    "Morning deployment window. What's the focus?"
-  ],
-  morning: [
-    "Development systems online. What shall we work on?",
-    "Ready to ship. Let's build something.",
-    "Good morning. What's on the agenda?",
-    "Development environment ready. What's the priority?",
-    "Morning. Where shall we begin?",
-    "Welcome back. What needs work?",
-    "Good to see you. What shall we tackle?",
-    "Systems operational. Ready to build.",
-    "Morning deployment ready. What's first?",
-    "Development mode active. What's next?"
-  ],
-  midday: [
-    "Development environment active. What would you like to tackle?",
-    "Ready to ship. What's the next feature?",
-    "Systems operational. What needs development?",
-    "Momentum loaded. What shall we build?",
-    "Development ready. What's the priority?",
-    "Afternoon build session. What's the focus?",
-    "Ready when you are. What's next?",
-    "At your service. Where do we start?",
-    "Standing by. What needs work?",
-    "Development systems ready. What's urgent?"
-  ],
-  evening: [
-    "Evening development session. What shall we focus on?",
-    "Systems ready for evening work. What's the plan?",
-    "Development environment active. What needs shipping?",
-    "Ready for evening deployment. What's urgent?",
-    "Good evening. What shall we work on?",
-    "Evening build window. What's the priority?",
-    "Ready to continue. What's next?",
-    "At your disposal. What needs attention?",
-    "Evening session active. What's the goal?",
-    "Development ready. What shall we tackle?"
-  ],
-  late: [
-    "Late development session. What requires attention?",
-    "Working late? What's urgent?",
-    "Late session active. What needs shipping?",
-    "Evening work mode. What's the priority?",
-    "Late deployment window. What's critical?"
-  ]
-};
+// Greetings removed - model handles naturally per design decision in task 2.1
 
 async function validateMomentumSystems(): Promise<{ valid: boolean; issues: string[] }> {
-  const homeDir = process.env.HOME!;
-  const momentumConfig = process.env.MOMENTUM_HOME || join(homeDir, '.config', 'momentum');
+  const config = loadConfig();
+  const momentumConfig = config.momentum.install;
 
   const contextsPath = join(momentumConfig, 'contexts');
   const agentsPath = join(momentumConfig, 'agents');
@@ -227,25 +96,7 @@ async function validateMomentumSystems(): Promise<{ valid: boolean; issues: stri
   return { valid, issues };
 }
 
-function generateTimeBasedGreeting(greetings: TimeBasedGreetings): string {
-  const hour = new Date().getHours();
-
-  let timeSlot: keyof TimeBasedGreetings;
-  if (hour >= 5 && hour <= 8) {
-    timeSlot = 'early';
-  } else if (hour >= 9 && hour <= 11) {
-    timeSlot = 'morning';
-  } else if (hour >= 12 && hour <= 17) {
-    timeSlot = 'midday';
-  } else if (hour >= 18 && hour <= 22) {
-    timeSlot = 'evening';
-  } else {
-    timeSlot = 'late';
-  }
-
-  const options = greetings[timeSlot];
-  return options[Math.floor(Math.random() * options.length)];
-}
+// generateTimeBasedGreeting() removed - no longer needed
 
 async function initializeSessionState(sessionId: string): Promise<string> {
   const modeFile = `/tmp/momentum-mode-${sessionId}`;
@@ -280,21 +131,59 @@ function setTerminalTitle(mode: string, projectName?: string): void {
   console.error(`📍 Terminal title set: ${title}`);
 }
 
+function loadVoiceInstructionsForMode(mode: 'assistant' | 'portfolio' | 'project'): string {
+  try {
+    const config = loadConfig();
+    const momentumHome = config.momentum.install;
+
+    // Load voice style
+    const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
+
+    // Get verbosity level for this mode
+    const verbosityLevel = config.voice.verbosity[mode] || 'normal';
+    const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
+
+    // Build combined instructions
+    const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
+
+    debugLog('SessionStart', 'Voice instructions loaded', {
+      mode,
+      style: config.voice.style,
+      verbosity: verbosityLevel
+    });
+
+    return voiceInstructions;
+  } catch (error) {
+    debugLog('SessionStart', 'Failed to load voice instructions', { error: String(error) });
+    // Return empty string on error - voice instructions are optional
+    return '';
+  }
+}
+
 async function handleAssistantMode(sessionId: string, restoreCommand: string | null = null): Promise<void> {
   // Get current date
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const currentDateTime = new Date().toISOString();
+  const config = loadConfig();
+  const userName = config.personalization.name;
 
   // Output metadata only - ASSISTANT.md loaded via alias
   let additionalContext = `<!-- HOOK: Momentum SessionStart -->
 <!-- CURRENT_DATE: ${currentDate} -->
 <!-- CURRENT_DATETIME: ${currentDateTime} -->
 <!-- SESSION_ID: ${sessionId} -->
-<!-- MODE: assistant -->`;
+<!-- MODE: assistant -->
+<!-- NAME: ${userName} -->`;
 
   // Append restore command if present
   if (restoreCommand) {
     additionalContext += `\n\nRun the ${restoreCommand}`;
+  }
+
+  // Load and append voice instructions
+  const voiceInstructions = loadVoiceInstructionsForMode('assistant');
+  if (voiceInstructions) {
+    additionalContext += `\n\n${voiceInstructions}`;
   }
 
   const output = {
@@ -309,27 +198,32 @@ async function handleAssistantMode(sessionId: string, restoreCommand: string | n
 
   // Set terminal title
   setTerminalTitle('assistant');
-
-  // Send ambient voice notification
-  const greeting = generateTimeBasedGreeting(ASSISTANT_GREETINGS);
-  await sendDirectVoiceNotification(greeting);
 }
 
 async function handlePortfolioMode(sessionId: string, restoreCommand: string | null = null): Promise<void> {
   // Get current date
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const currentDateTime = new Date().toISOString();
+  const config = loadConfig();
+  const userName = config.personalization.name;
 
   // Output metadata
   let additionalContext = `<!-- HOOK: Momentum SessionStart -->
 <!-- CURRENT_DATE: ${currentDate} -->
 <!-- CURRENT_DATETIME: ${currentDateTime} -->
 <!-- SESSION_ID: ${sessionId} -->
-<!-- MODE: portfolio -->`;
+<!-- MODE: portfolio -->
+<!-- NAME: ${userName} -->`;
 
   // Append restore command if present
   if (restoreCommand) {
     additionalContext += `\n\nRun the ${restoreCommand}`;
+  }
+
+  // Load and append voice instructions
+  const voiceInstructions = loadVoiceInstructionsForMode('portfolio');
+  if (voiceInstructions) {
+    additionalContext += `\n\n${voiceInstructions}`;
   }
 
   const output = {
@@ -344,16 +238,14 @@ async function handlePortfolioMode(sessionId: string, restoreCommand: string | n
 
   // Set terminal title
   setTerminalTitle('portfolio');
-
-  // Send ambient voice notification
-  const greeting = generateTimeBasedGreeting(PORTFOLIO_GREETINGS);
-  await sendDirectVoiceNotification(greeting);
 }
 
 async function handleProjectMode(sessionId: string, projectName: string, restoreCommand: string | null = null): Promise<void> {
   // Get current date
   const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
   const currentDateTime = new Date().toISOString();
+  const config = loadConfig();
+  const userName = config.personalization.name;
 
   // Output metadata
   let additionalContext = `<!-- HOOK: Momentum SessionStart -->
@@ -361,11 +253,18 @@ async function handleProjectMode(sessionId: string, projectName: string, restore
 <!-- CURRENT_DATETIME: ${currentDateTime} -->
 <!-- SESSION_ID: ${sessionId} -->
 <!-- MODE: project -->
-<!-- PROJECT: ${projectName} -->`;
+<!-- PROJECT: ${projectName} -->
+<!-- NAME: ${userName} -->`;
 
   // Append restore command if present
   if (restoreCommand) {
     additionalContext += `\n\nRun the ${restoreCommand}`;
+  }
+
+  // Load and append voice instructions
+  const voiceInstructions = loadVoiceInstructionsForMode('project');
+  if (voiceInstructions) {
+    additionalContext += `\n\n${voiceInstructions}`;
   }
 
   const output = {
@@ -380,22 +279,47 @@ async function handleProjectMode(sessionId: string, projectName: string, restore
 
   // Set terminal title with project name
   setTerminalTitle('project', projectName);
-
-  // Send ambient voice notification
-  const greeting = generateTimeBasedGreeting(PROJECT_GREETINGS);
-  await sendDirectVoiceNotification(greeting);
 }
 
-async function handleAutoRestore(sessionType: string): Promise<string | null> {
-  const projectRoot = findProjectRoot();
+async function handleAutoRestore(sessionType: string, sessionId: string): Promise<string | null> {
+  // Read modefile to determine current mode and project
+  const modeFile = `/tmp/momentum-mode-${sessionId}`;
 
-  if (!projectRoot) {
-    return null; // Not in a project
+  if (!existsSync(modeFile)) {
+    debugLog('SessionStart', 'No modefile found for auto-restore');
+    return null; // No mode file yet
+  }
+
+  const modeLines = readFileSync(modeFile, 'utf-8').trim().split('\n');
+  const mode = modeLines[0];
+
+  // Only auto-restore in project mode
+  if (mode !== 'project') {
+    debugLog('SessionStart', `Mode is ${mode}, not project - skipping auto-restore`);
+    return null;
+  }
+
+  // Check if project name exists on line 2
+  const projectName = modeLines[1]?.trim();
+  if (!projectName) {
+    debugLog('SessionStart', 'Project mode but no project name in modefile');
+    return null;
+  }
+
+  // Build project path
+  const config = loadConfig();
+  const workflowDev = config.paths.dev;
+  const projectRoot = join(workflowDev, projectName);
+
+  if (!existsSync(projectRoot)) {
+    debugLog('SessionStart', `Project directory not found: ${projectRoot}`);
+    return null;
   }
 
   const stateDir = join(projectRoot, '.workflow', 'state');
 
   if (!existsSync(stateDir)) {
+    debugLog('SessionStart', `No state directory: ${stateDir}`);
     return null; // No state directory
   }
 
@@ -411,11 +335,12 @@ async function handleAutoRestore(sessionType: string): Promise<string | null> {
     const reason = sessionType === 'compact' ? 'after compaction' : 'from saved state';
 
     console.error(`✅ Auto-restore ${reason}: ${latestState}`);
-    debugLog('SessionStart', `Auto-restore triggered: ${latestState}`, { sessionType });
+    debugLog('SessionStart', `Auto-restore triggered: ${latestState}`, { sessionType, projectName });
 
     return `/restore-state ${latestState}`;
   }
 
+  debugLog('SessionStart', 'No state files found in state directory');
   return null;
 }
 
@@ -492,7 +417,7 @@ async function main(): Promise<void> {
     let restoreCommand: string | null = null;
     if (sessionType === 'clear' || sessionType === 'compact') {
       debugLog('SessionStart', `Session type ${sessionType} detected, checking for auto-restore`);
-      restoreCommand = await handleAutoRestore(sessionType);
+      restoreCommand = await handleAutoRestore(sessionType, data.session_id);
       if (restoreCommand) {
         debugLog('SessionStart', `Auto-restore will be passed to mode handler: ${restoreCommand}`);
       } else {

@@ -1,11 +1,11 @@
 # Write tests that protect invariants and handle failures
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
 - `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory (from environment)
-- `$WORKFLOW_DEV` - Development projects root (from environment)
+- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
+- WORKFLOW_DEV - Development projects root (injected)
 
 ## ⚠️ CRITICAL: RISK-GUIDED INVARIANT TESTING ⚠️
 
@@ -57,7 +57,7 @@ VERIFICATION: You know how to run tests for this project
 ```
 REQUIRED: Understand what was built:
 - READ {project-root}/.workflow/artifacts/ITERATION.md
-- LOCATE task $TASK_NUMBER
+- LOCATE task {task-number}
 - VERIFY task status is 🔄 In Progress or ✅ Complete
 - IDENTIFY what functionality was implemented
 - READ the actual implementation code

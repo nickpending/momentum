@@ -1,6 +1,6 @@
 ---
 name: ideating-ideas
-description: Facilitates creative ideation through collaborative conversation to explore new project ideas, evolve existing concepts, and brainstorm features. Use when exploring new ideas, discussing what to build, brainstorming features for existing projects, or pivoting project vision.
+description: Facilitates creative ideation through collaborative conversation to develop and explore new project ideas, evolve existing concepts, and brainstorm features in depth. Use when user wants to discuss, develop, or explore an idea through conversation - not just capture it for later. Trigger phrases include wanting to "think through", "explore", "develop", or "discuss" ideas.
 allowed-tools: Read, Write, Bash
 ---
 

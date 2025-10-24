@@ -22,36 +22,49 @@ Think of it as having a development partner who never forgets context and always
 
 **This is production-ready software in active daily use.** It's been shipping working software for months across multiple projects. Each iteration strengthens the workflow patterns.
 
-## 🚨 Breaking Changes in 3.1.0
+## 🚨 Breaking Changes in 3.4.0
 
-**If you're upgrading from 2.x, the architecture has evolved:**
+**If you're upgrading from 3.3.x or earlier:**
 
 ### What Changed
-- **Three-mode system** - Assistant (router), Portfolio (multi-project), Project (development)
-- **`momentum` starts in Assistant mode** - Central router for all navigation
-- **Cleaner file structure** - Removed user-commands/, consolidated to commands/
-- **Skills support** - Experimental capability packages (optional)
+- **TOML Configuration** - Config migrated from bash exports to structured TOML (backward compatible fallback)
+- **Voice System** - Configurable personality and verbosity per mode
+- **TTS Integration** - Optional text-to-speech via lspeak for voice summaries
+- **Enhanced Workflow** - Auto-commit with gitignore protection and approval gates
 
-### Old Workflow (2.x)
+### Configuration Migration
+
+**Old (3.3.x):**
 ```bash
-momentum                          # Started in Home mode
-"work on myproject"               # Switched to project mode
+~/.config/momentum/config  # Bash exports only
 ```
 
-### New Workflow (3.1.0)
-```bash
-momentum                          # Starts in Assistant mode (router)
-"work on myproject"               # Switches to Project mode
-"show projects"                   # Enters Portfolio mode
+**New (3.4.0):**
+```toml
+# ~/.config/momentum/config.toml
+[personalization]
+name = "Your Name"
+
+[voice]
+style = "jarvis"  # jarvis, professional, casual
+
+[voice.verbosity]
+assistant = "terse"
+portfolio = "normal"
+project = "brief"
+
+[voice.tts]
+enabled = true
+provider = "system"  # or "elevenlabs"
 ```
 
-### Three Modes
-- **Assistant** - Central router and command center
-- **Portfolio** - Multi-project management and ideation
-- **Project** - Single-project development and shipping
+### Migration Steps
+1. Run `./install.sh` to upgrade
+2. Config automatically migrates (bash config preserved for compatibility)
+3. Customize `~/.config/momentum/config.toml` for voice preferences
+4. Optional: Install [lspeak](https://github.com/tluyben/lspeak) for TTS
 
-### Migration
-Re-run `install.sh` to update to 3.1.0. The new structure separates routing (assistant) from portfolio management and project work.
+**Backward Compatibility:** Hooks gracefully fallback to environment variables if config.toml missing.
 
 ## ✨ Features
 
@@ -63,6 +76,8 @@ Re-run `install.sh` to update to 3.1.0. The new structure separates routing (ass
 - ⚡ **Micro-Tasks** - Each task fits in one conversation, no endless context juggling
 - 🎨 **Expert Guidance** - Luminary system provides domain-specific advice from programming legends
 - 🛡️ **Behavioral Guards** - Anti-speculation and anti-lazy enforcement prevents hallucination
+- 🎙️ **Voice System** - Configurable personality (jarvis/professional/casual) and mode-based verbosity
+- 🔊 **TTS Integration** - Optional text-to-speech for voice summaries via lspeak (progressive enhancement)
 
 ## 🎬 Quick Start
 
@@ -213,8 +228,33 @@ The installer will ask where you keep code and documentation.
 
 ### Configuration
 
-Momentum follows XDG-like patterns:
+Momentum uses TOML for structured configuration:
+
+```toml
+# ~/.config/momentum/config.toml
+[personalization]
+name = "Your Name"
+
+[paths]
+dev = "/path/to/development/projects"
+projects = "/path/to/obsidian/projects"
+
+[voice]
+style = "jarvis"  # jarvis, professional, casual
+
+[voice.verbosity]
+assistant = "terse"   # Brief responses
+portfolio = "normal"  # Standard detail
+project = "brief"     # Focus on essentials
+
+[voice.tts]
+enabled = true
+provider = "system"  # system (free) or elevenlabs (premium)
+```
+
+**Directory Structure:**
 - Config: `~/.config/momentum/`
+- Voice styles: `~/.config/momentum/voices/`
 - Projects: `~/obsidian/projects/` (configurable)
 - Code: `~/development/projects/` (configurable)
 
@@ -393,26 +433,28 @@ momentum/
 
 ## 🎯 Roadmap
 
-**v3.1.0** (Current):
+**v3.4.0** (Current):
+- [x] TOML configuration system with backward compatibility
+- [x] Configurable voice system (3 personalities × 3 verbosity levels)
+- [x] TTS integration with optional lspeak support
+- [x] Auto-commit workflow with gitignore protection
+- [x] Diff summary and approval gates
 - [x] Three-mode architecture (Assistant/Portfolio/Project)
 - [x] Semantic routing with dynamic context injection
 - [x] Evidence-based agent verification system
-- [x] Collaborative iteration planning
-- [x] Multi-option architectural analysis
 - [x] Skills support (experimental)
-- [x] Behavioral guards preventing speculation
 
-**Next** (v3.2+):
+**Next** (v3.5+):
+- [ ] Enhanced task completion workflow
+- [ ] Pattern learning from successful iterations
+- [ ] Cross-project insight sharing via lore
 - [ ] Refine skills architecture for capability packages
-- [ ] Enhanced progressive disclosure for routing
-- [ ] Pattern learning from successful workflows
-- [ ] Cross-project insight sharing
 
 **Future** (v4.0+):
 - [ ] Language-specific quality patterns
 - [ ] Team collaboration workflows
 - [ ] Integration with CI/CD pipelines
-- [ ] Workflow analytics
+- [ ] Workflow analytics and metrics
 
 ## 📄 License
 

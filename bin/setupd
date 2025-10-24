@@ -31,16 +31,16 @@ refresh_project_links() {
     local quiet=${4:-false}
 
     # Commands directory
-    if [[ -d "$MOMENTUM_HOME/commands" ]]; then
+    if [[ -d "$MOMENTUM_INSTALL/commands" ]]; then
         mkdir -p "$dev_project/.claude"
         rm -rf "$dev_project/.claude/commands" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/commands" "$dev_project/.claude/commands"
+        ln -sf "$MOMENTUM_INSTALL/commands" "$dev_project/.claude/commands"
     fi
 
     # Subagents directory
-    if [[ -d "$MOMENTUM_HOME/subagents" ]]; then
+    if [[ -d "$MOMENTUM_INSTALL/subagents" ]]; then
         mkdir -p "$dev_project/.claude/agents"
-        for agent in "$MOMENTUM_HOME/subagents"/*.md; do
+        for agent in "$MOMENTUM_INSTALL/subagents"/*.md; do
             if [[ -f "$agent" ]]; then
                 ln -sf "$agent" "$dev_project/.claude/agents/$(basename "$agent")" 2>/dev/null || true
             fi
@@ -52,32 +52,35 @@ refresh_project_links() {
     # Clean up old hook symlink
     rm -f "$dev_project/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
 
-    if [[ -f "$MOMENTUM_HOME/hooks/momentum-session-start-hook.ts" ]]; then
+    if [[ -f "$MOMENTUM_INSTALL/hooks/momentum-session-start-hook.ts" ]]; then
         rm -f "$dev_project/.claude/hooks/momentum-session-start-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/hooks/momentum-session-start-hook.ts" "$dev_project/.claude/hooks/momentum-session-start-hook.ts"
+        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-session-start-hook.ts" "$dev_project/.claude/hooks/momentum-session-start-hook.ts"
 
         rm -f "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/hooks/momentum-user-prompt-submit-hook.ts" "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts"
+        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-user-prompt-submit-hook.ts" "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts"
 
         rm -f "$dev_project/.claude/hooks/momentum-precompact-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/hooks/momentum-precompact-hook.ts" "$dev_project/.claude/hooks/momentum-precompact-hook.ts"
+        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-precompact-hook.ts" "$dev_project/.claude/hooks/momentum-precompact-hook.ts"
+
+        rm -f "$dev_project/.claude/hooks/momentum-stop-hook.ts" 2>/dev/null || true
+        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-stop-hook.ts" "$dev_project/.claude/hooks/momentum-stop-hook.ts"
 
         rm -rf "$dev_project/.claude/hooks/shared" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/hooks/shared" "$dev_project/.claude/hooks/shared"
+        ln -sf "$MOMENTUM_INSTALL/hooks/shared" "$dev_project/.claude/hooks/shared"
 
         rm -rf "$dev_project/.workflow/contexts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/contexts" "$dev_project/.workflow/contexts"
+        ln -sf "$MOMENTUM_INSTALL/contexts" "$dev_project/.workflow/contexts"
     fi
 
     # Templates and resources
-    if [[ -d "$MOMENTUM_HOME/templates" ]]; then
+    if [[ -d "$MOMENTUM_INSTALL/templates" ]]; then
         rm -rf "$dev_project/.workflow/templates" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/templates" "$dev_project/.workflow/templates"
+        ln -sf "$MOMENTUM_INSTALL/templates" "$dev_project/.workflow/templates"
     fi
 
-    if [[ -d "$MOMENTUM_HOME/resources" ]]; then
+    if [[ -d "$MOMENTUM_INSTALL/resources" ]]; then
         rm -rf "$dev_project/.workflow/resources" 2>/dev/null || true
-        ln -sf "$MOMENTUM_HOME/resources" "$dev_project/.workflow/resources"
+        ln -sf "$MOMENTUM_INSTALL/resources" "$dev_project/.workflow/resources"
     fi
 
     # Settings file
@@ -133,6 +136,16 @@ refresh_project_links() {
           {
             "type": "command",
             "command": "bun .claude/hooks/momentum-precompact-hook.ts"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-stop-hook.ts"
           }
         ]
       }
@@ -204,6 +217,16 @@ EOF
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-stop-hook.ts"
+          }
+        ]
+      }
     ]
   },
   "permissions": {
@@ -220,8 +243,8 @@ EOF
     fi
 
     # Update version
-    if [[ -f "$MOMENTUM_HOME/VERSION" ]]; then
-        cp "$MOMENTUM_HOME/VERSION" "$dev_project/.workflow/version"
+    if [[ -f "$MOMENTUM_INSTALL/VERSION" ]]; then
+        cp "$MOMENTUM_INSTALL/VERSION" "$dev_project/.workflow/version"
     fi
 }
 
@@ -249,8 +272,8 @@ if [[ "$1" == "--switch" ]]; then
             PROJECT_VERSION=$(cat "$DEV_PROJECT/.workflow/version")
         fi
 
-        if [[ -f "$MOMENTUM_HOME/VERSION" ]]; then
-            MOMENTUM_VERSION=$(cat "$MOMENTUM_HOME/VERSION")
+        if [[ -f "$MOMENTUM_INSTALL/VERSION" ]]; then
+            MOMENTUM_VERSION=$(cat "$MOMENTUM_INSTALL/VERSION")
         fi
 
         # Update project if version mismatch
@@ -465,22 +488,22 @@ refresh_project_links "$DEV_PROJECT" "$PLANNING_PROJECT" "$PLANNING_EXISTS" fals
 
 # Validate installation
 resource_missing=""
-if [[ ! -d "$MOMENTUM_HOME/commands" ]]; then
+if [[ ! -d "$MOMENTUM_INSTALL/commands" ]]; then
     resource_missing="${resource_missing}commands "
 fi
-if [[ ! -d "$MOMENTUM_HOME/subagents" ]]; then
+if [[ ! -d "$MOMENTUM_INSTALL/subagents" ]]; then
     resource_missing="${resource_missing}subagents "
 fi
-if [[ ! -d "$MOMENTUM_HOME/templates" ]]; then
+if [[ ! -d "$MOMENTUM_INSTALL/templates" ]]; then
     resource_missing="${resource_missing}templates "
 fi
-if [[ ! -d "$MOMENTUM_HOME/resources" ]]; then
+if [[ ! -d "$MOMENTUM_INSTALL/resources" ]]; then
     resource_missing="${resource_missing}resources "
 fi
 
 # Report subagent count
-if [[ -d "$MOMENTUM_HOME/subagents" ]]; then
-    subagent_count=$(ls -1 "$MOMENTUM_HOME/subagents"/*.md 2>/dev/null | wc -l)
+if [[ -d "$MOMENTUM_INSTALL/subagents" ]]; then
+    subagent_count=$(ls -1 "$MOMENTUM_INSTALL/subagents"/*.md 2>/dev/null | wc -l)
     echo -e "${GREEN}✅ Project subagents: $subagent_count linked${RESET}"
 fi
 

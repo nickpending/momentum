@@ -15,7 +15,7 @@ RESET='\033[0m'
 
 # Source directory
 MOMENTUM_SOURCE="$(cd "$(dirname "$0")" && pwd)"
-MOMENTUM_HOME="$HOME/.config/momentum"
+MOMENTUM_INSTALL="$HOME/.config/momentum"
 
 clear
 echo -e "${MAGENTA}╔════════════════════════════════════════╗${RESET}"
@@ -220,24 +220,54 @@ fi
 
 echo
 
+# Step 3.5: Get user name for voice interactions
+echo -e "${CYAN}Step 3.5: Personalizing your experience${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+EXISTING_NAME=""
+if [[ -f "$EXISTING_CONFIG" ]]; then
+    source "$EXISTING_CONFIG" 2>/dev/null || true
+    EXISTING_NAME="$NAME"
+fi
+
+echo "Momentum uses your name for voice interactions and personalized responses."
+echo -e "${YELLOW}What's your name?${RESET}"
+if [[ -n "$EXISTING_NAME" ]]; then
+    printf "Name [$EXISTING_NAME]: "
+else
+    printf "Name: "
+fi
+read -r USER_NAME
+
+# Use existing value if no input provided
+if [[ -z "$USER_NAME" && -n "$EXISTING_NAME" ]]; then
+    USER_NAME="$EXISTING_NAME"
+elif [[ -z "$USER_NAME" ]]; then
+    USER_NAME="User"  # Default fallback
+fi
+
+echo -e "${GREEN}✅ Using name: $USER_NAME${RESET}"
+echo
+
 # Step 4: Check for existing installation
 echo -e "${CYAN}Step 4: Installing Momentum files${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
-if [[ -d "$MOMENTUM_HOME" ]]; then
-    echo -e "${YELLOW}⚠️  Existing installation found at $MOMENTUM_HOME${RESET}"
+if [[ -d "$MOMENTUM_INSTALL" ]]; then
+    echo -e "${YELLOW}⚠️  Existing installation found at $MOMENTUM_INSTALL${RESET}"
     printf "Backup and reinstall? (y/n): "
     read -r REINSTALL
     if [[ "$REINSTALL" =~ ^[Yy]$ ]]; then
         # Create backups inside momentum directory
-        mkdir -p "$MOMENTUM_HOME/.backups"
+        mkdir -p "$MOMENTUM_INSTALL/.backups"
         backup_name="backup-$(date +%Y%m%d_%H%M%S)"
-        backup_dir="$MOMENTUM_HOME/.backups/$backup_name"
+        backup_dir="$MOMENTUM_INSTALL/.backups/$backup_name"
         
         # Copy current installation to backup (excluding previous backups)
         mkdir -p "$backup_dir"
-        for item in "$MOMENTUM_HOME"/*; do
+        for item in "$MOMENTUM_INSTALL"/*; do
             if [[ "$(basename "$item")" != ".backups" ]]; then
                 cp -r "$item" "$backup_dir/" 2>/dev/null || true
             fi
@@ -246,7 +276,7 @@ if [[ -d "$MOMENTUM_HOME" ]]; then
         echo -e "${GREEN}✅ Backed up to $backup_dir${RESET}"
         
         # Remove old files (except backups)
-        for item in "$MOMENTUM_HOME"/*; do
+        for item in "$MOMENTUM_INSTALL"/*; do
             if [[ "$(basename "$item")" != ".backups" ]]; then
                 rm -rf "$item"
             fi
@@ -259,89 +289,146 @@ fi
 # Copy momentum files
 # Always copy components if they're missing
 echo "Installing Momentum components..."
-mkdir -p "$MOMENTUM_HOME"
+mkdir -p "$MOMENTUM_INSTALL"
 
 # Only copy if component doesn't exist or we just backed up
-if [[ ! -d "$MOMENTUM_HOME/agents" ]]; then
-    cp -r "$MOMENTUM_SOURCE/agents" "$MOMENTUM_HOME/" && echo "  ✓ Agents"
+if [[ ! -d "$MOMENTUM_INSTALL/agents" ]]; then
+    cp -r "$MOMENTUM_SOURCE/agents" "$MOMENTUM_INSTALL/" && echo "  ✓ Agents"
 fi
-if [[ ! -d "$MOMENTUM_HOME/commands" ]]; then
-    cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_HOME/" && echo "  ✓ Commands"
+if [[ ! -d "$MOMENTUM_INSTALL/commands" ]]; then
+    cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_INSTALL/" && echo "  ✓ Commands"
 fi
-if [[ ! -d "$MOMENTUM_HOME/templates" ]]; then
-    cp -r "$MOMENTUM_SOURCE/templates" "$MOMENTUM_HOME/" && echo "  ✓ Templates"
+if [[ ! -d "$MOMENTUM_INSTALL/templates" ]]; then
+    cp -r "$MOMENTUM_SOURCE/templates" "$MOMENTUM_INSTALL/" && echo "  ✓ Templates"
 fi
-if [[ ! -d "$MOMENTUM_HOME/resources" ]]; then
-    cp -r "$MOMENTUM_SOURCE/resources" "$MOMENTUM_HOME/" && echo "  ✓ Resources"
+if [[ ! -d "$MOMENTUM_INSTALL/resources" ]]; then
+    cp -r "$MOMENTUM_SOURCE/resources" "$MOMENTUM_INSTALL/" && echo "  ✓ Resources"
 fi
-if [[ ! -d "$MOMENTUM_HOME/subagents" ]]; then
-    cp -r "$MOMENTUM_SOURCE/subagents" "$MOMENTUM_HOME/" && echo "  ✓ Subagents"
+if [[ ! -d "$MOMENTUM_INSTALL/subagents" ]]; then
+    cp -r "$MOMENTUM_SOURCE/subagents" "$MOMENTUM_INSTALL/" && echo "  ✓ Subagents"
 fi
-if [[ ! -d "$MOMENTUM_HOME/skills" ]]; then
-    cp -r "$MOMENTUM_SOURCE/skills" "$MOMENTUM_HOME/" && echo "  ✓ Skills"
+if [[ ! -d "$MOMENTUM_INSTALL/skills" ]]; then
+    cp -r "$MOMENTUM_SOURCE/skills" "$MOMENTUM_INSTALL/" && echo "  ✓ Skills"
 fi
-if [[ ! -d "$MOMENTUM_HOME/hooks" ]]; then
-    mkdir -p "$MOMENTUM_HOME/hooks"
+if [[ ! -d "$MOMENTUM_INSTALL/hooks" ]]; then
+    mkdir -p "$MOMENTUM_INSTALL/hooks"
 fi
 # Always copy all hooks to get latest versions
-cp "$MOMENTUM_SOURCE/hooks/momentum-session-start-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Session start hook (updated)"
-cp "$MOMENTUM_SOURCE/hooks/momentum-user-prompt-submit-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ User prompt submit hook (updated)"
-cp "$MOMENTUM_SOURCE/hooks/momentum-precompact-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ PreCompact hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-session-start-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Session start hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-user-prompt-submit-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ User prompt submit hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-precompact-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ PreCompact hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-stop-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Stop hook (updated)"
 # Copy shared utilities
 if [[ -d "$MOMENTUM_SOURCE/hooks/shared" ]]; then
-    cp -r "$MOMENTUM_SOURCE/hooks/shared" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Shared voice utilities (updated)"
+    cp -r "$MOMENTUM_SOURCE/hooks/shared" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Shared voice utilities (updated)"
 fi
 # Legacy hook for backward compatibility
-cp "$MOMENTUM_SOURCE/hooks/momentum-hook.ts" "$MOMENTUM_HOME/hooks/" 2>/dev/null && echo "  ✓ Legacy hook (for compatibility)"
-chmod +x "$MOMENTUM_HOME/hooks"/*.ts 2>/dev/null || true
+cp "$MOMENTUM_SOURCE/hooks/momentum-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Legacy hook (for compatibility)"
+chmod +x "$MOMENTUM_INSTALL/hooks"/*.ts 2>/dev/null || true
 
-if [[ ! -d "$MOMENTUM_HOME/contexts" ]]; then
-    cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_HOME/" && echo "  ✓ Contexts"
+if [[ ! -d "$MOMENTUM_INSTALL/contexts" ]]; then
+    cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_INSTALL/" && echo "  ✓ Contexts"
 else
     # Always update routing files to get latest versions
-    cp "$MOMENTUM_SOURCE/contexts/ASSISTANT_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ ASSISTANT_ROUTING.md (updated)"
-    cp "$MOMENTUM_SOURCE/contexts/PORTFOLIO_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ PORTFOLIO_ROUTING.md (updated)"
-    cp "$MOMENTUM_SOURCE/contexts/PROJECT_ROUTING.md" "$MOMENTUM_HOME/contexts/" 2>/dev/null && echo "  ✓ PROJECT_ROUTING.md (updated)"
+    cp "$MOMENTUM_SOURCE/contexts/ASSISTANT_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ ASSISTANT_ROUTING.md (updated)"
+    cp "$MOMENTUM_SOURCE/contexts/PORTFOLIO_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ PORTFOLIO_ROUTING.md (updated)"
+    cp "$MOMENTUM_SOURCE/contexts/PROJECT_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ PROJECT_ROUTING.md (updated)"
 fi
 
-# Create configuration
-cat > "$MOMENTUM_HOME/config" << EOF
-#!/usr/bin/env bash
+# Install voice files (always update to get latest)
+mkdir -p "$MOMENTUM_INSTALL/voices/styles"
+mkdir -p "$MOMENTUM_INSTALL/voices/verbosity"
+if [[ -d "$MOMENTUM_SOURCE/voices/styles" ]]; then
+    cp "$MOMENTUM_SOURCE/voices/styles"/*.toml "$MOMENTUM_INSTALL/voices/styles/" 2>/dev/null && echo "  ✓ Voice styles (updated)"
+fi
+if [[ -d "$MOMENTUM_SOURCE/voices/verbosity" ]]; then
+    cp "$MOMENTUM_SOURCE/voices/verbosity"/*.toml "$MOMENTUM_INSTALL/voices/verbosity/" 2>/dev/null && echo "  ✓ Voice verbosity levels (updated)"
+fi
+
+# Create TOML configuration (source of truth)
+cat > "$MOMENTUM_INSTALL/config.toml" << EOF
 # Momentum Configuration
+# Edit this file to customize your workflow settings
+# Generated: $(date)
+
+[personalization]
+# Your name (used in greetings and voice output)
+name = "$USER_NAME"
+
+[paths]
+# Where your development projects live
+dev = "$DEV_DIR"
+# Where your planning/documentation lives (Obsidian)
+projects = "$PLANNING_DIR"
+
+[momentum]
+# Momentum installation directory
+install = "$HOME/.config/momentum"
+# Runtime workspace for assistant mode
+workspace = "$HOME/.local/share/momentum"
+
+[lore]
+# Lore configuration paths
+config = "$HOME/.config/lore"
+data = "$HOME/.local/share/lore"
+cache = "$HOME/.cache/lore"
+
+[voice]
+# Voice style: jarvis, professional, casual, or custom
+style = "jarvis"
+
+[voice.verbosity]
+# Verbosity level per mode: terse, brief, or normal
+assistant = "terse"
+portfolio = "normal"
+project = "brief"
+
+[voice.tts]
+# Text-to-Speech configuration
+enabled = true
+provider = "system"  # Options: "system" (free) or "elevenlabs" (premium)
+# api_key = ""  # Required for elevenlabs provider
+# voice_id = ""  # Required for elevenlabs provider (create JARVIS-style voice)
+cache_threshold = 0.90  # Semantic similarity threshold (0.0-1.0)
+
+# Cache control per verbosity level
+[voice.tts.cache]
+terse = true     # Short, common phrases - use cache
+brief = true     # Concise responses - use cache
+normal = false   # Longer, unique content - don't cache
+EOF
+
+echo -e "${GREEN}✅ TOML configuration created${RESET}"
+
+# Generate bash config from TOML (for setupd compatibility)
+cat > "$MOMENTUM_INSTALL/config" << EOF
+#!/usr/bin/env bash
+# Momentum Configuration (generated from config.toml)
+# DO NOT EDIT - This file is auto-generated from config.toml
+# Edit config.toml instead and re-run install.sh to regenerate
 # Generated: $(date)
 
 # Your workspace directories
 export WORKFLOW_DEV="$DEV_DIR"
 export WORKFLOW_PROJECTS="$PLANNING_DIR"
 
-# Momentum installation
-export MOMENTUM_HOME="$HOME/.config/momentum"
+# Personalization
+export NAME="$USER_NAME"
 
-# Component paths (for internal use)
-export WORKFLOW_HOME="\$MOMENTUM_HOME"
-export WORKFLOW_COMMANDS="\$MOMENTUM_HOME/commands"
-export WORKFLOW_TEMPLATES="\$MOMENTUM_HOME/templates"
-export WORKFLOW_RESOURCES="\$MOMENTUM_HOME/resources"
-export WORKFLOW_AGENTS="\$MOMENTUM_HOME/agents"
+# Momentum paths
+export MOMENTUM_INSTALL="$HOME/.config/momentum"
+export MOMENTUM_WORKSPACE="$HOME/.local/share/momentum"
 
-# Helper function for project name detection
-get_project_name() {
-    # Try git remote first
-    local git_remote=\$(git remote get-url origin 2>/dev/null | sed 's/.*\///' | sed 's/\.git$//')
-    if [[ -n "\$git_remote" ]]; then
-        echo "\$git_remote"
-        return
-    fi
-    
-    # Fallback to directory name
-    basename "\$(pwd)"
-}
+# Lore paths
+export LORE_CONFIG="$HOME/.config/lore"
+export LORE_DATA="$HOME/.local/share/lore"
+export LORE_CACHE="$HOME/.cache/lore"
 EOF
 
-echo -e "${GREEN}✅ Configuration written${RESET}"
+echo -e "${GREEN}✅ Bash exports generated from TOML${RESET}"
 
 # Write installed version
-cp "$MOMENTUM_SOURCE/VERSION" "$MOMENTUM_HOME/VERSION" 2>/dev/null || echo "1.0.0" > "$MOMENTUM_HOME/VERSION"
+cp "$MOMENTUM_SOURCE/VERSION" "$MOMENTUM_INSTALL/VERSION" 2>/dev/null || echo "1.0.0" > "$MOMENTUM_INSTALL/VERSION"
 echo "✅ Version tracked"
 echo
 
@@ -361,25 +448,25 @@ echo -e "${CYAN}Step 6: Setting up Momentum Home${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
-# Create home directory structure (minimal - only what Claude needs)
-HOME_DIR="$HOME/.local/share/momentum/home"
-mkdir -p "$HOME_DIR/.claude"
+# Create base directory structure (minimal - only what Claude needs)
+BASE_DIR="$HOME/.local/share/momentum"
+mkdir -p "$BASE_DIR/.claude"
 
-echo "Setting up Momentum Home at $HOME_DIR..."
+echo "Setting up Momentum base directory at $BASE_DIR..."
 
 # Symlink commands, subagents, skills, and hooks directories
 # Remove existing symlinks first to prevent ln from following them
-rm -f "$HOME_DIR/.claude/commands" 2>/dev/null || true
-rm -f "$HOME_DIR/.claude/agents" 2>/dev/null || true
-rm -rf "$HOME_DIR/.claude/skills" 2>/dev/null || true
-rm -rf "$HOME_DIR/.claude/hooks" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/commands" "$HOME_DIR/.claude/commands" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/subagents" "$HOME_DIR/.claude/agents" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/skills" "$HOME_DIR/.claude/skills" 2>/dev/null || true
-ln -sf "$MOMENTUM_HOME/hooks" "$HOME_DIR/.claude/hooks" 2>/dev/null || true
+rm -f "$BASE_DIR/.claude/commands" 2>/dev/null || true
+rm -f "$BASE_DIR/.claude/agents" 2>/dev/null || true
+rm -rf "$BASE_DIR/.claude/skills" 2>/dev/null || true
+rm -rf "$BASE_DIR/.claude/hooks" 2>/dev/null || true
+ln -sf "$MOMENTUM_INSTALL/commands" "$BASE_DIR/.claude/commands" 2>/dev/null || true
+ln -sf "$MOMENTUM_INSTALL/subagents" "$BASE_DIR/.claude/agents" 2>/dev/null || true
+ln -sf "$MOMENTUM_INSTALL/skills" "$BASE_DIR/.claude/skills" 2>/dev/null || true
+ln -sf "$MOMENTUM_INSTALL/hooks" "$BASE_DIR/.claude/hooks" 2>/dev/null || true
 
-# Create home settings.json with complete hook ecosystem
-cat > "$HOME_DIR/.claude/settings.json" << EOF
+# Create base directory settings.json with complete hook ecosystem
+cat > "$BASE_DIR/.claude/settings.json" << EOF
 {
   "\$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
@@ -432,10 +519,21 @@ cat > "$HOME_DIR/.claude/settings.json" << EOF
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun .claude/hooks/momentum-stop-hook.ts"
+          }
+        ]
+      }
     ]
   },
   "permissions": {
     "additionalDirectories": [
+      "$HOME/.local/share/momentum",
       "$DEV_DIR",
       "$PLANNING_DIR",
       "$HOME/.config/momentum/",
@@ -443,6 +541,23 @@ cat > "$HOME_DIR/.claude/settings.json" << EOF
       "$HOME/.local/share/lore/",
       "$HOME/.cache/lore/",
       "/tmp/"
+    ],
+    "allow": [
+      "SlashCommand(/add-task)",
+      "SlashCommand(/complete-iteration)",
+      "SlashCommand(/complete-task)",
+      "SlashCommand(/decompose-iteration)",
+      "SlashCommand(/load-app-context)",
+      "SlashCommand(/plan-iteration)",
+      "SlashCommand(/plan-task)",
+      "SlashCommand(/plan-test)",
+      "SlashCommand(/restore-state)",
+      "SlashCommand(/save-state)",
+      "SlashCommand(/setup-luminaries)",
+      "SlashCommand(/think)",
+      "SlashCommand(/update-project-summary)",
+      "Bash(setupd --switch:*)",
+      "Bash(printf:*)"
     ]
   }
 }
@@ -475,16 +590,16 @@ case "$DETECTED_SHELL" in
         # Fish shell syntax
         mkdir -p "$HOME/.config/fish"
         add_to_shell "$SHELL_CONFIG" "set -x PATH \$HOME/.local/bin \$PATH"
-        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_HOME/config.fish"
+        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_INSTALL/config.fish"
         
         # Create fish-compatible config
-        cat > "$MOMENTUM_HOME/config.fish" << 'EOF'
+        cat > "$MOMENTUM_INSTALL/config.fish" << 'EOF'
 # Momentum Configuration for Fish
-set -x MOMENTUM_HOME "$HOME/.config/momentum"
-source $MOMENTUM_HOME/config
+set -x MOMENTUM_INSTALL "$HOME/.config/momentum"
+source $MOMENTUM_INSTALL/config
 
 # Momentum alias - hook injects metadata, alias loads ASSISTANT.md
-alias momentum 'cd ~/.local/share/momentum/home && claude --append-system-prompt (cat $MOMENTUM_HOME/agents/ASSISTANT.md) "TODAY IS: "(date +%Y-%m-%d)". Activate Assistant"'
+alias momentum 'cd ~/.local/share/momentum && claude --append-system-prompt (cat $MOMENTUM_INSTALL/agents/ASSISTANT.md) "Hello Assistant"'
 EOF
         ;;
     *)
@@ -492,8 +607,8 @@ EOF
         add_to_shell "$SHELL_CONFIG" 'export PATH="$HOME/.local/bin:$PATH"'
         add_to_shell "$SHELL_CONFIG" ""
         add_to_shell "$SHELL_CONFIG" "# Momentum Configuration"
-        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_HOME/config"
-        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'cd ~/.local/share/momentum/home && claude --append-system-prompt "$(cat $MOMENTUM_HOME/agents/ASSISTANT.md)" "TODAY IS: $(date +%Y-%m-%d). Activate Assistant"'"'"
+        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_INSTALL/config"
+        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'cd ~/.local/share/momentum && claude --append-system-prompt "$(cat $MOMENTUM_INSTALL/agents/ASSISTANT.md)" "Hello Assistant"'"'"
         ;;
 esac
 
@@ -505,6 +620,14 @@ echo
 echo -e "${GREEN}╔════════════════════════════════════════╗${RESET}"
 echo -e "${GREEN}║    Installation Complete! 🎉           ║${RESET}"
 echo -e "${GREEN}╚════════════════════════════════════════╝${RESET}"
+# Check for lspeak (optional TTS enhancement)
+if ! command -v lspeak &> /dev/null; then
+  echo
+  echo -e "${YELLOW}ℹ️  Optional: lspeak not found${RESET}"
+  echo "   Voice summaries will be silent (core functionality unaffected)"
+  echo "   To enable TTS, install lspeak: https://github.com/tluyben/lspeak"
+fi
+
 echo
 echo "Your workspace:"
 echo -e "  📝 Planning: ${BLUE}$PLANNING_DIR${RESET}"

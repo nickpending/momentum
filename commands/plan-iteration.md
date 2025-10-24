@@ -6,11 +6,11 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 
 ## Environment Context
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory (environment variable)
-- `$WORKFLOW_DEV` - Development projects root (environment variable)
+- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
+- WORKFLOW_DEV - Development projects root (injected)
 - `{project-root}` - Current project directory (find by locating .workflow/ directory)
 
 ## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
@@ -102,7 +102,7 @@ REQUIRED: Read and acknowledge ALL foundation files:
 - {project-root}/.workflow/resources/IMPLEMENTATION_GUIDELINES.md
 - {project-root}/.workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
 - {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md (if exists) - Current system understanding
-- $WORKFLOW_PROJECTS/{projectname}/later.md (if exists) - Later items to consider
+- WORKFLOW_PROJECTS/{projectname}/later.md (if exists) - Later items to consider
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
 ```
@@ -261,7 +261,7 @@ After investigation, determine the appropriate task type for each item:
 
 ### Design Tasks (Create Artifacts)
 - **When**: Need to figure out UI/UX, architecture, data models DURING iteration
-- **Output**: Exploration document in `$WORKFLOW_PROJECTS/{project}/explorations/`
+- **Output**: Exploration document in `WORKFLOW_PROJECTS/{project}/explorations/`
 - **Completion**: Design decisions documented that guide implementation
 - **Structure**: Goals, constraints, explorations, decisions, mockups/diagrams
 - **Examples**: UI mockups, API design, data model, system architecture
@@ -575,7 +575,7 @@ Please respond with YES or NO.
 IF items were selected from later.md:
 
 MOVE TO ACTIVE:
-1. READ $WORKFLOW_PROJECTS/{projectname}/active.md (create if not exists)
+1. READ WORKFLOW_PROJECTS/{projectname}/active.md (create if not exists)
 2. ADD selected items to appropriate section:
    - Critical bugs → Today section
    - Iteration tasks → This Week section
@@ -650,7 +650,7 @@ TASK TEMPLATE:
 [FOR DESIGN TASKS]:
 **What to design**: [UI flow, architecture, data model, API spec]
 **Constraints**: [Technical, business, user requirements]
-**Output artifact**: `$WORKFLOW_PROJECTS/{project}/explorations/` (via exploration save)
+**Output artifact**: `WORKFLOW_PROJECTS/{project}/explorations/` (via exploration save)
 
 [FOR RESEARCH SPIKES]:
 **Question to answer**: [Can we do X? Will Y scale? Does Z integrate?]

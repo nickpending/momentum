@@ -7,7 +7,6 @@
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { execSync } from 'child_process';
-import { sendDirectVoiceNotification } from './shared/voice-utils.ts';
 import { debugLog, debugLogSeparator } from './shared/debug-log.ts';
 import { processTranscript } from './shared/transcript-processor.ts';
 
@@ -94,7 +93,6 @@ async function main(): Promise<void> {
     if (!isInProject) {
       console.error('⚠️  Not in momentum project - skipping state save');
       debugLog('PreCompact', 'Not in project, skipping');
-      await sendDirectVoiceNotification("Sir, compaction in progress outside project context");
       process.exit(0);
     }
 
@@ -166,8 +164,6 @@ async function main(): Promise<void> {
       console.error(`✅ State saved: state-${timestamp}.md`);
       debugLog('PreCompact', 'State file written successfully');
 
-      await sendDirectVoiceNotification(`Sir, ${projectName} state preserved before compaction`);
-
     } catch (error: any) {
       console.error('❌ Failed to generate state:', error);
       debugLog('PreCompact', 'State generation failed', {
@@ -175,7 +171,6 @@ async function main(): Promise<void> {
         stderr: error.stderr?.toString(),
         stdout: error.stdout?.toString()
       });
-      await sendDirectVoiceNotification("Sir, state save encountered an error");
     }
 
     debugLog('PreCompact', 'Hook completed successfully');
@@ -184,7 +179,6 @@ async function main(): Promise<void> {
   } catch (error) {
     console.error('💥 Momentum PreCompact error:', error);
     debugLog('PreCompact', 'Hook error', { error: String(error) });
-    await sendDirectVoiceNotification("Sir, compaction error encountered");
     process.exit(0);
   }
 }

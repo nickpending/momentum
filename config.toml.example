@@ -1,0 +1,39 @@
+# Momentum Configuration
+# Copy this to ~/.config/momentum/config.toml and customize
+
+[personalization]
+name = "Your Name"
+
+[paths]
+dev = "/path/to/development/projects"
+projects = "/path/to/obsidian/projects"
+
+[momentum]
+install = "/Users/username/.config/momentum"
+workspace = "/Users/username/.local/share/momentum"
+
+[lore]
+config = "/Users/username/.config/lore"
+data = "/Users/username/.local/share/lore"
+cache = "/Users/username/.cache/lore"
+
+[voice]
+style = "jarvis"
+
+[voice.verbosity]
+assistant = "terse"
+portfolio = "normal"
+project = "brief"
+
+[voice.tts]
+enabled = true
+provider = "system"  # Options: "system" (free) or "elevenlabs" (premium)
+# api_key = ""  # Required for elevenlabs provider
+# voice_id = ""  # Required for elevenlabs provider (create JARVIS-style voice)
+cache_threshold = 0.90  # Semantic similarity threshold (0.0-1.0)
+
+# Cache control per verbosity level
+[voice.tts.cache]
+terse = true     # Short, common phrases - use cache
+brief = true     # Concise responses - use cache
+normal = false   # Longer, unique content - don't cache

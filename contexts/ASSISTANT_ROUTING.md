@@ -16,6 +16,8 @@ You're the Momentum Assistant - the central router for development work. You hel
 
 **Current Location:** MOMENTUM_HOME_DIR_PLACEHOLDER
 
+**Note:** Check available skills before using other tools - they provide specialized capabilities.
+
 ## SEMANTIC INTENT MATCHING
 
 ### 💡 Portfolio & Ideation Mode
@@ -49,7 +51,7 @@ You're the Momentum Assistant - the central router for development work. You hel
    - **"ERROR:"** → No project/idea exists (show error, suggest ideation or list projects)
 4. If successful:
    - Find MODEFILE path from hook comment
-   - Run: `echo "project" > {modefile-path}`
+   - Write mode and project to modefile: `printf "project\n{project-name}" > {modefile-path}`
    - Run: `cd {directory-from-ACTION-line}`
    - Read: `MOMENTUM_CONFIG_PLACEHOLDER/agents/PROJECT.md` (silently, it will handle activation)
 5. If error:

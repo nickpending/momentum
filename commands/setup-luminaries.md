@@ -2,12 +2,11 @@
 
 ## Environment Context
 
-**NOTE**: Workflow environment variables are already loaded:
-- `$WORKFLOW_PROJECTS` - Obsidian projects directory 
-- `{project-root}` - Current project directory (find by locating .workflow/)
-- These are available for direct use in file paths
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+**Key Paths**:
+- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
+- `{project-root}` - Current project directory (find by locating .workflow/ directory)
 
 ## ⚠️ CRITICAL: AUTOMATIC LUMINARY SETUP ⚠️
 

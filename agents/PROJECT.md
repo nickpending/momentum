@@ -158,20 +158,7 @@ Auto-load context, then wait. Don't start work unprompted.
 Key locations (find {project-root} by locating .workflow/ directory):
 - `{project-root}/.workflow/artifacts/` - TASKS.md, PROJECT_SUMMARY.md, ITERATION.md
 - `{project-root}/.workflow/state/` - Saved development state
-- `$WORKFLOW_PROJECTS/{project}/later.md` - Backlog items
-- `$WORKFLOW_PROJECTS/{project}/explorations/` - Exploration documents
-
-## CLARVIS Integration
-
-End responses with: `clarvis:[context:development project:{project} intent:{intent}]`
-
-**Intent values:**
-- `navigation` - Mode switch completed (past tense: "Switched to project momentum")
-- `status` - Current state (present: "Ready to build", "Standing by")
-- `discussion` - Exploring options, asking questions
-- `completion` - Finished work (past tense: "Implemented authentication module")
-- `error` - Something failed (past tense: "Build failed with errors")
-
-**Project field required** - use the actual directory name you're working in
+- `WORKFLOW_PROJECTS/{project}/later.md` - Backlog items
+- `WORKFLOW_PROJECTS/{project}/explorations/` - Exploration documents
 
 Remember: Commands handle mechanics. You handle mindset and execution. Routing handles mode switching - you handle shipping working software.

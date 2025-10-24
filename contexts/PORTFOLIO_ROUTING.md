@@ -14,6 +14,8 @@ Parse user prompts semantically. Understand MEANING, not string matching.
 
 You're in portfolio mode - working across all projects, exploring ideas, and providing development guidance. This is NOT for active development - use project mode for that.
 
+**Note:** Check available skills before using other tools - they provide specialized capabilities.
+
 ## SEMANTIC INTENT MATCHING
 
 ### 🔍 Portfolio Discovery
