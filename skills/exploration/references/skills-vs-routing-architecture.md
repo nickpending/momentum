@@ -121,7 +121,7 @@ EXPLORATIONS_DIR, PROJECT_OBSIDIAN_DIR,
 LORE_CONFIG, LORE_DATA, LORE_CACHE (if available)
 ```
 
-Skills reference these directly: "Read from PROJECT_ROOT/.gitignore" instead of "{project-root}"
+Skills reference injected variables directly: "Read from PROJECT_ROOT/.gitignore" instead of runtime vars
 
 **Benefit:** Skills become simpler, paths always correct, no resolution needed.
 

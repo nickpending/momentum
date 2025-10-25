@@ -5,8 +5,10 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- ARTIFACTS_DIR - Workflow artifacts (LUMINARIES.md)
+- WORKFLOW_DIR - Workflow root (for templates/)
+- PROJECT_ROOT - Project root (for .claude/agents/)
+- WORKFLOW_PROJECTS - Obsidian projects directory
 
 ## ⚠️ CRITICAL: AUTOMATIC LUMINARY SETUP ⚠️
 
@@ -17,7 +19,7 @@
 **CHECKPOINT 1: Check for Existing Luminaries**
 
 ```
-REQUIRED: Check for {project-root}/.workflow/artifacts/LUMINARIES.md
+REQUIRED: Check for ARTIFACTS_DIR/LUMINARIES.md
 
 IF LUMINARIES.md EXISTS:
 - READ luminaries configuration
@@ -157,7 +159,7 @@ EXAMPLES:
 ✅ CORRECT: "What would Bartle do here?"
 ❌ WRONG: "What would Bartle think of this player interaction?"
 
-Generate LUMINARIES.md in {project-root}/.workflow/artifacts/ with this EXACT format:
+Generate LUMINARIES.md in ARTIFACTS_DIR/ with this EXACT format:
 
 # LUMINARIES.md
 
@@ -203,7 +205,7 @@ RULES:
 
 Generate LUMINARIES.md from the extracted IDEA.md information following the mandatory interrupt patterns.
 
-VERIFICATION: Confirm LUMINARIES.md created in {project-root}/.workflow/artifacts/
+VERIFICATION: Confirm LUMINARIES.md created in ARTIFACTS_DIR/
 
 NOTE: If regenerating, existing LUMINARIES.md will be overwritten with new expert selection based on updated IDEA.md.
 ```
@@ -216,12 +218,12 @@ NOTE: If regenerating, existing LUMINARIES.md will be overwritten with new exper
 REQUIRED: Generate custom ROUNDTABLE.md subagent using luminaries
 
 PROCESS:
-1. READ {project-root}/.workflow/artifacts/LUMINARIES.md
+1. READ ARTIFACTS_DIR/LUMINARIES.md
 2. EXTRACT primary luminaries (name, what they built, expertise)
 3. EXTRACT project context (type, core challenge, scale)
-4. READ {project-root}/.workflow/templates/ROUNDTABLE_TEMPLATE.md
+4. READ WORKFLOW_DIR/templates/ROUNDTABLE_TEMPLATE.md
 5. SUBSTITUTE luminaries and project data into template
-6. WRITE to {project-root}/.claude/agents/roundtable.md
+6. WRITE to PROJECT_ROOT/.claude/agents/roundtable.md
 
 TEMPLATE SUBSTITUTION:
 - [PROJECT_TYPE] → Project Context Type
@@ -247,8 +249,8 @@ TEMPLATE SUBSTITUTION:
 
 ```
 VERIFICATION GATE: Confirm both files exist:
-- {project-root}/.workflow/artifacts/LUMINARIES.md ✅
-- {project-root}/.claude/agents/roundtable.md ✅
+- ARTIFACTS_DIR/LUMINARIES.md ✅
+- PROJECT_ROOT/.claude/agents/roundtable.md ✅
 
 OUTPUT:
 =====================================

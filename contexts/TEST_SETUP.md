@@ -3,13 +3,14 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- ARTIFACTS_DIR - Workflow artifacts (ITERATION.md, TESTING.md)
+- WORKFLOW_DIR - Workflow root (for templates/)
 - `~/.claudex/standards/` - Claudex standards directory
 
 ## DETECT TECH STACK
 
 **Primary Source:**
-- READ {project-root}/.workflow/artifacts/ITERATION.md
+- READ ARTIFACTS_DIR/ITERATION.md
 - EXTRACT from "Tech Stack & Embedded Standards" section
 - NOTE all languages, frameworks, tools mentioned
 
@@ -43,7 +44,7 @@
 ## CREATE TESTING.md
 
 **Template:**
-- LOAD {project-root}/.workflow/templates/TESTING_TEMPLATE.md
+- LOAD WORKFLOW_DIR/templates/TESTING_TEMPLATE.md
 
 **Populate with:**
 - Detected tech stack and versions
@@ -63,7 +64,7 @@
 - Example focused on invariant testing, not unit testing
 
 **Output:**
-- WRITE to {project-root}/.workflow/artifacts/TESTING.md
+- WRITE to ARTIFACTS_DIR/TESTING.md
 
 ## COMPLETION
 

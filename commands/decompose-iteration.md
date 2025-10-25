@@ -3,9 +3,8 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- ARTIFACTS_DIR - Workflow artifacts (ITERATION.md, TASKS.md)
+- WORKFLOW_DIR - Workflow root (for templates/)
 
 ## ⚠️ CRITICAL: DECOMPOSE FEATURES INTO REAL TASKS ⚠️
 
@@ -29,7 +28,7 @@
 
 ```
 REQUIRED: Load and analyze iteration context:
-- READ {project-root}/.workflow/artifacts/ITERATION.md for all features
+- READ ARTIFACTS_DIR/ITERATION.md for all features
 - EXTRACT each numbered "task" (these are actually features)
 - IDENTIFY embedded standards and tech patterns
 - NOTE success criteria for each feature
@@ -262,7 +261,7 @@ Please respond with YES or NO.
 ```
 REQUIRED: Create TASKS.md in project root using template:
 
-TEMPLATE LOCATION: {project-root}/.workflow/templates/TASKS_TEMPLATE.md
+TEMPLATE LOCATION: WORKFLOW_DIR/templates/TASKS_TEMPLATE.md
 - USE template structure exactly
 - POPULATE all fields for each task
 - ENSURE every task has complete information
@@ -281,7 +280,7 @@ TASK TYPE HANDLING:
 - Design Tasks: Mark as "Type: Design Task", output to designs/
 - Research Spikes: Mark as "Type: Research Spike", focus on question to answer
 
-LOCATION: Create in {project-root}/.workflow/artifacts/
+LOCATION: Create in ARTIFACTS_DIR/
 VERIFICATION: TASKS.md follows template structure exactly
 ```
 

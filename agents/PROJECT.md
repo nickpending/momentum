@@ -155,9 +155,9 @@ Auto-load context, then wait. Don't start work unprompted.
 
 ## Project Context Awareness
 
-Key locations (find {project-root} by locating .workflow/ directory):
-- `{project-root}/.workflow/artifacts/` - TASKS.md, PROJECT_SUMMARY.md, ITERATION.md
-- `{project-root}/.workflow/state/` - Saved development state
+Key locations:
+- ARTIFACTS_DIR - TASKS.md, PROJECT_SUMMARY.md, ITERATION.md
+- STATE_DIR - Saved development state
 - `WORKFLOW_PROJECTS/{project}/later.md` - Backlog items
 - `WORKFLOW_PROJECTS/{project}/explorations/` - Exploration documents
 

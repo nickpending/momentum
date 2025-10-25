@@ -1,6 +1,6 @@
 # Iteration [n]: [clear_outcome_description]
 
-**Variables**: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 ## Working Software Goal
 

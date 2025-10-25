@@ -3,9 +3,8 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- STATE_DIR - Saved state files
+- ARTIFACTS_DIR - Workflow artifacts (TASKS.md, IDEA.md, ITERATION.md, PROJECT_SUMMARY.md)
 
 ## Usage
 
@@ -26,7 +25,7 @@
 
 ### Find and Load State File
 
-1. **READ** `{project-root}/.workflow/state/task-[specified_or_recent].md`
+1. **READ** `STATE_DIR/task-[specified_or_recent].md`
 2. **EXTRACT** essential resumption information:
     - Current progress and phase
     - Files changed and their status
@@ -38,13 +37,13 @@
 
 ### Core Context (same as /load-app-context)
 
-1. **READ** `{project-root}/.workflow/artifacts/TASKS.md` - Current task list and status
-2. **READ** `{project-root}/.workflow/artifacts/IDEA.md` - Overall project vision and goals
+1. **READ** `ARTIFACTS_DIR/TASKS.md` - Current task list and status
+2. **READ** `ARTIFACTS_DIR/IDEA.md` - Overall project vision and goals
 
 ### Extended Context for Resumption
 
-3. **READ** `{project-root}/.workflow/artifacts/ITERATION.md` - Complete iteration with embedded standards
-4. **READ** `{project-root}/.workflow/artifacts/PROJECT_SUMMARY.md` (if exists) - System integration context
+3. **READ** `ARTIFACTS_DIR/ITERATION.md` - Complete iteration with embedded standards
+4. **READ** `ARTIFACTS_DIR/PROJECT_SUMMARY.md` (if exists) - System integration context
 5. **READ** `CLAUDE.md` (if exists) - Project development context
 
 ### Verify Current Environment
@@ -87,7 +86,7 @@ IMMEDIATE NEXT ACTION:
 
 ### Update Task Status
 
-1. **UPDATE** `{project-root}/.workflow/artifacts/ITERATION.md` - Remove state reference
+1. **UPDATE** `ARTIFACTS_DIR/ITERATION.md` - Remove state reference
 2. **MAINTAIN** task as 🔄 In Progress
 3. **READY** for continued implementation
 
@@ -112,7 +111,7 @@ IMMEDIATE NEXT ACTION:
 
 **IF** state file not found:
 
-- **LIST** available state files in `{project-root}/.workflow/state/`
+- **LIST** available state files in `STATE_DIR/`
 - **OFFER** to start fresh with `/load-app-context` equivalent
 
 **IF** iteration context missing:

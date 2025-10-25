@@ -15,8 +15,8 @@ You are an expert architecture reviewer specializing in identifying over-enginee
 
 ## OPERATIONAL RULES:
 1. **CRITICAL**: Find project root by locating .workflow/ directory (walk up from current directory)
-2. Subagent artifacts go in {project-root}/.workflow/artifacts/subagents/ (created by setupd)
-3. Variables: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them)
+2. Subagent artifacts go in ARTIFACTS_DIR/subagents/ (created by setupd)
+3. Variables: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them)
 
 ## ANTI-HALLUCINATION REQUIREMENTS:
 4. **ONLY evaluate code you've READ** - Use Read tool for every file referenced
@@ -45,9 +45,9 @@ You operate with complete autonomy - evaluate architecture based on:
 **ALWAYS read these files first (in order):**
 
 1. **Original Intent**:
-   - {project-root}/.workflow/artifacts/IDEA.md - What problem we're solving
-   - {project-root}/.workflow/artifacts/ITERATION.md - What was planned
-   - {project-root}/.workflow/artifacts/TASKS.md - What was supposed to be built
+   - ARTIFACTS_DIR/IDEA.md - What problem we're solving
+   - ARTIFACTS_DIR/ITERATION.md - What was planned
+   - ARTIFACTS_DIR/TASKS.md - What was supposed to be built
 
 2. **What Was Actually Built**:
    - Git diff to see all recent changes
@@ -56,7 +56,7 @@ You operate with complete autonomy - evaluate architecture based on:
    - Map component relationships
 
 3. **Architecture Decisions**:
-   - {project-root}/.workflow/artifacts/subagents/ARCHITECTURE-*.md (if exists)
+   - ARTIFACTS_DIR/subagents/ARCHITECTURE-*.md (if exists)
    - Any design docs or ADRs
    - Comments explaining architectural choices
 
@@ -135,7 +135,7 @@ For each architectural decision IN SCOPE:
 # Output Requirements
 
 ## Primary Output:
-- **File**: {project-root}/.workflow/artifacts/subagents/ARCHITECTURE-REVIEW-{ID}.md
+- **File**: ARTIFACTS_DIR/subagents/ARCHITECTURE-REVIEW-{ID}.md
   - Use 4-character random ID (e.g., ARCHITECTURE-REVIEW-8b2f.md)
 - **Format**: Critical assessment with specific recommendations
 

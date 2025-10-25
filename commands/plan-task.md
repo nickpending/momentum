@@ -3,9 +3,9 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- ARTIFACTS_DIR - Workflow artifacts (TASKS.md, ARCHITECTURE.md, IMPLEMENTATION.md)
+- STATE_DIR - Saved state files
+- WORKFLOW_PROJECTS - Obsidian projects directory
 
 ## ⚠️ CRITICAL: GROUP RELATED TASKS FIRST ⚠️
 
@@ -245,7 +245,7 @@ SUBAGENT DECISION:
 - Major systems: Use both agents in parallel
 
 Check for Existing Subagent Artifacts:
-- SCAN {project-root}/.workflow/artifacts/ directory for relevant artifacts
+- SCAN ARTIFACTS_DIR/ directory for relevant artifacts
 - READ any existing ARCHITECTURE.md, IMPLEMENTATION.md, or task-specific files
 - INCORPORATE existing insights before deciding if new analysis needed
 
@@ -257,8 +257,8 @@ IF subagents needed:
         prompt="Create technical plan for task(s) X.Y-X.Z...")
   
   AFTER COMPLETION:
-  - READ {project-root}/.workflow/artifacts/ARCHITECTURE.md for structural guidance
-  - READ {project-root}/.workflow/artifacts/IMPLEMENTATION.md for technical approach
+  - READ ARTIFACTS_DIR/ARCHITECTURE.md for structural guidance
+  - READ ARTIFACTS_DIR/IMPLEMENTATION.md for technical approach
   - INCORPORATE insights into implementation plan
 
 DECISION: [Use subagents / Skip subagents] because [specific reasoning]
@@ -418,8 +418,8 @@ IF IMPLEMENTATION TASK:
   Services Required: [What existing services need to be running]
 
   Key Insights (if subagents used):
-  - Architecture: [key decisions from {project-root}/.workflow/artifacts/ARCHITECTURE.md]
-  - Implementation: [key approaches from {project-root}/.workflow/artifacts/IMPLEMENTATION.md]
+  - Architecture: [key decisions from ARTIFACTS_DIR/ARCHITECTURE.md]
+  - Implementation: [key approaches from ARTIFACTS_DIR/IMPLEMENTATION.md]
 
   Ready to begin implementation?
 
@@ -630,9 +630,9 @@ LOW RISK (cosmetic/minor):
 - [Component]: Only affects [minor thing] - Status: [Confirmed/Downgraded]
 Example: "Animation timing" - Just visual (Confirmed LOW)
 
-⚠️ MANDATORY: UPDATE {project-root}/.workflow/artifacts/TASKS.md BEFORE PROCEEDING ⚠️
+⚠️ MANDATORY: UPDATE ARTIFACTS_DIR/TASKS.md BEFORE PROCEEDING ⚠️
 
-You MUST update {project-root}/.workflow/artifacts/TASKS.md with discoveries.
+You MUST update ARTIFACTS_DIR/TASKS.md with discoveries.
 Use Edit or MultiEdit tool to update ONLY the "Discovered During Implementation" section:
 
 **ONLY UPDATE THE DISCOVERIES SECTION:**
@@ -649,7 +649,7 @@ Use Edit or MultiEdit tool to update ONLY the "Discovered During Implementation"
 Task status changes happen ONLY with the /complete-task command, NEVER during /plan-task.
 
 This captures real implementation insights for future reference.
-DO NOT PROCEED until you've updated ONLY the discoveries in {project-root}/.workflow/artifacts/TASKS.md
+DO NOT PROCEED until you've updated ONLY the discoveries in ARTIFACTS_DIR/TASKS.md
 ```
 
 ## CRITICAL GATES & ENFORCEMENT
@@ -668,7 +668,7 @@ DO NOT PROCEED until you've updated ONLY the discoveries in {project-root}/.work
 
 ### Context Overflow Protection
 - Auto-save state if context exceeds 80% using /save-state
-- State saved to {project-root}/.workflow/state/task-N-timestamp.md
+- State saved to STATE_DIR/task-N-timestamp.md
 - Continue with /restore-state when context restored
 - Minimal state capture for resumption
 

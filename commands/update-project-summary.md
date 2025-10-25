@@ -3,9 +3,8 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- ARTIFACTS_DIR - Workflow artifacts (IDEA.md, ITERATION.md, TASKS.md, PROJECT_SUMMARY.md)
+- WORKFLOW_DIR - Workflow root (for templates/)
 
 ## Purpose
 
@@ -15,10 +14,10 @@ Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key inform
 
 **READ** these files to extract information:
 
-1. `{project-root}/.workflow/artifacts/IDEA.md` - project vision and tech stack
-2. `{project-root}/.workflow/artifacts/ITERATION.md` (if exists) - current iteration details
-3. `{project-root}/.workflow/artifacts/TASKS.md` (if exists) - task progress
-4. `{project-root}/.workflow/templates/PROJECT_SUMMARY_TEMPLATE.md` - output template
+1. `ARTIFACTS_DIR/IDEA.md` - project vision and tech stack
+2. `ARTIFACTS_DIR/ITERATION.md` (if exists) - current iteration details
+3. `ARTIFACTS_DIR/TASKS.md` (if exists) - task progress
+4. `WORKFLOW_DIR/templates/PROJECT_SUMMARY_TEMPLATE.md` - output template
 
 ## Step 2: Extract Key Information
 
@@ -124,7 +123,7 @@ Run `ls -la` to map project organization:
 
 ## Step 4: Write PROJECT_SUMMARY.md
 
-**CREATE** file at: `{project-root}/.workflow/artifacts/PROJECT_SUMMARY.md`
+**CREATE** file at: `ARTIFACTS_DIR/PROJECT_SUMMARY.md`
 
 Target length: 40-50 lines (lightweight context)
 
@@ -138,7 +137,7 @@ PROJECT SUMMARY UPDATED
 ✅ Project: {PROJECT_NAME}
 ✅ Iteration: {ITERATION_NUMBER} - {ITERATION_NAME}
 ✅ Progress: {COMPLETED}/{TOTAL} tasks complete
-✅ Output: {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md
+✅ Output: ARTIFACTS_DIR/PROJECT_SUMMARY.md
 
 Summary ready for /load-app-context
 ```

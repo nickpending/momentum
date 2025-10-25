@@ -3,16 +3,14 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- ARTIFACTS_DIR - Workflow artifacts (PROJECT_SUMMARY.md, TASKS.md)
 
 ## Step 1: Load Context
 
 **READ**:
 
-1. `{project-root}/.workflow/artifacts/PROJECT_SUMMARY.md`
-2. `{project-root}/.workflow/artifacts/TASKS.md`
+1. `ARTIFACTS_DIR/PROJECT_SUMMARY.md`
+2. `ARTIFACTS_DIR/TASKS.md`
 
 ## Step 2: Report Status
 
@@ -48,7 +46,7 @@ What would you like to do?
 ### If no files exist:
 ```
 **NO CONTEXT FOUND**
-No project files found in {project-root}/.workflow/artifacts/
+No project files found in ARTIFACTS_DIR/
 
 To get started:
 - Create IDEA.md in obsidian for project vision

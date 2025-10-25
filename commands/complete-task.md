@@ -3,7 +3,7 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- None - Uses paths from injected variables
 - WORKFLOW_PROJECTS - Obsidian projects directory (injected)
 - WORKFLOW_DEV - Development projects root (injected)
 
@@ -177,6 +177,18 @@ Dependencies Unblocked: [any tasks now ready to start]
 Ready for /plan-task [next-task] or /complete-iteration if all done.
 ```
 
+### PHASE 4: RETURN TO PROJECT ROOT (REQUIRED)
+
+**CHECKPOINT 4: Navigate Back to Project Root**
+
+```
+REQUIRED: Return to project root directory:
+- RUN: cd {PROJECT_ROOT}
+- VERIFY: You are back in the project root
+
+PURPOSE: Maintain consistent working directory after task completion
+```
+
 ## ENFORCEMENT MECHANISMS
 
 ### Streamlined Validation
@@ -206,3 +218,4 @@ Task completion finalized when:
 - [ ] Progress assessed and reported
 - [ ] Next steps clearly identified
 - [ ] Workflow guidance provided
+- [ ] Returned to project root directory

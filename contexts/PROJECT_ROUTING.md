@@ -57,7 +57,7 @@ You're in project mode - focused on shipping working software for a single proje
 ### 🔧 Task Planning
 **Trigger:** `/plan-task` followed by number
 **Action:** Execute ALL steps in sequence:
-1. Check if {project-root}/.workflow/artifacts/TESTING.md exists
+1. Check if ARTIFACTS_DIR/TESTING.md exists
 2. If missing: Load `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md`
 3. If exists: Say "🎯 Task mode activated" and proceed
 

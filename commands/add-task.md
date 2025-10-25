@@ -3,9 +3,7 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- ARTIFACTS_DIR - Workflow artifacts (TASKS.md)
 
 ## ⚠️ CRITICAL: DISCOVERED TASKS NEED FULL CONTEXT ⚠️
 
@@ -32,7 +30,7 @@ These can't wait for the next iteration but weren't part of the original plan.
 
 ```
 REQUIRED: Understand current iteration and task status:
-- READ {project-root}/.workflow/artifacts/TASKS.md
+- READ ARTIFACTS_DIR/TASKS.md
 - IDENTIFY current task statuses (what's in progress, complete)
 - CHECK if "Discovered Tasks" section exists
 - DETERMINE next available prefix (D, R, F, T, etc.)

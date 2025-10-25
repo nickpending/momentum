@@ -9,9 +9,9 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- ARTIFACTS_DIR - Workflow artifacts (IDEA.md, PROJECT_SUMMARY.md)
+- WORKFLOW_DIR - Workflow directory (resources/, archives/, templates/)
+- WORKFLOW_PROJECTS - Obsidian projects directory
 
 ## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
 
@@ -98,10 +98,10 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 
 ```
 REQUIRED: Read and acknowledge ALL foundation files:
-- {project-root}/.workflow/resources/DESIGN_PRINCIPLES.md
-- {project-root}/.workflow/resources/IMPLEMENTATION_GUIDELINES.md
-- {project-root}/.workflow/artifacts/IDEA.md (Core vision, problem, solution, and features)
-- {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md (if exists) - Current system understanding
+- WORKFLOW_DIR/resources/DESIGN_PRINCIPLES.md
+- WORKFLOW_DIR/resources/IMPLEMENTATION_GUIDELINES.md
+- ARTIFACTS_DIR/IDEA.md (Core vision, problem, solution, and features)
+- ARTIFACTS_DIR/PROJECT_SUMMARY.md (if exists) - Current system understanding
 - WORKFLOW_PROJECTS/{projectname}/later.md (if exists) - Later items to consider
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
@@ -144,7 +144,7 @@ VERIFICATION: User selects which later items to include
 
 ```
 REQUIRED: Analyze current system for context:
-- SCAN {project-root}/.workflow/archives/ for completed iterations
+- SCAN WORKFLOW_DIR/archives/ for completed iterations
 - IDENTIFY existing services/APIs/components
 - NOTE current architecture and data flows
 - UNDERSTAND existing integration points
@@ -157,7 +157,7 @@ VERIFICATION: Have map of what exists
 
 ```
 REQUIRED: Learn from recent iteration summaries:
-- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from {project-root}/.workflow/archives/iteration-*/
+- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from WORKFLOW_DIR/archives/iteration-*/
 - EXTRACT insights from actual summary structure:
   - Task Insights: Implementation decisions, patterns established, development friction
   - Discovery Insights: Bug patterns, performance learnings, integration insights, technical debt
@@ -234,7 +234,7 @@ FOR COMPLEX items (run concurrently):
        Present architectural options with trade-offs."
 
   COLLECT all agent responses as they complete
-  READ generated artifacts from {project-root}/.workflow/artifacts/subagents/
+  READ generated artifacts from ARTIFACTS_DIR/subagents/
 
 FOR PATTERN items (run concurrently):
   FIND examples IN PARALLEL:
@@ -282,7 +282,7 @@ After investigation, determine the appropriate task type for each item:
 
 ```
 REQUIRED: Learn from recent iteration summaries:
-- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from {project-root}/.workflow/archives/iteration-*/
+- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from WORKFLOW_DIR/archives/iteration-*/
 - EXTRACT insights from actual summary structure:
   - Task Insights: Implementation decisions, patterns established, development friction
   - Discovery Insights: Bug patterns, performance learnings, integration insights, technical debt
@@ -601,9 +601,9 @@ VERIFICATION: Confirm items moved to active.md and removed from later.md
 
 ```
 REQUIRED: Update IDEA.md with iteration progress:
-- DETERMINE next iteration number from {project-root}/.workflow/archives/
+- DETERMINE next iteration number from WORKFLOW_DIR/archives/
 - MARK selected features as 🔄 In Progress (iteration-N)
-- UPDATE {project-root}/.workflow/artifacts/IDEA.md with new feature statuses
+- UPDATE ARTIFACTS_DIR/IDEA.md with new feature statuses
 
 VERIFICATION: Confirm feature status updates applied
 ```
@@ -612,7 +612,7 @@ VERIFICATION: Confirm feature status updates applied
 
 ```
 REQUIRED: Create ITERATION.md with captured decisions:
-- LOAD {project-root}/.workflow/templates/ITERATION_TEMPLATE.md
+- LOAD WORKFLOW_DIR/templates/ITERATION_TEMPLATE.md
 - POPULATE with investigation findings and decisions
 - EMBED tech standards for reference
 - INCLUDE invariant analysis

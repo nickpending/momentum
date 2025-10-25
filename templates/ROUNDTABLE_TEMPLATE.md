@@ -24,9 +24,13 @@ You are conducting a COMPREHENSIVE CODE REVIEW through the expertise of 4 domain
 
 ⚠️ CRITICAL: PERFORM ACTUAL CODE REVIEW, NOT THEORETICAL DISCUSSION ⚠️
 
-1. **CRITICAL**: Find project root by locating .workflow/ directory (walk up from current directory)
-2. Subagent artifacts go in {project-root}/.workflow/artifacts/subagents/ (created by setupd)
-3. Variables: `$VARS` are environment variables (expand them), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them)
+**Key Paths**:
+- PROJECT_ROOT - Project root directory
+- ARTIFACTS_DIR - Workflow artifacts (PROJECT_SUMMARY.md, TASKS.md, ITERATION.md, IDEA.md, subagents/)
+- WORKFLOW_DIR - Workflow directory (resources/)
+
+1. Subagent artifacts go in ARTIFACTS_DIR/subagents/ (created by setupd)
+2. Variables: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them)
 4. **READ THE CODE**: Every expert must examine actual files and patterns
 5. **EVIDENCE REQUIRED**: Reference specific files:lines for every observation
 6. **PRACTICAL FOCUS**: What works, what doesn't, what needs fixing
@@ -62,14 +66,14 @@ When no specific focus is provided:
 **ALWAYS read these files first (in order):**
 
 ## 1. Project Context
-- {project-root}/CLAUDE.local.md - Private configurations (if exists)
-- {project-root}/CLAUDE.md - Project conventions (if exists)
-- {project-root}/.workflow/artifacts/PROJECT_SUMMARY.md - System architecture
+- PROJECT_ROOT/CLAUDE.local.md - Private configurations (if exists)
+- PROJECT_ROOT/CLAUDE.md - Project conventions (if exists)
+- ARTIFACTS_DIR/PROJECT_SUMMARY.md - System architecture
 
 ## 2. Current Work Context (if reviewing specific task)
-- {project-root}/.workflow/artifacts/TASKS.md - Current tasks and status
-- {project-root}/.workflow/artifacts/ITERATION.md - Iteration goals
-- {project-root}/.workflow/artifacts/IDEA.md - Project vision
+- ARTIFACTS_DIR/TASKS.md - Current tasks and status
+- ARTIFACTS_DIR/ITERATION.md - Iteration goals
+- ARTIFACTS_DIR/IDEA.md - Project vision
 
 ## 3. Codebase Analysis (MANDATORY - READ ACTUAL CODE)
 **YOU MUST READ CODE FILES, NOT JUST DOCUMENTATION:**
@@ -84,9 +88,9 @@ When no specific focus is provided:
 **VERIFICATION**: Each expert must reference specific files and line numbers in their review
 
 ## 4. Prior Analysis (if exists)
-- {project-root}/.workflow/artifacts/subagents/ARCHITECTURE-*.md
-- {project-root}/.workflow/artifacts/subagents/IMPLEMENTATION-*.md
-- {project-root}/.workflow/resources/DESIGN_PRINCIPLES.md
+- ARTIFACTS_DIR/subagents/ARCHITECTURE-*.md
+- ARTIFACTS_DIR/subagents/IMPLEMENTATION-*.md
+- WORKFLOW_DIR/resources/DESIGN_PRINCIPLES.md
 
 # Expert Review Process
 
@@ -260,7 +264,7 @@ Different perspectives on approach:
 # Output Requirements
 
 ## Primary Output:
-- **File**: {project-root}/.workflow/artifacts/subagents/ROUNDTABLE-{ID}.md
+- **File**: ARTIFACTS_DIR/subagents/ROUNDTABLE-{ID}.md
   - Use 4-character random ID (e.g., ROUNDTABLE-7a3f.md)
   - Ensures each analysis creates a unique file
 - **Format**: Expert code review with actionable recommendations

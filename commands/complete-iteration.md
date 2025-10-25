@@ -3,9 +3,10 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- ARTIFACTS_DIR - Workflow artifacts (ITERATION.md, TASKS.md, subagent outputs)
+- STATE_DIR - Saved state files
+- WORKFLOW_DIR - Workflow directory (archives/, discoveries/)
+- WORKFLOW_PROJECTS - Obsidian projects directory
 
 ## ⚠️ CRITICAL: ITERATION CLOSURE AND KNOWLEDGE SYNTHESIS ⚠️
 
@@ -19,7 +20,7 @@
 
 ```
 REQUIRED: Verify iteration is ready for completion:
-- READ {project-root}/.workflow/artifacts/ITERATION.md
+- READ ARTIFACTS_DIR/ITERATION.md
 - COUNT total tasks vs completed tasks (✅ Complete)
 - IDENTIFY any remaining 📋 Planned or 🔄 In Progress tasks
 - VERIFY iteration success criteria were met
@@ -72,7 +73,7 @@ VERIFICATION: Systematic extraction completed for all tasks
 
 ```
 REQUIRED: Extract structured insights from discovery files:
-- READ all files in {project-root}/.workflow/discoveries/
+- READ all files in WORKFLOW_DIR/discoveries/
 - FOR EACH DISCOVERY extract:
   - Bug patterns found and root causes
   - Performance insights and optimizations applied
@@ -115,8 +116,8 @@ SYNTHESIS PROCESS:
 - ASSESS overall iteration effectiveness
 
 CREATE SUMMARY FILE:
-- DETERMINE iteration number from {project-root}/.workflow/archives/ directory
-- WRITE to {project-root}/.workflow/archives/ITERATION_{N}_SUMMARY.md
+- DETERMINE iteration number from WORKFLOW_DIR/archives/ directory
+- WRITE to WORKFLOW_DIR/archives/ITERATION_{N}_SUMMARY.md
 
 COMPREHENSIVE SUMMARY STRUCTURE:
 =====================================
@@ -153,15 +154,15 @@ VERIFICATION: Single comprehensive summary created with structured insights from
 
 ```
 REQUIRED: Archive completed iteration properly:
-- CREATE {project-root}/.workflow/archives/iteration-N/ directory
+- CREATE WORKFLOW_DIR/archives/iteration-N/ directory
 - COPY ITERATION.md to archives/iteration-N/
 - COPY TASKS.md to archives/iteration-N/
 - MOVE ITERATION_{N}_SUMMARY.md to archives/iteration-N/
-- MOVE {project-root}/.workflow/discoveries/* to archives/iteration-N/discoveries/
+- MOVE WORKFLOW_DIR/discoveries/* to archives/iteration-N/discoveries/
 - PRESERVE any critical artifacts or documentation
 
 ARCHIVAL STRUCTURE:
-{project-root}/.workflow/archives/iteration-N/
+WORKFLOW_DIR/archives/iteration-N/
 ├── ITERATION.md (completed with all task details)
 ├── TASKS.md (completed tasks)
 ├── ITERATION_{N}_SUMMARY.md (synthesized insights and lessons)
@@ -201,7 +202,7 @@ VERIFICATION: All completed items moved from active.md to completed.md
 ```
 REQUIRED: Prepare clean workspace for next iteration:
 
-ARTIFACTS CLEANUP ({project-root}/.workflow/artifacts/):
+ARTIFACTS CLEANUP (ARTIFACTS_DIR/):
 - REMOVE iteration-specific files:
   - ITERATION.md (now archived)
   - TASKS.md (now archived)
@@ -211,15 +212,15 @@ ARTIFACTS CLEANUP ({project-root}/.workflow/artifacts/):
   - PROJECT_SUMMARY.md (lightweight project context)
   - Any other project-wide documentation
 
-STATE CLEANUP ({project-root}/.workflow/state/):
+STATE CLEANUP (STATE_DIR/):
 - REMOVE all saved state files (task-*.md, etc.)
 - These are iteration-specific and no longer needed
 
 CLEANUP COMMANDS:
-- rm {project-root}/.workflow/artifacts/ITERATION.md
-- rm {project-root}/.workflow/artifacts/TASKS.md
-- rm {project-root}/.workflow/artifacts/subagents/*.md (if directory exists)
-- rm {project-root}/.workflow/state/*.md (if any exist)
+- rm ARTIFACTS_DIR/ITERATION.md
+- rm ARTIFACTS_DIR/TASKS.md
+- rm ARTIFACTS_DIR/subagents/*.md (if directory exists)
+- rm STATE_DIR/*.md (if any exist)
 
 VERIFICATION: Only IDEA.md and PROJECT_SUMMARY.md remain in artifacts
 ```

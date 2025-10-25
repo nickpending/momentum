@@ -3,7 +3,7 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
+- None - Invokes thinking, no file access
 - WORKFLOW_PROJECTS - Obsidian projects directory (injected)
 - WORKFLOW_DEV - Development projects root (injected)
 

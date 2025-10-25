@@ -3,9 +3,7 @@
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
 **Key Paths**:
-- `{project-root}` - Current project directory (find by locating .workflow/ directory)
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
+- ARTIFACTS_DIR - Workflow artifacts (TESTING.md, ITERATION.md, TASKS.md)
 
 ## ⚠️ CRITICAL: RISK-GUIDED INVARIANT TESTING ⚠️
 
@@ -39,7 +37,7 @@ Think like a safety inspector who:
 
 ```
 REQUIRED: Understand how testing works in this project:
-- READ {project-root}/.workflow/artifacts/TESTING.md
+- READ ARTIFACTS_DIR/TESTING.md
 - EXTRACT test runner command and framework
 - NOTE directory structure for tests
 - UNDERSTAND environment requirements
@@ -56,7 +54,7 @@ VERIFICATION: You know how to run tests for this project
 
 ```
 REQUIRED: Understand what was built:
-- READ {project-root}/.workflow/artifacts/ITERATION.md
+- READ ARTIFACTS_DIR/ITERATION.md
 - LOCATE task {task-number}
 - VERIFY task status is 🔄 In Progress or ✅ Complete
 - IDENTIFY what functionality was implemented
@@ -69,7 +67,7 @@ IMPLEMENTATION ANALYSIS:
 - What would a user actually do with this?
 - What could go wrong that would ruin their day?
 
-DEVELOPER'S DISCOVERIES (from {project-root}/.workflow/artifacts/TASKS.md):
+DEVELOPER'S DISCOVERIES (from ARTIFACTS_DIR/TASKS.md):
 - What invariants did they discover?
 - What failure modes did they encounter?
 - What risk assessment did they make?
@@ -252,7 +250,7 @@ TEST PLANNING COMPLETE - NO TESTS WRITTEN
 Task: [task name and number]
 Implementation Summary: [what was built]
 
-DEVELOPER'S PERSPECTIVE (from {project-root}/.workflow/artifacts/TASKS.md):
+DEVELOPER'S PERSPECTIVE (from ARTIFACTS_DIR/TASKS.md):
 - Discovered invariants: [What broke during building]
 - Encountered failures: [What they had to handle]
 - Risk assessment: [Their view of HIGH/LOW]
