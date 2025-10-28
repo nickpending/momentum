@@ -474,7 +474,7 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-session-start-hook.ts startup"
+            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts startup"
           }
         ]
       },
@@ -483,7 +483,7 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-session-start-hook.ts clear"
+            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts clear"
           }
         ]
       },
@@ -492,7 +492,7 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-session-start-hook.ts compact"
+            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts compact"
           }
         ]
       }
@@ -502,7 +502,7 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-user-prompt-submit-hook.ts"
+            "command": "bun $HOME/.config/momentum/hooks/momentum-user-prompt-submit-hook.ts"
           }
         ]
       }
@@ -513,7 +513,7 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-precompact-hook.ts"
+            "command": "bun $HOME/.config/momentum/hooks/momentum-precompact-hook.ts"
           }
         ]
       }
@@ -523,7 +523,7 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
         "hooks": [
           {
             "type": "command",
-            "command": "bun .claude/hooks/momentum-stop-hook.ts"
+            "command": "bun $HOME/.config/momentum/hooks/momentum-stop-hook.ts"
           }
         ]
       }
