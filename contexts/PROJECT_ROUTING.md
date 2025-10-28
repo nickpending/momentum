@@ -61,11 +61,6 @@ You're in project mode - focused on shipping working software for a single proje
 2. If missing: Load `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md`
 3. If exists: Say "🎯 Task mode activated" and proceed
 
-### 🎯 Discovery
-**Intent:** Just solved problem, found something interesting, made breakthrough, learned something
-**Examples:** "that fixed it!", "interesting discovery", "now I understand"
-**Action:** Document immediately to `WORKFLOW_PROJECTS/{project}/explorations/EXPLORATION-[YYYY-MM-DD]-[topic].md` without asking
-
 ### 💾 Save State and Quit
 **Intent:** Saving work and stopping, preserving state, taking a break
 **Examples:** "save state and quit", "save for now", "I'm done for now"

@@ -50,7 +50,6 @@ style = "jarvis"  # jarvis, professional, casual
 
 [voice.verbosity]
 assistant = "terse"
-portfolio = "normal"
 project = "brief"
 
 [voice.tts]
@@ -102,30 +101,22 @@ momentum
 # (Execute first task with evidence-based completion)
 ```
 
-**Three modes, seamless flow:**
+**Two modes, seamless flow:**
 - **Assistant mode** - Central router and navigation
-- **Portfolio mode** - Multi-project management and ideation
 - **Project mode** - Development partner (building, testing, shipping)
 
 That's it! You're shipping working software.
 
 ## 🎮 How It Works
 
-Momentum operates in three modes, each optimized for different types of work:
+Momentum operates in two modes, each optimized for different types of work:
 
-### The Three-Mode System
+### The Two-Mode System
 
 **Assistant Mode** - Your central router
 - Start from anywhere: `momentum`
 - Navigate to projects: "work on projectname"
-- Enter portfolio view: "show projects"
 - Quick command center for all momentum operations
-
-**Portfolio Mode** - Multi-project management
-- Ideation and creative exploration
-- Cross-project queries and insights
-- High-level development guidance
-- Project portfolio management
 
 **Project Mode** - Your development partner
 - Accessed via: "work on projectname"
@@ -136,7 +127,7 @@ Momentum operates in three modes, each optimized for different types of work:
 ### Development Cycle
 
 ```
-ASSISTANT → PORTFOLIO: IDEATE → ASSISTANT → PROJECT: BUILD → SHIP → REPEAT
+ASSISTANT → PROJECT: BUILD → SHIP → REPEAT
 ```
 
 ### Semantic Interaction
@@ -145,12 +136,7 @@ No need to memorize commands. Just talk naturally:
 
 **In Assistant Mode:**
 - "work on projectname" → Switch to project development
-- "show projects" → Enter portfolio mode
-
-**In Portfolio Mode:**
-- "I have an idea for..." → Start ideation conversation
-- "what should I work on" → Get guidance on priorities
-- "save this idea" → Create IDEA.md for new project
+- "show projects" → List available projects
 
 **In Project Mode:**
 - `/plan-iteration` → Collaborative iteration planning
@@ -173,12 +159,7 @@ No need to memorize commands. Just talk naturally:
 
 **In Assistant Mode:**
 - "work on projectname" - Switch to project development
-- "show projects" - Enter portfolio mode
-
-**In Portfolio Mode:**
-- "I have an idea for..." - Start ideation
-- "save this idea" - Create IDEA.md
-- Natural creative conversations
+- "show projects" - List available projects
 
 **In Project Mode:**
 - `/plan-iteration` - Collaboratively plan what to build next
@@ -186,7 +167,7 @@ No need to memorize commands. Just talk naturally:
 - `/complete-iteration` - Ship and archive with verification
 - `/save-state` / `/restore-state` - Manage context across sessions
 
-**💡 The Flow:** Start with `momentum` (Assistant mode), say "work on projectname" to switch to Project mode, or "show projects" for Portfolio mode.
+**💡 The Flow:** Start with `momentum` (Assistant mode), say "work on projectname" to switch to Project mode.
 
 ## 🏗️ Architecture
 
@@ -244,7 +225,6 @@ style = "jarvis"  # jarvis, professional, casual
 
 [voice.verbosity]
 assistant = "terse"   # Brief responses
-portfolio = "normal"  # Standard detail
 project = "brief"     # Focus on essentials
 
 [voice.tts]
@@ -421,7 +401,7 @@ Areas where we'd love contributions:
 
 ```
 momentum/
-├── agents/            # Mode agents (ASSISTANT.md, PORTFOLIO.md, PROJECT.md)
+├── agents/            # Mode agents (ASSISTANT.md, PROJECT.md)
 ├── commands/          # Core workflow slash commands
 ├── contexts/          # Semantic routing contexts for each mode
 ├── subagents/         # Specialized analysis agents
@@ -439,7 +419,7 @@ momentum/
 - [x] TTS integration with optional lspeak support
 - [x] Auto-commit workflow with gitignore protection
 - [x] Diff summary and approval gates
-- [x] Three-mode architecture (Assistant/Portfolio/Project)
+- [x] Two-mode architecture (Assistant/Project)
 - [x] Semantic routing with dynamic context injection
 - [x] Evidence-based agent verification system
 - [x] Skills support (experimental)

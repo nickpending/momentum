@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Momentum SessionStart Hook
- * Production-ready development environment initialization with portfolio management
+ * Production-ready development environment initialization with project management
  */
 
 import { readFileSync, existsSync, writeFileSync } from 'fs';
@@ -33,7 +33,7 @@ async function validateMomentumSystems(): Promise<{ valid: boolean; issues: stri
   const agentsPath = join(momentumConfig, 'agents');
 
   // Convention: modes are lowercase, routing files are {MODE}_ROUTING.md, agents are {MODE}.md
-  const expectedModes = ['assistant', 'portfolio', 'project'];
+  const expectedModes = ['assistant', 'project'];
 
   // Scan for actual files
   const { readdirSync } = require('fs');
@@ -119,9 +119,7 @@ function setTerminalTitle(mode: string, projectName?: string): void {
   let title: string;
 
   if (mode === 'assistant') {
-    title = 'Momentum Assistant • Development Portfolio';
-  } else if (mode === 'portfolio') {
-    title = 'Momentum Portfolio • Multi-Project View';
+    title = 'Momentum Assistant';
   } else {
     title = `${projectName} • Development Active`;
   }
@@ -131,7 +129,7 @@ function setTerminalTitle(mode: string, projectName?: string): void {
   console.error(`📍 Terminal title set: ${title}`);
 }
 
-function loadVoiceInstructionsForMode(mode: 'assistant' | 'portfolio' | 'project'): string {
+function loadVoiceInstructionsForMode(mode: 'assistant' | 'project'): string {
   try {
     const config = loadConfig();
     const momentumHome = config.momentum.install;
@@ -198,46 +196,6 @@ async function handleAssistantMode(sessionId: string, restoreCommand: string | n
 
   // Set terminal title
   setTerminalTitle('assistant');
-}
-
-async function handlePortfolioMode(sessionId: string, restoreCommand: string | null = null): Promise<void> {
-  // Get current date
-  const currentDate = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-  const currentDateTime = new Date().toISOString();
-  const config = loadConfig();
-  const userName = config.personalization.name;
-
-  // Output metadata
-  let additionalContext = `<!-- HOOK: Momentum SessionStart -->
-<!-- CURRENT_DATE: ${currentDate} -->
-<!-- CURRENT_DATETIME: ${currentDateTime} -->
-<!-- SESSION_ID: ${sessionId} -->
-<!-- MODE: portfolio -->
-<!-- NAME: ${userName} -->`;
-
-  // Append restore command if present
-  if (restoreCommand) {
-    additionalContext += `\n\nRun the ${restoreCommand}`;
-  }
-
-  // Load and append voice instructions
-  const voiceInstructions = loadVoiceInstructionsForMode('portfolio');
-  if (voiceInstructions) {
-    additionalContext += `\n\n${voiceInstructions}`;
-  }
-
-  const output = {
-    hookSpecificOutput: {
-      hookEventName: "SessionStart",
-      additionalContext: additionalContext
-    }
-  };
-
-  console.log(JSON.stringify(output));
-  console.error('🚀 Momentum SessionStart initialized (Portfolio mode)');
-
-  // Set terminal title
-  setTerminalTitle('portfolio');
 }
 
 async function handleProjectMode(sessionId: string, projectName: string, restoreCommand: string | null = null): Promise<void> {
@@ -446,9 +404,6 @@ async function main(): Promise<void> {
     if (currentMode === 'assistant') {
       debugLog('SessionStart', 'Handling assistant mode');
       await handleAssistantMode(data.session_id, restoreCommand);
-    } else if (currentMode === 'portfolio') {
-      debugLog('SessionStart', 'Handling portfolio mode');
-      await handlePortfolioMode(data.session_id, restoreCommand);
     } else if (currentMode === 'project') {
       debugLog('SessionStart', 'Handling project mode');
       await handleProjectMode(data.session_id, projectName, restoreCommand);

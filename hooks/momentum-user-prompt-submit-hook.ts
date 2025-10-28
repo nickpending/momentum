@@ -82,11 +82,10 @@ async function main() {
 
     debugLog('UserPromptSubmit', 'Determining routing path', { mode, momentumConfig });
 
-    if (mode === 'assistant' || mode === 'portfolio') {
-      // Assistant or Portfolio mode - use global routing files
+    if (mode === 'assistant') {
       contextsPath = join(momentumConfig, 'contexts');
-      routingPath = join(contextsPath, mode === 'assistant' ? 'ASSISTANT_ROUTING.md' : 'PORTFOLIO_ROUTING.md');
-      debugLog('UserPromptSubmit', 'Using global routing', { contextsPath, routingPath });
+      routingPath = join(contextsPath, 'ASSISTANT_ROUTING.md');
+      debugLog('UserPromptSubmit', 'Using assistant routing', { contextsPath, routingPath });
     } else {
       // Project mode - use project or global routing
       contextsPath = join(cwd, '.workflow', 'contexts');
@@ -169,7 +168,7 @@ async function main() {
     try {
       const momentumHome = config.momentum.install;
       const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
-      const verbosityLevel = config.voice.verbosity[mode as 'assistant' | 'portfolio' | 'project'] || 'normal';
+      const verbosityLevel = config.voice.verbosity[mode as 'assistant' | 'project'] || 'normal';
       const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
       const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
 

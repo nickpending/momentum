@@ -26,7 +26,7 @@ These paths are injected by momentum and available for use:
 **This skill requires project mode.** Check the `<!-- MODE: {mode} -->` comment from the hook.
 
 - **If MODE is "project"**: Proceed with exploration
-- **If MODE is "assistant" or "portfolio"**: Inform user: "This exploration skill works best in project mode. Switch to a specific project first with 'work on [project]'."
+- **If MODE is "assistant"**: Inform user: "This exploration skill works best in project mode. Switch to a specific project first with 'work on [project]'."
 
 ## Exploration Mindset
 

@@ -22,7 +22,6 @@ style = "jarvis"
 
 [voice.verbosity]
 assistant = "terse"
-portfolio = "normal"
 project = "brief"
 
 [voice.tts]

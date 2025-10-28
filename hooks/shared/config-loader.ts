@@ -28,7 +28,6 @@ export interface MomentumConfig {
     style: string;
     verbosity: {
       assistant: string;
-      portfolio: string;
       project: string;
     };
     tts?: {

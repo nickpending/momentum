@@ -14,7 +14,7 @@ Engage in creative ideation mode to help explore and develop ideas through genui
 
 These paths are injected by momentum and available for use:
 
-- `PROJECT` - Current project name (typically 'home' in assistant/portfolio mode)
+- `PROJECT` - Current project name
 - `PROJECT_OBSIDIAN_DIR` - Project planning directory where IDEA.md files are stored
 - `EXPLORATIONS_DIR` - Project explorations directory
 - `WORKFLOW_PROJECTS` - Global Obsidian projects directory

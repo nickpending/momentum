@@ -331,7 +331,6 @@ if [[ ! -d "$MOMENTUM_INSTALL/contexts" ]]; then
 else
     # Always update routing files to get latest versions
     cp "$MOMENTUM_SOURCE/contexts/ASSISTANT_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ ASSISTANT_ROUTING.md (updated)"
-    cp "$MOMENTUM_SOURCE/contexts/PORTFOLIO_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ PORTFOLIO_ROUTING.md (updated)"
     cp "$MOMENTUM_SOURCE/contexts/PROJECT_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ PROJECT_ROUTING.md (updated)"
 fi
 
@@ -380,7 +379,6 @@ style = "jarvis"
 [voice.verbosity]
 # Verbosity level per mode: terse, brief, or normal
 assistant = "terse"
-portfolio = "normal"
 project = "brief"
 
 [voice.tts]

@@ -26,7 +26,7 @@ These paths are injected by momentum and available for use:
 **This skill requires project mode.** Check the `<!-- MODE: {mode} -->` comment from the hook.
 
 - **If MODE is "project"**: Proceed with gitignore setup
-- **If MODE is "assistant" or "portfolio"**: Inform user: "Gitignore setup requires project mode. Switch to a specific project first with 'work on [project]'."
+- **If MODE is "assistant"**: Inform user: "Gitignore setup requires project mode. Switch to a specific project first with 'work on [project]'."
 
 ## Workflow
 
