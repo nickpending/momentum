@@ -119,12 +119,13 @@ VERIFICATION: State task description, integration requirements, and embedded sta
 ⚠️ YOU CANNOT PLAN WITHOUT READING CODE ⚠️
 
 REQUIRED ACTIONS:
-- Use Glob to find relevant files for your task
+- Use Task tool with Explore subagent for code discovery (NOT manual Glob/Grep)
+- Specify thoroughness level: "quick" for basic searches, "medium" for moderate exploration, "very thorough" for comprehensive analysis
 - Read the actual implementation files you'll be working with
 - Read files that do similar things to what you're building
 - Understand the context, not just the documentation
 
-VERIFICATION GATE: 
+VERIFICATION GATE:
 - List specific files you read (with paths)
 - State what you learned about the system
 - Explain the context your task operates in

@@ -240,7 +240,7 @@ FOR COMPLEX items (run concurrently):
 
 FOR PATTERN items (run concurrently):
   FIND examples IN PARALLEL:
-    - Grep for similar features
+    - Use Task tool with Explore subagent to find similar features
     - Read relevant implementations
     - Note patterns to follow
     - Identify integration points

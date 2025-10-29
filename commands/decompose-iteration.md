@@ -43,8 +43,8 @@ VERIFICATION: State each feature found and confirm they need decomposition
 
 ```
 REQUIRED: Explore codebase to understand existing patterns:
-- USE Glob to scan project structure and file organization  
-- READ 5-10 actual implementation files (not just configs)
+- USE Task tool with Explore subagent for codebase discovery (NOT manual Glob/Grep)
+- Specify thoroughness: "medium" for general exploration, "very thorough" for comprehensive analysis
 - IDENTIFY reusable components and utilities in the code
 - FIND similar features already implemented and read their code
 - CHECK how existing features are structured and organized

@@ -140,7 +140,7 @@ VERIFICATION: List the HIGH risk components identified
 
 ```
 REQUIRED: Find and analyze existing tests to copy their patterns:
-- USE Glob to find test files based on TESTING.md structure
+- USE Task tool with Explore subagent to find test files based on TESTING.md structure
 - FIND 2-3 existing tests that test comparable features
 - READ these test files completely (use Read tool)
 - EXTRACT their patterns
