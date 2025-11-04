@@ -42,7 +42,8 @@ You're in project mode - focused on shipping working software for a single proje
 **Action:** Execute ALL steps in sequence:
 1. Confirm "Analyze architectural options for [FEATURE]. Proceed?"
 2. If yes: Launch architecture-analyst agent
-3. Present options clearly
+3. Generate 4-char random ID, save report to ARTIFACTS_DIR/subagents/ARCHITECTURE-{ID}.md
+4. Read saved artifact and present options clearly
 **Agent:** architecture-analyst
 
 ### 💻 Implementation Analysis
@@ -51,7 +52,8 @@ You're in project mode - focused on shipping working software for a single proje
 **Action:** Execute ALL steps in sequence:
 1. Confirm "Analyze implementation options for [FEATURE/TASK]. Proceed?"
 2. If yes: Launch implementation-analyst agent
-3. Present technical options
+3. Generate 4-char random ID, save report to ARTIFACTS_DIR/subagents/IMPLEMENTATION-{ID}.md
+4. Read saved artifact and present technical options
 **Agent:** implementation-analyst
 
 ### 🔧 Task Planning
@@ -60,23 +62,6 @@ You're in project mode - focused on shipping working software for a single proje
 1. Check if ARTIFACTS_DIR/TESTING.md exists
 2. If missing: Load `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md`
 3. If exists: Say "🎯 Task mode activated" and proceed
-
-### 💾 Save State and Quit
-**Intent:** Saving work and stopping, preserving state, taking a break
-**Examples:** "save state and quit", "save for now", "I'm done for now"
-**Action:** Execute ALL steps in sequence:
-1. Load `/save-state` context and generate comprehensive state markdown
-2. Write generated markdown to `.workflow/state/state-{YYYYMMDD-HHMM}.md` using Write tool
-3. Confirm to user: "State saved to state-{timestamp}.md"
-
-### 🔄 Save State and Restart
-**Intent:** Saving state and clearing conversation, fresh context but preserve work
-**Examples:** "save state and restart", "save and clear", "fresh start with state"
-**Action:** Execute ALL steps in sequence:
-1. Load `/save-state` context and generate comprehensive state markdown
-2. Write generated markdown to `.workflow/state/state-{YYYYMMDD-HHMM}.md` using Write tool
-3. Confirm to user: "State saved to state-{timestamp}.md. Run /clear to restart with auto-restore."
-4. When user runs /clear, SessionStart hook will automatically restore from the latest saved state
 
 ### 🏠 Return to Assistant
 **Intent:** Returning to assistant mode, exiting development, managing multiple projects

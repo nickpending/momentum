@@ -240,66 +240,51 @@ async function handleProjectMode(sessionId: string, projectName: string, restore
 }
 
 async function handleAutoRestore(sessionType: string, sessionId: string): Promise<string | null> {
-  // Read modefile to determine current mode and project
-  const modeFile = `/tmp/momentum-mode-${sessionId}`;
-
-  if (!existsSync(modeFile)) {
-    debugLog('SessionStart', 'No modefile found for auto-restore');
-    return null; // No mode file yet
-  }
-
-  const modeLines = readFileSync(modeFile, 'utf-8').trim().split('\n');
-  const mode = modeLines[0];
-
-  // Only auto-restore in project mode
-  if (mode !== 'project') {
-    debugLog('SessionStart', `Mode is ${mode}, not project - skipping auto-restore`);
+  // Only auto-restore on clear
+  if (sessionType !== 'clear') {
     return null;
   }
 
-  // Check if project name exists on line 2
-  const projectName = modeLines[1]?.trim();
-  if (!projectName) {
-    debugLog('SessionStart', 'Project mode but no project name in modefile');
+  // Read saves log to find most recent save
+  const savesLogPath = join(process.env.HOME || '', '.local', 'state', 'momentum', 'saves.log');
+
+  if (!existsSync(savesLogPath)) {
+    debugLog('SessionStart', 'No saves log found', { savesLogPath });
     return null;
   }
 
-  // Build project path
-  const config = loadConfig();
-  const workflowDev = config.paths.dev;
-  const projectRoot = join(workflowDev, projectName);
+  try {
+    const logContent = readFileSync(savesLogPath, 'utf-8').trim();
+    if (!logContent) {
+      debugLog('SessionStart', 'Saves log is empty');
+      return null;
+    }
 
-  if (!existsSync(projectRoot)) {
-    debugLog('SessionStart', `Project directory not found: ${projectRoot}`);
+    // Parse log entries: project|state-timestamp|iso-datetime
+    const lines = logContent.split('\n');
+    const lastLine = lines[lines.length - 1];
+    const parts = lastLine.split('|');
+
+    if (parts.length < 2) {
+      debugLog('SessionStart', 'Invalid log entry format', { lastLine });
+      return null;
+    }
+
+    const projectName = parts[0];
+    const stateName = parts[1];
+
+    debugLog('SessionStart', 'Found most recent save', { projectName, stateName });
+
+    // Build restore instruction for model to execute
+    debugLog('SessionStart', 'Auto-restore from saved state', { stateName, projectName });
+
+    // Return natural language instruction to switch project and restore state
+    return `work on ${projectName} and then run /restore-state ${stateName}`;
+
+  } catch (error) {
+    debugLog('SessionStart', 'Error reading saves log', { error: String(error) });
     return null;
   }
-
-  const stateDir = join(projectRoot, '.workflow', 'state');
-
-  if (!existsSync(stateDir)) {
-    debugLog('SessionStart', `No state directory: ${stateDir}`);
-    return null; // No state directory
-  }
-
-  // Both "clear" and "compact" use the same logic: restore from latest state file
-  const fs = require('fs');
-  const stateFiles = fs.readdirSync(stateDir)
-    .filter((f: string) => f.startsWith('state-') && f.endsWith('.md'))
-    .sort()
-    .reverse();
-
-  if (stateFiles.length > 0) {
-    const latestState = stateFiles[0].replace('.md', '');
-    const reason = sessionType === 'compact' ? 'after compaction' : 'from saved state';
-
-    console.error(`✅ Auto-restore ${reason}: ${latestState}`);
-    debugLog('SessionStart', `Auto-restore triggered: ${latestState}`, { sessionType, projectName });
-
-    return `/restore-state ${latestState}`;
-  }
-
-  debugLog('SessionStart', 'No state files found in state directory');
-  return null;
 }
 
 function findProjectRoot(): string | null {
@@ -373,7 +358,7 @@ async function main(): Promise<void> {
 
     // Check for auto-restore (don't exit early - pass command to mode handlers)
     let restoreCommand: string | null = null;
-    if (sessionType === 'clear' || sessionType === 'compact') {
+    if (sessionType === 'clear') {
       debugLog('SessionStart', `Session type ${sessionType} detected, checking for auto-restore`);
       restoreCommand = await handleAutoRestore(sessionType, data.session_id);
       if (restoreCommand) {

@@ -316,7 +316,6 @@ fi
 # Always copy all hooks to get latest versions
 cp "$MOMENTUM_SOURCE/hooks/momentum-session-start-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Session start hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-user-prompt-submit-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ User prompt submit hook (updated)"
-cp "$MOMENTUM_SOURCE/hooks/momentum-precompact-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ PreCompact hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-stop-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Stop hook (updated)"
 # Copy shared utilities
 if [[ -d "$MOMENTUM_SOURCE/hooks/shared" ]]; then
@@ -486,15 +485,6 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
             "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts clear"
           }
         ]
-      },
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts compact"
-          }
-        ]
       }
     ],
     "UserPromptSubmit": [
@@ -503,17 +493,6 @@ cat > "$BASE_DIR/.claude/settings.json" << EOF
           {
             "type": "command",
             "command": "bun $HOME/.config/momentum/hooks/momentum-user-prompt-submit-hook.ts"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-precompact-hook.ts"
           }
         ]
       }

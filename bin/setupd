@@ -59,9 +59,6 @@ refresh_project_links() {
         rm -f "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts" 2>/dev/null || true
         ln -sf "$MOMENTUM_INSTALL/hooks/momentum-user-prompt-submit-hook.ts" "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts"
 
-        rm -f "$dev_project/.claude/hooks/momentum-precompact-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-precompact-hook.ts" "$dev_project/.claude/hooks/momentum-precompact-hook.ts"
-
         rm -f "$dev_project/.claude/hooks/momentum-stop-hook.ts" 2>/dev/null || true
         ln -sf "$MOMENTUM_INSTALL/hooks/momentum-stop-hook.ts" "$dev_project/.claude/hooks/momentum-stop-hook.ts"
 
@@ -108,15 +105,6 @@ refresh_project_links() {
             "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts clear"
           }
         ]
-      },
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts compact"
-          }
-        ]
       }
     ],
     "UserPromptSubmit": [
@@ -125,17 +113,6 @@ refresh_project_links() {
           {
             "type": "command",
             "command": "bun $HOME/.config/momentum/hooks/momentum-user-prompt-submit-hook.ts"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-precompact-hook.ts"
           }
         ]
       }
@@ -186,15 +163,6 @@ EOF
             "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts clear"
           }
         ]
-      },
-      {
-        "matcher": "compact",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts compact"
-          }
-        ]
       }
     ],
     "UserPromptSubmit": [
@@ -203,17 +171,6 @@ EOF
           {
             "type": "command",
             "command": "bun $HOME/.config/momentum/hooks/momentum-user-prompt-submit-hook.ts"
-          }
-        ]
-      }
-    ],
-    "PreCompact": [
-      {
-        "matcher": "",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-precompact-hook.ts"
           }
         ]
       }

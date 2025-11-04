@@ -236,7 +236,11 @@ FOR COMPLEX items (run concurrently):
        Present architectural options with trade-offs."
 
   COLLECT all agent responses as they complete
-  READ generated artifacts from ARTIFACTS_DIR/subagents/
+  For each subagent response:
+    - Generate 4-char random ID (e.g., 7a3f)
+    - SAVE report to ARTIFACTS_DIR/subagents/ARCHITECTURE-{ID}.md
+    - Document which feature the analysis was for
+  READ saved artifacts to incorporate into iteration plan
 
 FOR PATTERN items (run concurrently):
   FIND examples IN PARALLEL:

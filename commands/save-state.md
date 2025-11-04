@@ -1,12 +1,11 @@
 # Capture discoveries, decisions, and progress for seamless resumption
 
-## ⚠️ CRITICAL: OUTPUT ONLY ⚠️
+**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them).
 
-**🛑 OUTPUT MARKDOWN TO STDOUT**
-**🛑 DO NOT WRITE FILES**
-**🛑 DO NOT USE WRITE TOOL**
-
-Your output will be captured by the calling context (PreCompact hook or routing layer).
+**Key Paths**:
+- STATE_DIR - Saved state files
+- MOMENTUM_STATE_DIR - Runtime state directory for saves log
+- PROJECT - Current project name
 
 ## ⚠️ CRITICAL: CAPTURE CONVERSATION ESSENCE ⚠️
 
@@ -17,30 +16,37 @@ Your output will be captured by the calling context (PreCompact hook or routing 
 
 ## YOUR TASK
 
-**YOU MUST IMMEDIATELY:**
+**YOU MUST:**
 
-1. **Analyze the entire conversation** from start to current point
+1. **Analyze the work session** - focus on substance, skip setup chatter
 2. **Extract and organize** key information into the structure below
-3. **Output formatted markdown** directly (DO NOT write files, DO NOT use Write tool)
-4. **Be comprehensive** - this state must enable seamless resumption
+3. **Be comprehensive** - this state must enable seamless resumption
+4. **Generate timestamp** in format YYYY-MM-DD-HHMM (e.g., 2025-10-29-1745)
+5. **Capture git state** - branch, commit, status
+6. **Write state file** to STATE_DIR/state-{timestamp}.md using Write tool
+7. **Register save** for auto-restore:
+   - Create directory: `mkdir -p MOMENTUM_STATE_DIR`
+   - Append entry: `echo "PROJECT|state-{timestamp}|$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> MOMENTUM_STATE_DIR/saves.log`
+8. **Confirm to user** with filename
 
 **ANALYSIS REQUIREMENTS:**
-- Review all user messages for requirements, clarifications, decisions
-- Extract technical discoveries from tool outputs and error messages
-- Identify breakthroughs and aha moments in the conversation flow
-- Capture specific details: file paths, line numbers, error messages, working code
+- Focus on work session (skip greetings, mode switches, procedural chatter)
+- Prioritize recent context over early setup discussions
+- Extract decisions from user clarifications and your responses
+- Capture technical discoveries from tool outputs and errors
+- Note breakthroughs in reasoning flow
+- Include specifics: paths, line numbers, error messages, working code
 - Document WHY decisions were made, not just WHAT
-- Make next actions specific and immediately actionable
+- Make next actions specific and actionable
 - Note blockers with what's needed to unblock
 
-**OUTPUT REQUIREMENTS:**
-- Use the template structure below
+**FILE CONTENT REQUIREMENTS:**
+- Use the template structure below for file content
 - Fill every relevant section (skip only if truly empty)
 - Include actual code snippets that solved problems
 - Reference specific files and locations
 - Capture the conversation thread and reasoning flow
 - Make it possible for someone to resume exactly where you left off
-- **Generate timestamp**: Use current date/time in format YYYY-MM-DD-HHMM (e.g., 2025-10-10-1650)
 
 ## Comprehensive State Structure
 
@@ -52,6 +58,12 @@ Your output will be captured by the calling context (PreCompact hook or routing 
 **Command**: [active_command_if_any_plan_task_plan_test_etc]
 **What**: [one_line_summary_of_current_work]
 **Where**: [current_phase_progress_location_in_process]
+
+## Git State
+**Branch**: [current_branch]
+**Commit**: [sha] - [commit_message]
+**Status**: [clean/dirty]
+**Uncommitted**: [list_of_modified_files_or_none]
 
 ## Discoveries & Findings
 ### Technical Discoveries
@@ -132,13 +144,16 @@ Your output will be captured by the calling context (PreCompact hook or routing 
 
 ## Success Criteria
 
-Good state capture enables:
+State successfully saved when:
 
-- [ ] Clear understanding of conversation flow
+- [ ] File written to STATE_DIR/state-{timestamp}.md
+- [ ] Save registered in MOMENTUM_STATE_DIR/saves.log
+- [ ] Clear understanding of conversation flow captured
 - [ ] Decisions preserved with reasoning
 - [ ] Specific next actions identified
 - [ ] Technical discoveries documented
-- [ ] Easy to resume from any point
+- [ ] User confirmed with filename
+- [ ] Ready for /clear → auto-restore flow
 
 ## Example Output
 
@@ -149,6 +164,12 @@ Good state capture enables:
 **Command**: /plan-task 3
 **What**: Building WebSocket authentication middleware
 **Where**: Implementation phase - core auth working, adding token refresh
+
+## Git State
+**Branch**: feature/websocket-auth
+**Commit**: a7b3c4d - Add basic JWT generation
+**Status**: dirty
+**Uncommitted**: middleware/auth.py, tests/test_auth.py
 
 ## Key Conversation Points
 - Discovered frontend expects token in cookie, not header

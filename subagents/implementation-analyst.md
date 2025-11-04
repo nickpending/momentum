@@ -112,11 +112,8 @@ When making technical decisions:
 
 # Output Requirements
 
-## Primary Output:
-- **File**: ARTIFACTS_DIR/subagents/IMPLEMENTATION-{ID}.md
-  - Use 4-character random ID (e.g., IMPLEMENTATION-9b2e.md)
-  - Ensures each analysis creates a unique file
-- **Format**: Technical steps and decisions
+## Report Structure:
+Return your complete analysis in the response using this format:
 
 ## Multi-Option Output Structure:
 ```markdown
@@ -233,7 +230,7 @@ Your work is complete when:
 - [ ] Edge cases identified
 - [ ] Error handling specified
 - [ ] Validation rules defined
-- [ ] IMPLEMENTATION.md has all sections
+- [ ] Complete analysis returned in report with all sections
 
 # Common Pitfalls to Avoid
 

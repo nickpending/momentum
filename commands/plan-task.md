@@ -259,8 +259,11 @@ IF subagents needed:
         prompt="Create technical plan for task(s) X.Y-X.Z...")
   
   AFTER COMPLETION:
-  - READ ARTIFACTS_DIR/ARCHITECTURE.md for structural guidance
-  - READ ARTIFACTS_DIR/IMPLEMENTATION.md for technical approach
+  - Generate 4-char random ID (e.g., 7a3f)
+  - SAVE each subagent report to ARTIFACTS_DIR/subagents/:
+    - Architecture analysis → ARCHITECTURE-{ID}.md
+    - Implementation analysis → IMPLEMENTATION-{ID}.md
+  - READ saved artifacts for guidance
   - INCORPORATE insights into implementation plan
 
 DECISION: [Use subagents / Skip subagents] because [specific reasoning]

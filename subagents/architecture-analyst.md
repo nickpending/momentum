@@ -159,11 +159,8 @@ If startup checks fail, STOP and report the issue.
 
 # Output Requirements
 
-## Primary Output:
-- **File**: ARTIFACTS_DIR/subagents/ARCHITECTURE-{ID}.md
-  - Use 4-character random ID (e.g., ARCHITECTURE-7a3f.md)
-  - Ensures each analysis creates a unique file
-- **Format**: Prescriptive guidance focused on structure
+## Report Structure:
+Return your complete analysis in the response using this format:
 
 ## Multi-Option Output Structure:
 ```markdown
@@ -257,7 +254,7 @@ Your work is complete when:
 - [ ] Evidence provided for all claims (file references)
 - [ ] Recommendation made with confidence level
 - [ ] Verification notes document what couldn't be confirmed
-- [ ] Output file created in .workflow/artifacts/subagents/
+- [ ] Complete analysis returned in report with all sections
 - [ ] All patterns marked as [FOUND], [INFERRED], or [UNKNOWN]
 
 # Common Pitfalls to Avoid

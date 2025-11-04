@@ -192,6 +192,9 @@ async function main() {
     const loreData = loreAvailable ? config.lore.data : null;
     const loreCache = loreAvailable ? config.lore.cache : null;
 
+    // XDG state directory for runtime state (saves log, etc)
+    const momentumStateDir = join(process.env.HOME || '', '.local', 'state', 'momentum');
+
     // Get user name from config
     const userName = config.personalization.name;
 
@@ -212,6 +215,7 @@ async function main() {
     console.log(`<!-- CONTEXTS_PATH: ${contextsPath} -->`);
     console.log(`<!-- MOMENTUM_CONFIG: ${momentumConfig} -->`);
     console.log(`<!-- MOMENTUM_HOME_DIR: ${momentumHomeDir} -->`);
+    console.log(`<!-- MOMENTUM_STATE_DIR: ${momentumStateDir} -->`);
     console.log(`<!-- WORKFLOW_PROJECTS: ${workflowProjects} -->`);
     console.log(`<!-- WORKFLOW_DEV: ${workflowDev} -->`);
     console.log(`<!-- PROJECT_OBSIDIAN_DIR: ${projectObsidianDir} -->`);

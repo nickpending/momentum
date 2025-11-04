@@ -15,8 +15,8 @@
 
 ## ⚠️ CRITICAL: RESTORE STATE + FULL CONTEXT ⚠️
 
-**🛑 LOAD SAVED STATE + EQUIVALENT OF /load-app-context**  
-**🛑 PROVIDE COMPLETE CONTEXT FOR RESUMPTION**  
+**🛑 RESUME FROM STATE (PROJECT CONTEXT ALREADY LOADED)**
+**🛑 PROVIDE COMPLETE CONTEXT FOR RESUMPTION**
 **🛑 CONTINUE SEAMLESSLY FROM STOPPING POINT**
 
 ---
@@ -32,24 +32,21 @@
     - Next steps for continuation
     - Key decisions made
     - Any blockers or issues
+3. **READ** files from "Files Touched" section for work context
 
-## Step 2: Load Full Project Context
-
-### Core Context (same as /load-app-context)
-
-1. **READ** `ARTIFACTS_DIR/TASKS.md` - Current task list and status
-2. **READ** `ARTIFACTS_DIR/IDEA.md` - Overall project vision and goals
+## Step 2: Load Extended Context
 
 ### Extended Context for Resumption
 
-3. **READ** `ARTIFACTS_DIR/ITERATION.md` - Complete iteration with embedded standards
-4. **READ** `ARTIFACTS_DIR/PROJECT_SUMMARY.md` (if exists) - System integration context
-5. **READ** `CLAUDE.md` (if exists) - Project development context
+1. **READ** `ARTIFACTS_DIR/PROJECT_SUMMARY.md` (if exists) - System integration context
+2. **READ** `CLAUDE.md` (if exists) - Project development context
 
 ### Verify Current Environment
 
 1. **CHECK** files mentioned in state exist and match expected status
-2. **VERIFY** project environment is ready for continuation
+2. **RUN** `git status` and compare to saved Git State
+3. **VERIFY** project environment is ready for continuation
+4. **NOTE** any drift (commits, branch changes, file modifications since save)
 
 ## Step 3: Restore Implementation Context
 
@@ -65,11 +62,10 @@ STATE + CONTEXT RESTORED
 🔄 Task: #[task_number] - [task_name]
 📊 Progress: [saved_progress_description]
 
-ITERATION CONTEXT LOADED:
-✅ Complete iteration with embedded standards
-✅ Design principles and implementation guidelines
-✅ Tech stack patterns and constraints
-✅ Task requirements and success criteria
+GIT STATE:
+✅ Branch: [current_branch] [if_changed: ⚠️ Was: saved_branch]
+✅ Commit: [current_sha] [if_changed: ⚠️ Was: saved_sha]
+✅ Status: [clean/dirty] [if_changed_show_diff]
 
 SAVED STATE RESTORED:
 ✅ Current progress: [current_phase]
