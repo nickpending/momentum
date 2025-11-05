@@ -1,7 +1,8 @@
 ---
 name: code-reviewer
-description: Reviews recent code changes for architecture, implementation quality, security issues, and functional correctness. Tests that code actually works and provides evidence-based findings.
-tools: Read, Grep, Glob  # READ-ONLY for safety
+description: Expert code review specialist. Use PROACTIVELY after implementing features to review architecture, implementation quality, security, and functional correctness. Tests that code actually works and provides evidence-based findings.
+tools: Read, Grep, Glob, Bash
+model: haiku
 color: red
 ---
 

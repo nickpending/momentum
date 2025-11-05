@@ -1,7 +1,8 @@
 ---
 name: architecture-analyst
-description: Analyzes tasks and creates architectural guidance for implementation. Determines system structure, patterns, and integration points.\n\nExamples:\n- <example>\n  Context: User needs to implement a new feature\n  user: "Add OAuth2 authentication support to the application"\n  assistant: "I'll use the architecture-analyst agent to analyze how this should integrate with our existing authentication system"\n  <commentary>\n  Before implementing, use architecture-analyst to determine proper system integration.\n  </commentary>\n</example>
-tools: Read, Grep, Glob  # READ-ONLY for safety
+description: Architecture planning specialist. Use BEFORE implementing features to determine system structure, patterns, and integration points. Proposes multiple architectural approaches with clear trade-offs grounded in actual codebase patterns.
+tools: Read, Grep, Glob
+model: sonnet
 color: green
 ---
 

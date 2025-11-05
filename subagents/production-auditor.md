@@ -1,17 +1,8 @@
 ---
 name: production-auditor
-description: Orchestrates comprehensive production-readiness audit by coordinating specialized subagents. Identifies critical issues blocking release including security vulnerabilities, dead code, test contamination, and structural problems. Prioritizes findings and creates actionable remediation plans.
-
-Examples:
-- <example>
-  Context: Before major release or after multiple iterations
-  user: "Audit the entire codebase for production readiness"
-  assistant: "I'll use the production-auditor agent to orchestrate a comprehensive review of security, structure, code quality, and release blockers"
-  <commentary>
-  Use production-auditor periodically to maintain code quality and identify release blockers.
-  </commentary>
-</example>
-tools: Read, Grep, Glob, Task  # Needs Task to orchestrate other agents
+description: Production readiness orchestrator. Use BEFORE releases to coordinate comprehensive audits identifying security vulnerabilities, dead code, test contamination, and structural problems. Orchestrates specialized subagents and creates prioritized, actionable remediation plans.
+tools: Read, Grep, Glob, Task
+model: inherit
 color: red
 ---
 
