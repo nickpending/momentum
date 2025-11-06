@@ -23,8 +23,12 @@ You're in project mode - focused on shipping working software for a single proje
 **Examples:** "review the code", "check my changes", "is this code good"
 **Action:** Execute ALL steps in sequence:
 1. Confirm "Review recent code for architecture, implementation, security, correctness. Proceed?"
-2. If yes: Launch code-reviewer agent for scope
-3. Read report, summarize critical issues
+2. If yes: Launch code-reviewer agent with this prompt format:
+   "Review recent code changes.
+    PROJECT_ROOT: {value from HTML comment PROJECT_ROOT}
+    ARTIFACTS_DIR: {value from HTML comment ARTIFACTS_DIR}"
+3. Read report from ARTIFACTS_DIR/subagents/CODE_REVIEW-*.md
+4. Summarize critical issues
 **Agent:** code-reviewer
 
 ### 🏗️ Architecture Review
@@ -32,8 +36,12 @@ You're in project mode - focused on shipping working software for a single proje
 **Examples:** "review the architecture", "is this over-engineered", "technical debt"
 **Action:** Execute ALL steps in sequence:
 1. Confirm "Review architecture for complexity and debt. Proceed?"
-2. If yes: Launch architecture-reviewer agent
-3. Read report, summarize concerns
+2. If yes: Launch architecture-reviewer agent with this prompt format:
+   "Review architecture for complexity and technical debt.
+    PROJECT_ROOT: {value from HTML comment PROJECT_ROOT}
+    ARTIFACTS_DIR: {value from HTML comment ARTIFACTS_DIR}"
+3. Read report from ARTIFACTS_DIR/subagents/ARCHITECTURE_REVIEW-*.md
+4. Summarize concerns
 **Agent:** architecture-reviewer
 
 ### 🎨 Architecture Analysis
@@ -41,7 +49,10 @@ You're in project mode - focused on shipping working software for a single proje
 **Examples:** "architectural options for", "what are the trade-offs", "different approaches"
 **Action:** Execute ALL steps in sequence:
 1. Confirm "Analyze architectural options for [FEATURE]. Proceed?"
-2. If yes: Launch architecture-analyst agent
+2. If yes: Launch architecture-analyst agent with this prompt format:
+   "Analyze architectural options for [FEATURE].
+    PROJECT_ROOT: {value from HTML comment PROJECT_ROOT}
+    ARTIFACTS_DIR: {value from HTML comment ARTIFACTS_DIR}"
 3. Generate 4-char random ID, save report to ARTIFACTS_DIR/subagents/ARCHITECTURE-{ID}.md
 4. Read saved artifact and present options clearly
 **Agent:** architecture-analyst
@@ -51,7 +62,10 @@ You're in project mode - focused on shipping working software for a single proje
 **Examples:** "how should I implement", "algorithm options", "different ways to implement"
 **Action:** Execute ALL steps in sequence:
 1. Confirm "Analyze implementation options for [FEATURE/TASK]. Proceed?"
-2. If yes: Launch implementation-analyst agent
+2. If yes: Launch implementation-analyst agent with this prompt format:
+   "Analyze implementation options for [FEATURE/TASK].
+    PROJECT_ROOT: {value from HTML comment PROJECT_ROOT}
+    ARTIFACTS_DIR: {value from HTML comment ARTIFACTS_DIR}"
 3. Generate 4-char random ID, save report to ARTIFACTS_DIR/subagents/IMPLEMENTATION-{ID}.md
 4. Read saved artifact and present technical options
 **Agent:** implementation-analyst

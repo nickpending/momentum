@@ -85,10 +85,15 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 
 ## ⚠️ CRITICAL: THINK BEFORE ACTING ⚠️
 
+**🛑 EXTENDED THINKING REQUIRED**
+**🛑 THINK ULTRA HARD ABOUT THIS ITERATION**
+**🛑 USE MAXIMUM THINKING DEPTH FOR PLANNING**
+
 - READ all context files thoroughly
 - CLASSIFY tasks by complexity accurately
 - INVESTIGATE complex items properly
 - ASK for decisions, don't make them
+- VALIDATE assumptions about existing code before finalizing
 
 ## MANDATORY EXECUTION SEQUENCE - NO SKIPPING
 
@@ -743,6 +748,42 @@ VERIFICATION: Standards are embedded, not referenced
 [etc for each technology detected]
 
 VERIFICATION: Standards are embedded, not referenced
+```
+
+**CHECKPOINT 8.5: Assumption Validation (MANDATORY)**
+
+```
+REQUIRED: Verify all assumptions about existing code and paths before finalizing:
+
+FOR EACH TASK that references existing code:
+  - Methods/classes/functions mentioned: Use Explore subagent to confirm existence
+  - File paths specified: Verify with ls or Read tool
+  - Database/config locations: Check actual filesystem paths
+  - API endpoints assumed: Grep for route definitions
+  - Integration points: Verify actual implementation exists
+
+VALIDATION PROCESS:
+1. Extract all assumptions about existing code/paths from tasks
+2. Run verification checks IN PARALLEL:
+   - Code existence: Task with Explore subagent ("medium" thoroughness)
+   - Path validation: Bash ls commands
+   - Config validation: Read actual config files
+3. Document findings: What exists vs what needs building
+4. REVISE tasks if assumptions don't match reality
+
+EXAMPLE VALIDATION:
+Task references "APIClient.get_content() method"
+→ Use Explore: "Find APIClient class and list all its methods"
+→ Result: get_entry(), get_entry_raw() exist, but NO get_content()
+→ REVISE: Task must CREATE get_content() method, not use existing
+
+Task specifies "Database at ~/.config/prismis/prismis.db"
+→ Run: ls -la ~/.config/prismis/
+→ Result: Directory doesn't exist, database is in ~/.local/share/prismis/
+→ REVISE: Update all database paths to correct location
+
+FAILURE MODE: If actual code/paths don't match assumptions, STOP and REVISE tasks
+VERIFICATION: All referenced code/paths/configs verified to exist or marked as "to be created"
 ```
 
 **CHECKPOINT 9: Final Validation**

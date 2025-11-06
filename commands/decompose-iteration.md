@@ -18,11 +18,16 @@
 
 ## ⚠️ CRITICAL: THINK ⚠️
 
+**🛑 EXTENDED THINKING REQUIRED**
+**🛑 THINK ULTRA HARD ABOUT DECOMPOSITION**
+**🛑 USE MAXIMUM THINKING DEPTH FOR TASK BREAKDOWN**
+
 ### PHASE 0: PREPARATION
 
 - READ EVERYTHING 3 TIMES BEFORE DOING ANYTHING
 - THINK DEEPLY ABOUT WHAT MAKES A REAL TASK VS A FEATURE
 - REVIEW DECOMPOSITION MENTALLY FOR MISSING PIECES
+- VALIDATE assumptions about existing code before finalizing
 
 ### PHASE 1: CONTEXT LOADING (REQUIRED)
 
@@ -216,6 +221,41 @@ NEVER ASK ABOUT:
 - Generic technical preferences
 
 VERIFICATION: Questions must be specific to actual features, not generic
+```
+
+**CHECKPOINT 6.5: Assumption Validation (MANDATORY)**
+
+```
+REQUIRED: Verify all assumptions about existing code before finalizing decomposition:
+
+FOR EACH TASK that references existing code/paths:
+  - Methods/classes/functions mentioned: Use Explore subagent to confirm existence
+  - File paths specified: Verify with ls or Read tool
+  - Database/config locations: Check actual filesystem paths
+  - Dependencies on other code: Grep to confirm it exists
+
+VALIDATION PROCESS:
+1. Extract all code/path assumptions from decomposed tasks
+2. Run verification checks IN PARALLEL:
+   - Code existence: Task with Explore subagent ("quick" thoroughness for speed)
+   - Path validation: Bash ls commands
+   - Method validation: Grep for function/method definitions
+3. Document findings: What exists vs what needs building
+4. REVISE task descriptions if assumptions don't match reality
+
+EXAMPLE VALIDATION:
+Task 4.1 references "APIClient.get_content() method"
+→ Use Explore: "Find APIClient class and check for get_content method"
+→ Result: Method doesn't exist
+→ REVISE: Change task to "Create APIClient.get_content() method" not "Use get_content()"
+
+Task 2.3 specifies "Modify config at ~/.config/app/settings.json"
+→ Run: ls -la ~/.config/app/
+→ Result: Config is actually in ~/.local/share/app/
+→ REVISE: Update file path to ~/.local/share/app/settings.json
+
+FAILURE MODE: If assumptions don't match reality, REVISE tasks before approval
+VERIFICATION: All referenced code/paths verified or marked as "to be created"
 ```
 
 ### PHASE 5: MANDATORY APPROVAL (REQUIRED)
