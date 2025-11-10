@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Grep, Glob, Bash
+description: Validate task completion with evidence of working functionality
+---
+
 # Validate task completion with evidence of working functionality
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -7,13 +12,29 @@
 - WORKFLOW_PROJECTS - Obsidian projects directory (injected)
 - WORKFLOW_DEV - Development projects root (injected)
 
-## ⚠️ CRITICAL: MARK TASK COMPLETE AND DOCUMENT ⚠️
+## ⚠️ CRITICAL: MARK TASK COMPLETE AND DOCUMENT
 
-**🛑 NO REDUNDANT DEMOS - ALREADY PROVEN TO WORK**  
-**🛑 CAPTURE WHAT ACTUALLY HAPPENED IN TASKS.MD**  
-**🛑 UPDATE PROGRESS AND SUGGEST NEXT TASK**
+**REQUIRED:**
+- Capture what actually happened in TASKS.md
+- Update progress and suggest next task
+- Quick sanity check only - no redundant demos
 
-## STREAMLINED COMPLETION SEQUENCE
+**NEVER:**
+- Re-run demos already proven to work
+- Skip implementation notes
+- Leave task in progress state
+
+## Workflow
+
+Execution phases for task completion:
+
+1. **Load and Verify** - Load task context, review changes via git diff, get approval
+2. **Mark Complete** - Update task status in TASKS.md with implementation notes
+3. **Capture to Lore** - Record knowledge to Lore if available
+4. **Report Progress** - Show completion status and suggest next steps
+5. **Return to Root** - Navigate back to PROJECT_ROOT
+
+## Core Instructions
 
 ### PHASE 1: LOAD AND VERIFY (REQUIRED)
 
@@ -189,27 +210,41 @@ REQUIRED: Return to project root directory:
 PURPOSE: Maintain consistent working directory after task completion
 ```
 
-## ENFORCEMENT MECHANISMS
+## Error Handling
 
-### Streamlined Validation
+**If demo command fails:**
+- Fix issues before marking complete
+- Don't proceed to completion
+- Re-run validation after fixes
 
+**If TASKS.md missing:**
+- Report specific error
+- Don't create - locate correct task file
+- Verify ARTIFACTS_DIR path
+
+**If unclear what's next:**
+- Review task dependencies
+- Check TASKS.md for remaining work
+- Suggest logical sequence
+
+**If git diff fails:**
+- Continue without diff review
+- Note in output that changes couldn't be shown
+- Still require user approval to proceed
+
+## Notes
+
+**Enforcement mechanisms:**
 - Quick sanity check ensures software still works
-- Task properly marked complete in TASKS.md
+- Task properly marked complete in TASKS.md with implementation notes
 - Progress reported with clear next steps
 
-### Efficient Workflow
-
+**Efficient workflow:**
 - Leverage work already validated in /plan-task
 - Focus on completion and workflow continuation
 - Avoid redundant validation of proven functionality
 
-## FAILURE MODES & RECOVERY
-
-**If demo command fails:** Fix issues before marking complete  
-**If TASKS.md missing:** Create or locate correct task file  
-**If unclear what's next:** Review dependencies and suggest logical sequence
-
-## SUCCESS CRITERIA
+## Success Criteria
 
 Task completion finalized when:
 

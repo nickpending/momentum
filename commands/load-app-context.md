@@ -1,3 +1,8 @@
+---
+allowed-tools: Read
+description: Quick project orientation with current tasks and vision
+---
+
 # Quick project orientation with current tasks and vision
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -5,14 +10,16 @@
 **Key Paths**:
 - ARTIFACTS_DIR - Workflow artifacts (PROJECT_SUMMARY.md, TASKS.md)
 
-## Step 1: Load Context
+## Core Instructions
+
+### Step 1: Load Context
 
 **READ**:
 
 1. `ARTIFACTS_DIR/PROJECT_SUMMARY.md`
 2. `ARTIFACTS_DIR/TASKS.md`
 
-## Step 2: Report Status
+### Step 2: Report Status
 
 **IMMEDIATELY** output relevant status based on what was found:
 
@@ -55,9 +62,18 @@ To get started:
 What would you like to do?
 ```
 
-## Step 3: Wait for Direction
+### Step 3: Wait for Direction
 
 **DO NOT START WORK** - this is an entry point for any command.
+
+## Success Criteria
+
+Command succeeds when:
+
+- [ ] PROJECT_SUMMARY.md and TASKS.md read attempted
+- [ ] Status reported based on files found
+- [ ] User given appropriate next action based on context
+- [ ] No work started automatically
 
 ## Error Handling
 

@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Bash, Edit
+description: Resume work with full context from saved state
+---
+
 # Resume work with full context from saved state
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -6,22 +11,16 @@
 - STATE_DIR - Saved state files
 - ARTIFACTS_DIR - Workflow artifacts (TASKS.md, IDEA.md, ITERATION.md, PROJECT_SUMMARY.md)
 
-## Usage
+## ⚠️ CRITICAL: RESTORE STATE + FULL CONTEXT
 
-```bash
-/restore-state                                    # Resume most recent state
-/restore-state task-3-20250714-1530             # Resume specific state
-```
+**REQUIRED:**
+- Resume from state (project context already loaded)
+- Provide complete context for resumption
+- Continue seamlessly from stopping point
 
-## ⚠️ CRITICAL: RESTORE STATE + FULL CONTEXT ⚠️
+## Core Instructions
 
-**🛑 RESUME FROM STATE (PROJECT CONTEXT ALREADY LOADED)**
-**🛑 PROVIDE COMPLETE CONTEXT FOR RESUMPTION**
-**🛑 CONTINUE SEAMLESSLY FROM STOPPING POINT**
-
----
-
-## Step 1: Load Saved State
+### Step 1: Load Saved State
 
 ### Find and Load State File
 
@@ -34,7 +33,7 @@
     - Any blockers or issues
 3. **READ** files from "Files Touched" section for work context
 
-## Step 2: Load Extended Context
+### Step 2: Load Extended Context
 
 ### Extended Context for Resumption
 
@@ -48,7 +47,7 @@
 3. **VERIFY** project environment is ready for continuation
 4. **NOTE** any drift (commits, branch changes, file modifications since save)
 
-## Step 3: Restore Implementation Context
+### Step 3: Restore Implementation Context
 
 ### Context Integration
 
@@ -86,7 +85,7 @@ IMMEDIATE NEXT ACTION:
 2. **MAINTAIN** task as 🔄 In Progress
 3. **READY** for continued implementation
 
-## Step 4: Continue Implementation
+### Step 4: Continue Implementation
 
 ### Implementation Continuation
 
@@ -131,14 +130,11 @@ IMMEDIATE NEXT ACTION:
 
 ## Success Criteria
 
-**Complete Context Restoration:**
+Command succeeds when:
 
-- Full project context loaded (equivalent to /load-app-context)
-- Saved implementation state restored
-- Clear understanding of where to continue
-
-**Efficient Resumption:**
-
-- No loss of implementation progress
-- Clear next actions identified
-- Full context available for quality implementation
+- [ ] Full project context loaded (equivalent to /load-app-context)
+- [ ] Saved implementation state restored
+- [ ] Clear understanding of where to continue
+- [ ] No loss of implementation progress
+- [ ] Clear next actions identified
+- [ ] Full context available for quality implementation

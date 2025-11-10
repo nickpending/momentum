@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Write, Bash
+description: Capture discoveries, decisions, and progress for seamless resumption
+---
+
 # Capture discoveries, decisions, and progress for seamless resumption
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them).
@@ -7,29 +12,21 @@
 - MOMENTUM_STATE_DIR - Runtime state directory for saves log
 - PROJECT - Current project name
 
-## ⚠️ CRITICAL: CAPTURE CONVERSATION ESSENCE ⚠️
+## ⚠️ CRITICAL: CAPTURE CONVERSATION ESSENCE
 
-**🛑 PRESERVE KEY DECISIONS AND DISCOVERIES**
-**🛑 MAINTAIN THREAD OF CONVERSATION**
-**🛑 ENABLE SEAMLESS RESUMPTION**
-**🛑 ADAPT TO CONTEXT TYPE**
+**REQUIRED:**
+- Preserve key decisions and discoveries
+- Maintain thread of conversation
+- Enable seamless resumption
+- Adapt to context type
 
-## YOUR TASK
+## Core Instructions
 
-**YOU MUST:**
+### Step 1: Analyze Work Session
 
-1. **Analyze the work session** - focus on substance, skip setup chatter
-2. **Extract and organize** key information into the structure below
-3. **Be comprehensive** - this state must enable seamless resumption
-4. **Generate timestamp** in format YYYY-MM-DD-HHMM (e.g., 2025-10-29-1745)
-5. **Capture git state** - branch, commit, status
-6. **Write state file** to STATE_DIR/state-{timestamp}.md using Write tool
-7. **Register save** for auto-restore:
-   - Create directory: `mkdir -p MOMENTUM_STATE_DIR`
-   - Append entry: `echo "PROJECT|state-{timestamp}|$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> MOMENTUM_STATE_DIR/saves.log`
-8. **Confirm to user** with filename
+Focus on substance, skip setup chatter.
 
-**ANALYSIS REQUIREMENTS:**
+**Analysis requirements:**
 - Focus on work session (skip greetings, mode switches, procedural chatter)
 - Prioritize recent context over early setup discussions
 - Extract decisions from user clarifications and your responses
@@ -40,13 +37,45 @@
 - Make next actions specific and actionable
 - Note blockers with what's needed to unblock
 
-**FILE CONTENT REQUIREMENTS:**
+### Step 2: Extract and Organize
+
+Extract key information into the Comprehensive State Structure below.
+
+### Step 3: Be Comprehensive
+
+This state must enable seamless resumption.
+
+### Step 4: Generate Timestamp
+
+Generate timestamp in format YYYY-MM-DD-HHMM (e.g., 2025-10-29-1745).
+
+### Step 5: Capture Git State
+
+Capture current branch, commit, and status.
+
+### Step 6: Write State File
+
+Write to STATE_DIR/state-{timestamp}.md using Write tool.
+
+Use the Comprehensive State Structure template below for file content.
+
+**File content requirements:**
 - Use the template structure below for file content
 - Fill every relevant section (skip only if truly empty)
 - Include actual code snippets that solved problems
 - Reference specific files and locations
 - Capture the conversation thread and reasoning flow
 - Make it possible for someone to resume exactly where you left off
+
+### Step 7: Register Save
+
+Register for auto-restore:
+- Create directory: `mkdir -p MOMENTUM_STATE_DIR`
+- Append entry: `echo "PROJECT|state-{timestamp}|$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> MOMENTUM_STATE_DIR/saves.log`
+
+### Step 8: Confirm
+
+Confirm to user with filename.
 
 ## Comprehensive State Structure
 

@@ -1,10 +1,13 @@
+---
+allowed-tools: Read, Write, Edit, Bash, Task, AskUserQuestion
+description: Collaborative iteration planning through investigation
+---
+
 # Collaborative iteration planning through investigation
 
 ## Purpose
 
 Plan iterations by investigating the codebase, presenting findings as options, and collaborating on design decisions - not prescribing solutions.
-
-## Environment Context
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
 
@@ -13,35 +16,39 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 - WORKFLOW_DIR - Workflow directory (resources/, archives/, templates/)
 - WORKFLOW_PROJECTS - Obsidian projects directory
 
-## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED ⚠️
+## ⚠️ CRITICAL: INTERVIEW FIRST - NO ARTIFACTS UNTIL APPROVED
 
-**🛑 STOP AFTER INTERVIEW. DO NOT GENERATE ARTIFACTS.**
-**🛑 ASK QUESTIONS ONE AT A TIME - BUILD ON ANSWERS**
-**🛑 ALWAYS END WITH: "Ready to generate ITERATION.md with embedded context?"**
-**🛑 WAIT FOR EXPLICIT APPROVAL BEFORE CREATING ITERATION.MD**
+**REQUIRED:**
+- Stop after interview - do not generate artifacts
+- Ask questions one at a time - build on answers
+- Always end with: "Ready to generate ITERATION.md with embedded context?"
+- Wait for explicit approval before creating ITERATION.md
 
-## ⚠️ CRITICAL: STANDARDS MUST BE LOADED AND EMBEDDED ⚠️
+## ⚠️ CRITICAL: STANDARDS MUST BE LOADED AND EMBEDDED
 
-**🛑 NO ITERATION.MD WITHOUT STANDARDS VERIFICATION**
-**🛑 LIST EVERY STANDARDS FILE PATH READ**
-**🛑 QUOTE SPECIFIC PATTERNS FROM EACH STANDARD**
-**🛑 EMBED ALL CONTEXT - NO EXTERNAL REFERENCES**
+**REQUIRED:**
+- No ITERATION.md without standards verification
+- List every standards file path read
+- Quote specific patterns from each standard
+- Embed all context - no external references
 
-## ⚠️ CRITICAL: PRESERVE INTERVIEW GOLD ⚠️
+## ⚠️ CRITICAL: PRESERVE INTERVIEW GOLD
 
-**🛑 CAPTURE CONCRETE DETAILS DISCOVERED IN INTERVIEW**
-**🛑 NO GENERIC TASK DESCRIPTIONS**
-**🛑 ACTUAL CODE EXAMPLES AND DATA STRUCTURES**
-**🛑 ONE SMOKE TEST PER TASK - NO TDD THEATER**
+**REQUIRED:**
+- Capture concrete details discovered in interview
+- No generic task descriptions
+- Actual code examples and data structures
+- One smoke test per task - no TDD theater
 
-## ⚠️ CRITICAL: COLLABORATIVE APPROACH ⚠️
+## ⚠️ CRITICAL: COLLABORATIVE APPROACH
 
-**🛑 INVESTIGATE, DON'T ASSUME**
-**🛑 PRESENT FINDINGS AS OPTIONS**
-**🛑 CAPTURE DECISIONS, DON'T MAKE THEM**
-**🛑 USE AGENTS FOR COMPLEX INVESTIGATION**
-**🛑 USE ASKUSERQUESTION TOOL FOR STRUCTURED QUESTIONS**
-**🛑 USE EXPLORE SUBAGENT FOR SOURCE CODE DISCOVERY (NOT MANUAL GLOB/GREP)**
+**REQUIRED:**
+- Investigate, don't assume
+- Present findings as options
+- Capture decisions, don't make them
+- Use agents for complex investigation
+- Use AskUserQuestion tool for structured questions
+- Use Explore subagent for source code discovery (not manual Glob/Grep)
 
 ## Core Principles
 
@@ -83,21 +90,19 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 - Cross-cutting concerns
 **Approach**: Investigate via agents, present findings, get decisions
 
-## ⚠️ CRITICAL: THINK BEFORE ACTING ⚠️
+## ⚠️ CRITICAL: THINK BEFORE ACTING
 
-**🛑 EXTENDED THINKING REQUIRED**
-**🛑 THINK ULTRA HARD ABOUT THIS ITERATION**
-**🛑 USE MAXIMUM THINKING DEPTH FOR PLANNING**
+**REQUIRED:**
+- Extended thinking required
+- Think ultra hard about this iteration
+- Use maximum thinking depth for planning
+- Read all context files thoroughly
+- Classify tasks by complexity accurately
+- Investigate complex items properly
+- Ask for decisions, don't make them
+- Validate assumptions about existing code before finalizing
 
-- READ all context files thoroughly
-- CLASSIFY tasks by complexity accurately
-- INVESTIGATE complex items properly
-- ASK for decisions, don't make them
-- VALIDATE assumptions about existing code before finalizing
-
-## MANDATORY EXECUTION SEQUENCE - NO SKIPPING
-
-## MANDATORY EXECUTION SEQUENCE - NO SKIPPING
+## Core Instructions
 
 ### PHASE 1: FOUNDATION LOADING (REQUIRED)
 
@@ -826,7 +831,22 @@ Designs are YOUR decisions, not my assumptions.
 Ready for: /decompose-iteration
 ```
 
-## ENFORCEMENT MECHANISMS
+## Success Criteria
+
+Command succeeds when:
+
+- [ ] Foundation context loaded (IDEA.md, PROJECT_SUMMARY.md, later.md)
+- [ ] Tech stack detected and standards loaded
+- [ ] All features classified by complexity (Simple/Pattern/Complex)
+- [ ] Complex items investigated via agents with options presented
+- [ ] User made explicit design decisions for all complex items
+- [ ] Invariants and risk areas identified
+- [ ] ITERATION.md generated with user approval
+- [ ] Standards embedded in ITERATION.md
+- [ ] Tasks preserve interview discoveries
+- [ ] Ready for /decompose-iteration
+
+## Notes
 
 ### Interview Preservation Gates
 
@@ -850,7 +870,7 @@ Ready for: /decompose-iteration
 - No assumed class structures
 - Pattern items reference real examples
 
-## FAILURE MODES & RECOVERY
+## Error Handling
 
 **If agent investigation vague:** Send more specific prompts
 **If user unsure of decision:** Present clearer trade-offs

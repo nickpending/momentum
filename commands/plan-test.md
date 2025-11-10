@@ -1,3 +1,9 @@
+---
+allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash, Task, AskUserQuestion
+description: Write tests that protect invariants and handle failures
+argument-hint: task-number
+---
+
 # Write tests that protect invariants and handle failures
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -5,18 +11,36 @@
 **Key Paths**:
 - ARTIFACTS_DIR - Workflow artifacts (TESTING.md, ITERATION.md, TASKS.md)
 
-## ⚠️ CRITICAL: RISK-GUIDED INVARIANT TESTING ⚠️
+## ⚠️ CRITICAL: RISK-GUIDED INVARIANT TESTING
 
-**🛑 YOU'RE A SAFETY INSPECTOR, NOT A COVERAGE CHECKER**
-**🛑 TEST WHAT WOULD RUIN SOMEONE'S DAY**
-**🛑 ACCEPT PROBABILISTIC OUTCOMES**
-**🛑 IF YOU START A TEST, YOU FINISH IT**
-**🛑 USE EXPLORE SUBAGENT FOR SOURCE CODE DISCOVERY (NOT MANUAL GLOB/GREP)**
+**REQUIRED:**
+- You're a safety inspector, not a coverage checker
+- Test what would ruin someone's day
+- Accept probabilistic outcomes when appropriate
+- Use Explore subagent for source code discovery
+- Complete every test you start - no quitting
 
-## TL;DR
-Find HIGH risk → Identify invariants → Write <10 tests → Skip the rest → 30-60 minutes max
+**NEVER:**
+- Aim for coverage metrics
+- Test low-risk cosmetic features
+- Skip test completion when started
+- Use manual Glob/Grep for discovery
 
-## THE MENTAL MODEL SHIFT
+## Workflow
+
+Execution phases for risk-based testing:
+
+1. **Context and Risk Analysis** - Load infrastructure, identify HIGH risk areas, find patterns
+2. **Mandatory Approval** - Present test plan, get approval before writing
+3. **Write Invariant Tests** - Protect critical properties, handle failures, validate thresholds
+4. **Validate Test Quality** - Run all tests, verify purpose, ensure quality
+5. **Test Completion** - Document protection, confirm readiness
+
+**TL;DR:** Find HIGH risk → Identify invariants → Write <10 tests → Skip the rest → 30-60 minutes max
+
+## Core Instructions
+
+### Testing Mindset
 
 You're not writing tests to prevent all bugs.
 You're ensuring critical properties hold even when things go wrong.
@@ -26,13 +50,13 @@ Think like a safety inspector who:
 2. Focuses inspection there (find invariants)
 3. Ignores cosmetic issues (skip low risk)
 
-**YOUR ROLE**: Independent safety inspector, not developer's assistant
+**Your Role:** Independent safety inspector, not developer's assistant
 - Validate developer's discoveries (don't just accept them)
 - Find what they missed (fresh eyes catch different things)
 - Challenge risk assessments (developers minimize their own risks)
 - Bring testing expertise (you think differently about failure)
 
-## PHASE 1: CONTEXT AND RISK ANALYSIS
+### PHASE 1: CONTEXT AND RISK ANALYSIS
 
 ### CHECKPOINT 0.5: Load Test Infrastructure
 
@@ -560,7 +584,22 @@ This minimal test suite protects what matters while accepting that:
 - Testing has diminishing returns
 ```
 
-## SUCCESS CRITERIA
+## Notes
+
+**The Engineering Mindset:**
+
+Remember:
+- Test what would ruin someone's day
+- Accept failures will happen
+- Ensure graceful degradation
+- Skip everything else
+
+3 invariant tests that matter > 30 tests that don't.
+
+**Time Expectation:** This entire process should take 30-60 minutes max.
+If you're spending hours, you're testing too much.
+
+## Success Criteria
 
 You've succeeded when:
 - [ ] Every HIGH risk area has invariant tests
@@ -578,16 +617,3 @@ You've FAILED if:
 - [ ] Aiming for coverage metrics
 - [ ] Any test is commented out or skipped
 - [ ] Reinvented test patterns instead of copying
-
-## THE ENGINEERING MINDSET
-
-Remember:
-- Test what would ruin someone's day
-- Accept failures will happen
-- Ensure graceful degradation
-- Skip everything else
-
-3 invariant tests that matter > 30 tests that don't.
-
-**TIME EXPECTATION**: This entire process should take 30-60 minutes max.
-If you're spending hours, you're testing too much.

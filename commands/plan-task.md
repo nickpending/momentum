@@ -1,3 +1,9 @@
+---
+allowed-tools: Read, Grep, Glob, Edit, Write, MultiEdit, Bash, Task, AskUserQuestion
+description: Create implementation plan with linting and quality checks
+argument-hint: task-number
+---
+
 # Create implementation plan with linting and quality checks
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -7,41 +13,55 @@
 - STATE_DIR - Saved state files
 - WORKFLOW_PROJECTS - Obsidian projects directory
 
-## ⚠️ CRITICAL: GROUP RELATED TASKS FIRST ⚠️
+## ⚠️ CRITICAL: GROUP RELATED TASKS FIRST
 
-**🛑 CHECK FOR TASK GROUPING BEFORE ANYTHING ELSE**
-**🛑 BUILD WORKING SOFTWARE FIRST**
-**🛑 DEMO-DRIVEN DEVELOPMENT**
-**🛑 NO TESTS DURING IMPLEMENTATION**
-**🛑 EMBEDDED STANDARDS MUST BE APPLIED**
-**🛑 USE EXPLORE SUBAGENT FOR SOURCE CODE DISCOVERY (NOT MANUAL GLOB/GREP)**
+**REQUIRED:**
+- Check for task grouping before anything else
+- Build working software first with demo-driven development
+- Apply embedded standards from ITERATION.md
+- Use Explore subagent for source code discovery
 
-## CORE PRINCIPLES (APPLY THROUGHOUT)
+**NEVER:**
+- Skip grouping decision
+- Write tests during implementation (tests come after)
+- Use manual Glob/Grep for code discovery (use Explore subagent)
 
-### Build-First Development
+## Workflow
+
+Execution phases for task implementation:
+
+1. **Preparation & Grouping** - Decide task grouping strategy, assess value
+2. **Context Loading** - Load tasks, understand codebase, validate dependencies
+3. **Implementation Planning** - Assess complexity, apply standards, define success
+4. **Implementation Execution** - Build core functionality, integrate, demo preparation
+5. **Evidence Collection** - Prove system integration, document discoveries
+
+## Core Instructions
+
+### Build-First Development Principles
+
+**Build-First Development:**
 - Implementation only - no tests
 - Focus on working demos
 - Demo commands prove functionality works
 - Real integration throughout
 
-### Evidence Collection
-- ACTUAL WORKING COMMANDS REQUIRED - NO CLAIMS
-- REAL INTEGRATION PROOF REQUIRED
-- STANDARDS COMPLIANCE EXAMPLES REQUIRED
-- DEMO COMMAND THAT PROVES IT WORKS
+**Evidence Collection:**
+- Actual working commands required - no claims
+- Real integration proof required
+- Standards compliance examples required
+- Demo command that proves it works
 
-### Composition-First Enforcement
+**Composition-First Enforcement:**
 - Does this task do exactly ONE thing?
 - Will it produce working, demoable software?
 - Is the success criteria simple and clear?
 
-### YAGNI Validation
+**YAGNI Validation:**
 - Are we adding any unnecessary complexity?
 - Is every line of code needed for THIS task?
 - Are we abstracting before we need to?
 - Can we ship this and iterate later?
-
-## MANDATORY EXECUTION SEQUENCE - NO BYPASSING
 
 ### PHASE 0: PREPARATION & GROUPING
 
@@ -657,35 +677,50 @@ This captures real implementation insights for future reference.
 DO NOT PROCEED until you've updated ONLY the discoveries in ARTIFACTS_DIR/TASKS.md
 ```
 
-## CRITICAL GATES & ENFORCEMENT
+## Error Handling
 
-### Standards Compliance Gates
-- Embedded patterns must be applied
-- Security, performance basics required
-- No outdated practices
-- Simplest implementation that meets standards
+**If implementation blocked:**
+- Simplify approach, focus on core functionality
+- Break down into smaller steps
+- Check dependencies are met
 
-### Integration Requirements
-- Use real services from start
-- Verify with live system
-- Verify end-to-end workflows
-- No mocking internal components
+**If integration fails:**
+- Check services running (docker-compose up)
+- Verify APIs and connection strings
+- Review existing integration patterns
 
-### Context Overflow Protection
-- Auto-save state if context exceeds 80% using /save-state
+**If standards missed:**
+- Refactor minimally to comply
+- Check ITERATION.md for patterns
+- Apply simplest compliant approach
+
+**If demo doesn't work:**
+- Fix functionality - demo commands prove it works
+- Don't proceed until demo passes
+- Verify with actual running services
+
+**If context overflows:**
+- Auto-save state using /save-state
 - State saved to STATE_DIR/task-N-timestamp.md
 - Continue with /restore-state when context restored
+
+## Notes
+
+**Standards Compliance:**
+- Embedded patterns must be applied
+- Security and performance basics required
+- Simplest implementation that meets standards
+
+**Integration Requirements:**
+- Use real services from start
+- Verify with live system and end-to-end workflows
+- No mocking internal components
+
+**Context Management:**
+- Auto-save state if context exceeds 80%
 - Minimal state capture for resumption
 
-## FAILURE MODES & RECOVERY
-
-**If implementation blocked:** Simplify approach, focus on core  
-**If integration fails:** Check services running, verify APIs  
-**If standards missed:** Refactor minimally to comply  
-**If demo doesn't work:** Fix functionality - demo commands prove it works  
-**If context overflows:** Save state and continue with restored context
-
-## SUCCESS CRITERIA
+## Success Criteria
 
 Implementation phase completed when:
 - [ ] Grouping decision made FIRST with clear rationale
