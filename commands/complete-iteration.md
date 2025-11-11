@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Write, Edit, Bash, Glob
+description: Synthesize iteration learnings, update statuses, and archive
+---
+
 # Synthesize iteration learnings, update statuses, and archive
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -8,11 +13,20 @@
 - WORKFLOW_DIR - Workflow directory (archives/, discoveries/)
 - WORKFLOW_PROJECTS - Obsidian projects directory
 
-## ⚠️ CRITICAL: ITERATION CLOSURE AND KNOWLEDGE SYNTHESIS ⚠️
+## ⚠️ CRITICAL: ITERATION CLOSURE AND KNOWLEDGE SYNTHESIS
 
-**🛑 VERIFY ALL TASKS COMPLETE BEFORE ARCHIVAL** **🛑 SYNTHESIZE KNOWLEDGE FROM COMPLETED TASKS** **🛑 PRESERVE CONTEXT FOR FUTURE ITERATIONS** **🛑 CLEAN HANDOFF TO NEXT ITERATION PLANNING**
+**REQUIRED:**
+- Verify all tasks complete before archival
+- Synthesize knowledge from completed tasks
+- Preserve context for future iterations
+- Clean handoff to next iteration planning
 
-## ITERATION COMPLETION SEQUENCE
+**NEVER:**
+- Archive with incomplete critical tasks
+- Skip knowledge synthesis
+- Delete artifacts without archiving
+
+## Core Instructions
 
 ### PHASE 1: ITERATION VALIDATION (REQUIRED)
 
@@ -255,31 +269,30 @@ Opportunities: [areas for improvement or expansion]
 Ready for /plan-iteration to begin next iteration planning.
 ```
 
-## ENFORCEMENT MECHANISMS
 
-### Completion Validation
+## Error Handling
 
-- No archival without verifying iteration scope completion
-- Success criteria must be demonstrably met
-- Critical tasks must be marked complete with evidence
+**If tasks incomplete:**
+- Recommend completing critical tasks before archival
+- List specific incomplete tasks
+- Don't proceed with archival
 
-### Knowledge Preservation
+**If success criteria unmet:**
+- Identify gaps and suggest resolution
+- Review iteration goals
+- Provide corrective steps
 
-- Task-level insights must be synthesized comprehensively
-- Lessons learned captured for future iteration planning
-- Architectural decisions documented for consistency
+**If knowledge synthesis insufficient:**
+- Request more detailed task documentation
+- Review discovery files for missing insights
+- Gather additional context before archival
 
-### Clean Transitions
+**If archival fails:**
+- Ensure proper directory structure and permissions
+- Check disk space availability
+- Verify write access to archives directory
 
-- Workspace prepared for fresh iteration start
-- Archive maintains complete context for future reference
-- Clear guidance provided for next iteration focus
-
-## FAILURE MODES & RECOVERY
-
-**If tasks incomplete:** Recommend completing critical tasks before archival **If success criteria unmet:** Identify gaps and suggest resolution **If knowledge synthesis insufficient:** Request more detailed task documentation **If archival fails:** Ensure proper directory structure and permissions
-
-## SUCCESS CRITERIA
+## Success Criteria
 
 Iteration properly completed when:
 
@@ -290,3 +303,20 @@ Iteration properly completed when:
 - [ ] Iteration properly archived for future reference
 - [ ] Clean workspace prepared for next iteration
 - [ ] Clear guidance provided for next iteration planning
+
+## Notes
+
+**Completion Validation:**
+- No archival without verifying iteration scope completion
+- Success criteria must be demonstrably met
+- Critical tasks must be marked complete with evidence
+
+**Knowledge Preservation:**
+- Task-level insights must be synthesized comprehensively
+- Lessons learned captured for future iteration planning
+- Architectural decisions documented for consistency
+
+**Clean Transitions:**
+- Workspace prepared for fresh iteration start
+- Archive maintains complete context for future reference
+- Clear guidance provided for next iteration focus

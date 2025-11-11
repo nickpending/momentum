@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Write, Bash
+description: Luminary Project Setup - Generate Expert Guidance System
+---
+
 # Luminary Project Setup - Generate Expert Guidance System
 
 ## Environment Context
@@ -10,9 +15,21 @@
 - PROJECT_ROOT - Project root (for .claude/agents/)
 - WORKFLOW_PROJECTS - Obsidian projects directory
 
-## ⚠️ CRITICAL: AUTOMATIC LUMINARY SETUP ⚠️
+## ⚠️ CRITICAL: AUTOMATIC LUMINARY SETUP
 
-**🛑 SETUP SEQUENCE - EXECUTE AUTOMATICALLY**
+**REQUIRED:**
+- Execute setup sequence automatically
+- Check for existing luminaries before regenerating
+- Generate project-specific expert guidance
+- Create custom roundtable subagent
+
+**NEVER:**
+- Skip luminary detection check
+- Generate without reading IDEA.md
+- Use luminaries not in knowledge base
+- Fabricate expertise or quotes
+
+## Core Instructions
 
 ### PHASE 1: LUMINARY DETECTION
 
@@ -266,19 +283,29 @@ Primary Luminaries: [List from LUMINARIES.md]
 Setup complete. Momentum mode ready with expert guidance.
 ```
 
-## ENFORCEMENT MECHANISMS
+## Success Criteria
 
-### Setup Automation
+- [ ] Existing luminaries checked for regeneration
+- [ ] LUMINARIES.md generated in ARTIFACTS_DIR
+- [ ] Primary luminaries identified (4 total, including 1 security expert)
+- [ ] Cognitive interrupts use mandatory format
+- [ ] Roundtable subagent generated in PROJECT_ROOT/.claude/agents/
+- [ ] All template substitutions completed
+- [ ] Both files verified to exist
+
+## Notes
+
+**Setup Automation:**
 - Runs when called by momentum or manually
 - No manual steps required
 - Generates project-specific expert guidance
 
-### Template Integrity
+**Template Integrity:**
 - All substitutions must be exact matches
 - Missing luminaries data = setup failure
 - Custom subagent must be valid momentum format
 
-### Expert Authenticity
+**Expert Authenticity:**
 - Only reference actual luminary experience
 - No fabricated expertise or quotes
 - Scale-appropriate guidance (personal vs production)

@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, AskUserQuestion
+description: Add discovered tasks to current iteration during implementation
+---
+
 # Add discovered tasks to current iteration during implementation
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -5,14 +10,22 @@
 **Key Paths**:
 - ARTIFACTS_DIR - Workflow artifacts (TASKS.md)
 
-## ⚠️ CRITICAL: DISCOVERED TASKS NEED FULL CONTEXT ⚠️
+## ⚠️ CRITICAL: DISCOVERED TASKS NEED FULL CONTEXT
 
-**🛑 INTERVIEW FIRST - NO TASKS UNTIL CONTEXT GATHERED**
-**🛑 THESE TASKS WON'T EXIST ANYWHERE ELSE**
-**🛑 CAPTURE WHY THIS EMERGED NOW**
-**🛑 MAINTAIN SAME QUALITY AS PLANNED TASKS**
-**🛑 USE ASKUSERQUESTION TOOL FOR STRUCTURED QUESTIONS**
-**🛑 USE EXPLORE SUBAGENT FOR SOURCE CODE DISCOVERY (NOT MANUAL GLOB/GREP)**
+**REQUIRED:**
+- Interview first before creating any tasks
+- Capture complete context for why this emerged now
+- Maintain same quality bar as planned tasks
+- Use AskUserQuestion tool for structured questions
+- Use Explore subagent for source code discovery
+- Document discovery trigger and impact
+
+**NEVER:**
+- Add tasks without full context gathering
+- Skip the interview process
+- Lower quality standards for discovered tasks
+- Use manual Glob/Grep for code discovery
+- Create vague "cleanup" tasks without specifics
 
 ## Context
 
@@ -24,7 +37,7 @@ This command handles the reality of software development - you discover problems
 
 These can't wait for the next iteration but weren't part of the original plan.
 
-## MANDATORY EXECUTION SEQUENCE
+## Core Instructions
 
 ### PHASE 1: CONTEXT LOADING (REQUIRED)
 
@@ -290,27 +303,34 @@ These tasks can now be:
 Just like any other task in the iteration.
 ```
 
-## ENFORCEMENT MECHANISMS
+## Error Handling
 
-### Context Capture Requirements
-- Must document WHY task emerged
-- Must explain impact of not doing it
-- Must show relationship to current work
-- Must include validation criteria
+**If issue too vague:**
+- Conduct deeper interview
+- Ask more specific questions
+- Explore codebase for context
 
-### Task Quality Requirements  
-- Same decomposition rules as planned tasks
-- Same architecture context requirements
-- Same demo/validation requirements
-- Same risk assessment needs
+**If scope too large:**
+- Decompose further into smaller tasks
+- Defer non-critical parts
+- Focus on minimal viable fix
 
-### Anti-Patterns to Avoid
-- No vague "cleanup" tasks
-- No bundling multiple issues
-- No tasks without clear demos
-- No context-free additions
+**If no clear demo:**
+- Task is too abstract
+- Make deliverable more concrete
+- Define specific validation command
 
-## SUCCESS CRITERIA
+**If affects too many files:**
+- Find the core fix first
+- Split into sequential tasks
+- Isolate the critical change
+
+**If not actually urgent:**
+- Use qback for later.md instead
+- Don't inflate iteration scope unnecessarily
+- Defer to next iteration planning
+
+## Success Criteria
 
 Addition succeeds when:
 - [ ] Discovery context fully documented
@@ -320,10 +340,22 @@ Addition succeeds when:
 - [ ] Ready for systematic execution
 - [ ] Maintains iteration coherence
 
-## FAILURE MODES & RECOVERY
+## Notes
 
-**If issue too vague:** Conduct deeper interview
-**If scope too large:** Decompose further or defer parts
-**If no clear demo:** Task is too abstract
-**If affects too many files:** Find the core fix first
-**If not actually urgent:** Use qback for later.md instead
+**Context Capture Requirements:**
+- Must document WHY task emerged
+- Must explain impact of not doing it
+- Must show relationship to current work
+- Must include validation criteria
+
+**Task Quality Requirements:**
+- Same decomposition rules as planned tasks
+- Same architecture context requirements
+- Same demo/validation requirements
+- Same risk assessment needs
+
+**Anti-Patterns to Avoid:**
+- No vague "cleanup" tasks
+- No bundling multiple issues
+- No tasks without clear demos
+- No context-free additions

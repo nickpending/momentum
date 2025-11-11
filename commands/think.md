@@ -1,3 +1,8 @@
+---
+allowed-tools: None
+description: Force deep analysis when claiming premature completion
+---
+
 # Force deep analysis when claiming premature completion
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -11,7 +16,7 @@
 
 You're trying to mark things complete that aren't actually complete.
 
-## MANDATORY REALITY CHECK
+## Core Instructions
 
 **THINK** through what you're actually claiming:
 
@@ -94,3 +99,12 @@ Before marking ANYTHING complete, you must be able to say:
 "I ran the exact demo command from the task definition, it produced the exact expected output, with zero errors or warnings, and I can prove each task works individually."
 
 If you can't say that, you're not done. THINK about why you're trying to pretend otherwise.
+
+## Success Criteria
+
+- [ ] Acknowledged that errors are never "just cosmetic"
+- [ ] Understood that "good enough" is not complete
+- [ ] Committed to running exact demo commands
+- [ ] Verified zero errors or warnings exist
+- [ ] Proven each task works individually
+- [ ] Ready to either fix properly or mark as in-progress

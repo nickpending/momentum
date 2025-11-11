@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, AskUserQuestion
+description: Break iteration features into concrete implementable tasks
+---
+
 # Break iteration features into concrete implementable tasks
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -6,21 +11,26 @@
 - ARTIFACTS_DIR - Workflow artifacts (ITERATION.md, TASKS.md)
 - WORKFLOW_DIR - Workflow root (for templates/)
 
-## ⚠️ CRITICAL: DECOMPOSE FEATURES INTO REAL TASKS ⚠️
+## ⚠️ CRITICAL: DECOMPOSE FEATURES INTO REAL TASKS
 
-**🛑 CREATE TASKS NOT MINI-FEATURES**
-**🛑 1-2 FILES PER TASK MAXIMUM**
-**🛑 EACH TASK = ONE DELIVERABLE**
-**🛑 USE ASKUSERQUESTION TOOL FOR STRUCTURED QUESTIONS**
-**🛑 USE EXPLORE SUBAGENT FOR SOURCE CODE DISCOVERY (NOT MANUAL GLOB/GREP)**
+**REQUIRED:**
+- Create tasks not mini-features
+- Maximum 1-2 files per task
+- Each task delivers ONE concrete thing
+- Use AskUserQuestion tool for structured questions
+- Use Explore subagent for source code discovery
+- Think deeply about decomposition before proceeding
+- Read everything thoroughly before making decisions
+- Validate assumptions about existing code
 
-## MANDATORY EXECUTION SEQUENCE
+**NEVER:**
+- Create mini-features disguised as tasks
+- Bundle multiple deliverables in one task
+- Use manual Glob/Grep for code discovery
+- Skip codebase analysis before decomposition
+- Rush the breakdown process
 
-## ⚠️ CRITICAL: THINK ⚠️
-
-**🛑 EXTENDED THINKING REQUIRED**
-**🛑 THINK ULTRA HARD ABOUT DECOMPOSITION**
-**🛑 USE MAXIMUM THINKING DEPTH FOR TASK BREAKDOWN**
+## Core Instructions
 
 ### PHASE 0: PREPARATION
 
@@ -378,35 +388,34 @@ Ready for: /plan-task X.Y
 VERIFICATION: TASKS.md exists and is complete
 ```
 
-## ENFORCEMENT MECHANISMS
+## Error Handling
 
-### Task Size Enforcement
-- Reject any task touching 3+ files
-- Split tasks over 100 lines
-- Require specific file names
-- Demand concrete demo commands
-- Exclude test-only tasks (tests are automatic)
+**If features too large to decompose:**
+- Break feature itself into sub-features
+- Identify core vs auxiliary functionality
+- Create separate feature groupings
 
-### Naming Enforcement  
-- Pattern: "X.Y: [Verb] [Specific Target] [Purpose]"
-- Ban vague verbs: implement, create system, build feature
-- Require specific nouns: exact function/component names
+**If task touches too many files:**
+- Find the ONE core change
+- Split into sequential tasks
+- Focus on single responsibility
 
-### Dependency Enforcement
-- Maximum 2 dependencies per task
-- No forward dependencies
-- Clear parent-child relationships
-- Linear progression
+**If no clear demo command:**
+- Task is too abstract
+- Decompose further
+- Make deliverable concrete
 
-## FAILURE MODES & RECOVERY
+**If dependencies too complex:**
+- Reorder tasks for simpler flow
+- Split into smaller units
+- Simplify dependency graph
 
-**If features too large to decompose:** Break feature itself into sub-features
-**If task touches too many files:** Find the ONE core change
-**If no clear demo command:** Task is too abstract
-**If dependencies too complex:** Reorder or split tasks
-**If naming too vague:** Add specific file/method names
+**If naming too vague:**
+- Add specific file/method names
+- Use concrete verbs and nouns
+- Follow naming pattern strictly
 
-## SUCCESS CRITERIA
+## Success Criteria
 
 Decomposition succeeds when:
 - [ ] Every feature becomes 5-15 concrete tasks
@@ -416,6 +425,22 @@ Decomposition succeeds when:
 - [ ] Build order is logical and clear
 - [ ] TASKS.md is created successfully
 
----
+## Notes
 
-**Remember: If you can't explain the task in one sentence with specific file names, it's too big.**
+**Task Size Enforcement:**
+- Reject any task touching 3+ files
+- Split tasks over 100 lines
+- Require specific file names
+- Demand concrete demo commands
+- Exclude test-only tasks (tests are automatic)
+
+**Naming Enforcement:**
+- Pattern: "X.Y: [Verb] [Specific Target] [Purpose]"
+- Ban vague verbs: implement, create system, build feature
+- Require specific nouns: exact function/component names
+
+**Dependency Enforcement:**
+- Maximum 2 dependencies per task
+- No forward dependencies
+- Clear parent-child relationships
+- Linear progression

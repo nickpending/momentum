@@ -1,3 +1,8 @@
+---
+allowed-tools: Read, Write, Bash
+description: Generate lightweight project summary for context loading
+---
+
 # Generate lightweight project summary for context loading
 
 **Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
@@ -10,7 +15,9 @@
 
 Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key information from IDEA.md, ITERATION.md, and TASKS.md. This replaces loading full context files during /load-app-context.
 
-## Step 1: Load Source Files
+## Core Instructions
+
+### Step 1: Load Source Files
 
 **READ** these files to extract information:
 
@@ -19,7 +26,7 @@ Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key inform
 3. `ARTIFACTS_DIR/TASKS.md` (if exists) - task progress
 4. `WORKFLOW_DIR/templates/PROJECT_SUMMARY_TEMPLATE.md` - output template
 
-## Step 2: Extract Key Information
+### Step 2: Extract Key Information
 
 ### From IDEA.md
 
@@ -89,7 +96,7 @@ Run `ls -la` to map project organization:
 
 **Balance detail with brevity** - Include enough for the model to work effectively (5-8 key commands), skip exhaustive listings.
 
-## Step 3: Populate Template
+### Step 3: Populate Template
 
 **READ** template and replace all variables:
 
@@ -121,13 +128,13 @@ Run `ls -la` to map project organization:
 - If no commands found: Use "Standard development tools only" or omit section
 - If sections missing: Use "N/A" or omit
 
-## Step 4: Write PROJECT_SUMMARY.md
+### Step 4: Write PROJECT_SUMMARY.md
 
 **CREATE** file at: `ARTIFACTS_DIR/PROJECT_SUMMARY.md`
 
 Target length: 40-50 lines (lightweight context)
 
-## Step 5: Output Confirmation
+### Step 5: Output Confirmation
 
 ```
 =====================================
@@ -161,5 +168,8 @@ This command should be called by:
 
 ## Success Criteria
 
-- PROJECT_SUMMARY.md is 50-100 lines (concise but complete)
-- All key project info is captured
+- [ ] PROJECT_SUMMARY.md is 50-100 lines (concise but complete)
+- [ ] All key project info is captured
+- [ ] File written to ARTIFACTS_DIR/PROJECT_SUMMARY.md
+- [ ] Template variables all replaced
+- [ ] Missing data handled gracefully
