@@ -21,13 +21,6 @@ These paths are injected by momentum and available for use:
 - `WORKFLOW_PROJECTS` - Global Obsidian projects directory
 - `WORKFLOW_DEV` - Global development projects root
 
-## Mode Requirement
-
-**This skill requires project mode.** Check the `<!-- MODE: {mode} -->` comment from the hook.
-
-- **If MODE is "project"**: Proceed with gitignore setup
-- **If MODE is "assistant"**: Inform user: "Gitignore setup requires project mode. Switch to a specific project first with 'work on [project]'."
-
 ## Workflow
 
 ### 1. Check for Existing .gitignore

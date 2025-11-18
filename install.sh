@@ -440,156 +440,25 @@ chmod +x "$HOME/.local/bin/setupd"
 echo -e "${GREEN}✅ Installed setupd to ~/.local/bin${RESET}"
 echo
 
-# Step 6: Set up Momentum Home
-echo -e "${CYAN}Step 6: Setting up Momentum Home${RESET}"
+# Step 6: Install momentum launcher script
+echo -e "${CYAN}Step 6: Installing momentum launcher${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
-# Create base directory structure (minimal - only what Claude needs)
-BASE_DIR="$HOME/.local/share/momentum"
-mkdir -p "$BASE_DIR/.claude"
+# Copy momentum script to ~/.local/bin
+cp "$MOMENTUM_SOURCE/bin/momentum" "$HOME/.local/bin/momentum"
+chmod +x "$HOME/.local/bin/momentum"
 
-echo "Setting up Momentum base directory at $BASE_DIR..."
-
-# Symlink commands, subagents, skills, and hooks directories
-# Remove existing symlinks first to prevent ln from following them
-rm -f "$BASE_DIR/.claude/commands" 2>/dev/null || true
-rm -f "$BASE_DIR/.claude/agents" 2>/dev/null || true
-rm -rf "$BASE_DIR/.claude/skills" 2>/dev/null || true
-rm -rf "$BASE_DIR/.claude/hooks" 2>/dev/null || true
-ln -sf "$MOMENTUM_INSTALL/commands" "$BASE_DIR/.claude/commands" 2>/dev/null || true
-ln -sf "$MOMENTUM_INSTALL/subagents" "$BASE_DIR/.claude/agents" 2>/dev/null || true
-ln -sf "$MOMENTUM_INSTALL/skills" "$BASE_DIR/.claude/skills" 2>/dev/null || true
-ln -sf "$MOMENTUM_INSTALL/hooks" "$BASE_DIR/.claude/hooks" 2>/dev/null || true
-
-# Create base directory settings.json with complete hook ecosystem
-cat > "$BASE_DIR/.claude/settings.json" << EOF
-{
-  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
-  "hooks": {
-    "SessionStart": [
-      {
-        "matcher": "startup",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts startup"
-          }
-        ]
-      },
-      {
-        "matcher": "clear",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts clear"
-          }
-        ]
-      }
-    ],
-    "UserPromptSubmit": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-user-prompt-submit-hook.ts"
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bun $HOME/.config/momentum/hooks/momentum-stop-hook.ts"
-          }
-        ]
-      }
-    ]
-  },
-  "permissions": {
-    "additionalDirectories": [
-      "$HOME/.local/share/momentum",
-      "$DEV_DIR",
-      "$PLANNING_DIR",
-      "$HOME/.config/momentum/",
-      "$HOME/.config/lore/",
-      "$HOME/.local/share/lore/",
-      "$HOME/.cache/lore/",
-      "/tmp/"
-    ],
-    "allow": [
-      "SlashCommand(/add-task)",
-      "SlashCommand(/complete-iteration)",
-      "SlashCommand(/complete-task)",
-      "SlashCommand(/decompose-iteration)",
-      "SlashCommand(/load-app-context)",
-      "SlashCommand(/plan-iteration)",
-      "SlashCommand(/plan-task)",
-      "SlashCommand(/plan-test)",
-      "SlashCommand(/restore-state)",
-      "SlashCommand(/save-state)",
-      "SlashCommand(/setup-luminaries)",
-      "SlashCommand(/think)",
-      "SlashCommand(/update-project-summary)",
-      "Bash(setupd --switch:*)",
-      "Bash(printf:*)"
-    ]
-  }
-}
-EOF
-
-echo -e "${GREEN}✅ Momentum Home configured${RESET}"
+echo -e "${GREEN}✅ Momentum launcher installed${RESET}"
 echo
 
-# Step 7: Configure shell
-echo -e "${CYAN}Step 7: Configuring your shell${RESET}"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo
-
-# Function to add line to file if not present
-add_to_shell() {
-    local file=$1
-    local line=$2
-    if [[ -f "$file" ]]; then
-        if ! grep -Fq "$line" "$file" 2>/dev/null; then
-            echo "$line" >> "$file"
-        fi
-    fi
-    # Always return 0 to not trigger set -e
-    return 0
-}
-
-# Add configuration based on shell type
-case "$DETECTED_SHELL" in
-    fish)
-        # Fish shell syntax
-        mkdir -p "$HOME/.config/fish"
-        add_to_shell "$SHELL_CONFIG" "set -x PATH \$HOME/.local/bin \$PATH"
-        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_INSTALL/config.fish"
-        
-        # Create fish-compatible config
-        cat > "$MOMENTUM_INSTALL/config.fish" << 'EOF'
-# Momentum Configuration for Fish
-set -x MOMENTUM_INSTALL "$HOME/.config/momentum"
-source $MOMENTUM_INSTALL/config
-
-# Momentum alias - hook injects metadata, alias loads ASSISTANT.md
-alias momentum 'cd ~/.local/share/momentum && claude --append-system-prompt (cat $MOMENTUM_INSTALL/agents/ASSISTANT.md) "Hello Assistant"'
-EOF
-        ;;
-    *)
-        # Bash/Zsh syntax
-        add_to_shell "$SHELL_CONFIG" 'export PATH="$HOME/.local/bin:$PATH"'
-        add_to_shell "$SHELL_CONFIG" ""
-        add_to_shell "$SHELL_CONFIG" "# Momentum Configuration"
-        add_to_shell "$SHELL_CONFIG" "source $MOMENTUM_INSTALL/config"
-        add_to_shell "$SHELL_CONFIG" 'alias momentum='"'"'cd ~/.local/share/momentum && claude --append-system-prompt "$(cat $MOMENTUM_INSTALL/agents/ASSISTANT.md)" "Hello Assistant"'"'"
-        ;;
-esac
-
-echo -e "${GREEN}✅ Shell configuration updated${RESET}"
+# Ensure ~/.local/bin is in PATH
+if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
+  echo
+  echo -e "${YELLOW}⚠️  ~/.local/bin not in PATH${RESET}"
+  echo "Add to your shell config:"
+  echo "  export PATH=\"\$HOME/.local/bin:\$PATH\""
+fi
 echo
 
 # Final instructions
@@ -610,36 +479,31 @@ echo "Your workspace:"
 echo -e "  📝 Planning: ${BLUE}$PLANNING_DIR${RESET}"
 echo -e "  💻 Development: ${BLUE}$DEV_DIR${RESET}"
 echo
-echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
-echo -e "${YELLOW}IMPORTANT: Reload your shell first!${RESET}"
-echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${RESET}"
+echo "Run this command to start:"
+echo -e "  ${CYAN}momentum <project-name>${RESET}"
 echo
-echo "Run this command:"
-echo -e "  ${CYAN}source $SHELL_CONFIG${RESET}"
+echo "For new projects:"
+echo "  momentum new-project  # Creates dirs, runs ideation, sets up structure"
 echo
-echo "Then start your first project:"
 echo
-echo -e "${MAGENTA}WHERE TO RUN COMMANDS:${RESET}"
-echo "┌─────────────────┬──────────────────────┐"
-echo "│ In Terminal     │ In Claude Code       │"
-echo "├─────────────────┼──────────────────────┤"
-echo "│ momentum        │ /plan-iteration      │"
-echo "│ setupd          │ /plan-task           │"
-echo "└─────────────────┴──────────────────────┘"
+echo -e "${MAGENTA}FIRST PROJECT WORKFLOW:${RESET}"
+echo "1. Launch with project name:"
+echo -e "   ${CYAN}momentum myapp${RESET}"
 echo
-echo -e "${MAGENTA}STEP-BY-STEP FIRST PROJECT:${RESET}"
-echo "1. Start Momentum mode:"
-echo -e "   ${CYAN}momentum${RESET}"
+echo "2. If project doesn't exist, momentum will:"
+echo "   • Offer to create directories"
+echo "   • Run ideation to capture your vision"
+echo "   • Set up .workflow structure"
 echo
-echo "2. Describe your project idea in natural language"
-echo "   Assistant will help you refine it"
+echo "3. Once in Claude:"
+echo -e "   ${CYAN}/plan-iteration${RESET}  # Plan what to build"
+echo -e "   ${CYAN}/plan-task 1${RESET}     # Start first task"
 echo
-echo "3. When ready, tell assistant to save the idea"
+echo "Commands run in terminal:"
+echo -e "   ${CYAN}momentum <project>${RESET}  # Switch projects"
 echo
-echo "4. In terminal, set up project:"
-echo -e "   ${CYAN}setupd project-name${RESET}"
-echo
-echo "5. In Claude Code, plan work:"
-echo -e "   ${CYAN}/plan-iteration${RESET}"
+echo "Commands run in Claude Code:"
+echo -e "   ${CYAN}/plan-iteration${RESET}  # Plan work"
+echo -e "   ${CYAN}/plan-task N${RESET}      # Execute tasks"
 echo
 echo -e "${GREEN}Ship working software every iteration! 🚀${RESET}"

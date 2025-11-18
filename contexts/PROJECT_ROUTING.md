@@ -77,14 +77,6 @@ You're in project mode - focused on shipping working software for a single proje
 2. If missing: Load `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md`
 3. If exists: Say "🎯 Task mode activated" and proceed
 
-### 🏠 Return to Assistant
-**Intent:** Returning to assistant mode, exiting development, managing multiple projects
-**Examples:** "back to assistant", "exit project", "main mode"
-**Action:** Execute ALL steps in sequence:
-1. Say "Returning to assistant mode..."
-2. Run `echo "assistant" > MODEFILE_PLACEHOLDER`
-3. Run `cd MOMENTUM_HOME_DIR_PLACEHOLDER`
-
 ## Mode Info
 
 **Current Mode:** Project

@@ -22,48 +22,27 @@ Think of it as having a development partner who never forgets context and always
 
 **This is production-ready software in active daily use.** It's been shipping working software for months across multiple projects. Each iteration strengthens the workflow patterns.
 
-## 🚨 Breaking Changes in 3.4.0
+## 🚨 Breaking Changes in 4.0.0
 
-**If you're upgrading from 3.3.x or earlier:**
+**If you're upgrading from 3.x:**
 
 ### What Changed
-- **TOML Configuration** - Config migrated from bash exports to structured TOML (backward compatible fallback)
-- **Voice System** - Configurable personality and verbosity per mode
-- **TTS Integration** - Optional text-to-speech via lspeak for voice summaries
-- **Enhanced Workflow** - Auto-commit with gitignore protection and approval gates
+- **Project-Only Architecture** - Assistant mode eliminated, Momentum is now purely project-focused
+- **Workspace Mode** - Run `momentum` with no args for exploration without project constraints
+- **State-Based Startup** - Automatic detection and guidance through project lifecycle
+- **Simplified Hooks** - Removed dual-mode complexity, faster context injection
 
-### Configuration Migration
-
-**Old (3.3.x):**
-```bash
-~/.config/momentum/config  # Bash exports only
-```
-
-**New (3.4.0):**
-```toml
-# ~/.config/momentum/config.toml
-[personalization]
-name = "Your Name"
-
-[voice]
-style = "jarvis"  # jarvis, professional, casual
-
-[voice.verbosity]
-assistant = "terse"
-project = "brief"
-
-[voice.tts]
-enabled = true
-provider = "system"  # or "elevenlabs"
-```
+### What This Means
+- **No more assistant mode** - `momentum` launches workspace, `momentum <project>` launches project
+- **Cleaner workflow** - One mode, state-driven progression (new → vision → planned → active)
+- **Faster startup** - Removed ~500 lines of mode-switching code
 
 ### Migration Steps
-1. Run `./install.sh` to upgrade
-2. Config automatically migrates (bash config preserved for compatibility)
-3. Customize `~/.config/momentum/config.toml` for voice preferences
-4. Optional: Install [lspeak](https://github.com/tluyben/lspeak) for TTS
+1. Run `./install.sh` to upgrade to 4.0.0
+2. Remove any shell aliases/functions for old momentum command
+3. Use `momentum` for exploration, `momentum <project>` for building
 
-**Backward Compatibility:** Hooks gracefully fallback to environment variables if config.toml missing.
+**No backward compatibility** - This is a clean architectural simplification.
 
 ## ✨ Features
 
@@ -75,7 +54,7 @@ provider = "system"  # or "elevenlabs"
 - ⚡ **Micro-Tasks** - Each task fits in one conversation, no endless context juggling
 - 🎨 **Expert Guidance** - Luminary system provides domain-specific advice from programming legends
 - 🛡️ **Behavioral Guards** - Anti-speculation and anti-lazy enforcement prevents hallucination
-- 🎙️ **Voice System** - Configurable personality (jarvis/professional/casual) and mode-based verbosity
+- 🎙️ **Voice System** - Configurable personality (jarvis/professional/casual) and verbosity levels
 - 🔊 **TTS Integration** - Optional text-to-speech for voice summaries via lspeak (progressive enhancement)
 
 ## 🎬 Quick Start
@@ -86,61 +65,80 @@ git clone https://github.com/nickpending/momentum.git
 cd momentum
 ./install.sh
 
-# Start Momentum (from anywhere - enters Assistant mode)
+# Option 1: Workspace mode (exploration, ideation, research)
 momentum
+# Full capabilities, no project constraints
 
-# Navigate to project for development
-"work on habit-tracker"
-# (Switches to Project mode, runs setupd if needed)
+# Option 2: Project mode (building software)
+momentum habit-tracker
+# Creates directories if needed, guides through ideation → planning → building
 
-# Now in Project mode - start building
-/plan-iteration
-# (Collaboratively plan what to build)
-
-/plan-task 1
-# (Execute first task with evidence-based completion)
+# In project mode, start building
+/plan-iteration     # Plan what to build
+/plan-task 1        # Execute first task with evidence
 ```
 
-**Two modes, seamless flow:**
-- **Assistant mode** - Central router and navigation
-- **Project mode** - Development partner (building, testing, shipping)
+**Two modes:**
+- `momentum` - Workspace for exploration, ideation, lore research
+- `momentum <project>` - Project mode for building and shipping
+
+**State progression:**
+- **new** → Offers ideation to capture vision
+- **vision** → Suggests `/plan-iteration` to start planning
+- **planned** → Suggests `/decompose-iteration` to create tasks
+- **active** → Shows progress, suggests next task
 
 That's it! You're shipping working software.
 
 ## 🎮 How It Works
 
-Momentum operates in two modes, each optimized for different types of work:
+Momentum is a project-focused development workflow system with two modes:
 
-### The Two-Mode System
+### Workspace Mode
 
-**Assistant Mode** - Your central router
-- Start from anywhere: `momentum`
-- Navigate to projects: "work on projectname"
-- Quick command center for all momentum operations
+**For exploration and ideation:**
+```bash
+momentum
+```
 
-**Project Mode** - Your development partner
-- Accessed via: "work on projectname"
-- Plan iterations collaboratively
-- Execute tasks with evidence-based completion
+**What you get:**
+- Full momentum capabilities without project constraints
+- Use ideation to create new projects
+- Use lore for research and knowledge queries
+- Use exploration for thinking through problems
+- When you create a project, momentum guides you: "Run `momentum <project>` to start building"
+
+### Project Mode
+
+**For building software:**
+```bash
+momentum <project-name>
+```
+
+**State-based progression:**
+1. **new** (no IDEA.md) → Offers ideation to capture vision
+2. **vision** (has IDEA.md) → Suggests `/plan-iteration` to start planning
+3. **planned** (has ITERATION.md) → Suggests `/decompose-iteration` to create tasks
+4. **active** (has TASKS.md) → Shows iteration status, suggests next task
+
+**Then you build:**
+- Execute tasks with `/plan-task N`
 - Ship working software every iteration
+- Complete iteration with `/complete-iteration`
 
 ### Development Cycle
 
 ```
-ASSISTANT → PROJECT: BUILD → SHIP → REPEAT
+EXPLORE → IDEATE → PLAN → DECOMPOSE → BUILD → SHIP → REPEAT
+   ↓         ↓        ↓         ↓         ↓       ↓
+workspace   new   vision   planned   active   active
 ```
 
 ### Semantic Interaction
 
 No need to memorize commands. Just talk naturally:
 
-**In Assistant Mode:**
-- "work on projectname" → Switch to project development
-- "show projects" → List available projects
-
-**In Project Mode:**
-- `/plan-iteration` → Collaborative iteration planning
-- `/plan-task N` → Evidence-based task execution
+**Natural language:**
 - "let's explore" → Load exploration context
 - "save this exploration" → Capture exploration to file
 - "review the code" → Launch code reviewer (with confirmation)
@@ -149,25 +147,28 @@ No need to memorize commands. Just talk naturally:
 - "how should I implement X" → Technical implementation options
 - "set up gitignore" → Configure project security
 - "that fixed it!" → Auto-document discovery
-- "back to assistant" → Return to assistant mode
+
+**Slash commands:**
+- `/plan-iteration` → Collaborative iteration planning
+- `/plan-task N` → Evidence-based task execution
+- `/complete-iteration` → Ship and archive with verification
+- `/save-state` / `/restore-state` → Manage context across sessions
 
 ### The Commands
 
 **In Terminal:**
-- `momentum` - Start Claude in Assistant mode (from anywhere)
-- `setupd projectname` - Set up a new project structure (rarely needed - "work on X" handles this)
+- `momentum` - Launch workspace mode (exploration, ideation, research)
+- `momentum <project>` - Launch project mode (building software)
+- `setupd <project>` - Manually set up project structure (rarely needed)
 
-**In Assistant Mode:**
-- "work on projectname" - Switch to project development
-- "show projects" - List available projects
-
-**In Project Mode:**
+**In Claude Code:**
 - `/plan-iteration` - Collaboratively plan what to build next
+- `/decompose-iteration` - Break iteration into concrete tasks
 - `/plan-task N` - Execute specific task with evidence
 - `/complete-iteration` - Ship and archive with verification
 - `/save-state` / `/restore-state` - Manage context across sessions
 
-**💡 The Flow:** Start with `momentum` (Assistant mode), say "work on projectname" to switch to Project mode.
+**💡 The Flow:** `momentum <project>` → `/plan-iteration` → `/decompose-iteration` → `/plan-task 1` → build → ship
 
 ## 🏗️ Architecture
 

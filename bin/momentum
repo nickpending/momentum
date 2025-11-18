@@ -1,0 +1,63 @@
+#!/usr/bin/env bash
+# Momentum project launcher
+# Ensures project exists, updates to latest version, launches Claude in project mode
+
+set -e
+
+# Colors for output
+RED='\033[31m'
+GREEN='\033[32m'
+YELLOW='\033[33m'
+RESET='\033[0m'
+
+# Load configuration first
+WORKFLOW_CONFIG="$HOME/.config/momentum/config"
+if [[ ! -f "$WORKFLOW_CONFIG" ]]; then
+  echo -e "${RED}Error: Momentum not installed${RESET}"
+  echo "Run the install script first: ./install.sh"
+  exit 1
+fi
+
+source "$WORKFLOW_CONFIG"
+
+# Handle workspace mode (no project specified)
+if [[ -z "$1" ]]; then
+  PROJECT_NAME="workspace"
+  PROJECT_DEV="$MOMENTUM_WORKSPACE/workspace"
+  PROJECT_PLANNING=""  # No planning dir for workspace
+
+  # Create workspace if missing
+  mkdir -p "$PROJECT_DEV"
+
+  # Run setupd for workspace
+  setupd --switch workspace 2>&1 | grep -E "(Updating|updated)" || true
+
+  # Launch in workspace
+  cd "$PROJECT_DEV"
+  exec claude --append-system-prompt "$(cat $MOMENTUM_INSTALL/agents/PROJECT.md)" "ready"
+fi
+
+# Project mode - handle named projects
+PROJECT_NAME=$1
+PROJECT_DEV="$WORKFLOW_DEV/$PROJECT_NAME"
+PROJECT_PLANNING="$WORKFLOW_PROJECTS/$PROJECT_NAME"
+
+# Create directories if missing
+if [[ ! -d "$PROJECT_DEV" ]]; then
+  echo -e "${YELLOW}Project '$PROJECT_NAME' doesn't exist.${RESET}"
+  read -p "Create directories? (y/n): " CREATE
+  if [[ "$CREATE" =~ ^[Yy]$ ]]; then
+    mkdir -p "$PROJECT_DEV"
+    mkdir -p "$PROJECT_PLANNING"
+    echo -e "${GREEN}✅ Directories created${RESET}"
+  else
+    exit 1
+  fi
+fi
+
+# Always check version and update (silent unless version changed)
+setupd --switch "$PROJECT_NAME" 2>&1 | grep -E "(Updating|updated)" || true
+
+# Launch momentum in project directory
+cd "$PROJECT_DEV"
+exec claude --append-system-prompt "$(cat $MOMENTUM_INSTALL/agents/PROJECT.md)" "ready"

@@ -151,6 +151,7 @@ Execute save immediately when user says:
 3. Generate new IDEA.md by filling template with discussion details
 4. Write to `{PROJECT_OBSIDIAN_DIR}/{project-name}/IDEA.md`
 5. Confirm: "Created project '{project-name}' at {path}"
+6. If PROJECT is "workspace": Say "Run `momentum {project-name}` to start building."
 
 **Template Filling Guidelines:**
 - Replace `[Project Name]` with actual project name

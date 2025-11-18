@@ -37,6 +37,12 @@ refresh_project_links() {
         ln -sf "$MOMENTUM_INSTALL/commands" "$dev_project/.claude/commands"
     fi
 
+    # Skills directory
+    if [[ -d "$MOMENTUM_INSTALL/skills" ]]; then
+        rm -rf "$dev_project/.claude/skills" 2>/dev/null || true
+        ln -sf "$MOMENTUM_INSTALL/skills" "$dev_project/.claude/skills"
+    fi
+
     # Subagents directory
     if [[ -d "$MOMENTUM_INSTALL/subagents" ]]; then
         mkdir -p "$dev_project/.claude/agents"
@@ -47,27 +53,9 @@ refresh_project_links() {
         done
     fi
 
-    # Hooks and contexts
-    mkdir -p "$dev_project/.claude/hooks"
-    # Clean up old hook symlink
-    rm -f "$dev_project/.claude/hooks/momentum-hook.ts" 2>/dev/null || true
-
-    if [[ -f "$MOMENTUM_INSTALL/hooks/momentum-session-start-hook.ts" ]]; then
-        rm -f "$dev_project/.claude/hooks/momentum-session-start-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-session-start-hook.ts" "$dev_project/.claude/hooks/momentum-session-start-hook.ts"
-
-        rm -f "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-user-prompt-submit-hook.ts" "$dev_project/.claude/hooks/momentum-user-prompt-submit-hook.ts"
-
-        rm -f "$dev_project/.claude/hooks/momentum-stop-hook.ts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_INSTALL/hooks/momentum-stop-hook.ts" "$dev_project/.claude/hooks/momentum-stop-hook.ts"
-
-        rm -rf "$dev_project/.claude/hooks/shared" 2>/dev/null || true
-        ln -sf "$MOMENTUM_INSTALL/hooks/shared" "$dev_project/.claude/hooks/shared"
-
-        rm -rf "$dev_project/.workflow/contexts" 2>/dev/null || true
-        ln -sf "$MOMENTUM_INSTALL/contexts" "$dev_project/.workflow/contexts"
-    fi
+    # Contexts (hooks are referenced by absolute path in settings.json, no symlinks needed)
+    rm -rf "$dev_project/.workflow/contexts" 2>/dev/null || true
+    ln -sf "$MOMENTUM_INSTALL/contexts" "$dev_project/.workflow/contexts"
 
     # Templates and resources
     if [[ -d "$MOMENTUM_INSTALL/templates" ]]; then
