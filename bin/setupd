@@ -124,6 +124,37 @@ refresh_project_links() {
       "$HOME/.local/share/lore/",
       "$HOME/.cache/lore/",
       "/tmp/"
+    ],
+    "allow": [
+      "Bash(uv:*)",
+      "Bash(cargo:*)",
+      "Bash(go:*)",
+      "Bash(pnpm:*)",
+      "Bash(pytest:*)",
+      "Bash(git:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(pwd)",
+      "Bash(atuin search:*)",
+      "Bash(prismis-cli:*)",
+      "Bash(setupd:*)",
+      "Read(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "TodoWrite(*)",
+      "Task(*)"
+    ],
+    "deny": [
+      "Bash(diskutil:*)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf $HOME)",
+      "Bash(sudo rm -rf /)",
+      "Bash(sudo rm -rf /*)",
+      "Bash(dd:*)"
     ]
   }
 }
@@ -181,6 +212,37 @@ EOF
       "$HOME/.local/share/lore/",
       "$HOME/.cache/lore/",
       "/tmp/"
+    ],
+    "allow": [
+      "Bash(uv:*)",
+      "Bash(cargo:*)",
+      "Bash(go:*)",
+      "Bash(pnpm:*)",
+      "Bash(pytest:*)",
+      "Bash(git:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(pwd)",
+      "Bash(atuin search:*)",
+      "Bash(prismis-cli:*)",
+      "Bash(setupd:*)",
+      "Read(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "TodoWrite(*)",
+      "Task(*)"
+    ],
+    "deny": [
+      "Bash(diskutil:*)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf $HOME)",
+      "Bash(sudo rm -rf /)",
+      "Bash(sudo rm -rf /*)",
+      "Bash(dd:*)"
     ]
   }
 }
