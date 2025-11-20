@@ -523,6 +523,23 @@ else
     echo -e "${GREEN}✅ Claude settings: Hook activated${RESET}"
 fi
 
+# Create .mcp.json for playwright MCP server
+cat > "$DEV_PROJECT/.mcp.json" << 'EOF'
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "env": {}
+    }
+  }
+}
+EOF
+echo -e "${GREEN}✅ MCP servers: playwright configured${RESET}"
+
 # Check if all resources linked
 if [[ -n "$resource_missing" ]]; then
     echo -e "${RED}❌ Missing components: $resource_missing${RESET}"

@@ -22,15 +22,127 @@ source "$WORKFLOW_CONFIG"
 
 # Handle workspace mode (no project specified)
 if [[ -z "$1" ]]; then
-  PROJECT_NAME="workspace"
   PROJECT_DEV="$MOMENTUM_WORKSPACE/workspace"
-  PROJECT_PLANNING=""  # No planning dir for workspace
 
-  # Create workspace if missing
-  mkdir -p "$PROJECT_DEV"
+  # Create workspace structure
+  mkdir -p "$PROJECT_DEV/.claude/agents"
 
-  # Run setupd for workspace
-  setupd --switch workspace 2>&1 | grep -E "(Updating|updated)" || true
+  # Create or update .claude/settings.json for workspace
+  cat > "$PROJECT_DEV/.claude/settings.json" << 'EOF'
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts startup"
+          }
+        ]
+      },
+      {
+        "matcher": "clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-session-start-hook.ts clear"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-user-prompt-submit-hook.ts"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-stop-hook.ts"
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "additionalDirectories": [
+      "$HOME/.config/lore/",
+      "$HOME/.local/share/lore/",
+      "$HOME/.cache/lore/",
+      "/tmp/"
+    ],
+    "allow": [
+      "Bash(uv:*)",
+      "Bash(cargo:*)",
+      "Bash(go:*)",
+      "Bash(pnpm:*)",
+      "Bash(pytest:*)",
+      "Bash(git:*)",
+      "Bash(tree:*)",
+      "Bash(ls:*)",
+      "Bash(pwd)",
+      "Bash(atuin search:*)",
+      "Bash(prismis-cli:*)",
+      "Bash(setupd:*)",
+      "Read(*)",
+      "Grep(*)",
+      "Glob(*)",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "TodoWrite(*)",
+      "Task(*)"
+    ],
+    "deny": [
+      "Bash(diskutil:*)",
+      "Bash(rm -rf /)",
+      "Bash(rm -rf /*)",
+      "Bash(rm -rf ~)",
+      "Bash(rm -rf $HOME)",
+      "Bash(sudo rm -rf /)",
+      "Bash(sudo rm -rf /*)",
+      "Bash(dd:*)"
+    ]
+  }
+}
+EOF
+
+  # Create symlinks to momentum components
+  rm -rf "$PROJECT_DEV/.claude/commands" 2>/dev/null || true
+  ln -sf "$MOMENTUM_INSTALL/commands" "$PROJECT_DEV/.claude/commands"
+
+  rm -rf "$PROJECT_DEV/.claude/skills" 2>/dev/null || true
+  ln -sf "$MOMENTUM_INSTALL/skills" "$PROJECT_DEV/.claude/skills"
+
+  for agent in "$MOMENTUM_INSTALL/subagents"/*.md; do
+    if [[ -f "$agent" ]]; then
+      ln -sf "$agent" "$PROJECT_DEV/.claude/agents/$(basename "$agent")" 2>/dev/null || true
+    fi
+  done
+
+  # Create .mcp.json for playwright MCP server
+  cat > "$PROJECT_DEV/.mcp.json" << 'EOF'
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "env": {}
+    }
+  }
+}
+EOF
 
   # Launch in workspace
   cd "$PROJECT_DEV"

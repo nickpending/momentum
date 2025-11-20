@@ -452,6 +452,34 @@ chmod +x "$HOME/.local/bin/momentum"
 echo -e "${GREEN}✅ Momentum launcher installed${RESET}"
 echo
 
+# Step 7: Initialize workspace directory
+echo -e "${CYAN}Step 7: Initializing workspace${RESET}"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+
+WORKSPACE_DIR="$HOME/.local/share/momentum/workspace"
+mkdir -p "$WORKSPACE_DIR"
+
+# Create .mcp.json for playwright MCP server
+cat > "$WORKSPACE_DIR/.mcp.json" << 'EOF'
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "env": {}
+    }
+  }
+}
+EOF
+
+echo -e "${GREEN}✅ Workspace initialized at ~/.local/share/momentum/workspace${RESET}"
+echo -e "${GREEN}✅ MCP servers configured (playwright)${RESET}"
+echo
+
 # Ensure ~/.local/bin is in PATH
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
   echo
