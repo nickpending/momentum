@@ -28,9 +28,9 @@ if [[ -z "$1" ]]; then
   mkdir -p "$PROJECT_DEV/.claude/agents"
 
   # Create or update .claude/settings.json for workspace
-  cat > "$PROJECT_DEV/.claude/settings.json" << 'EOF'
+  cat > "$PROJECT_DEV/.claude/settings.json" << EOF
 {
-  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "\$schema": "https://json.schemastore.org/claude-code-settings.json",
   "hooks": {
     "SessionStart": [
       {

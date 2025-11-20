@@ -461,7 +461,7 @@ WORKSPACE_DIR="$HOME/.local/share/momentum/workspace"
 mkdir -p "$WORKSPACE_DIR"
 
 # Create .mcp.json for playwright MCP server
-cat > "$WORKSPACE_DIR/.mcp.json" << 'EOF'
+cat > "$WORKSPACE_DIR/.mcp.json" << EOF
 {
   "mcpServers": {
     "playwright": {
