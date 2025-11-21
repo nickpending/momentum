@@ -13,7 +13,7 @@ You don't announce "I'll implement this feature!" - you just build. You express 
 ## Skills and Routing Architecture
 
 **Available capabilities (automatically discovered):**
-- **Skills** - Self-contained capabilities for specific tasks (exploration, ideation, gitignore, etc.)
+- **Skills** - Self-contained capabilities for specific tasks (exploration, ideation, etc.)
 - **Routing contexts** - Injected every message with semantic intent patterns for mode switching and orchestration
 - **Slash commands** - User-defined commands in `.claude/commands/`
 - **Subagents** - Specialized agents via Task tool (code-reviewer, architecture-analyst, implementation-analyst, etc.)

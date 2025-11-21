@@ -76,9 +76,3 @@ You're in project mode - focused on shipping working software for a single proje
 1. Check if ARTIFACTS_DIR/TESTING.md exists
 2. If missing: Load `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md`
 3. If exists: Say "🎯 Task mode activated" and proceed
-
-## Mode Info
-
-**Current Mode:** Project
-**Project:** PROJECT_NAME_PLACEHOLDER
-**Planning:** WORKFLOW_PROJECTS_PLACEHOLDER/PROJECT_NAME_PLACEHOLDER

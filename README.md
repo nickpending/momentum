@@ -56,6 +56,8 @@ Think of it as having a development partner who never forgets context and always
 - 🛡️ **Behavioral Guards** - Anti-speculation and anti-lazy enforcement prevents hallucination
 - 🎙️ **Voice System** - Configurable personality (jarvis/professional/casual) and verbosity levels
 - 🔊 **TTS Integration** - Optional text-to-speech for voice summaries via lspeak (progressive enhancement)
+- 📁 **Knowledge Capture** - CAPTURE lines preserve insights across sessions via lore integration
+- 🎭 **MCP Integration** - Playwright MCP server for browser automation in projects
 
 ## 🎬 Quick Start
 
@@ -193,10 +195,17 @@ Natural Language Input    Semantic Routing         Specialized Agents
 
 ### Prerequisites
 
+**Required:**
 - **macOS or Linux**
 - **Claude Code CLI** - [Download here](https://claude.ai/download)
 - **Bash or Zsh shell**
-- **Bun runtime** (optional) - For dynamic context hooks
+- **Bun runtime** - For dynamic context hooks - [Install](https://bun.sh)
+
+**Optional (Progressive Enhancement):**
+- **lspeak** - TTS for voice summaries - [GitHub](https://github.com/nickpending/lspeak)
+- **lore** - Knowledge capture and search - [GitHub](https://github.com/nickpending/lore)
+- **llmcli-tools** - Gitignore compliance checking - [GitHub](https://github.com/nickpending/llmcli-tools)
+- **Playwright MCP** - Browser automation - `npx @playwright/mcp@latest` + `npx playwright install chrome`
 
 ### Install from Source
 
@@ -414,24 +423,26 @@ momentum/
 
 ## 🎯 Roadmap
 
-**v3.4.0** (Current):
-- [x] TOML configuration system with backward compatibility
-- [x] Configurable voice system (3 personalities × 3 verbosity levels)
-- [x] TTS integration with optional lspeak support
-- [x] Auto-commit workflow with gitignore protection
-- [x] Diff summary and approval gates
-- [x] Two-mode architecture (Assistant/Project)
+**v4.0.6** (Current):
+- [x] Workspace mode for exploration without project constraints
+- [x] State-based initialization (new → vision → planned → active)
+- [x] Knowledge capture system (CAPTURE lines → lore integration)
+- [x] Consolidated output format (CAPTURE + VOICE in single context)
+- [x] MCP integration (playwright server for browser automation)
+- [x] Granular permission system (reduce approval prompts)
+- [x] TOML configuration with voice customization
 - [x] Semantic routing with dynamic context injection
-- [x] Evidence-based agent verification system
-- [x] Skills support (experimental)
+- [x] Evidence-based agent system (6 specialized agents)
+- [x] Skills architecture with plugin support
 
-**Next** (v3.5+):
-- [ ] Enhanced task completion workflow
+**Next** (v4.1+):
+- [ ] Project-level CLAUDE.md injection
+- [ ] Notification system for background processes
+- [ ] Sable integration architecture
+- [ ] Enhanced backlog management
 - [ ] Pattern learning from successful iterations
-- [ ] Cross-project insight sharing via lore
-- [ ] Refine skills architecture for capability packages
 
-**Future** (v4.0+):
+**Future** (v4.5+):
 - [ ] Language-specific quality patterns
 - [ ] Team collaboration workflows
 - [ ] Integration with CI/CD pipelines
