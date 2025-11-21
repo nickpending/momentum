@@ -249,6 +249,22 @@ EOF
 EOF
     fi
 
+    # Create .mcp.json for playwright MCP server
+    cat > "$dev_project/.mcp.json" << 'EOF'
+{
+  "mcpServers": {
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "env": {}
+    }
+  }
+}
+EOF
+
     # Update version
     if [[ -f "$MOMENTUM_INSTALL/VERSION" ]]; then
         cp "$MOMENTUM_INSTALL/VERSION" "$dev_project/.workflow/version"
