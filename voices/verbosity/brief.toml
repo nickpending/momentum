@@ -3,12 +3,6 @@ description = "Focus on essentials - skip context"
 
 [instructions]
 prompt = """
-## Voice Output Format
-
-End each response with a voice summary for TTS.
-
-**Format:** `**Voice:** {summary using NAME from context}`
-
 **Guidelines:**
 - Summarize what was just done or what's next
 - 1-3 sentences maximum

@@ -147,49 +147,11 @@ async function main() {
     const currentDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const currentDateTime = new Date().toISOString(); // Full ISO timestamp
 
-    // Check for .gitignore (always - project mode only now)
-    let gitignoreWarning = "";
-    const gitignorePath = join(cwd, ".gitignore");
-    if (!existsSync(gitignorePath)) {
-      gitignoreWarning =
-        "\n\n**⚠️ GITIGNORE MISSING**: This project has no .gitignore file. Run the gitignore skill immediately to protect against committing sensitive data.\n";
-      debugLog("UserPromptSubmit", "Gitignore check failed", {
-        gitignorePath,
-      });
-    } else {
-      debugLog("UserPromptSubmit", "Gitignore check passed", {
-        gitignorePath,
-      });
-    }
+    // Gitignore compliance checked by session-start hook via llcli-tools/gitignore-check
 
     // Always inject full routing for consistent semantic intent matching
     debugLog("UserPromptSubmit", "Full routing injection");
     console.log(routingContent);
-
-    // Inject gitignore warning if needed
-    if (gitignoreWarning) {
-      console.log(gitignoreWarning);
-    }
-
-    // Load and inject voice instructions (project mode only now)
-    try {
-      const momentumHome = config.momentum.install;
-      const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
-      const verbosityLevel = config.voice.verbosity.project || "normal";
-      const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
-      const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
-
-      console.log(`\n${voiceInstructions}`);
-      debugLog("UserPromptSubmit", "Voice instructions injected", {
-        style: config.voice.style,
-        verbosity: verbosityLevel,
-      });
-    } catch (error) {
-      debugLog("UserPromptSubmit", "Failed to load voice instructions", {
-        error: String(error),
-      });
-      // Continue without voice instructions - they're optional
-    }
 
     // Calculate project-specific paths
     const projectRoot = cwd;
@@ -246,6 +208,37 @@ async function main() {
     console.log("<!-- CAPABILITIES -->");
     console.log(`<!-- LORE_AVAILABLE: ${loreAvailable} -->`);
     console.log(`<!-- SETUPD_AVAILABLE: true -->`);
+
+    // Load and inject combined output format (CAPTURE + VOICE) at the end
+    try {
+      const outputFormatPath = join(contextsPath, "OUTPUT_FORMAT.md");
+      let outputFormatContent = "";
+
+      if (existsSync(outputFormatPath)) {
+        outputFormatContent = await Bun.file(outputFormatPath).text();
+      }
+
+      // Load voice instructions and append to output format
+      const momentumHome = config.momentum.install;
+      const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
+      const verbosityLevel = config.voice.verbosity.project || "normal";
+      const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
+      const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
+
+      // Combine into single output format block
+      const combinedOutput = `${outputFormatContent}\n\n${voiceInstructions}`;
+      console.log(`\n${combinedOutput}`);
+
+      debugLog("UserPromptSubmit", "Output format injected", {
+        style: config.voice.style,
+        verbosity: verbosityLevel,
+      });
+    } catch (error) {
+      debugLog("UserPromptSubmit", "Failed to load output format", {
+        error: String(error),
+      });
+      // Continue without output format - it's optional
+    }
 
     debugLog("UserPromptSubmit", "Hook completed successfully");
     process.exit(0);
