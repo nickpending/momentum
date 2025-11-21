@@ -1,9 +1,0 @@
-# Ruby
-*.gem
-*.rbc
-.bundle/
-vendor/bundle/
-.config
-coverage/
-spec/reports/
-tmp/

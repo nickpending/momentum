@@ -144,6 +144,42 @@ async function main(): Promise<void> {
       hasTasks,
     });
 
+    // Check gitignore compliance for non-workspace projects
+    let gitignoreWarning = "";
+    if (!isWorkspace) {
+      try {
+        // Call gitignore-check from llmcli-tools
+        const llmcliTools = join(
+          process.env.HOME!,
+          "development",
+          "projects",
+          "llmcli-tools",
+        );
+        const gitignoreCheck = join(
+          llmcliTools,
+          "packages",
+          "gitignore-check",
+          "gitignore-check.ts",
+        );
+
+        const complianceCheck = Bun.spawnSync(["bun", gitignoreCheck, cwd]);
+
+        if (complianceCheck.exitCode === 1) {
+          const result = JSON.parse(complianceCheck.stdout.toString());
+          if (!result.compliant && result.missing.length > 0) {
+            gitignoreWarning = `\n\n⚠️  **Gitignore Compliance Warning**\nProject .gitignore missing ${result.missing.length} base security pattern(s).\nRun: \`gitignore-check . --fix\` to auto-fix.`;
+            debugLog("SessionStart", "Gitignore non-compliant", {
+              missing: result.missing.length,
+            });
+          }
+        }
+      } catch (error) {
+        debugLog("SessionStart", "Gitignore compliance check failed", {
+          error: String(error),
+        });
+      }
+    }
+
     // Build metadata for PROJECT.md
     let additionalContext = `<!-- HOOK: Momentum SessionStart -->
 <!-- CURRENT_DATE: ${currentDate} -->
@@ -174,6 +210,11 @@ async function main(): Promise<void> {
       debugLog("SessionStart", "Failed to load voice instructions", {
         error: String(error),
       });
+    }
+
+    // Append gitignore compliance warning if present
+    if (gitignoreWarning) {
+      additionalContext += gitignoreWarning;
     }
 
     const output = {
