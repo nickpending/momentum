@@ -317,6 +317,10 @@ fi
 cp "$MOMENTUM_SOURCE/hooks/momentum-session-start-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Session start hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-user-prompt-submit-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ User prompt submit hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-stop-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Stop hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-pre-tool-use-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Pre-tool-use hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-post-tool-use-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Post-tool-use hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-subagent-stop-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Subagent stop hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-session-end-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Session end hook (updated)"
 # Copy shared utilities
 if [[ -d "$MOMENTUM_SOURCE/hooks/shared" ]]; then
     cp -r "$MOMENTUM_SOURCE/hooks/shared" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Shared voice utilities (updated)"

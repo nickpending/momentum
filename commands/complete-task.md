@@ -141,23 +141,22 @@ Based on the task you just completed and the implementation notes, generate a JS
 capturing the knowledge gained. Think about what would be valuable to remember for
 future similar tasks.
 
-APPEND TO LORE LOG using Bash tool with lore_task_complete function:
+CAPTURE TO LORE using lore-capture CLI:
 
-lore_task_complete \
-  "{current-project-name}" \
-  "[Task name from TASKS.md]" \
-  "[Core problem this task addressed]" \
-  "[Reusable pattern or approach that worked]" \
-  "[Key code snippet if applicable, or empty string]" \
-  "[discovery1,discovery2,discovery3]" \
-  "[How implementation differed from plan]" \
-  "[Pattern that could be used elsewhere]" \
-  "[keyword1 keyword2 keyword3]" \
-  "[library1,framework1,tool1]" \
-  "[What made this tricky or easy]"
+lore-capture task \
+  --project="{current-project-name}" \
+  --name="[Task name from TASKS.md]" \
+  --problem="[Core problem this task addressed]" \
+  --solution="[Reusable pattern or approach that worked]" \
+  --code="[Key code snippet if applicable, or empty string]" \
+  --discoveries="[discovery1,discovery2,discovery3]" \
+  --deviations="[How implementation differed from plan]" \
+  --pattern="[Pattern that could be used elsewhere]" \
+  --keywords="[keyword1,keyword2,keyword3]" \
+  --tech="[library1,framework1,tool1]" \
+  --difficulty="[What made this tricky or easy]"
 
-NOTE: If lore_task_complete function not available, source lib/events.sh first:
-source ~/development/projects/lore/lib/events.sh
+NOTE: lore-capture is installed globally via bun at ~/.bun/bin/lore-capture
 
 VERIFICATION: Event captured to Lore for future knowledge retrieval
 

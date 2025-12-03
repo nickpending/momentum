@@ -114,6 +114,46 @@ refresh_project_links() {
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-pre-tool-use-hook.ts"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-post-tool-use-hook.ts"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-subagent-stop-hook.ts"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-session-end-hook.ts"
+          }
+        ]
+      }
     ]
   },
   "permissions": {
@@ -200,6 +240,46 @@ EOF
           {
             "type": "command",
             "command": "bun $HOME/.config/momentum/hooks/momentum-stop-hook.ts"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-pre-tool-use-hook.ts"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-post-tool-use-hook.ts"
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-subagent-stop-hook.ts"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-session-end-hook.ts"
           }
         ]
       }
