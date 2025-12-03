@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Momentum SessionStart Hook
- * Simplified - just inject PROJECT.md metadata for project mode
+ * Injects PROJECT.md metadata, writes session cache, logs to observability layers
  */
 
 import { readFileSync, existsSync } from "fs";
@@ -13,11 +13,21 @@ import {
   loadVerbosityLevel,
   buildVoiceInstructions,
 } from "./shared/voice-loader.ts";
+import {
+  writeSessionCache,
+  getGitBranch,
+  parseIterationInfo,
+  type SessionContext,
+} from "./shared/session-cache.ts";
+import {
+  appendEvent,
+  createSessionStartEvent,
+  type HookInput,
+} from "./shared/jsonl-logger.ts";
+import { postToArgus } from "./shared/argus-client.ts";
 
-interface SessionStartInput {
-  session_id: string;
-  hook_event_name: string;
-  matcher?: string;
+interface SessionStartInput extends HookInput {
+  source?: string; // startup | resume | clear | compact
 }
 
 async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
@@ -148,21 +158,7 @@ async function main(): Promise<void> {
     let gitignoreWarning = "";
     if (!isWorkspace) {
       try {
-        // Call gitignore-check from llmcli-tools
-        const llmcliTools = join(
-          process.env.HOME!,
-          "development",
-          "projects",
-          "llmcli-tools",
-        );
-        const gitignoreCheck = join(
-          llmcliTools,
-          "packages",
-          "gitignore-check",
-          "gitignore-check.ts",
-        );
-
-        const complianceCheck = Bun.spawnSync(["bun", gitignoreCheck, cwd]);
+        const complianceCheck = Bun.spawnSync(["gitignore-check", cwd]);
 
         if (complianceCheck.exitCode === 1) {
           const result = JSON.parse(complianceCheck.stdout.toString());
@@ -223,6 +219,76 @@ async function main(): Promise<void> {
         additionalContext: additionalContext,
       },
     };
+
+    // ==========================================
+    // OBSERVABILITY LAYER INTEGRATION
+    // ==========================================
+
+    // Get git branch for session context
+    const gitBranch = await getGitBranch(cwd);
+
+    // Parse iteration info from TASKS.md
+    const iterationParsed = parseIterationInfo(tasksPath);
+
+    // Build session context for caching
+    const sessionContext: SessionContext = {
+      session_id: data.session_id,
+      mode: isWorkspace ? "workspace" : "project",
+      project: projectName,
+      user: userName,
+      git_branch: gitBranch,
+      iteration_number: iterationParsed.number,
+      iteration_name: iterationParsed.name,
+      created_at: currentDateTime,
+      source: data.source || "startup",
+    };
+
+    // Write session cache for other hooks
+    writeSessionCache(sessionContext);
+    debugLog("SessionStart", "Session cache written", {
+      session_id: data.session_id,
+      mode: sessionContext.mode,
+      git_branch: gitBranch,
+    });
+
+    // Layer 1: JSONL event logging
+    const hookInput: HookInput = {
+      session_id: data.session_id,
+      transcript_path: data.transcript_path || "",
+      cwd: cwd,
+      hook_event_name: data.hook_event_name || "SessionStart",
+    };
+
+    const logEvent = createSessionStartEvent(hookInput, sessionContext, {
+      project_state: projectState,
+      source: data.source || "startup",
+    });
+    appendEvent(logEvent);
+    debugLog("SessionStart", "JSONL event logged");
+
+    // Layer 3: Argus real-time event (must await before exit)
+    await postToArgus({
+      source: "momentum",
+      event_type: "session",
+      hook: "SessionStart",
+      message: `Session started: ${projectName} (${projectState})`,
+      level: "info",
+      data: {
+        session_id: data.session_id,
+        project: projectName,
+        mode: sessionContext.mode,
+        project_state: projectState,
+        git_branch: gitBranch,
+        iteration_number: iterationParsed.number,
+        iteration_name: iterationParsed.name,
+        source: data.source || "startup",
+      },
+    }).catch(() => {
+      // Silent failure - Argus is best-effort
+    });
+    debugLog("SessionStart", "Argus event posted");
+
+    // ==========================================
 
     console.log(JSON.stringify(output));
     console.error(

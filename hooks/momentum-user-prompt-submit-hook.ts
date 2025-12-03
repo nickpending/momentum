@@ -14,6 +14,13 @@ import {
   loadVerbosityLevel,
   buildVoiceInstructions,
 } from "./shared/voice-loader.ts";
+import {
+  appendEvent,
+  createEvent,
+  type HookInput as JsonlHookInput,
+} from "./shared/jsonl-logger.ts";
+import { postToArgus } from "./shared/argus-client.ts";
+import { $ } from "bun";
 
 interface HookInput {
   session_id: string;
@@ -239,6 +246,57 @@ async function main() {
       });
       // Continue without output format - it's optional
     }
+
+    // Layer 1: JSONL event logging
+    const jsonlHookInput: JsonlHookInput = {
+      session_id: data.session_id,
+      transcript_path: data.transcript_path || "",
+      cwd: cwd,
+      hook_event_name: data.hook_event_name || "UserPromptSubmit",
+    };
+    const logEvent = createEvent(jsonlHookInput, {
+      prompt_length: data.prompt?.length || 0,
+    });
+    appendEvent(logEvent);
+    debugLog("UserPromptSubmit", "JSONL event logged", {
+      prompt_length: data.prompt?.length || 0,
+    });
+
+    // Layer 3: Argus with LLM summary
+    let promptSummary = data.prompt?.substring(0, 100) || "Empty prompt";
+
+    // Only call llm-summarize for longer prompts (worth summarizing)
+    if (data.prompt && data.prompt.length > 100) {
+      try {
+        const result =
+          await $`llm-summarize ${data.prompt.substring(0, 500)}`.quiet();
+        const parsed = JSON.parse(result.stdout.toString());
+        if (parsed.summary) {
+          promptSummary = parsed.summary;
+        }
+      } catch {
+        // Fall back to truncated prompt
+        promptSummary = data.prompt.substring(0, 100) + "...";
+      }
+    }
+
+    await postToArgus({
+      source: "momentum",
+      event_type: "prompt",
+      hook: "UserPromptSubmit",
+      message: promptSummary,
+      level: "info",
+      data: {
+        session_id: data.session_id,
+        project: projectName,
+        prompt_length: data.prompt?.length || 0,
+      },
+    }).catch(() => {
+      // Silent failure
+    });
+    debugLog("UserPromptSubmit", "Argus event posted", {
+      message: promptSummary,
+    });
 
     debugLog("UserPromptSubmit", "Hook completed successfully");
     process.exit(0);

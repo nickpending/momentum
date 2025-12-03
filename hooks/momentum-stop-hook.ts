@@ -8,6 +8,13 @@ import { existsSync } from "fs";
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
 import { loadConfig } from "./shared/config-loader.ts";
 import { $ } from "bun";
+import {
+  appendEvent,
+  createEvent,
+  type HookInput,
+} from "./shared/jsonl-logger.ts";
+import { postToArgus } from "./shared/argus-client.ts";
+import { parseTranscript } from "./shared/transcript-parser.ts";
 
 interface StopHookInput {
   session_id: string;
@@ -137,21 +144,26 @@ function extractVoiceSummary(content: string): string | null {
 
 /**
  * Extract 📁 CAPTURE lines from assistant message
+ * Supports optional #type flag: 📁 CAPTURE [context] #type: insight
  */
 function extractCaptureLines(
   content: string,
-): Array<{ context: string; insight: string }> {
-  const captures: Array<{ context: string; insight: string }> = [];
+): Array<{ context: string; type: string; insight: string }> {
+  const captures: Array<{ context: string; type: string; insight: string }> =
+    [];
 
-  // Match all CAPTURE lines in the content
-  const captureRegex = /📁\s*CAPTURE\s*\[([^\]]+)\]:\s*(.+?)(?:\n|$)/gi;
+  // Match CAPTURE lines with optional #type flag
+  // Format: 📁 CAPTURE [context] #type: insight  OR  📁 CAPTURE [context]: insight
+  const captureRegex =
+    /📁\s*CAPTURE\s*\[([^\]]+)\](?:\s+#(\w+))?:\s*(.+?)(?:\n|$)/gi;
   let match;
 
   while ((match = captureRegex.exec(content)) !== null) {
-    if (match[1] && match[2]) {
+    if (match[1] && match[3]) {
       captures.push({
         context: match[1].trim(),
-        insight: match[2].trim(),
+        type: match[2]?.trim() || "knowledge", // Default to "knowledge" if no type
+        insight: match[3].trim(),
       });
     }
   }
@@ -163,27 +175,27 @@ function extractCaptureLines(
  * Process CAPTURE lines via lore-capture
  */
 async function processCaptureLines(
-  captures: Array<{ context: string; insight: string }>,
-  mode: string,
+  captures: Array<{ context: string; type: string; insight: string }>,
 ): Promise<void> {
   if (captures.length === 0) {
     return;
   }
 
-  debugLog("StopHook", `Processing ${captures.length} CAPTURE lines`, { mode });
+  debugLog("StopHook", `Processing ${captures.length} CAPTURE lines`, {});
 
   for (const capture of captures) {
     try {
       debugLog("StopHook", "Calling lore-capture", {
         context: capture.context,
         insight: capture.insight,
-        type: mode,
+        type: capture.type,
       });
 
-      await $`lore-capture knowledge --context=${capture.context} --text=${capture.insight} --type=${mode}`.quiet();
+      await $`lore-capture knowledge --context=${capture.context} --text=${capture.insight} --type=${capture.type}`.quiet();
 
       debugLog("StopHook", "CAPTURE logged successfully", {
         context: capture.context,
+        type: capture.type,
       });
     } catch (error) {
       // Log error but don't block - capture is optional
@@ -353,15 +365,79 @@ async function main() {
     // Determine current mode from environment or default to project
     const mode = process.env.MOMENTUM_MODE || "project";
 
-    // Extract and process CAPTURE lines
+    // Extract and process CAPTURE lines (Layer 2: Lore)
     const captures = extractCaptureLines(lastMessageContent);
     if (captures.length > 0) {
       debugLog("StopHook", `Found ${captures.length} CAPTURE lines`, {});
-      await processCaptureLines(captures, mode);
+      await processCaptureLines(captures);
     }
 
     // Extract Voice: summary
     const voiceSummary = extractVoiceSummary(lastMessageContent);
+
+    // Parse transcript for token stats
+    const transcriptStats = parseTranscript(data.transcript_path);
+    debugLog("StopHook", "Transcript parsed", {
+      input_tokens: transcriptStats.total_input_tokens,
+      output_tokens: transcriptStats.total_output_tokens,
+      tools: transcriptStats.tools_used.length,
+      model: transcriptStats.model,
+    });
+
+    // Layer 1: JSONL event logging
+    const cwd = data.cwd || process.cwd();
+    const hookInput: HookInput = {
+      session_id: data.session_id,
+      transcript_path: data.transcript_path,
+      cwd: cwd,
+      hook_event_name: data.hook_event_name || "Stop",
+    };
+    const logEvent = createEvent(hookInput, {
+      response_length: lastMessageContent.length,
+      tokens: {
+        input: transcriptStats.total_input_tokens,
+        output: transcriptStats.total_output_tokens,
+        cache_creation: transcriptStats.cache_creation_tokens,
+        cache_read: transcriptStats.cache_read_tokens,
+      },
+      tools_used: transcriptStats.tools_used,
+      has_voice: !!voiceSummary,
+      captures_count: captures.length,
+      model: transcriptStats.model,
+    });
+    appendEvent(logEvent);
+    debugLog("StopHook", "JSONL event logged");
+
+    // Layer 3: Argus real-time event
+    // Use VOICE summary if present, otherwise use token count
+    const projectName = cwd.split("/").pop() || "unknown";
+    const argusMessage = voiceSummary
+      ? voiceSummary
+      : `Response complete: ${transcriptStats.total_output_tokens} tokens`;
+
+    await postToArgus({
+      source: "momentum",
+      event_type: "response",
+      hook: "Stop",
+      message: argusMessage,
+      level: "info",
+      data: {
+        session_id: data.session_id,
+        project: projectName,
+        tokens: {
+          input: transcriptStats.total_input_tokens,
+          output: transcriptStats.total_output_tokens,
+        },
+        tools_used: transcriptStats.tools_used,
+        model: transcriptStats.model,
+        captures_count: captures.length,
+      },
+    }).catch(() => {
+      // Silent failure - Argus is best-effort
+    });
+    debugLog("StopHook", "Argus event posted", { message: argusMessage });
+
+    // TTS: Speak voice summary if present
     if (!voiceSummary) {
       debugLog("StopHook", "No Voice: marker found", {});
       return;
