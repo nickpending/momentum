@@ -11,7 +11,48 @@ import {
   type HookInput,
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
-import { $ } from "bun";
+
+/**
+ * Format tool message from tool name and input fields
+ * Handles Claude Code tools, known MCPs (Playwright), and fallback for unknown
+ */
+function formatToolMessage(
+  name: string,
+  input: Record<string, unknown>,
+): string {
+  // Known fields in priority order
+  const command = input.command as string;
+  const filePath = (input.file_path || input.notebook_path) as string;
+  const url = input.url as string;
+  const query = input.query as string;
+  const pattern = input.pattern as string;
+  const path = input.path as string;
+  const element = input.element as string;
+  const text = input.text as string;
+  const key = input.key as string;
+  const code = input.code as string;
+  const description = input.description as string;
+
+  if (command) return `${name}: ${command}`;
+  if (url) return `${name} ${url}`;
+  if (query) return `${name} "${query}"`;
+  if (element && text) return `${name} "${text}" in ${element}`;
+  if (element) return `${name} ${element}`;
+  if (key) return `${name} ${key}`;
+  if (pattern && path) return `${name} "${pattern}" in ${path}`;
+  if (pattern) return `${name} "${pattern}"`;
+  if (filePath) return `${name} ${filePath}`;
+  if (code) return `${name}: ${code.substring(0, 80)}`;
+  if (description) return `${name}: ${description}`;
+
+  // Fallback: first string value for unknown MCPs
+  const firstString = Object.values(input).find(
+    (v) => typeof v === "string",
+  ) as string;
+  if (firstString) return `${name}: ${firstString.substring(0, 80)}`;
+
+  return name;
+}
 
 interface PostToolUseInput extends HookInput {
   tool_name: string;
@@ -103,56 +144,26 @@ async function main(): Promise<void> {
     const cwd = data.cwd || process.cwd();
     const projectName = cwd.split("/").pop() || "unknown";
 
-    // Build summary - for large results from action tools, use llm-summarize
-    let toolSummary = `${data.tool_name}: ${success ? "success" : "failed"}`;
-
-    // LLM summarize for action tools with substantial results
-    const actionTools = [
-      "Bash",
-      "Edit",
-      "Write",
-      "Task",
-      "WebFetch",
-      "WebSearch",
-    ];
-    if (
-      actionTools.includes(data.tool_name) &&
-      resultSize > 500 &&
-      resultSize < 10000
-    ) {
-      try {
-        const responsePreview = JSON.stringify(data.tool_response).substring(
-          0,
-          1000,
-        );
-        const result =
-          await $`llm-summarize ${`Tool ${data.tool_name}: ${responsePreview}`}`.quiet();
-        const parsed = JSON.parse(result.stdout.toString());
-        if (parsed.summary) {
-          toolSummary = parsed.summary;
-        }
-      } catch {
-        // Fall back to simple summary
-      }
-    }
+    // Build message from tool input fields
+    const toolMessage = formatToolMessage(data.tool_name, data.tool_input);
 
     await postToArgus({
       source: "momentum",
       event_type: "tool",
       hook: "PostToolUse",
-      message: toolSummary,
-      level: success ? "info" : "warn",
+      message: toolMessage,
       data: {
         session_id: data.session_id,
         project: projectName,
         tool_name: data.tool_name,
+        tool_input: data.tool_input,
         success,
         result_size: resultSize,
       },
     }).catch(() => {
       // Silent failure
     });
-    debugLog("PostToolUse", "Argus event posted", { message: toolSummary });
+    debugLog("PostToolUse", "Argus event posted", { message: toolMessage });
 
     debugLog("PostToolUse", "Hook completed successfully");
     process.exit(0);

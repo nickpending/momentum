@@ -272,7 +272,6 @@ async function main(): Promise<void> {
       event_type: "session",
       hook: "SessionStart",
       message: `Session started: ${projectName} (${projectState})`,
-      level: "info",
       data: {
         session_id: data.session_id,
         project: projectName,

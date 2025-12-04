@@ -224,7 +224,6 @@ async function main(): Promise<void> {
       event_type: "session",
       hook: "SessionEnd",
       message: `Session ended: ${durationMinutes}min, ${transcriptStats.total_output_tokens} tokens`,
-      level: "info",
       data: {
         session_id: data.session_id,
         project: projectName,

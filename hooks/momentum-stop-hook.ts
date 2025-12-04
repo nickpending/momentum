@@ -14,7 +14,11 @@ import {
   type HookInput,
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
-import { parseTranscript } from "./shared/transcript-parser.ts";
+import {
+  parseTranscript,
+  getLastUserMessage,
+} from "./shared/transcript-parser.ts";
+import { buildResponseContext } from "./shared/summary-context.ts";
 
 interface StopHookInput {
   session_id: string;
@@ -352,6 +356,7 @@ async function main() {
 
     // Load configuration
     const config = loadConfig();
+    const userName = config.personalization.name;
 
     // Extract last assistant message from transcript
     const lastMessageContent = await extractLastAssistantMessage(
@@ -408,19 +413,40 @@ async function main() {
     appendEvent(logEvent);
     debugLog("StopHook", "JSONL event logged");
 
-    // Layer 3: Argus real-time event
-    // Use VOICE summary if present, otherwise use token count
+    // Layer 3: Argus real-time event (structured context)
     const projectName = cwd.split("/").pop() || "unknown";
-    const argusMessage = voiceSummary
-      ? voiceSummary
-      : `Response complete: ${transcriptStats.total_output_tokens} tokens`;
+    let argusMessage: string;
+
+    // Strip VOICE marker (it's for TTS, not observability)
+    const contentForSummary = lastMessageContent
+      .replace(/🎯\s*VOICE:.*$/s, "")
+      .trim();
+
+    // Get user prompt for context
+    const userPrompt = getLastUserMessage(data.transcript_path);
+
+    // Build structured context and summarize
+    try {
+      const context = buildResponseContext({
+        eventType: "Stop",
+        project: projectName,
+        sessionId: data.session_id,
+        content: contentForSummary,
+        previousTurn: userPrompt || undefined,
+        userName,
+      });
+      const result = await $`llm-summarize ${context}`.quiet();
+      const parsed = JSON.parse(result.stdout.toString());
+      argusMessage = parsed.summary || contentForSummary.substring(0, 200);
+    } catch {
+      argusMessage = contentForSummary.substring(0, 200);
+    }
 
     await postToArgus({
       source: "momentum",
       event_type: "response",
       hook: "Stop",
       message: argusMessage,
-      level: "info",
       data: {
         session_id: data.session_id,
         project: projectName,

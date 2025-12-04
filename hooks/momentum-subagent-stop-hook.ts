@@ -104,8 +104,7 @@ async function main(): Promise<void> {
       source: "momentum",
       event_type: "agent",
       hook: "SubagentStop",
-      message: `Agent ${agentType} completed (${status})`,
-      level: status === "error" ? "warn" : "info",
+      message: `Agent ${agentType} completed`,
       data: {
         session_id: data.session_id,
         project: projectName,

@@ -20,6 +20,8 @@ import {
   type HookInput as JsonlHookInput,
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
+import { buildPromptContext } from "./shared/summary-context.ts";
+import { getLastAssistantMessage } from "./shared/transcript-parser.ts";
 import { $ } from "bun";
 
 interface HookInput {
@@ -262,22 +264,32 @@ async function main() {
       prompt_length: data.prompt?.length || 0,
     });
 
-    // Layer 3: Argus with LLM summary
+    // Layer 3: Argus with LLM summary (structured context)
     let promptSummary = data.prompt?.substring(0, 100) || "Empty prompt";
 
-    // Only call llm-summarize for longer prompts (worth summarizing)
-    if (data.prompt && data.prompt.length > 100) {
-      try {
-        const result =
-          await $`llm-summarize ${data.prompt.substring(0, 500)}`.quiet();
-        const parsed = JSON.parse(result.stdout.toString());
-        if (parsed.summary) {
-          promptSummary = parsed.summary;
-        }
-      } catch {
-        // Fall back to truncated prompt
-        promptSummary = data.prompt.substring(0, 100) + "...";
+    // Get previous assistant message for context
+    const previousTurn = data.transcript_path
+      ? getLastAssistantMessage(data.transcript_path)
+      : null;
+
+    // Build structured context and summarize
+    try {
+      const context = buildPromptContext({
+        eventType: "UserPromptSubmit",
+        project: projectName,
+        sessionId: data.session_id,
+        content: data.prompt || "",
+        previousTurn: previousTurn || undefined,
+        userName,
+      });
+      const result = await $`llm-summarize ${context}`.quiet();
+      const parsed = JSON.parse(result.stdout.toString());
+      if (parsed.summary) {
+        promptSummary = parsed.summary;
       }
+    } catch {
+      // Fall back to truncated prompt
+      promptSummary = data.prompt?.substring(0, 100) || "Empty prompt";
     }
 
     await postToArgus({
@@ -285,7 +297,6 @@ async function main() {
       event_type: "prompt",
       hook: "UserPromptSubmit",
       message: promptSummary,
-      level: "info",
       data: {
         session_id: data.session_id,
         project: projectName,

@@ -12,6 +12,45 @@ import {
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
 
+/**
+ * Format tool message from tool name and input fields
+ */
+function formatToolMessage(
+  name: string,
+  input: Record<string, unknown>,
+): string {
+  const command = input.command as string;
+  const filePath = (input.file_path || input.notebook_path) as string;
+  const url = input.url as string;
+  const query = input.query as string;
+  const pattern = input.pattern as string;
+  const path = input.path as string;
+  const element = input.element as string;
+  const text = input.text as string;
+  const key = input.key as string;
+  const code = input.code as string;
+  const description = input.description as string;
+
+  if (command) return `${name}: ${command}`;
+  if (url) return `${name} ${url}`;
+  if (query) return `${name} "${query}"`;
+  if (element && text) return `${name} "${text}" in ${element}`;
+  if (element) return `${name} ${element}`;
+  if (key) return `${name} ${key}`;
+  if (pattern && path) return `${name} "${pattern}" in ${path}`;
+  if (pattern) return `${name} "${pattern}"`;
+  if (filePath) return `${name} ${filePath}`;
+  if (code) return `${name}: ${code.substring(0, 80)}`;
+  if (description) return `${name}: ${description}`;
+
+  const firstString = Object.values(input).find(
+    (v) => typeof v === "string",
+  ) as string;
+  if (firstString) return `${name}: ${firstString.substring(0, 80)}`;
+
+  return name;
+}
+
 interface PreToolUseInput extends HookInput {
   tool_name: string;
   tool_input: Record<string, unknown>;
@@ -75,104 +114,26 @@ async function main(): Promise<void> {
       input_keys: Object.keys(data.tool_input || {}),
     });
 
-    // Layer 3: Argus - full observability, all tools
+    // Layer 3: Argus - tool start event
     const cwd = data.cwd || process.cwd();
     const projectName = cwd.split("/").pop() || "unknown";
-
-    // Build tool-specific message
-    let message = `${data.tool_name}`;
-    let hook: "SubagentStart" | "PreToolUse" = "PreToolUse";
-
-    switch (data.tool_name) {
-      case "Task":
-        const subagentType =
-          (data.tool_input?.subagent_type as string) || "unknown";
-        message = `Subagent: ${subagentType}`;
-        hook = "SubagentStart";
-        break;
-      case "Bash":
-        const cmd = (data.tool_input?.command as string) || "";
-        message = `Bash: ${cmd.substring(0, 80)}`;
-        break;
-      case "Edit":
-      case "Write":
-      case "NotebookEdit":
-        const file =
-          data.tool_input?.file_path ||
-          (data.tool_input?.notebook_path as string) ||
-          "";
-        message = `${data.tool_name}: ${file.split("/").pop()}`;
-        break;
-      case "Read":
-        const readFile = (data.tool_input?.file_path as string) || "";
-        message = `Read: ${readFile.split("/").pop()}`;
-        break;
-      case "Glob":
-        const pattern = (data.tool_input?.pattern as string) || "";
-        message = `Glob: ${pattern}`;
-        break;
-      case "Grep":
-        const grepPattern = (data.tool_input?.pattern as string) || "";
-        message = `Grep: ${grepPattern.substring(0, 50)}`;
-        break;
-      case "Skill":
-        const skill = (data.tool_input?.skill as string) || "unknown";
-        message = `Skill: ${skill}`;
-        break;
-      case "SlashCommand":
-        const slashCmd = (data.tool_input?.command as string) || "unknown";
-        message = `Command: ${slashCmd}`;
-        break;
-      case "WebFetch":
-        const url = (data.tool_input?.url as string) || "";
-        message = `WebFetch: ${url.substring(0, 60)}`;
-        break;
-      case "WebSearch":
-        const query = (data.tool_input?.query as string) || "";
-        message = `WebSearch: ${query.substring(0, 50)}`;
-        break;
-      case "TodoWrite":
-        message = `TodoWrite: updating task list`;
-        break;
-      case "AskUserQuestion":
-        message = `AskUserQuestion: prompting user`;
-        break;
-      case "EnterPlanMode":
-        message = `EnterPlanMode`;
-        break;
-      case "ExitPlanMode":
-        message = `ExitPlanMode`;
-        break;
-      default:
-        // MCP tools and others
-        if (data.tool_name.startsWith("mcp__")) {
-          const mcpTool = data.tool_name
-            .replace("mcp__", "")
-            .replace(/__/g, ".");
-          message = `MCP: ${mcpTool}`;
-        }
-        break;
-    }
+    const toolMessage = formatToolMessage(data.tool_name, data.tool_input);
 
     await postToArgus({
       source: "momentum",
-      event_type: data.tool_name === "Task" ? "agent" : "tool",
-      hook,
-      message,
-      level: "info",
+      event_type: "tool",
+      hook: "PreToolUse",
+      message: toolMessage,
       data: {
         session_id: data.session_id,
         project: projectName,
         tool_name: data.tool_name,
-        input_preview: JSON.stringify(data.tool_input).substring(0, 200),
+        tool_input: data.tool_input,
       },
     }).catch(() => {
-      // Silent failure - Argus is best-effort
+      // Silent failure
     });
-    debugLog("PreToolUse", "Argus event posted", {
-      tool: data.tool_name,
-      message,
-    });
+    debugLog("PreToolUse", "Argus tool-start posted", { message: toolMessage });
 
     debugLog("PreToolUse", "Hook completed successfully");
     process.exit(0);

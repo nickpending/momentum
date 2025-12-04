@@ -153,6 +153,52 @@ export function parseTranscript(transcriptPath: string): TranscriptStats {
 }
 
 /**
+ * Get last user message text from transcript
+ * Used for providing context to summarization
+ */
+export function getLastUserMessage(transcriptPath: string): string | null {
+  if (!existsSync(transcriptPath)) {
+    return null;
+  }
+
+  try {
+    const content = readFileSync(transcriptPath, "utf-8");
+    const lines = content.trim().split("\n");
+
+    // Parse entries
+    let currentEntry = "";
+    const entries: TranscriptEntry[] = [];
+
+    for (const line of lines) {
+      currentEntry += line;
+      try {
+        const entry: TranscriptEntry = JSON.parse(currentEntry);
+        entries.push(entry);
+        currentEntry = "";
+      } catch {
+        currentEntry += "\n";
+      }
+    }
+
+    // Search from end for user message with text
+    for (let i = entries.length - 1; i >= 0; i--) {
+      const entry = entries[i];
+      if (entry.message?.role === "user" && entry.message.content) {
+        for (const block of entry.message.content) {
+          if (block.type === "text" && block.text) {
+            return block.text;
+          }
+        }
+      }
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Get last assistant message text from transcript
  * Used by Stop hook for CAPTURE/VOICE extraction
  */

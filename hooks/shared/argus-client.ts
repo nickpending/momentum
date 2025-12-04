@@ -13,10 +13,10 @@ import { debugLog } from "./debug-log.ts";
  * Event type categories for filtering/grouping
  */
 export type ArgusEventType =
-  | "response"
+  | "tool"
   | "session"
   | "agent"
-  | "tool"
+  | "response"
   | "prompt";
 
 /**
