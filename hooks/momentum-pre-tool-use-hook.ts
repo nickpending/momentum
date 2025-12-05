@@ -126,10 +126,11 @@ async function main(): Promise<void> {
       event_type: "tool",
       hook: "PreToolUse",
       session_id: data.session_id,
+      tool_name: data.tool_name,
+      tool_use_id: data.tool_use_id,
       message: toolMessage,
       data: {
         project: projectName,
-        tool_name: data.tool_name,
         tool_input: data.tool_input,
       },
     }).catch(() => {

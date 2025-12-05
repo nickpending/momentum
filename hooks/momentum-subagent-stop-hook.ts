@@ -187,12 +187,12 @@ async function main(): Promise<void> {
       event_type: "agent",
       hook: "SubagentStop",
       session_id: data.session_id,
+      status: status,
       message: `Agent ${agentType} completed`,
       data: {
         project: projectName,
         agent_type: agentType,
         duration_ms: data.duration_ms || 0,
-        status: status,
       },
     }).catch(() => {
       // Silent failure - Argus is best-effort

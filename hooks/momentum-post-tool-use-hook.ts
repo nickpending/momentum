@@ -154,12 +154,13 @@ async function main(): Promise<void> {
       event_type: "tool",
       hook: "PostToolUse",
       session_id: data.session_id,
+      tool_name: data.tool_name,
+      tool_use_id: data.tool_use_id,
+      status: success ? "success" : "failure",
       message: toolMessage,
       data: {
         project: projectName,
-        tool_name: data.tool_name,
         tool_input: data.tool_input,
-        success,
         result_size: resultSize,
       },
     }).catch(() => {

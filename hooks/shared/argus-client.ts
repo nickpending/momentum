@@ -9,8 +9,13 @@ import {
   send,
   loadConfig,
   type ArgusEvent as BaseArgusEvent,
+  type ArgusHook,
+  type ArgusStatus,
 } from "argus-send";
 import { debugLog } from "./debug-log.ts";
+
+// Re-export types from argus-send for hook consumers
+export type { ArgusHook, ArgusStatus };
 
 /**
  * Event type categories for filtering/grouping
@@ -23,20 +28,8 @@ export type ArgusEventType =
   | "prompt";
 
 /**
- * Specific hooks that trigger events
- */
-export type ArgusHook =
-  | "Stop"
-  | "SessionStart"
-  | "SessionEnd"
-  | "SubagentStart"
-  | "SubagentStop"
-  | "PreToolUse"
-  | "PostToolUse"
-  | "UserPromptSubmit";
-
-/**
- * Momentum-specific Argus event with hook field
+ * Momentum-specific Argus event
+ * All agent observability fields go at top level per API spec
  */
 export interface ArgusEvent {
   source: string;
@@ -44,9 +37,13 @@ export interface ArgusEvent {
   hook: ArgusHook;
   session_id?: string;
   message?: string;
-  level?: "debug" | "info" | "warn" | "error";
   timestamp?: string;
   data?: unknown;
+  // Agent observability fields (top-level, not in data)
+  tool_name?: string;
+  tool_use_id?: string;
+  status?: ArgusStatus;
+  agent_id?: string;
 }
 
 // Cache config on first load
@@ -78,20 +75,20 @@ export async function postToArgus(event: ArgusEvent): Promise<void> {
     hook: event.hook,
   });
 
-  // Convert to base ArgusEvent (hook goes in data)
+  // Pass all fields at top level per API spec
   const baseEvent: BaseArgusEvent = {
     source: event.source,
     event_type: event.event_type,
     message: event.message,
-    level: event.level,
     timestamp: event.timestamp,
-    data: {
-      hook: event.hook,
-      session_id: event.session_id,
-      ...(typeof event.data === "object" && event.data !== null
-        ? event.data
-        : { payload: event.data }),
-    },
+    data: event.data,
+    // Agent observability fields at top level
+    session_id: event.session_id,
+    hook: event.hook,
+    tool_name: event.tool_name,
+    tool_use_id: event.tool_use_id,
+    status: event.status,
+    agent_id: event.agent_id,
   };
 
   const result = await send(baseEvent);

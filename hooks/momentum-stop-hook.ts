@@ -452,6 +452,7 @@ async function main() {
       event_type: "response",
       hook: "Stop",
       session_id: data.session_id,
+      status: "success",
       message: argusMessage,
       data: {
         project: projectName,
