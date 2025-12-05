@@ -19,6 +19,8 @@ import {
   getLastUserMessage,
 } from "./shared/transcript-parser.ts";
 import { buildResponseContext } from "./shared/summary-context.ts";
+import { captureKnowledge, type KnowledgeCaptureType } from "lore-capture";
+import { summarize, loadConfig as loadLLMConfig } from "llm-summarize";
 
 interface StopHookInput {
   session_id: string;
@@ -176,11 +178,11 @@ function extractCaptureLines(
 }
 
 /**
- * Process CAPTURE lines via lore-capture
+ * Process CAPTURE lines via lore-capture library
  */
-async function processCaptureLines(
+function processCaptureLines(
   captures: Array<{ context: string; type: string; insight: string }>,
-): Promise<void> {
+): void {
   if (captures.length === 0) {
     return;
   }
@@ -188,23 +190,26 @@ async function processCaptureLines(
   debugLog("StopHook", `Processing ${captures.length} CAPTURE lines`, {});
 
   for (const capture of captures) {
-    try {
-      debugLog("StopHook", "Calling lore-capture", {
-        context: capture.context,
-        insight: capture.insight,
-        type: capture.type,
-      });
+    debugLog("StopHook", "Calling lore-capture", {
+      context: capture.context,
+      insight: capture.insight,
+      type: capture.type,
+    });
 
-      await $`lore-capture knowledge --context=${capture.context} --text=${capture.insight} --type=${capture.type}`.quiet();
+    const result = captureKnowledge({
+      context: capture.context,
+      text: capture.insight,
+      type: capture.type as KnowledgeCaptureType,
+    });
 
+    if (result.success) {
       debugLog("StopHook", "CAPTURE logged successfully", {
         context: capture.context,
         type: capture.type,
       });
-    } catch (error) {
-      // Log error but don't block - capture is optional
+    } else {
       debugLog("StopHook", "lore-capture failed", {
-        error: String(error),
+        error: result.error,
         context: capture.context,
       });
     }
@@ -435,9 +440,9 @@ async function main() {
         previousTurn: userPrompt || undefined,
         userName,
       });
-      const result = await $`llm-summarize ${context}`.quiet();
-      const parsed = JSON.parse(result.stdout.toString());
-      argusMessage = parsed.summary || contentForSummary.substring(0, 200);
+      const llmConfig = loadLLMConfig();
+      const result = await summarize(context, llmConfig);
+      argusMessage = result.summary || contentForSummary.substring(0, 200);
     } catch {
       argusMessage = contentForSummary.substring(0, 200);
     }
@@ -446,9 +451,9 @@ async function main() {
       source: "momentum",
       event_type: "response",
       hook: "Stop",
+      session_id: data.session_id,
       message: argusMessage,
       data: {
-        session_id: data.session_id,
         project: projectName,
         tokens: {
           input: transcriptStats.total_input_tokens,

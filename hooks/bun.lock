@@ -1,0 +1,20 @@
+{
+  "lockfileVersion": 1,
+  "workspaces": {
+    "": {
+      "name": "momentum-hooks",
+      "dependencies": {
+        "argus-send": "link:argus-send",
+        "llm-summarize": "link:llm-summarize",
+        "lore-capture": "link:lore-capture",
+      },
+    },
+  },
+  "packages": {
+    "argus-send": ["argus-send@link:argus-send", { "bin": { "argus-send": "./cli.ts" } }],
+
+    "llm-summarize": ["llm-summarize@link:llm-summarize", { "bin": { "llm-summarize": "./cli.ts" } }],
+
+    "lore-capture": ["lore-capture@link:lore-capture", { "bin": { "lore-capture": "./cli.ts" } }],
+  }
+}

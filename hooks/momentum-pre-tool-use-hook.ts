@@ -123,9 +123,9 @@ async function main(): Promise<void> {
       source: "momentum",
       event_type: "tool",
       hook: "PreToolUse",
+      session_id: data.session_id,
       message: toolMessage,
       data: {
-        session_id: data.session_id,
         project: projectName,
         tool_name: data.tool_name,
         tool_input: data.tool_input,

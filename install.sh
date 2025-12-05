@@ -329,6 +329,14 @@ fi
 cp "$MOMENTUM_SOURCE/hooks/momentum-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Legacy hook (for compatibility)"
 chmod +x "$MOMENTUM_INSTALL/hooks"/*.ts 2>/dev/null || true
 
+# Install hook dependencies (llmcli-tools libraries)
+if [[ -f "$MOMENTUM_SOURCE/hooks/package.json" ]]; then
+    cp "$MOMENTUM_SOURCE/hooks/package.json" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null
+    if command -v bun &> /dev/null; then
+        (cd "$MOMENTUM_INSTALL/hooks" && bun install --silent 2>/dev/null) && echo "  ✓ Hook dependencies installed"
+    fi
+fi
+
 if [[ ! -d "$MOMENTUM_INSTALL/contexts" ]]; then
     cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_INSTALL/" && echo "  ✓ Contexts"
 else

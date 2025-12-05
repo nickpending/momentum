@@ -22,7 +22,7 @@ import {
 import { postToArgus } from "./shared/argus-client.ts";
 import { buildPromptContext } from "./shared/summary-context.ts";
 import { getLastAssistantMessage } from "./shared/transcript-parser.ts";
-import { $ } from "bun";
+import { summarize, loadConfig as loadLLMConfig } from "llm-summarize";
 
 interface HookInput {
   session_id: string;
@@ -282,10 +282,10 @@ async function main() {
         previousTurn: previousTurn || undefined,
         userName,
       });
-      const result = await $`llm-summarize ${context}`.quiet();
-      const parsed = JSON.parse(result.stdout.toString());
-      if (parsed.summary) {
-        promptSummary = parsed.summary;
+      const llmConfig = loadLLMConfig();
+      const result = await summarize(context, llmConfig);
+      if (result.summary) {
+        promptSummary = result.summary;
       }
     } catch {
       // Fall back to truncated prompt
@@ -296,9 +296,9 @@ async function main() {
       source: "momentum",
       event_type: "prompt",
       hook: "UserPromptSubmit",
+      session_id: data.session_id,
       message: promptSummary,
       data: {
-        session_id: data.session_id,
         project: projectName,
         prompt_length: data.prompt?.length || 0,
       },

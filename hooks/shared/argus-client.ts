@@ -1,12 +1,15 @@
 #!/usr/bin/env bun
 /**
  * Argus Client
- * Best-effort event posting to Argus observability platform
- * Silent failure - never blocks or throws
+ * Thin wrapper around argus-send library with momentum-specific types
+ * Best-effort event posting - silent failure, never blocks
  */
 
-import { existsSync, readFileSync } from "fs";
-import { join } from "path";
+import {
+  send,
+  loadConfig,
+  type ArgusEvent as BaseArgusEvent,
+} from "argus-send";
 import { debugLog } from "./debug-log.ts";
 
 /**
@@ -32,64 +35,24 @@ export type ArgusHook =
   | "PostToolUse"
   | "UserPromptSubmit";
 
+/**
+ * Momentum-specific Argus event with hook field
+ */
 export interface ArgusEvent {
   source: string;
   event_type: ArgusEventType;
   hook: ArgusHook;
+  session_id?: string;
   message?: string;
   level?: "debug" | "info" | "warn" | "error";
   timestamp?: string;
   data?: unknown;
 }
 
-interface ArgusConfig {
-  host: string;
-  apiKey: string | null;
-}
-
-/**
- * Load Argus configuration from ~/.config/argus/config.toml
- */
-function loadConfig(): ArgusConfig {
-  const configPath = join(process.env.HOME!, ".config", "argus", "config.toml");
-  const defaultHost = "http://127.0.0.1:8765";
-
-  if (!existsSync(configPath)) {
-    return { host: defaultHost, apiKey: null };
-  }
-
-  try {
-    const content = readFileSync(configPath, "utf-8");
-
-    // Parse server.host (default: 127.0.0.1)
-    const hostMatch = content.match(/^\s*host\s*=\s*"([^"]+)"/m);
-    const host = hostMatch ? hostMatch[1] : "127.0.0.1";
-
-    // Parse server.port (default: 8765)
-    const portMatch = content.match(/^\s*port\s*=\s*(\d+)/m);
-    const port = portMatch ? portMatch[1] : "8765";
-
-    // Parse api_keys array, extract first key
-    const keysMatch = content.match(/api_keys\s*=\s*\[([^\]]+)\]/);
-    let apiKey: string | null = null;
-    if (keysMatch) {
-      const firstKey = keysMatch[1].match(/"([^"]+)"/);
-      apiKey = firstKey ? firstKey[1] : null;
-    }
-
-    return {
-      host: `http://${host}:${port}`,
-      apiKey,
-    };
-  } catch {
-    return { host: defaultHost, apiKey: null };
-  }
-}
-
 // Cache config on first load
-let cachedConfig: ArgusConfig | null = null;
+let cachedConfig: ReturnType<typeof loadConfig> | null = null;
 
-function getConfig(): ArgusConfig {
+function getConfig(): ReturnType<typeof loadConfig> {
   if (!cachedConfig) {
     cachedConfig = loadConfig();
   }
@@ -98,7 +61,7 @@ function getConfig(): ArgusConfig {
 
 /**
  * Post event to Argus
- * Best-effort with 2s timeout, silent failure
+ * Best-effort with silent failure
  */
 export async function postToArgus(event: ArgusEvent): Promise<void> {
   const config = getConfig();
@@ -109,40 +72,36 @@ export async function postToArgus(event: ArgusEvent): Promise<void> {
     return;
   }
 
-  // Add timestamp if missing
-  if (!event.timestamp) {
-    event.timestamp = new Date().toISOString();
-  }
-
   debugLog("ArgusClient", "Posting event", {
     source: event.source,
     event_type: event.event_type,
-    host: config.host,
+    hook: event.hook,
   });
 
-  try {
-    const response = await fetch(`${config.host}/events`, {
-      method: "POST",
-      headers: {
-        "X-API-Key": config.apiKey,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(event),
-      signal: AbortSignal.timeout(2000),
-    });
+  // Convert to base ArgusEvent (hook goes in data)
+  const baseEvent: BaseArgusEvent = {
+    source: event.source,
+    event_type: event.event_type,
+    message: event.message,
+    level: event.level,
+    timestamp: event.timestamp,
+    data: {
+      hook: event.hook,
+      session_id: event.session_id,
+      ...(typeof event.data === "object" && event.data !== null
+        ? event.data
+        : { payload: event.data }),
+    },
+  };
 
-    if (response.ok) {
-      debugLog("ArgusClient", "Event posted successfully", {
-        status: response.status,
-      });
-    } else {
-      debugLog("ArgusClient", "Event post failed", {
-        status: response.status,
-        statusText: response.statusText,
-      });
-    }
-  } catch (error) {
-    debugLog("ArgusClient", "Event post error", { error: String(error) });
+  const result = await send(baseEvent);
+
+  if (result.captured) {
+    debugLog("ArgusClient", "Event posted successfully", {
+      event_id: result.event_id,
+    });
+  } else {
+    debugLog("ArgusClient", "Event post failed", { error: result.error });
   }
 }
 

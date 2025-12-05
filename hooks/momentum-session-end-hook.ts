@@ -223,9 +223,9 @@ async function main(): Promise<void> {
       source: "momentum",
       event_type: "session",
       hook: "SessionEnd",
+      session_id: data.session_id,
       message: `Session ended: ${durationMinutes}min, ${transcriptStats.total_output_tokens} tokens`,
       data: {
-        session_id: data.session_id,
         project: projectName,
         mode: sessionContext?.mode || "project",
         reason: data.reason || "unknown",

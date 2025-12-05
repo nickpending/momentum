@@ -271,9 +271,9 @@ async function main(): Promise<void> {
       source: "momentum",
       event_type: "session",
       hook: "SessionStart",
+      session_id: data.session_id,
       message: `Session started: ${projectName} (${projectState})`,
       data: {
-        session_id: data.session_id,
         project: projectName,
         mode: sessionContext.mode,
         project_state: projectState,

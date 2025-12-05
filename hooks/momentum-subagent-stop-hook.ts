@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Momentum SubagentStop Hook
- * Logs agent completions to Layer 1 JSONL and Layer 3 Argus
+ * Logs agent completions to Layer 1 JSONL, Layer 2 Lore, and Layer 3 Argus
  */
 
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
@@ -11,6 +11,8 @@ import {
   type HookInput,
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
+import { captureKnowledge } from "lore-capture";
+import { Glob } from "bun";
 
 interface SubagentStopInput extends HookInput {
   subagent_type?: string;
@@ -39,6 +41,38 @@ async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
       resolve("{}");
     });
   });
+}
+
+/**
+ * Extract ## Summary section from markdown content
+ */
+function extractSummary(content: string): string | null {
+  const match = content.match(/## Summary\n\n(.+?)(?:\n\n#|$)/s);
+  return match?.[1]?.trim() || null;
+}
+
+/**
+ * Find most recent report file for agent type
+ */
+async function findLatestReport(
+  subagentsDir: string,
+  agentType: string,
+): Promise<string | null> {
+  const pattern = `${agentType.toUpperCase()}-*.md`;
+  const glob = new Glob(pattern);
+
+  const files: string[] = [];
+  for await (const file of glob.scan({ cwd: subagentsDir })) {
+    files.push(file);
+  }
+
+  if (files.length === 0) {
+    return null;
+  }
+
+  // Sort by filename (includes timestamp) and get most recent
+  files.sort();
+  return files[files.length - 1];
 }
 
 async function main(): Promise<void> {
@@ -99,14 +133,62 @@ async function main(): Promise<void> {
       status,
     });
 
+    // Layer 2: Lore knowledge capture (skip system agents)
+    if (agentType !== "system" && agentType !== "unknown") {
+      const subagentsDir = `${cwd}/.workflow/artifacts/subagents`;
+
+      try {
+        const reportFile = await findLatestReport(subagentsDir, agentType);
+
+        if (reportFile) {
+          const reportPath = `${subagentsDir}/${reportFile}`;
+          const content = await Bun.file(reportPath).text();
+          const summary = extractSummary(content);
+
+          if (summary) {
+            const result = captureKnowledge({
+              context: projectName,
+              text: `[${agentType}] ${summary}`,
+              type: "learning",
+            });
+
+            if (result.success) {
+              debugLog("SubagentStop", "Lore capture successful", {
+                agent_type: agentType,
+                report: reportFile,
+              });
+            } else {
+              debugLog("SubagentStop", "Lore capture failed", {
+                error: result.error,
+              });
+            }
+          } else {
+            debugLog("SubagentStop", "No Summary section in report", {
+              report: reportFile,
+            });
+          }
+        } else {
+          debugLog("SubagentStop", "No report file found", {
+            agent_type: agentType,
+            dir: subagentsDir,
+          });
+        }
+      } catch (error) {
+        // Silent failure - Lore is best-effort
+        debugLog("SubagentStop", "Lore capture error", {
+          error: String(error),
+        });
+      }
+    }
+
     // Layer 3: Argus real-time event (must await before exit)
     await postToArgus({
       source: "momentum",
       event_type: "agent",
       hook: "SubagentStop",
+      session_id: data.session_id,
       message: `Agent ${agentType} completed`,
       data: {
-        session_id: data.session_id,
         project: projectName,
         agent_type: agentType,
         duration_ms: data.duration_ms || 0,

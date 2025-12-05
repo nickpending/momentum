@@ -1,0 +1,12 @@
+{
+  "name": "momentum-hooks",
+  "version": "1.0.0",
+  "description": "Momentum Claude Code hooks",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "argus-send": "link:argus-send",
+    "lore-capture": "link:lore-capture",
+    "llm-summarize": "link:llm-summarize"
+  }
+}
