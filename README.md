@@ -57,6 +57,7 @@ Think of it as having a development partner who never forgets context and always
 - 🎙️ **Voice System** - Configurable personality (jarvis/professional/casual) and verbosity levels
 - 🔊 **TTS Integration** - Optional text-to-speech for voice summaries via lspeak (progressive enhancement)
 - 📁 **Knowledge Capture** - CAPTURE lines preserve insights across sessions via lore integration
+- 📊 **Three-Layer Observability** - JSONL forensics, Lore knowledge, and Argus real-time dashboard
 - 🎭 **MCP Integration** - Playwright MCP server for browser automation in projects
 
 ## 🎬 Quick Start
@@ -204,7 +205,8 @@ Natural Language Input    Semantic Routing         Specialized Agents
 **Optional (Progressive Enhancement):**
 - **lspeak** - TTS for voice summaries - [GitHub](https://github.com/nickpending/lspeak)
 - **lore** - Knowledge capture and search - [GitHub](https://github.com/nickpending/lore)
-- **llmcli-tools** - Gitignore compliance checking - [GitHub](https://github.com/nickpending/llmcli-tools)
+- **llmcli-tools** - Gitignore compliance, observability tools (argus-send, lore-capture, llm-summarize) - [GitHub](https://github.com/nickpending/llmcli-tools)
+- **Argus** - Real-time observability dashboard - [GitHub](https://github.com/nickpending/argus)
 - **Playwright MCP** - Browser automation - `npx @playwright/mcp@latest` + `npx playwright install chrome`
 
 ### Install from Source
@@ -423,7 +425,7 @@ momentum/
 
 ## 🎯 Roadmap
 
-**v4.0.6** (Current):
+**v4.2.3** (Current):
 - [x] Workspace mode for exploration without project constraints
 - [x] State-based initialization (new → vision → planned → active)
 - [x] Knowledge capture system (CAPTURE lines → lore integration)
@@ -434,15 +436,18 @@ momentum/
 - [x] Semantic routing with dynamic context injection
 - [x] Evidence-based agent system (6 specialized agents)
 - [x] Skills architecture with plugin support
+- [x] Three-layer observability (JSONL forensics, Lore knowledge, Argus real-time)
+- [x] Argus integration with LLM-powered summaries
+- [x] Library-first architecture (llmcli-tools imports instead of CLI calls)
+- [x] Session cache for reliable project detection across hooks
 
-**Next** (v4.1+):
-- [ ] Project-level CLAUDE.md injection
+**Next** (v4.3+):
+- [ ] PreCompact hook for auto-save before context compression
 - [ ] Notification system for background processes
-- [ ] Sable integration architecture
 - [ ] Enhanced backlog management
 - [ ] Pattern learning from successful iterations
 
-**Future** (v4.5+):
+**Future** (v5.0+):
 - [ ] Language-specific quality patterns
 - [ ] Team collaboration workflows
 - [ ] Integration with CI/CD pipelines
