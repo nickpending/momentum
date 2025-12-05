@@ -11,6 +11,7 @@ import {
   type HookInput,
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
+import { readSessionCache } from "./shared/session-cache.ts";
 
 /**
  * Format tool message from tool name and input fields
@@ -115,8 +116,9 @@ async function main(): Promise<void> {
     });
 
     // Layer 3: Argus - tool start event
-    const cwd = data.cwd || process.cwd();
-    const projectName = cwd.split("/").pop() || "unknown";
+    // Get project name from session cache (set by SessionStart) to avoid cwd issues
+    const sessionCache = readSessionCache(data.session_id);
+    const projectName = sessionCache?.project || "unknown";
     const toolMessage = formatToolMessage(data.tool_name, data.tool_input);
 
     await postToArgus({
