@@ -8,6 +8,7 @@ import { existsSync, mkdirSync, appendFileSync } from "fs";
 import { join } from "path";
 import { debugLog } from "./debug-log.ts";
 import { readSessionCache, type SessionContext } from "./session-cache.ts";
+import { loadConfig } from "./config-loader.ts";
 
 // XDG Base Directory spec
 const XDG_DATA_HOME =
@@ -55,9 +56,13 @@ function ensureEventsDir(): void {
 
 /**
  * Get today's event file path (YYYY-MM-DD_events.jsonl)
+ * Uses local timezone for filename so files match your workday
+ * (Internal ts field stays UTC for sorting)
  */
 function getTodayEventFile(): string {
-  const today = new Date().toISOString().split("T")[0];
+  const config = loadConfig();
+  const TZ = config.personalization.timezone || "America/Los_Angeles";
+  const today = new Date().toLocaleDateString("en-CA", { timeZone: TZ });
   return join(EVENTS_DIR, `${today}_events.jsonl`);
 }
 

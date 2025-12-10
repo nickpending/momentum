@@ -364,6 +364,8 @@ cat > "$MOMENTUM_INSTALL/config.toml" << EOF
 [personalization]
 # Your name (used in greetings and voice output)
 name = "$USER_NAME"
+# IANA timezone for dates/filenames (internal timestamps stay UTC)
+timezone = "America/Los_Angeles"
 
 [paths]
 # Where your development projects live

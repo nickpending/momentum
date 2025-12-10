@@ -20,6 +20,7 @@ import {
   readSessionCache,
 } from "./shared/session-cache.ts";
 import { parseTranscript } from "./shared/transcript-parser.ts";
+import { loadConfig } from "./shared/config-loader.ts";
 
 interface SessionEndInput extends HookInput {
   reason?: string; // user_exit, timeout, error, etc.
@@ -78,7 +79,10 @@ function aggregateSessionEvents(sessionId: string): SessionStats {
 
   try {
     const eventsDir = getEventsDir();
-    const today = new Date().toISOString().split("T")[0];
+    // Must match filename timezone used in jsonl-logger.ts
+    const config = loadConfig();
+    const TZ = config.personalization.timezone || "America/Los_Angeles";
+    const today = new Date().toLocaleDateString("en-CA", { timeZone: TZ });
     const eventFile = join(eventsDir, `${today}_events.jsonl`);
 
     if (!existsSync(eventFile)) {

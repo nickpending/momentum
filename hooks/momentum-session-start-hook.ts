@@ -69,8 +69,13 @@ async function main(): Promise<void> {
     });
 
     const config = loadConfig();
-    const currentDate = new Date().toISOString().split("T")[0];
-    const currentDateTime = new Date().toISOString();
+    // Local timezone for user-facing context; internal timestamps stay UTC
+    const TZ = config.personalization.timezone || "America/Los_Angeles";
+    const now = new Date();
+    const currentDate = now.toLocaleDateString("en-CA", { timeZone: TZ }); // YYYY-MM-DD
+    const currentDateTime = now
+      .toLocaleString("sv-SE", { timeZone: TZ })
+      .replace(" ", "T"); // YYYY-MM-DDTHH:MM:SS
     const userName = config.personalization.name;
     const cwd = process.cwd();
     const projectName = cwd.split("/").pop() || "unknown";

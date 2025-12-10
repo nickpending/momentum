@@ -152,9 +152,14 @@ async function main() {
       String(loreAvailable),
     );
 
-    // Get current date in ISO format
-    const currentDate = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
-    const currentDateTime = new Date().toISOString(); // Full ISO timestamp
+    // Get current date/time in local timezone for user-facing context
+    // Internal timestamps (ts field) stay UTC for sorting; filenames/context use local
+    const TZ = config.personalization.timezone || "America/Los_Angeles";
+    const now = new Date();
+    const currentDate = now.toLocaleDateString("en-CA", { timeZone: TZ }); // YYYY-MM-DD
+    const currentDateTime = now
+      .toLocaleString("sv-SE", { timeZone: TZ })
+      .replace(" ", "T"); // YYYY-MM-DDTHH:MM:SS
 
     // Gitignore compliance checked by session-start hook via llcli-tools/gitignore-check
 

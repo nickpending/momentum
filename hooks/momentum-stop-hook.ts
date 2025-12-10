@@ -394,8 +394,37 @@ async function main() {
       model: transcriptStats.model,
     });
 
-    // Layer 1: JSONL event logging
+    // Generate summary first (used by both JSONL and Argus)
     const cwd = data.cwd || process.cwd();
+    const projectName = cwd.split("/").pop() || "unknown";
+
+    // Strip VOICE marker (it's for TTS, not observability)
+    const contentForSummary = lastMessageContent
+      .replace(/🎯\s*VOICE:.*$/s, "")
+      .trim();
+
+    // Get user prompt for context
+    const userPrompt = getLastUserMessage(data.transcript_path);
+
+    // Build structured context and summarize
+    let summary: string;
+    try {
+      const context = buildResponseContext({
+        eventType: "Stop",
+        project: projectName,
+        sessionId: data.session_id,
+        content: contentForSummary,
+        previousTurn: userPrompt || undefined,
+        userName,
+      });
+      const llmConfig = loadLLMConfig();
+      const result = await summarize(context, llmConfig);
+      summary = result.summary || contentForSummary.substring(0, 200);
+    } catch {
+      summary = contentForSummary.substring(0, 200);
+    }
+
+    // Layer 1: JSONL event logging (includes summary)
     const hookInput: HookInput = {
       session_id: data.session_id,
       transcript_path: data.transcript_path,
@@ -414,46 +443,19 @@ async function main() {
       has_voice: !!voiceSummary,
       captures_count: captures.length,
       model: transcriptStats.model,
+      summary,
     });
     appendEvent(logEvent);
     debugLog("StopHook", "JSONL event logged");
 
-    // Layer 3: Argus real-time event (structured context)
-    const projectName = cwd.split("/").pop() || "unknown";
-    let argusMessage: string;
-
-    // Strip VOICE marker (it's for TTS, not observability)
-    const contentForSummary = lastMessageContent
-      .replace(/🎯\s*VOICE:.*$/s, "")
-      .trim();
-
-    // Get user prompt for context
-    const userPrompt = getLastUserMessage(data.transcript_path);
-
-    // Build structured context and summarize
-    try {
-      const context = buildResponseContext({
-        eventType: "Stop",
-        project: projectName,
-        sessionId: data.session_id,
-        content: contentForSummary,
-        previousTurn: userPrompt || undefined,
-        userName,
-      });
-      const llmConfig = loadLLMConfig();
-      const result = await summarize(context, llmConfig);
-      argusMessage = result.summary || contentForSummary.substring(0, 200);
-    } catch {
-      argusMessage = contentForSummary.substring(0, 200);
-    }
-
+    // Layer 3: Argus real-time event (reuses summary)
     await postToArgus({
       source: "momentum",
       event_type: "response",
       hook: "Stop",
       session_id: data.session_id,
       status: "success",
-      message: argusMessage,
+      message: summary,
       data: {
         project: projectName,
         tokens: {
@@ -467,7 +469,7 @@ async function main() {
     }).catch(() => {
       // Silent failure - Argus is best-effort
     });
-    debugLog("StopHook", "Argus event posted", { message: argusMessage });
+    debugLog("StopHook", "Argus event posted", { message: summary });
 
     // TTS: Speak voice summary if present
     if (!voiceSummary) {
