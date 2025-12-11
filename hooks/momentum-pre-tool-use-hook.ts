@@ -12,6 +12,7 @@ import {
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
 import { readSessionCache } from "./shared/session-cache.ts";
+import { findAgentForToolUse } from "./shared/agent-lookup.ts";
 
 /**
  * Format tool message from tool name and input fields
@@ -89,6 +90,9 @@ async function main(): Promise<void> {
     const input = await readStdinWithTimeout();
     const data: PreToolUseInput = JSON.parse(input);
 
+    // Log ALL raw fields to discover what Claude Code sends
+    debugLog("PreToolUse", "RAW INPUT", data);
+
     debugLog("PreToolUse", "Input received", {
       session_id: data.session_id,
       tool_name: data.tool_name,
@@ -120,6 +124,22 @@ async function main(): Promise<void> {
     const sessionCache = readSessionCache(data.session_id);
     const projectName = sessionCache?.project || "unknown";
     const toolMessage = formatToolMessage(data.tool_name, data.tool_input);
+
+    // Look up agent_id if this tool belongs to a subagent
+    let agentId: string | null = null;
+    if (data.tool_use_id && data.transcript_path) {
+      agentId = findAgentForToolUse(
+        data.transcript_path,
+        data.session_id,
+        data.tool_use_id,
+      );
+      if (agentId) {
+        debugLog("PreToolUse", "Tool belongs to agent", {
+          tool_use_id: data.tool_use_id,
+          agent_id: agentId,
+        });
+      }
+    }
 
     // Check if this is a Task tool (agent spawn)
     if (data.tool_name === "Task") {
@@ -153,7 +173,8 @@ async function main(): Promise<void> {
         tool_use_id: data.tool_use_id,
       });
     } else {
-      // Regular tool event
+      // Regular tool event - include agent_id if this is a subagent tool
+      const isBackground = data.tool_input.run_in_background === true;
       await postToArgus({
         source: "momentum",
         event_type: "tool",
@@ -161,6 +182,8 @@ async function main(): Promise<void> {
         session_id: data.session_id,
         tool_name: data.tool_name,
         tool_use_id: data.tool_use_id,
+        agent_id: agentId || undefined,
+        is_background: isBackground,
         message: toolMessage,
         data: {
           project: projectName,
@@ -171,6 +194,7 @@ async function main(): Promise<void> {
       });
       debugLog("PreToolUse", "Argus tool-start posted", {
         message: toolMessage,
+        agent_id: agentId,
       });
     }
 

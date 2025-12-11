@@ -12,6 +12,10 @@ import {
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
 import { readSessionCache } from "./shared/session-cache.ts";
+import {
+  findAgentForToolUse,
+  removeCachedMapping,
+} from "./shared/agent-lookup.ts";
 
 /**
  * Format tool message from tool name and input fields
@@ -115,6 +119,9 @@ async function main(): Promise<void> {
     const input = await readStdinWithTimeout();
     const data: PostToolUseInput = JSON.parse(input);
 
+    // Log ALL raw fields to discover what Claude Code sends
+    debugLog("PostToolUse", "RAW INPUT", data);
+
     debugLog("PostToolUse", "Input received", {
       session_id: data.session_id,
       tool_name: data.tool_name,
@@ -171,6 +178,24 @@ async function main(): Promise<void> {
     // Build message from tool input fields
     const toolMessage = formatToolMessage(data.tool_name, data.tool_input);
 
+    // Look up agent_id if this tool belongs to a subagent
+    let subagentOwner: string | null = null;
+    if (data.tool_use_id && data.transcript_path) {
+      subagentOwner = findAgentForToolUse(
+        data.transcript_path,
+        data.session_id,
+        data.tool_use_id,
+      );
+      if (subagentOwner) {
+        debugLog("PostToolUse", "Tool belongs to agent", {
+          tool_use_id: data.tool_use_id,
+          agent_id: subagentOwner,
+        });
+      }
+      // Clean up cache entry now that tool is complete
+      removeCachedMapping(data.session_id, data.tool_use_id);
+    }
+
     // Check if this is a Task tool call (agent completion)
     if (data.tool_name === "Task") {
       const toolInput = data.tool_input as TaskToolInput;
@@ -207,7 +232,8 @@ async function main(): Promise<void> {
         });
       }
     } else {
-      // Regular tool event
+      // Regular tool event - include agent_id if this is a subagent tool
+      const isBackground = data.tool_input.run_in_background === true;
       await postToArgus({
         source: "momentum",
         event_type: "tool",
@@ -215,6 +241,8 @@ async function main(): Promise<void> {
         session_id: data.session_id,
         tool_name: data.tool_name,
         tool_use_id: data.tool_use_id,
+        agent_id: subagentOwner || undefined,
+        is_background: isBackground,
         status: success ? "success" : "failure",
         message: toolMessage,
         data: {
@@ -225,7 +253,10 @@ async function main(): Promise<void> {
       }).catch(() => {
         // Silent failure
       });
-      debugLog("PostToolUse", "Argus event posted", { message: toolMessage });
+      debugLog("PostToolUse", "Argus event posted", {
+        message: toolMessage,
+        agent_id: subagentOwner,
+      });
     }
 
     debugLog("PostToolUse", "Hook completed successfully");
