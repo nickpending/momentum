@@ -121,22 +121,58 @@ async function main(): Promise<void> {
     const projectName = sessionCache?.project || "unknown";
     const toolMessage = formatToolMessage(data.tool_name, data.tool_input);
 
-    await postToArgus({
-      source: "momentum",
-      event_type: "tool",
-      hook: "PreToolUse",
-      session_id: data.session_id,
-      tool_name: data.tool_name,
-      tool_use_id: data.tool_use_id,
-      message: toolMessage,
-      data: {
-        project: projectName,
-        tool_input: data.tool_input,
-      },
-    }).catch(() => {
-      // Silent failure
-    });
-    debugLog("PreToolUse", "Argus tool-start posted", { message: toolMessage });
+    // Check if this is a Task tool (agent spawn)
+    if (data.tool_name === "Task") {
+      const taskInput = data.tool_input as {
+        subagent_type?: string;
+        description?: string;
+        prompt?: string;
+        run_in_background?: boolean;
+      };
+
+      await postToArgus({
+        source: "momentum",
+        event_type: "agent",
+        hook: "PreToolUse",
+        session_id: data.session_id,
+        tool_use_id: data.tool_use_id,
+        status: "pending",
+        message: `Agent ${taskInput.subagent_type || "unknown"} starting`,
+        data: {
+          project: projectName,
+          subagent_type: taskInput.subagent_type,
+          description: taskInput.description,
+          prompt_preview: taskInput.prompt?.substring(0, 200),
+          is_background: taskInput.run_in_background || false,
+        },
+      }).catch(() => {
+        // Silent failure
+      });
+      debugLog("PreToolUse", "Argus agent-pending posted", {
+        subagent_type: taskInput.subagent_type,
+        tool_use_id: data.tool_use_id,
+      });
+    } else {
+      // Regular tool event
+      await postToArgus({
+        source: "momentum",
+        event_type: "tool",
+        hook: "PreToolUse",
+        session_id: data.session_id,
+        tool_name: data.tool_name,
+        tool_use_id: data.tool_use_id,
+        message: toolMessage,
+        data: {
+          project: projectName,
+          tool_input: data.tool_input,
+        },
+      }).catch(() => {
+        // Silent failure
+      });
+      debugLog("PreToolUse", "Argus tool-start posted", {
+        message: toolMessage,
+      });
+    }
 
     debugLog("PreToolUse", "Hook completed successfully");
     process.exit(0);

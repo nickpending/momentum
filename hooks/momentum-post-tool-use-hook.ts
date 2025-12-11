@@ -62,6 +62,28 @@ interface PostToolUseInput extends HookInput {
   tool_use_id?: string;
 }
 
+/**
+ * Task tool input structure
+ */
+interface TaskToolInput {
+  prompt?: string;
+  subagent_type?: string;
+  description?: string;
+  run_in_background?: boolean;
+  resume?: string;
+}
+
+/**
+ * Task tool response structure (toolUseResult)
+ */
+interface TaskToolResponse {
+  isAsync?: boolean;
+  agentId?: string;
+  description?: string;
+  prompt?: string;
+  status?: string;
+}
+
 async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
   return new Promise((resolve) => {
     let data = "";
@@ -149,24 +171,62 @@ async function main(): Promise<void> {
     // Build message from tool input fields
     const toolMessage = formatToolMessage(data.tool_name, data.tool_input);
 
-    await postToArgus({
-      source: "momentum",
-      event_type: "tool",
-      hook: "PostToolUse",
-      session_id: data.session_id,
-      tool_name: data.tool_name,
-      tool_use_id: data.tool_use_id,
-      status: success ? "success" : "failure",
-      message: toolMessage,
-      data: {
-        project: projectName,
-        tool_input: data.tool_input,
-        result_size: resultSize,
-      },
-    }).catch(() => {
-      // Silent failure
-    });
-    debugLog("PostToolUse", "Argus event posted", { message: toolMessage });
+    // Check if this is a Task tool call (agent completion)
+    if (data.tool_name === "Task") {
+      const toolInput = data.tool_input as TaskToolInput;
+      const toolResponse = data.tool_response as TaskToolResponse;
+      const agentId = toolResponse?.agentId;
+
+      if (agentId) {
+        // Emit agent completion event
+        // PostToolUse fires AFTER SubagentStop, so this is the completion
+        await postToArgus({
+          source: "momentum",
+          event_type: "agent",
+          hook: "PostToolUse",
+          session_id: data.session_id,
+          agent_id: agentId,
+          tool_use_id: data.tool_use_id,
+          status: success ? "success" : "failure",
+          message: `Agent ${toolInput.subagent_type || "unknown"} completed`,
+          data: {
+            project: projectName,
+            subagent_type: toolInput.subagent_type,
+            description: toolInput.description,
+            is_resume: !!toolInput.resume,
+            parent_agent_id: null,
+            is_background: toolInput.run_in_background || false,
+          },
+        }).catch(() => {
+          // Silent failure
+        });
+        debugLog("PostToolUse", "Agent completion event posted", {
+          agent_id: agentId,
+          tool_use_id: data.tool_use_id,
+          subagent_type: toolInput.subagent_type,
+        });
+      }
+    } else {
+      // Regular tool event
+      await postToArgus({
+        source: "momentum",
+        event_type: "tool",
+        hook: "PostToolUse",
+        session_id: data.session_id,
+        tool_name: data.tool_name,
+        tool_use_id: data.tool_use_id,
+        status: success ? "success" : "failure",
+        message: toolMessage,
+        data: {
+          project: projectName,
+          tool_input: data.tool_input,
+          result_size: resultSize,
+        },
+      }).catch(() => {
+        // Silent failure
+      });
+      debugLog("PostToolUse", "Argus event posted", { message: toolMessage });
+    }
 
     debugLog("PostToolUse", "Hook completed successfully");
     process.exit(0);

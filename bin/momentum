@@ -20,9 +20,52 @@ fi
 
 source "$WORKFLOW_CONFIG"
 
+# Parse flags
+WORKSPACE_TAG=""
+PROJECT_NAME=""
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -n|--name)
+      WORKSPACE_TAG="$2"
+      shift 2
+      ;;
+    -p|--project)
+      PROJECT_NAME="$2"
+      shift 2
+      ;;
+    -h|--help)
+      echo "Usage: momentum [-p <project>] [-n <workspace-tag>]"
+      echo ""
+      echo "Options:"
+      echo "  -p, --project <name>   Open project mode for <name>"
+      echo "  -n, --name <tag>       Start workspace with named tag"
+      echo ""
+      echo "Examples:"
+      echo "  momentum               # Workspace mode (auto-tagged)"
+      echo "  momentum -n wireframes # Workspace mode with tag"
+      echo "  momentum argus         # Project mode (legacy)"
+      echo "  momentum -p argus      # Project mode (explicit)"
+      exit 0
+      ;;
+    *)
+      # Legacy: positional arg is project name
+      if [[ -z "$PROJECT_NAME" ]]; then
+        PROJECT_NAME="$1"
+      fi
+      shift
+      ;;
+  esac
+done
+
 # Handle workspace mode (no project specified)
-if [[ -z "$1" ]]; then
+if [[ -z "$PROJECT_NAME" ]]; then
   PROJECT_DEV="$MOMENTUM_WORKSPACE/workspace"
+
+  # Export workspace tag for hook to use
+  if [[ -n "$WORKSPACE_TAG" ]]; then
+    export MOMENTUM_WORKSPACE_TAG="$WORKSPACE_TAG"
+  fi
 
   # Create workspace structure
   mkdir -p "$PROJECT_DEV/.claude/agents"
@@ -190,7 +233,7 @@ EOF
 fi
 
 # Project mode - handle named projects
-PROJECT_NAME=$1
+# PROJECT_NAME already set from flag parsing
 PROJECT_DEV="$WORKFLOW_DEV/$PROJECT_NAME"
 PROJECT_PLANNING="$WORKFLOW_PROJECTS/$PROJECT_NAME"
 

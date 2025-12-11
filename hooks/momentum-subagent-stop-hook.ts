@@ -18,6 +18,87 @@ interface SubagentStopInput extends HookInput {
   subagent_type?: string;
   subagent_result?: unknown;
   duration_ms?: number;
+  agent_id?: string;
+  agent_transcript_path?: string;
+}
+
+/**
+ * Find subagent_type by reading transcript and matching agent_id
+ * SubagentStop fires ~50ms before toolUseResult is written, so we wait and retry
+ */
+async function findSubagentTypeFromTranscript(
+  transcriptPath: string,
+  agentId: string,
+): Promise<string | null> {
+  const maxAttempts = 5;
+  const delayMs = 150;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    if (attempt > 0) {
+      await Bun.sleep(delayMs);
+    }
+
+    try {
+      const file = Bun.file(transcriptPath);
+      const content = await file.text();
+      const lines = content.trim().split("\n");
+
+      // Build map of tool_use_id -> subagent_type from Task calls
+      const taskCalls = new Map<string, string>();
+      let foundAgentId = false;
+
+      for (const line of lines) {
+        try {
+          const entry = JSON.parse(line);
+
+          // Collect Task tool_use calls
+          if (entry.message?.role === "assistant" && entry.message?.content) {
+            for (const block of entry.message.content) {
+              if (block.type === "tool_use" && block.name === "Task") {
+                const subagentType = block.input?.subagent_type;
+                if (subagentType && block.id) {
+                  taskCalls.set(block.id, subagentType);
+                }
+              }
+            }
+          }
+
+          // Look for toolUseResult with matching agentId
+          if (entry.toolUseResult?.agentId === agentId) {
+            foundAgentId = true;
+            // Found the result - get tool_use_id from the tool_result message
+            const toolUseId = entry.message?.content?.[0]?.tool_use_id;
+            debugLog("SubagentStop", "Found agentId in transcript", {
+              attempt,
+              agentId,
+              toolUseId,
+              taskCallsSize: taskCalls.size,
+              hasToolUseId: taskCalls.has(toolUseId || ""),
+            });
+            if (toolUseId && taskCalls.has(toolUseId)) {
+              return taskCalls.get(toolUseId)!;
+            }
+          }
+        } catch {
+          continue;
+        }
+      }
+
+      debugLog("SubagentStop", "Transcript scan complete", {
+        attempt,
+        agentId,
+        foundAgentId,
+        taskCallsCount: taskCalls.size,
+      });
+    } catch (error) {
+      debugLog("SubagentStop", "Failed to read transcript", {
+        attempt,
+        error: String(error),
+      });
+    }
+  }
+
+  return null;
 }
 
 async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
@@ -83,22 +164,34 @@ async function main(): Promise<void> {
     const input = await readStdinWithTimeout();
     const data: SubagentStopInput = JSON.parse(input);
 
+    // Log ALL raw fields to discover what Claude Code sends
+    debugLog("SubagentStop", "RAW INPUT", data);
+
     debugLog("SubagentStop", "Input received", {
       session_id: data.session_id,
       subagent_type: data.subagent_type,
       duration_ms: data.duration_ms,
+      agent_id: data.agent_id,
     });
 
     const cwd = data.cwd || process.cwd();
     const projectName = cwd.split("/").pop() || "unknown";
 
-    // Detect Claude Code internal agents: no type provided and instant completion
-    const isSystemAgent =
-      !data.subagent_type &&
-      (data.duration_ms === 0 || data.duration_ms === undefined);
-    const agentType = isSystemAgent
-      ? "system"
-      : data.subagent_type || "unknown";
+    // Try to get subagent_type from transcript since Claude Code doesn't send it directly
+    let agentType = data.subagent_type || null;
+    if (!agentType && data.transcript_path && data.agent_id) {
+      agentType = await findSubagentTypeFromTranscript(
+        data.transcript_path,
+        data.agent_id,
+      );
+      debugLog("SubagentStop", "Resolved subagent_type from transcript", {
+        agent_id: data.agent_id,
+        subagent_type: agentType,
+      });
+    }
+
+    // Fallback to "unknown" if still not found
+    agentType = agentType || "unknown";
 
     // Determine status from result
     let status: "success" | "error" = "success";
@@ -181,23 +274,17 @@ async function main(): Promise<void> {
       }
     }
 
-    // Layer 3: Argus real-time event (must await before exit)
-    await postToArgus({
-      source: "momentum",
-      event_type: "agent",
-      hook: "SubagentStop",
-      session_id: data.session_id,
-      status: status,
-      message: `Agent ${agentType} completed`,
-      data: {
-        project: projectName,
-        agent_type: agentType,
-        duration_ms: data.duration_ms || 0,
+    // Layer 3: Argus - SKIP agent events from SubagentStop
+    // Reason: SubagentStop fires BEFORE toolUseResult is written to transcript,
+    // blocking us from correlating agent_id with subagent_type.
+    // Agent lifecycle events are handled by PreToolUse (pending) and PostToolUse (success).
+    debugLog(
+      "SubagentStop",
+      "Skipping Argus agent event (handled by PostToolUse)",
+      {
+        agent_id: data.agent_id,
       },
-    }).catch(() => {
-      // Silent failure - Argus is best-effort
-    });
-    debugLog("SubagentStop", "Argus event posted");
+    );
 
     debugLog("SubagentStop", "Hook completed successfully");
     process.exit(0);

@@ -91,6 +91,19 @@ async function main(): Promise<void> {
       projectName === "workspace" ||
       cwd.includes(join(config.momentum.workspace, "workspace"));
 
+    // Handle workspace tagging for Argus
+    // Format: workspace:{tag} or workspace:{session_prefix}
+    let workspaceTag = "";
+    if (isWorkspace) {
+      const envTag = process.env.MOMENTUM_WORKSPACE_TAG;
+      if (envTag) {
+        workspaceTag = envTag;
+      } else {
+        // Auto-generate from first 4 chars of session_id
+        workspaceTag = data.session_id?.substring(0, 4) || "anon";
+      }
+    }
+
     const hasIdea = existsSync(ideaPath);
     const hasIteration = existsSync(iterationPath);
     const hasTasks = existsSync(tasksPath);
@@ -236,10 +249,15 @@ async function main(): Promise<void> {
     const iterationParsed = parseIterationInfo(tasksPath);
 
     // Build session context for caching
+    // For workspace mode, use workspace:{tag} format
+    const effectiveProject = isWorkspace
+      ? `workspace:${workspaceTag}`
+      : projectName;
+
     const sessionContext: SessionContext = {
       session_id: data.session_id,
       mode: isWorkspace ? "workspace" : "project",
-      project: projectName,
+      project: effectiveProject,
       user: userName,
       git_branch: gitBranch,
       iteration_number: iterationParsed.number,
@@ -277,9 +295,9 @@ async function main(): Promise<void> {
       event_type: "session",
       hook: "SessionStart",
       session_id: data.session_id,
-      message: `Session started: ${projectName} (${projectState})`,
+      message: `Session started: ${effectiveProject} (${projectState})`,
       data: {
-        project: projectName,
+        project: effectiveProject,
         mode: sessionContext.mode,
         project_state: projectState,
         git_branch: gitBranch,
@@ -290,13 +308,15 @@ async function main(): Promise<void> {
     }).catch(() => {
       // Silent failure - Argus is best-effort
     });
-    debugLog("SessionStart", "Argus event posted");
+    debugLog("SessionStart", "Argus event posted", {
+      project: effectiveProject,
+    });
 
     // ==========================================
 
     console.log(JSON.stringify(output));
     console.error(
-      `🚀 Momentum SessionStart initialized (Project: ${projectName})`,
+      `🚀 Momentum SessionStart initialized (Project: ${effectiveProject})`,
     );
 
     debugLog("SessionStart", "Hook completed successfully");
