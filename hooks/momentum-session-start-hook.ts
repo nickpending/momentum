@@ -181,6 +181,7 @@ async function main(): Promise<void> {
     }
 
     // Build metadata for PROJECT.md
+    // Base path variables injected ONCE at session start (model uses ${VAR} in bash)
     let additionalContext = `<!-- HOOK: Momentum SessionStart -->
 <!-- CURRENT_DATE: ${currentDate} -->
 <!-- CURRENT_DATETIME: ${currentDateTime} -->
@@ -188,7 +189,12 @@ async function main(): Promise<void> {
 <!-- MODE: project -->
 <!-- PROJECT: ${projectName} -->
 <!-- PROJECT_STATE: ${projectState} -->${iterationInfo}
-<!-- NAME: ${userName} -->`;
+<!-- NAME: ${userName} -->
+
+<!-- BASE PATH VARIABLES (use \${VAR} syntax in bash commands) -->
+<!-- PROJECT_ROOT: ${PROJECT_ROOT} -->
+<!-- PROJECT_NAME: ${PROJECT_NAME} -->
+<!-- WORKFLOW_PROJECTS: ${WORKFLOW_PROJECTS} -->`;
 
     // Load and append voice instructions for project mode
     try {

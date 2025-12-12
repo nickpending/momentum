@@ -5,20 +5,14 @@
  */
 
 import { readFileSync, existsSync } from "fs";
-import { join, dirname } from "path";
-import { fileURLToPath } from "url";
+import { join } from "path";
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
 import { loadConfig } from "./shared/config-loader.ts";
 import {
   PROJECT_ROOT,
   PROJECT_NAME,
   WORKFLOW_PROJECTS,
-  WORKFLOW_DIR,
-  ARTIFACTS_DIR,
-  STATE_DIR,
   CONTEXTS_DIR,
-  PROJECT_OBSIDIAN_DIR,
-  EXPLORATIONS_DIR,
 } from "./shared/momentum-paths.ts";
 import {
   loadVoiceStyle,
@@ -156,31 +150,11 @@ async function main() {
     debugLog("UserPromptSubmit", "Full routing injection");
     console.log(routingContent);
 
-    // Use centralized paths from momentum-paths.ts
-    const projectRoot = PROJECT_ROOT;
-    const workflowDir = WORKFLOW_DIR;
-    const artifactsDir = ARTIFACTS_DIR;
-    const stateDir = STATE_DIR;
-    const projectObsidianDir = PROJECT_OBSIDIAN_DIR;
-    const explorationsDir = EXPLORATIONS_DIR;
-
-    // Lore paths from config if available
-    const loreConfig = loreAvailable ? config.lore.config : null;
-    const loreData = loreAvailable ? config.lore.data : null;
-    const loreCache = loreAvailable ? config.lore.cache : null;
-
-    // XDG state directory for runtime state (saves log, etc)
-    const momentumStateDir = join(
-      process.env.HOME || "",
-      ".local",
-      "state",
-      "momentum",
-    );
-
     // Get user name from config
     const userName = config.personalization.name;
 
-    // Always output metadata and paths for context awareness
+    // Output metadata only - path variables injected once at SessionStart
+    // Model uses ${VAR} syntax in bash to access PROJECT_ROOT, PROJECT_NAME, WORKFLOW_PROJECTS
     console.log("\n<!-- HOOK: Momentum routing loaded -->");
     console.log(`<!-- CURRENT_DATE: ${currentDate} -->`);
     console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
@@ -188,29 +162,7 @@ async function main() {
     console.log(`<!-- MODE: project -->`);
     console.log(`<!-- PROJECT: ${projectName} -->`);
     console.log(`<!-- NAME: ${userName} -->`);
-    console.log("");
-    console.log("<!-- PATH VARIABLES -->");
-    console.log(`<!-- PROJECT_ROOT: ${projectRoot} -->`);
-    console.log(`<!-- WORKFLOW_DIR: ${workflowDir} -->`);
-    console.log(`<!-- ARTIFACTS_DIR: ${artifactsDir} -->`);
-    console.log(`<!-- STATE_DIR: ${stateDir} -->`);
-    console.log(`<!-- CONTEXTS_PATH: ${contextsPath} -->`);
-    console.log(`<!-- MOMENTUM_CONFIG: ${momentumConfig} -->`);
-    console.log(`<!-- MOMENTUM_HOME_DIR: ${momentumHomeDir} -->`);
-    console.log(`<!-- MOMENTUM_STATE_DIR: ${momentumStateDir} -->`);
-    console.log(`<!-- WORKFLOW_PROJECTS: ${workflowProjects} -->`);
-    console.log(`<!-- WORKFLOW_DEV: ${workflowDev} -->`);
-    console.log(`<!-- PROJECT_OBSIDIAN_DIR: ${projectObsidianDir} -->`);
-    console.log(`<!-- EXPLORATIONS_DIR: ${explorationsDir} -->`);
-    if (loreAvailable) {
-      console.log(`<!-- LORE_CONFIG: ${loreConfig} -->`);
-      console.log(`<!-- LORE_DATA: ${loreData} -->`);
-      console.log(`<!-- LORE_CACHE: ${loreCache} -->`);
-    }
-    console.log("");
-    console.log("<!-- CAPABILITIES -->");
     console.log(`<!-- LORE_AVAILABLE: ${loreAvailable} -->`);
-    console.log(`<!-- SETUPD_AVAILABLE: true -->`);
 
     // Load and inject combined output format (CAPTURE + VOICE) at the end
     try {
