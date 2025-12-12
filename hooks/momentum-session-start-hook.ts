@@ -9,6 +9,13 @@ import { join } from "path";
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
 import { loadConfig } from "./shared/config-loader.ts";
 import {
+  PROJECT_ROOT,
+  PROJECT_NAME,
+  WORKFLOW_PROJECTS,
+  ARTIFACTS_DIR,
+  PROJECT_OBSIDIAN_DIR,
+} from "./shared/momentum-paths.ts";
+import {
   loadVoiceStyle,
   loadVerbosityLevel,
   buildVoiceInstructions,
@@ -55,14 +62,15 @@ async function main(): Promise<void> {
       .toLocaleString("sv-SE", { timeZone: TZ })
       .replace(" ", "T"); // YYYY-MM-DDTHH:MM:SS
     const userName = config.personalization.name;
-    const cwd = process.cwd();
-    const projectName = cwd.split("/").pop() || "unknown";
+    // Use centralized path resolution from momentum-paths.ts
+    const cwd = PROJECT_ROOT;
+    const projectName = PROJECT_NAME;
 
-    // Detect project state
-    const projectObsidianDir = join(config.paths.projects, projectName);
+    // Detect project state using centralized paths
+    const projectObsidianDir = PROJECT_OBSIDIAN_DIR;
     const ideaPath = join(projectObsidianDir, "IDEA.md");
-    const iterationPath = join(cwd, ".workflow", "artifacts", "ITERATION.md");
-    const tasksPath = join(cwd, ".workflow", "artifacts", "TASKS.md");
+    const iterationPath = join(ARTIFACTS_DIR, "ITERATION.md");
+    const tasksPath = join(ARTIFACTS_DIR, "TASKS.md");
 
     // Check if this is workspace mode (no project)
     const isWorkspace =

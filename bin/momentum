@@ -227,6 +227,11 @@ EOF
 }
 EOF
 
+  # Export base variables for hooks (required by momentum-paths.ts)
+  export PROJECT_ROOT="$PROJECT_DEV"
+  export PROJECT_NAME="workspace"
+  export WORKFLOW_PROJECTS="$WORKFLOW_PROJECTS"
+
   # Launch in workspace
   cd "$PROJECT_DEV"
   exec claude --append-system-prompt "$(cat $MOMENTUM_INSTALL/agents/PROJECT.md)" "ready"
@@ -252,6 +257,11 @@ fi
 
 # Always check version and update (silent unless version changed)
 setupd --switch "$PROJECT_NAME" 2>&1 | grep -E "(Updating|updated)" || true
+
+# Export base variables for hooks (required by momentum-paths.ts)
+export PROJECT_ROOT="$PROJECT_DEV"
+export PROJECT_NAME="$PROJECT_NAME"
+export WORKFLOW_PROJECTS="$WORKFLOW_PROJECTS"
 
 # Launch momentum in project directory
 cd "$PROJECT_DEV"

@@ -10,6 +10,17 @@ import { fileURLToPath } from "url";
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
 import { loadConfig } from "./shared/config-loader.ts";
 import {
+  PROJECT_ROOT,
+  PROJECT_NAME,
+  WORKFLOW_PROJECTS,
+  WORKFLOW_DIR,
+  ARTIFACTS_DIR,
+  STATE_DIR,
+  CONTEXTS_DIR,
+  PROJECT_OBSIDIAN_DIR,
+  EXPLORATIONS_DIR,
+} from "./shared/momentum-paths.ts";
+import {
   loadVoiceStyle,
   loadVerbosityLevel,
   buildVoiceInstructions,
@@ -43,19 +54,19 @@ async function main() {
     debugLog("UserPromptSubmit", "Input received", {
       session_id: data.session_id,
       prompt: data.prompt.substring(0, 100),
-      cwd: process.cwd(),
+      cwd: PROJECT_ROOT,
     });
 
-    // Get project name from current directory
-    const cwd = process.cwd();
-    const projectName = cwd.split("/").pop() || "unknown";
+    // Use centralized path resolution from momentum-paths.ts
+    const projectName = PROJECT_NAME;
+    const cwd = PROJECT_ROOT;
 
     // Load configuration
     const config = loadConfig();
     const momentumConfig = config.momentum.install;
 
     // Always use PROJECT_ROUTING.md (project mode only now)
-    let contextsPath = join(cwd, ".workflow", "contexts");
+    let contextsPath = CONTEXTS_DIR;
     let routingPath = join(contextsPath, "PROJECT_ROUTING.md");
 
     // If no project contexts, use global momentum contexts
@@ -81,9 +92,9 @@ async function main() {
     debugLog("UserPromptSubmit", "Reading routing file", { routingPath });
     let routingContent = readFileSync(routingPath, "utf-8");
 
-    // Get workflow paths from config
-    const workflowProjects = config.paths.projects;
-    const workflowDev = config.paths.dev;
+    // Get workflow paths (from env vars via momentum-paths.ts, non-path settings from config)
+    const workflowProjects = WORKFLOW_PROJECTS;
+    const workflowDev = config.paths.dev; // Injected for context, placeholder unused
     const momentumHomeDir = config.momentum.workspace;
 
     // Check for Lore availability first (needed for placeholder replacement)
@@ -145,13 +156,13 @@ async function main() {
     debugLog("UserPromptSubmit", "Full routing injection");
     console.log(routingContent);
 
-    // Calculate project-specific paths
-    const projectRoot = cwd;
-    const workflowDir = join(projectRoot, ".workflow");
-    const artifactsDir = join(workflowDir, "artifacts");
-    const stateDir = join(workflowDir, "state");
-    const projectObsidianDir = join(workflowProjects, projectName);
-    const explorationsDir = join(projectObsidianDir, "explorations");
+    // Use centralized paths from momentum-paths.ts
+    const projectRoot = PROJECT_ROOT;
+    const workflowDir = WORKFLOW_DIR;
+    const artifactsDir = ARTIFACTS_DIR;
+    const stateDir = STATE_DIR;
+    const projectObsidianDir = PROJECT_OBSIDIAN_DIR;
+    const explorationsDir = EXPLORATIONS_DIR;
 
     // Lore paths from config if available
     const loreConfig = loreAvailable ? config.lore.config : null;
