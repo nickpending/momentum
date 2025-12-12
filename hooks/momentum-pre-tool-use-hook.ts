@@ -12,74 +12,21 @@ import {
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
 import { readSessionCache } from "./shared/session-cache.ts";
-import { findAgentForToolUse } from "./shared/agent-lookup.ts";
-
-/**
- * Format tool message from tool name and input fields
- */
-function formatToolMessage(
-  name: string,
-  input: Record<string, unknown>,
-): string {
-  const command = input.command as string;
-  const filePath = (input.file_path || input.notebook_path) as string;
-  const url = input.url as string;
-  const query = input.query as string;
-  const pattern = input.pattern as string;
-  const path = input.path as string;
-  const element = input.element as string;
-  const text = input.text as string;
-  const key = input.key as string;
-  const code = input.code as string;
-  const description = input.description as string;
-
-  if (command) return `${name}: ${command}`;
-  if (url) return `${name} ${url}`;
-  if (query) return `${name} "${query}"`;
-  if (element && text) return `${name} "${text}" in ${element}`;
-  if (element) return `${name} ${element}`;
-  if (key) return `${name} ${key}`;
-  if (pattern && path) return `${name} "${pattern}" in ${path}`;
-  if (pattern) return `${name} "${pattern}"`;
-  if (filePath) return `${name} ${filePath}`;
-  if (code) return `${name}: ${code.substring(0, 80)}`;
-  if (description) return `${name}: ${description}`;
-
-  const firstString = Object.values(input).find(
-    (v) => typeof v === "string",
-  ) as string;
-  if (firstString) return `${name}: ${firstString.substring(0, 80)}`;
-
-  return name;
-}
+import {
+  findAgentForToolUse,
+  addPendingAgent,
+  getActivatedAgent,
+  matchPendingAgent,
+  registerActivatedAgent,
+  readAgentPrompt,
+} from "./shared/agent-lookup.ts";
+import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
+import { formatToolMessage } from "./shared/tool-formatter.ts";
 
 interface PreToolUseInput extends HookInput {
   tool_name: string;
   tool_input: Record<string, unknown>;
   tool_use_id?: string;
-}
-
-async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    const timer = setTimeout(() => {
-      resolve("{}");
-    }, timeout);
-
-    process.stdin.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    process.stdin.on("end", () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-
-    process.stdin.on("error", () => {
-      clearTimeout(timer);
-      resolve("{}");
-    });
-  });
 }
 
 async function main(): Promise<void> {
@@ -150,6 +97,22 @@ async function main(): Promise<void> {
         run_in_background?: boolean;
       };
 
+      // Extract instance_id from description if present: [AGENT: code-reviewer-1]
+      const instanceMatch = taskInput.description?.match(
+        /\[AGENT:\s*([^\]]+)\]/,
+      );
+      const instanceId = instanceMatch?.[1];
+
+      // Cache pending agent for prompt-based correlation when agent_id discovered
+      if (data.tool_use_id && taskInput.prompt) {
+        addPendingAgent(data.session_id, {
+          tool_use_id: data.tool_use_id,
+          prompt: taskInput.prompt,
+          subagent_type: taskInput.subagent_type || "unknown",
+          instance_id: instanceId,
+        });
+      }
+
       await postToArgus({
         source: "momentum",
         event_type: "agent",
@@ -164,6 +127,7 @@ async function main(): Promise<void> {
           description: taskInput.description,
           prompt_preview: taskInput.prompt?.substring(0, 200),
           is_background: taskInput.run_in_background || false,
+          instance_id: instanceId,
         },
       }).catch(() => {
         // Silent failure
@@ -171,10 +135,78 @@ async function main(): Promise<void> {
       debugLog("PreToolUse", "Argus agent-pending posted", {
         subagent_type: taskInput.subagent_type,
         tool_use_id: data.tool_use_id,
+        instance_id: instanceId,
       });
     } else {
-      // Regular tool event - include agent_id if this is a subagent tool
+      // Regular tool event
       const isBackground = data.tool_input.run_in_background === true;
+      let parentToolUseId: string | undefined;
+      let instanceId: string | undefined;
+      let subagentType: string | undefined;
+
+      // If this tool belongs to an agent, handle correlation
+      if (agentId) {
+        // Check if agent is already activated (we have parent correlation)
+        const activated = getActivatedAgent(data.session_id, agentId);
+
+        if (activated) {
+          // Already activated - use cached parent info
+          parentToolUseId = activated.parent_tool_use_id;
+          instanceId = activated.instance_id;
+          subagentType = activated.subagent_type;
+          debugLog("PreToolUse", "Using cached activation", {
+            agent_id: agentId,
+            parent_tool_use_id: parentToolUseId,
+          });
+        } else {
+          // First tool we've seen from this agent - try to activate via prompt matching
+          const agentPrompt = readAgentPrompt(
+            data.transcript_path || "",
+            agentId,
+          );
+
+          if (agentPrompt) {
+            const matched = matchPendingAgent(data.session_id, agentPrompt);
+            if (matched) {
+              // Successfully correlated! Register activation
+              parentToolUseId = matched.tool_use_id;
+              instanceId = matched.instance_id;
+              subagentType = matched.subagent_type;
+
+              registerActivatedAgent(data.session_id, agentId, {
+                parent_tool_use_id: matched.tool_use_id,
+                subagent_type: matched.subagent_type,
+                instance_id: matched.instance_id,
+              });
+
+              // Emit activation event to Argus
+              await postToArgus({
+                source: "momentum",
+                event_type: "agent",
+                hook: "SubagentActivated",
+                session_id: data.session_id,
+                tool_use_id: matched.tool_use_id,
+                agent_id: agentId,
+                status: "activated",
+                message: `Agent ${matched.subagent_type} activated`,
+                data: {
+                  project: projectName,
+                  subagent_type: matched.subagent_type,
+                  instance_id: matched.instance_id,
+                },
+              }).catch(() => {});
+              debugLog("PreToolUse", "Agent activation event emitted", {
+                agent_id: agentId,
+                parent_tool_use_id: parentToolUseId,
+                subagent_type: subagentType,
+                instance_id: instanceId,
+              });
+            }
+          }
+        }
+      }
+
+      // Post tool event with parent correlation if available
       await postToArgus({
         source: "momentum",
         event_type: "tool",
@@ -183,11 +215,14 @@ async function main(): Promise<void> {
         tool_name: data.tool_name,
         tool_use_id: data.tool_use_id,
         agent_id: agentId || undefined,
+        parent_tool_use_id: parentToolUseId,
         is_background: isBackground,
         message: toolMessage,
         data: {
           project: projectName,
           tool_input: data.tool_input,
+          subagent_type: subagentType,
+          instance_id: instanceId,
         },
       }).catch(() => {
         // Silent failure
@@ -195,6 +230,7 @@ async function main(): Promise<void> {
       debugLog("PreToolUse", "Argus tool-start posted", {
         message: toolMessage,
         agent_id: agentId,
+        parent_tool_use_id: parentToolUseId,
       });
     }
 

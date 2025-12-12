@@ -22,6 +22,7 @@ import {
 import { deleteAgentCache } from "./shared/agent-lookup.ts";
 import { parseTranscript } from "./shared/transcript-parser.ts";
 import { loadConfig } from "./shared/config-loader.ts";
+import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 
 interface SessionEndInput extends HookInput {
   reason?: string; // user_exit, timeout, error, etc.
@@ -37,29 +38,6 @@ interface SessionStats {
   tools_used: string[];
   files_changed: string[];
   commands_executed: string[];
-}
-
-async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    const timer = setTimeout(() => {
-      resolve("{}");
-    }, timeout);
-
-    process.stdin.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    process.stdin.on("end", () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-
-    process.stdin.on("error", () => {
-      clearTimeout(timer);
-      resolve("{}");
-    });
-  });
 }
 
 /**

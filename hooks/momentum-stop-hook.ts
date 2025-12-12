@@ -21,6 +21,7 @@ import {
 import { buildResponseContext } from "./shared/summary-context.ts";
 import { captureKnowledge, type KnowledgeCaptureType } from "lore-capture";
 import { summarize, loadConfig as loadLLMConfig } from "llm-summarize";
+import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 
 interface StopHookInput {
   session_id: string;
@@ -317,32 +318,6 @@ async function speakSentences(
       debugLog("StopHook", "lspeak failed", { error: String(error), sentence });
     }
   }
-}
-
-/**
- * Read JSON from stdin with timeout
- */
-async function readStdinWithTimeout(timeout: number = 5000): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    const timer = setTimeout(() => {
-      resolve("{}");
-    }, timeout);
-
-    process.stdin.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    process.stdin.on("end", () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-
-    process.stdin.on("error", () => {
-      clearTimeout(timer);
-      resolve("{}");
-    });
-  });
 }
 
 async function main() {

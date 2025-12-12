@@ -15,49 +15,11 @@ import { readSessionCache } from "./shared/session-cache.ts";
 import {
   findAgentForToolUse,
   removeCachedMapping,
+  getActivatedAgent,
+  removePendingAgent,
 } from "./shared/agent-lookup.ts";
-
-/**
- * Format tool message from tool name and input fields
- * Handles Claude Code tools, known MCPs (Playwright), and fallback for unknown
- */
-function formatToolMessage(
-  name: string,
-  input: Record<string, unknown>,
-): string {
-  // Known fields in priority order
-  const command = input.command as string;
-  const filePath = (input.file_path || input.notebook_path) as string;
-  const url = input.url as string;
-  const query = input.query as string;
-  const pattern = input.pattern as string;
-  const path = input.path as string;
-  const element = input.element as string;
-  const text = input.text as string;
-  const key = input.key as string;
-  const code = input.code as string;
-  const description = input.description as string;
-
-  if (command) return `${name}: ${command}`;
-  if (url) return `${name} ${url}`;
-  if (query) return `${name} "${query}"`;
-  if (element && text) return `${name} "${text}" in ${element}`;
-  if (element) return `${name} ${element}`;
-  if (key) return `${name} ${key}`;
-  if (pattern && path) return `${name} "${pattern}" in ${path}`;
-  if (pattern) return `${name} "${pattern}"`;
-  if (filePath) return `${name} ${filePath}`;
-  if (code) return `${name}: ${code.substring(0, 80)}`;
-  if (description) return `${name}: ${description}`;
-
-  // Fallback: first string value for unknown MCPs
-  const firstString = Object.values(input).find(
-    (v) => typeof v === "string",
-  ) as string;
-  if (firstString) return `${name}: ${firstString.substring(0, 80)}`;
-
-  return name;
-}
+import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
+import { formatToolMessage } from "./shared/tool-formatter.ts";
 
 interface PostToolUseInput extends HookInput {
   tool_name: string;
@@ -86,29 +48,6 @@ interface TaskToolResponse {
   description?: string;
   prompt?: string;
   status?: string;
-}
-
-async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    const timer = setTimeout(() => {
-      resolve("{}");
-    }, timeout);
-
-    process.stdin.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    process.stdin.on("end", () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-
-    process.stdin.on("error", () => {
-      clearTimeout(timer);
-      resolve("{}");
-    });
-  });
 }
 
 async function main(): Promise<void> {
@@ -202,6 +141,16 @@ async function main(): Promise<void> {
       const toolResponse = data.tool_response as TaskToolResponse;
       const agentId = toolResponse?.agentId;
 
+      // Clean up pending agent entry (in case activation never happened)
+      if (data.tool_use_id) {
+        removePendingAgent(data.session_id, data.tool_use_id);
+      }
+
+      // Get activation info for correlation
+      const activated = agentId
+        ? getActivatedAgent(data.session_id, agentId)
+        : null;
+
       if (agentId) {
         // Emit agent completion event
         // PostToolUse fires AFTER SubagentStop, so this is the completion
@@ -216,7 +165,8 @@ async function main(): Promise<void> {
           message: `Agent ${toolInput.subagent_type || "unknown"} completed`,
           data: {
             project: projectName,
-            subagent_type: toolInput.subagent_type,
+            subagent_type: activated?.subagent_type || toolInput.subagent_type,
+            instance_id: activated?.instance_id,
             description: toolInput.description,
             is_resume: !!toolInput.resume,
             parent_agent_id: null,
@@ -229,11 +179,18 @@ async function main(): Promise<void> {
           agent_id: agentId,
           tool_use_id: data.tool_use_id,
           subagent_type: toolInput.subagent_type,
+          instance_id: activated?.instance_id,
         });
       }
     } else {
-      // Regular tool event - include agent_id if this is a subagent tool
+      // Regular tool event - include agent_id and parent correlation if this is a subagent tool
       const isBackground = data.tool_input.run_in_background === true;
+
+      // Get parent correlation if this tool belongs to an agent
+      const activated = subagentOwner
+        ? getActivatedAgent(data.session_id, subagentOwner)
+        : null;
+
       await postToArgus({
         source: "momentum",
         event_type: "tool",
@@ -242,6 +199,7 @@ async function main(): Promise<void> {
         tool_name: data.tool_name,
         tool_use_id: data.tool_use_id,
         agent_id: subagentOwner || undefined,
+        parent_tool_use_id: activated?.parent_tool_use_id,
         is_background: isBackground,
         status: success ? "success" : "failure",
         message: toolMessage,
@@ -249,6 +207,8 @@ async function main(): Promise<void> {
           project: projectName,
           tool_input: data.tool_input,
           result_size: resultSize,
+          subagent_type: activated?.subagent_type,
+          instance_id: activated?.instance_id,
         },
       }).catch(() => {
         // Silent failure
@@ -256,6 +216,7 @@ async function main(): Promise<void> {
       debugLog("PostToolUse", "Argus event posted", {
         message: toolMessage,
         agent_id: subagentOwner,
+        parent_tool_use_id: activated?.parent_tool_use_id,
       });
     }
 

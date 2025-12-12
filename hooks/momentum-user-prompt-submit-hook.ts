@@ -23,6 +23,7 @@ import { postToArgus } from "./shared/argus-client.ts";
 import { buildPromptContext } from "./shared/summary-context.ts";
 import { getLastAssistantMessage } from "./shared/transcript-parser.ts";
 import { summarize, loadConfig as loadLLMConfig } from "llm-summarize";
+import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 
 interface HookInput {
   session_id: string;
@@ -31,35 +32,12 @@ interface HookInput {
   hook_event_name: string;
 }
 
-async function readStdinWithTimeout(timeout: number = 5000): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    const timer = setTimeout(() => {
-      resolve("{}");
-    }, timeout);
-
-    process.stdin.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    process.stdin.on("end", () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-
-    process.stdin.on("error", () => {
-      clearTimeout(timer);
-      resolve("{}");
-    });
-  });
-}
-
 async function main() {
   try {
     debugLogSeparator();
     debugLog("UserPromptSubmit", "Hook triggered");
 
-    const input = await readStdinWithTimeout();
+    const input = await readStdinWithTimeout(5000);
     const data: HookInput = JSON.parse(input);
 
     debugLog("UserPromptSubmit", "Input received", {

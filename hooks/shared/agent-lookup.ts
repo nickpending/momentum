@@ -11,20 +11,50 @@ import {
   readFileSync,
   writeFileSync,
   unlinkSync,
+  mkdirSync,
+  renameSync,
 } from "fs";
 import { join, dirname } from "path";
 import { debugLog } from "./debug-log.ts";
 
-// Cache file stores tool_use_id → agent_id (short hash) mappings
-const CACHE_DIR = "/tmp";
+// Cache stored in XDG state directory (runtime state, not config or data)
+// Falls back to /tmp if HOME not available
+const STATE_DIR = process.env.HOME
+  ? join(process.env.HOME, ".local", "state", "momentum")
+  : "/tmp";
+
+// Ensure state directory exists
+try {
+  if (!existsSync(STATE_DIR)) {
+    mkdirSync(STATE_DIR, { recursive: true });
+  }
+} catch {
+  // Silent fail - will use /tmp fallback
+}
 
 interface AgentCache {
   session_id: string;
   mappings: Record<string, string>; // tool_use_id → short_hash
+  pending: PendingAgent[]; // Agents awaiting activation (Task called, first tool not yet seen)
+  activated: Record<string, ActivatedAgent>; // agent_id → parent info for correlation
+}
+
+interface PendingAgent {
+  tool_use_id: string;
+  prompt: string;
+  subagent_type: string;
+  instance_id?: string; // From [AGENT: code-reviewer-1] if present
+  timestamp: number;
+}
+
+interface ActivatedAgent {
+  parent_tool_use_id: string;
+  subagent_type: string;
+  instance_id?: string;
 }
 
 function getCachePath(sessionId: string): string {
-  return join(CACHE_DIR, `momentum-agent-cache-${sessionId}.json`);
+  return join(STATE_DIR, `agent-cache-${sessionId}.json`);
 }
 
 /**
@@ -44,15 +74,34 @@ function readAgentCache(sessionId: string): AgentCache | null {
 }
 
 /**
- * Write agent cache to disk
+ * Write agent cache to disk atomically (temp file + rename)
+ * Prevents corruption if hook exits mid-write
  */
 function writeAgentCache(cache: AgentCache): void {
   try {
     const path = getCachePath(cache.session_id);
-    writeFileSync(path, JSON.stringify(cache, null, 2));
+    const tempPath = `${path}.tmp.${process.pid}`;
+
+    // Write to temp file first
+    writeFileSync(tempPath, JSON.stringify(cache, null, 2));
+
+    // Atomic rename (POSIX guarantees atomicity for same-filesystem rename)
+    renameSync(tempPath, path);
   } catch (error) {
     debugLog("AgentLookup", "Failed to write cache", { error: String(error) });
   }
+}
+
+/**
+ * Initialize empty cache with all required fields
+ */
+function initCache(sessionId: string): AgentCache {
+  return {
+    session_id: sessionId,
+    mappings: {},
+    pending: [],
+    activated: {},
+  };
 }
 
 /**
@@ -65,10 +114,127 @@ function cacheMapping(
 ): void {
   let cache = readAgentCache(sessionId);
   if (!cache) {
-    cache = { session_id: sessionId, mappings: {} };
+    cache = initCache(sessionId);
   }
   cache.mappings[toolUseId] = agentId;
   writeAgentCache(cache);
+}
+
+/**
+ * Add a pending agent (called from PreToolUse when Task tool is invoked)
+ * The agent is awaiting activation - we have tool_use_id and prompt but no agent_id yet
+ */
+export function addPendingAgent(
+  sessionId: string,
+  agent: Omit<PendingAgent, "timestamp">,
+): void {
+  let cache = readAgentCache(sessionId);
+  if (!cache) {
+    cache = initCache(sessionId);
+  }
+  // Ensure pending array exists (for legacy cache files)
+  if (!cache.pending) cache.pending = [];
+
+  cache.pending.push({
+    ...agent,
+    timestamp: Date.now(),
+  });
+  writeAgentCache(cache);
+  debugLog("AgentLookup", "Added pending agent", {
+    tool_use_id: agent.tool_use_id,
+    subagent_type: agent.subagent_type,
+    instance_id: agent.instance_id,
+    pending_count: cache.pending.length,
+  });
+}
+
+/**
+ * Match a pending agent by prompt text
+ * Called when we discover an agent_id and need to correlate with parent Task
+ * Returns the match and removes it from pending list
+ */
+export function matchPendingAgent(
+  sessionId: string,
+  agentPrompt: string,
+): PendingAgent | null {
+  const cache = readAgentCache(sessionId);
+  if (!cache?.pending?.length) return null;
+
+  // Find matching agent by prompt text
+  const index = cache.pending.findIndex((p) => p.prompt === agentPrompt);
+  if (index === -1) {
+    debugLog("AgentLookup", "No pending agent matched prompt", {
+      prompt_preview: agentPrompt.substring(0, 100),
+      pending_count: cache.pending.length,
+    });
+    return null;
+  }
+
+  // Remove from pending and return
+  const [matched] = cache.pending.splice(index, 1);
+  writeAgentCache(cache);
+  debugLog("AgentLookup", "Matched pending agent", {
+    tool_use_id: matched.tool_use_id,
+    subagent_type: matched.subagent_type,
+    instance_id: matched.instance_id,
+  });
+  return matched;
+}
+
+/**
+ * Register an activated agent (agent_id now known, correlated with parent)
+ * Called after matchPendingAgent succeeds
+ */
+export function registerActivatedAgent(
+  sessionId: string,
+  agentId: string,
+  info: ActivatedAgent,
+): void {
+  let cache = readAgentCache(sessionId);
+  if (!cache) {
+    cache = initCache(sessionId);
+  }
+  // Ensure activated map exists
+  if (!cache.activated) cache.activated = {};
+
+  cache.activated[agentId] = info;
+  writeAgentCache(cache);
+  debugLog("AgentLookup", "Registered activated agent", {
+    agent_id: agentId,
+    parent_tool_use_id: info.parent_tool_use_id,
+    subagent_type: info.subagent_type,
+    instance_id: info.instance_id,
+  });
+}
+
+/**
+ * Get parent info for an activated agent
+ * Called by PreToolUse/PostToolUse to include parent_tool_use_id in events
+ */
+export function getActivatedAgent(
+  sessionId: string,
+  agentId: string,
+): ActivatedAgent | null {
+  const cache = readAgentCache(sessionId);
+  return cache?.activated?.[agentId] || null;
+}
+
+/**
+ * Remove a pending agent by tool_use_id (called on Task PostToolUse)
+ * Cleans up in case agent never activated (error, timeout, etc.)
+ */
+export function removePendingAgent(sessionId: string, toolUseId: string): void {
+  const cache = readAgentCache(sessionId);
+  if (!cache?.pending?.length) return;
+
+  const index = cache.pending.findIndex((p) => p.tool_use_id === toolUseId);
+  if (index !== -1) {
+    cache.pending.splice(index, 1);
+    writeAgentCache(cache);
+    debugLog("AgentLookup", "Removed pending agent", {
+      tool_use_id: toolUseId,
+    });
+  }
 }
 
 /**
@@ -159,6 +325,48 @@ export function findAgentForToolUse(
     return null;
   } catch (error) {
     debugLog("AgentLookup", "Error scanning agent files", {
+      error: String(error),
+    });
+    return null;
+  }
+}
+
+/**
+ * Read agent file first line to extract the prompt (user message content)
+ * Used for prompt matching to correlate agent_id with parent Task
+ */
+export function readAgentPrompt(
+  transcriptPath: string,
+  agentId: string,
+): string | null {
+  try {
+    const transcriptDir = dirname(transcriptPath);
+    const agentFile = join(transcriptDir, `agent-${agentId}.jsonl`);
+
+    if (!existsSync(agentFile)) {
+      debugLog("AgentLookup", "Agent file not found", { agentId, agentFile });
+      return null;
+    }
+
+    // Read first line only - contains user message with prompt
+    const content = readFileSync(agentFile, "utf-8");
+    const firstLine = content.split("\n")[0];
+    if (!firstLine) return null;
+
+    const entry = JSON.parse(firstLine);
+    // The first entry is a user message, content field matches Task input prompt
+    const prompt = entry.message?.content;
+
+    if (prompt) {
+      debugLog("AgentLookup", "Extracted agent prompt", {
+        agentId,
+        prompt_preview: prompt.substring(0, 100),
+      });
+    }
+    return prompt || null;
+  } catch (error) {
+    debugLog("AgentLookup", "Error reading agent prompt", {
+      agentId,
       error: String(error),
     });
     return null;

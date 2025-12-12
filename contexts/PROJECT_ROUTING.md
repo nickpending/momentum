@@ -76,3 +76,33 @@ You're in project mode - focused on shipping working software for a single proje
 1. Check if ARTIFACTS_DIR/TESTING.md exists
 2. If missing: Load `MOMENTUM_CONTEXTS_PATH/TEST_SETUP.md`
 3. If exists: Say "🎯 Task mode activated" and proceed
+
+## Agent Naming Convention
+
+When spawning agents via the Task tool, include an instance identifier in the description field for dashboard correlation:
+
+**Format:** `[AGENT: {subagent_type}-{N}]` where N increments per type in the current request
+
+**Examples:**
+```typescript
+// Single agent
+Task({
+  subagent_type: "code-reviewer",
+  description: "Review auth changes [AGENT: code-reviewer-1]",
+  prompt: "..."
+})
+
+// Parallel agents of same type
+Task({
+  subagent_type: "code-reviewer",
+  description: "Check auth [AGENT: code-reviewer-1]",
+  prompt: "..."
+})
+Task({
+  subagent_type: "code-reviewer",
+  description: "Check API [AGENT: code-reviewer-2]",
+  prompt: "..."
+})
+```
+
+**Why:** Enables Argus dashboard to display "code-reviewer-1" vs "code-reviewer-2" instead of internal hashes. This is optional enrichment - correlation works without it, but improves observability.

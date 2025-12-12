@@ -13,6 +13,7 @@ import {
 import { postToArgus } from "./shared/argus-client.ts";
 import { captureKnowledge } from "lore-capture";
 import { Glob } from "bun";
+import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 
 interface SubagentStopInput extends HookInput {
   subagent_type?: string;
@@ -99,29 +100,6 @@ async function findSubagentTypeFromTranscript(
   }
 
   return null;
-}
-
-async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    const timer = setTimeout(() => {
-      resolve("{}");
-    }, timeout);
-
-    process.stdin.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    process.stdin.on("end", () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-
-    process.stdin.on("error", () => {
-      clearTimeout(timer);
-      resolve("{}");
-    });
-  });
 }
 
 /**

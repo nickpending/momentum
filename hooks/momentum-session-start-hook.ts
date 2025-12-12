@@ -25,32 +25,10 @@ import {
   type HookInput,
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
+import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 
 interface SessionStartInput extends HookInput {
   source?: string; // startup | resume | clear | compact
-}
-
-async function readStdinWithTimeout(timeout: number = 3000): Promise<string> {
-  return new Promise((resolve) => {
-    let data = "";
-    const timer = setTimeout(() => {
-      resolve("{}");
-    }, timeout);
-
-    process.stdin.on("data", (chunk) => {
-      data += chunk.toString();
-    });
-
-    process.stdin.on("end", () => {
-      clearTimeout(timer);
-      resolve(data);
-    });
-
-    process.stdin.on("error", () => {
-      clearTimeout(timer);
-      resolve("{}");
-    });
-  });
 }
 
 async function main(): Promise<void> {
