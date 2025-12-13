@@ -1,3 +1,10 @@
+---
+allowed-tools: Task
+description: Orchestrate comprehensive release readiness check
+---
+
+@../resources/command-rules.md
+
 # Production Audit
 
 Orchestrate a comprehensive release readiness check.

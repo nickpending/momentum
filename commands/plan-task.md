@@ -4,15 +4,11 @@ description: Create implementation plan with linting and quality checks
 argument-hint: task-number
 ---
 
+@../resources/command-rules.md
+
 # Create implementation plan with linting and quality checks
 
 Build working, demoable software. Apply embedded standards. Use real services from start.
-
-**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
-
-**Key Paths**:
-- ARTIFACTS_DIR - Workflow artifacts (TASKS.md, artifacts)
-- WORKFLOW_PROJECTS - Obsidian projects directory
 
 ## Execution Requirements
 

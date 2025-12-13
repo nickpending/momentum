@@ -3,14 +3,9 @@ allowed-tools: Read, Grep, Glob, Bash
 description: Validate task completion with evidence of working functionality
 ---
 
+@../resources/command-rules.md
+
 # Validate task completion with evidence of working functionality
-
-**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
-
-**Key Paths**:
-- None - Uses paths from injected variables
-- WORKFLOW_PROJECTS - Obsidian projects directory (injected)
-- WORKFLOW_DEV - Development projects root (injected)
 
 ## ⚠️ CRITICAL: MARK TASK COMPLETE AND DOCUMENT
 

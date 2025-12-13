@@ -3,17 +3,9 @@ allowed-tools: Read, Write, Bash
 description: Luminary Project Setup - Generate Expert Guidance System
 ---
 
+@../resources/command-rules.md
+
 # Luminary Project Setup - Generate Expert Guidance System
-
-## Environment Context
-
-**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
-
-**Key Paths**:
-- ARTIFACTS_DIR - Workflow artifacts (LUMINARIES.md)
-- WORKFLOW_DIR - Workflow root (for templates/)
-- PROJECT_ROOT - Project root (for .claude/agents/)
-- WORKFLOW_PROJECTS - Obsidian projects directory
 
 ## ⚠️ CRITICAL: AUTOMATIC LUMINARY SETUP
 
@@ -36,7 +28,7 @@ description: Luminary Project Setup - Generate Expert Guidance System
 **CHECKPOINT 1: Check for Existing Luminaries**
 
 ```
-REQUIRED: Check for ARTIFACTS_DIR/LUMINARIES.md
+REQUIRED: Check for ${PROJECT_ROOT}/.workflow/artifacts/LUMINARIES.md
 
 IF LUMINARIES.md EXISTS:
 - READ luminaries configuration
@@ -176,7 +168,7 @@ EXAMPLES:
 ✅ CORRECT: "What would Bartle do here?"
 ❌ WRONG: "What would Bartle think of this player interaction?"
 
-Generate LUMINARIES.md in ARTIFACTS_DIR/ with this EXACT format:
+Generate LUMINARIES.md in `${PROJECT_ROOT}/.workflow/artifacts/` with this EXACT format:
 
 # LUMINARIES.md
 
@@ -222,7 +214,7 @@ RULES:
 
 Generate LUMINARIES.md from the extracted IDEA.md information following the mandatory interrupt patterns.
 
-VERIFICATION: Confirm LUMINARIES.md created in ARTIFACTS_DIR/
+VERIFICATION: Confirm LUMINARIES.md created in `${PROJECT_ROOT}/.workflow/artifacts/`
 
 NOTE: If regenerating, existing LUMINARIES.md will be overwritten with new expert selection based on updated IDEA.md.
 ```
@@ -235,12 +227,12 @@ NOTE: If regenerating, existing LUMINARIES.md will be overwritten with new exper
 REQUIRED: Generate custom ROUNDTABLE.md subagent using luminaries
 
 PROCESS:
-1. READ ARTIFACTS_DIR/LUMINARIES.md
+1. READ `${PROJECT_ROOT}/.workflow/artifacts/LUMINARIES.md`
 2. EXTRACT primary luminaries (name, what they built, expertise)
 3. EXTRACT project context (type, core challenge, scale)
-4. READ WORKFLOW_DIR/templates/ROUNDTABLE_TEMPLATE.md
+4. READ `${PROJECT_ROOT}/.workflow/templates/ROUNDTABLE_TEMPLATE.md`
 5. SUBSTITUTE luminaries and project data into template
-6. WRITE to PROJECT_ROOT/.claude/agents/roundtable.md
+6. WRITE to `${PROJECT_ROOT}/.claude/agents/roundtable.md`
 
 TEMPLATE SUBSTITUTION:
 - [PROJECT_TYPE] → Project Context Type
@@ -266,8 +258,8 @@ TEMPLATE SUBSTITUTION:
 
 ```
 VERIFICATION GATE: Confirm both files exist:
-- ARTIFACTS_DIR/LUMINARIES.md ✅
-- PROJECT_ROOT/.claude/agents/roundtable.md ✅
+- `${PROJECT_ROOT}/.workflow/artifacts/LUMINARIES.md` ✅
+- `${PROJECT_ROOT}/.claude/agents/roundtable.md` ✅
 
 OUTPUT:
 =====================================
@@ -286,10 +278,10 @@ Setup complete. Momentum mode ready with expert guidance.
 ## Success Criteria
 
 - [ ] Existing luminaries checked for regeneration
-- [ ] LUMINARIES.md generated in ARTIFACTS_DIR
+- [ ] LUMINARIES.md generated in `${PROJECT_ROOT}/.workflow/artifacts/`
 - [ ] Primary luminaries identified (4 total, including 1 security expert)
 - [ ] Cognitive interrupts use mandatory format
-- [ ] Roundtable subagent generated in PROJECT_ROOT/.claude/agents/
+- [ ] Roundtable subagent generated in `${PROJECT_ROOT}/.claude/agents/`
 - [ ] All template substitutions completed
 - [ ] Both files verified to exist
 

@@ -3,14 +3,9 @@ allowed-tools: Read, Write, Bash
 description: Capture discoveries, decisions, and progress for seamless resumption
 ---
 
+@../resources/command-rules.md
+
 # Capture discoveries, decisions, and progress for seamless resumption
-
-**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them).
-
-**Key Paths**:
-- STATE_DIR - Saved state files
-- MOMENTUM_STATE_DIR - Runtime state directory for saves log
-- PROJECT - Current project name
 
 ## ⚠️ CRITICAL: CAPTURE CONVERSATION ESSENCE
 
@@ -55,7 +50,7 @@ Capture current branch, commit, and status.
 
 ### Step 6: Write State File
 
-Write to STATE_DIR/state-{timestamp}.md using Write tool.
+Write to `${PROJECT_ROOT}/.workflow/state/state-{timestamp}.md` using Write tool.
 
 Use the Comprehensive State Structure template below for file content.
 
@@ -70,8 +65,8 @@ Use the Comprehensive State Structure template below for file content.
 ### Step 7: Register Save
 
 Register for auto-restore:
-- Create directory: `mkdir -p MOMENTUM_STATE_DIR`
-- Append entry: `echo "PROJECT|state-{timestamp}|$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> MOMENTUM_STATE_DIR/saves.log`
+- Create directory: `mkdir -p ${MOMENTUM_CACHE}`
+- Append entry: `echo "${PROJECT_NAME}|state-{timestamp}|$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> ${MOMENTUM_CACHE}/saves.log`
 
 ### Step 8: Confirm
 
@@ -175,8 +170,8 @@ Confirm to user with filename.
 
 State successfully saved when:
 
-- [ ] File written to STATE_DIR/state-{timestamp}.md
-- [ ] Save registered in MOMENTUM_STATE_DIR/saves.log
+- [ ] File written to `${PROJECT_ROOT}/.workflow/state/state-{timestamp}.md`
+- [ ] Save registered in `${MOMENTUM_CACHE}/saves.log`
 - [ ] Clear understanding of conversation flow captured
 - [ ] Decisions preserved with reasoning
 - [ ] Specific next actions identified

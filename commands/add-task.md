@@ -3,12 +3,9 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Task, AskUserQuestion
 description: Add discovered tasks to current iteration during implementation
 ---
 
+@../resources/command-rules.md
+
 # Add discovered tasks to current iteration during implementation
-
-**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
-
-**Key Paths**:
-- ARTIFACTS_DIR - Workflow artifacts (TASKS.md)
 
 ## ⚠️ CRITICAL: DISCOVERED TASKS NEED FULL CONTEXT
 

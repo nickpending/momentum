@@ -10,16 +10,18 @@ allowed-tools: Read, Grep, Write
 
 Enter exploration mode during development to help think through technical ideas, evaluate options, discover better approaches, and investigate possibilities through genuine conversation. Not interviews, not requirements gathering - real collaborative thinking.
 
-## Available Paths
+## Available Environment Variables
 
-These paths are injected by momentum and available for use:
+These env vars are available in bash commands (use `${VAR}` syntax):
 
-- `PROJECT` - Current project name
-- `PROJECT_ROOT` - Current project directory
-- `EXPLORATIONS_DIR` - Obsidian explorations directory
-- `PROJECT_OBSIDIAN_DIR` - Project planning directory
-- `WORKFLOW_PROJECTS` - Global Obsidian projects directory
-- `WORKFLOW_DEV` - Global development projects root
+- `${PROJECT_NAME}` - Current project name
+- `${PROJECT_ROOT}` - Current project code directory (e.g., `~/development/projects/argus`)
+- `${WORKFLOW_PROJECTS}` - Obsidian projects root (e.g., `~/obsidian/projects`)
+
+**Derived paths (construct from base vars):**
+- Explorations: `${WORKFLOW_PROJECTS}/${PROJECT_NAME}/explorations/`
+- Project planning: `${WORKFLOW_PROJECTS}/${PROJECT_NAME}/`
+- Later backlog: `${WORKFLOW_PROJECTS}/${PROJECT_NAME}/later.md`
 
 ## Exploration Mindset
 
@@ -140,7 +142,7 @@ Extract key insights from the entire exploration:
 
 **File location:**
 ```
-EXPLORATIONS_DIR/{descriptive-name}.md
+${WORKFLOW_PROJECTS}/${PROJECT_NAME}/explorations/{descriptive-name}.md
 ```
 
 **Naming:** Use descriptive names based on what was explored:

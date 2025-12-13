@@ -3,12 +3,9 @@ allowed-tools: Read
 description: Quick project orientation with current tasks and vision
 ---
 
+@../resources/command-rules.md
+
 # Quick project orientation with current tasks and vision
-
-**Variables**: Variables in CAPS are injected by hooks (see HTML comments above), `{vars}` are runtime values (find/calculate them), `[vars]` are template placeholders (substitute them).
-
-**Key Paths**:
-- ARTIFACTS_DIR - Workflow artifacts (PROJECT_SUMMARY.md, TASKS.md)
 
 ## Core Instructions
 
@@ -16,8 +13,8 @@ description: Quick project orientation with current tasks and vision
 
 **READ**:
 
-1. `ARTIFACTS_DIR/PROJECT_SUMMARY.md`
-2. `ARTIFACTS_DIR/TASKS.md`
+1. `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
+2. `${PROJECT_ROOT}/.workflow/artifacts/TASKS.md`
 
 ### Step 2: Report Status
 
@@ -53,7 +50,7 @@ What would you like to do?
 ### If no files exist:
 ```
 **NO CONTEXT FOUND**
-No project files found in ARTIFACTS_DIR/
+No project files found in artifacts directory
 
 To get started:
 - Create IDEA.md in obsidian for project vision

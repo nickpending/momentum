@@ -429,6 +429,7 @@ export NAME="$USER_NAME"
 # Momentum paths
 export MOMENTUM_INSTALL="$HOME/.config/momentum"
 export MOMENTUM_WORKSPACE="$HOME/.local/share/momentum"
+export MOMENTUM_CACHE="$HOME/.cache/momentum"
 
 # Lore paths
 export LORE_CONFIG="$HOME/.config/lore"
