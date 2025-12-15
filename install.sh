@@ -292,9 +292,8 @@ echo "Installing Momentum components..."
 mkdir -p "$MOMENTUM_INSTALL"
 
 # Only copy if component doesn't exist or we just backed up
-if [[ ! -d "$MOMENTUM_INSTALL/agents" ]]; then
-    cp -r "$MOMENTUM_SOURCE/agents" "$MOMENTUM_INSTALL/" && echo "  ✓ Agents"
-fi
+# System prompt (always update to get latest)
+cp "$MOMENTUM_SOURCE/system.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ System prompt (updated)"
 if [[ ! -d "$MOMENTUM_INSTALL/commands" ]]; then
     cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_INSTALL/" && echo "  ✓ Commands"
 fi
@@ -338,13 +337,7 @@ if [[ -f "$MOMENTUM_SOURCE/hooks/package.json" ]]; then
     fi
 fi
 
-if [[ ! -d "$MOMENTUM_INSTALL/contexts" ]]; then
-    cp -r "$MOMENTUM_SOURCE/contexts" "$MOMENTUM_INSTALL/" && echo "  ✓ Contexts"
-else
-    # Always update routing files to get latest versions
-    cp "$MOMENTUM_SOURCE/contexts/ASSISTANT_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ ASSISTANT_ROUTING.md (updated)"
-    cp "$MOMENTUM_SOURCE/contexts/PROJECT_ROUTING.md" "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ PROJECT_ROUTING.md (updated)"
-fi
+# Note: contexts/ no longer used - output format is in system.md, voice from TOML
 
 # Install voice files (always update to get latest)
 mkdir -p "$MOMENTUM_INSTALL/voices/styles"

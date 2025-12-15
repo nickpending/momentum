@@ -23,7 +23,7 @@ function main(): void {
     const momentumInstall = config.momentum.install;
 
     // Read template
-    const templatePath = join(momentumInstall, "agents/PROJECT.md");
+    const templatePath = join(momentumInstall, "system.md");
     const template = readFileSync(templatePath, "utf-8");
 
     // Build view from env vars and config

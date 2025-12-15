@@ -1,19 +1,13 @@
 #!/usr/bin/env bun
 /**
- * Momentum Dynamic Context Hook
- * Outputs routing instructions for Claude to interpret
+ * Momentum UserPromptSubmit Hook
+ * Injects per-turn context: metadata + voice instructions
+ * Static content (system prompt, output format) injected at session start
  */
 
-import { readFileSync, existsSync } from "fs";
-import { join } from "path";
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
 import { loadConfig } from "./shared/config-loader.ts";
-import {
-  PROJECT_ROOT,
-  PROJECT_NAME,
-  WORKFLOW_PROJECTS,
-  CONTEXTS_DIR,
-} from "./shared/momentum-paths.ts";
+import { PROJECT_ROOT, PROJECT_NAME } from "./shared/momentum-paths.ts";
 import {
   loadVoiceStyle,
   loadVerbosityLevel,
@@ -51,144 +45,42 @@ async function main() {
       cwd: PROJECT_ROOT,
     });
 
-    // Use centralized path resolution from momentum-paths.ts
     const projectName = PROJECT_NAME;
     const cwd = PROJECT_ROOT;
-
-    // Load configuration
     const config = loadConfig();
-    const momentumConfig = config.momentum.install;
 
-    // Always use PROJECT_ROUTING.md (project mode only now)
-    let contextsPath = CONTEXTS_DIR;
-    let routingPath = join(contextsPath, "PROJECT_ROUTING.md");
-
-    // If no project contexts, use global momentum contexts
-    if (!existsSync(routingPath)) {
-      debugLog("UserPromptSubmit", "Project routing not found, using global");
-      contextsPath = join(momentumConfig, "contexts");
-      routingPath = join(contextsPath, "PROJECT_ROUTING.md");
-    }
-
-    debugLog("UserPromptSubmit", "Using project routing", {
-      contextsPath,
-      routingPath,
-    });
-
-    if (!existsSync(routingPath)) {
-      debugLog("UserPromptSubmit", "No routing file found, exiting", {
-        routingPath,
-      });
-      // No routing file found anywhere - silent fail
-      process.exit(0);
-    }
-
-    debugLog("UserPromptSubmit", "Reading routing file", { routingPath });
-    let routingContent = readFileSync(routingPath, "utf-8");
-
-    // Get workflow paths (from env vars via momentum-paths.ts, non-path settings from config)
-    const workflowProjects = WORKFLOW_PROJECTS;
-    const workflowDev = config.paths.dev; // Injected for context, placeholder unused
-    const momentumHomeDir = config.momentum.workspace;
-
-    // Check for Lore availability first (needed for placeholder replacement)
-    const loreConfigPath = join(config.lore.config, "config");
-    const loreAvailable = existsSync(loreConfigPath);
-
-    debugLog("UserPromptSubmit", "Replacing placeholders", {
-      projectName,
-      workflowProjects,
-      workflowDev,
-      momentumConfig,
-      momentumHomeDir,
-      contextsPath,
-      loreAvailable,
-    });
-
-    // Replace placeholders with actual values
-    routingContent = routingContent.replace(
-      /PROJECT_NAME_PLACEHOLDER/g,
-      projectName,
-    );
-    routingContent = routingContent.replace(
-      /WORKFLOW_PROJECTS_PLACEHOLDER/g,
-      workflowProjects,
-    );
-    routingContent = routingContent.replace(
-      /WORKFLOW_DEV_PLACEHOLDER/g,
-      workflowDev,
-    );
-    routingContent = routingContent.replace(
-      /MOMENTUM_CONFIG_PLACEHOLDER/g,
-      momentumConfig,
-    );
-    routingContent = routingContent.replace(
-      /MOMENTUM_HOME_DIR_PLACEHOLDER/g,
-      momentumHomeDir,
-    );
-    routingContent = routingContent.replace(
-      /MOMENTUM_CONTEXTS_PATH/g,
-      contextsPath,
-    );
-    routingContent = routingContent.replace(
-      /LORE_AVAILABLE_PLACEHOLDER/g,
-      String(loreAvailable),
-    );
-
-    // Get current date/time in local timezone for user-facing context
-    // Internal timestamps (ts field) stay UTC for sorting; filenames/context use local
+    // Get current date/time in local timezone
     const TZ = config.personalization.timezone || "America/Los_Angeles";
     const now = new Date();
-    const currentDate = now.toLocaleDateString("en-CA", { timeZone: TZ }); // YYYY-MM-DD
+    const currentDate = now.toLocaleDateString("en-CA", { timeZone: TZ });
     const currentDateTime = now
       .toLocaleString("sv-SE", { timeZone: TZ })
-      .replace(" ", "T"); // YYYY-MM-DDTHH:MM:SS
+      .replace(" ", "T");
 
-    // Gitignore compliance checked by session-start hook via llcli-tools/gitignore-check
-
-    // Always inject full routing for consistent semantic intent matching
-    debugLog("UserPromptSubmit", "Full routing injection");
-    console.log(routingContent);
-
-    // Get user name from config
-    const userName = config.personalization.name;
-
-    // Output metadata only - NAME, PROJECT, MODE, CAPABILITIES now in system prompt via Mustache
-    // Model uses ${VAR} syntax in bash to access PROJECT_ROOT, PROJECT_NAME, WORKFLOW_PROJECTS
-    console.log("\n<!-- HOOK: Momentum routing loaded -->");
+    // Inject metadata (per-turn dynamic values)
+    console.log("<!-- HOOK: Momentum per-turn context -->");
     console.log(`<!-- CURRENT_DATE: ${currentDate} -->`);
     console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
     console.log(`<!-- SESSION_ID: ${data.session_id} -->`);
 
-    // Load and inject combined output format (CAPTURE + VOICE) at the end
+    // Inject voice instructions (generated from TOML config)
     try {
-      const outputFormatPath = join(contextsPath, "OUTPUT_FORMAT.md");
-      let outputFormatContent = "";
-
-      if (existsSync(outputFormatPath)) {
-        outputFormatContent = await Bun.file(outputFormatPath).text();
-      }
-
-      // Load voice instructions and append to output format
       const momentumHome = config.momentum.install;
       const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
       const verbosityLevel = config.voice.verbosity.project || "normal";
       const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
       const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
 
-      // Combine into single output format block
-      const combinedOutput = `${outputFormatContent}\n\n${voiceInstructions}`;
-      console.log(`\n${combinedOutput}`);
+      console.log(`\n${voiceInstructions}`);
 
-      debugLog("UserPromptSubmit", "Output format injected", {
+      debugLog("UserPromptSubmit", "Voice instructions injected", {
         style: config.voice.style,
         verbosity: verbosityLevel,
       });
     } catch (error) {
-      debugLog("UserPromptSubmit", "Failed to load output format", {
+      debugLog("UserPromptSubmit", "Failed to load voice instructions", {
         error: String(error),
       });
-      // Continue without output format - it's optional
     }
 
     // Layer 1: JSONL event logging
@@ -202,19 +94,16 @@ async function main() {
       prompt_length: data.prompt?.length || 0,
     });
     appendEvent(logEvent);
-    debugLog("UserPromptSubmit", "JSONL event logged", {
-      prompt_length: data.prompt?.length || 0,
-    });
+    debugLog("UserPromptSubmit", "JSONL event logged");
 
-    // Layer 3: Argus with LLM summary (structured context)
+    // Layer 3: Argus with LLM summary
+    const userName = config.personalization.name;
     let promptSummary = data.prompt?.substring(0, 100) || "Empty prompt";
 
-    // Get previous assistant message for context
     const previousTurn = data.transcript_path
       ? getLastAssistantMessage(data.transcript_path)
       : null;
 
-    // Build structured context and summarize
     try {
       const context = buildPromptContext({
         eventType: "UserPromptSubmit",
@@ -230,7 +119,6 @@ async function main() {
         promptSummary = result.summary;
       }
     } catch {
-      // Fall back to truncated prompt
       promptSummary = data.prompt?.substring(0, 100) || "Empty prompt";
     }
 
@@ -244,18 +132,12 @@ async function main() {
         project: projectName,
         prompt_length: data.prompt?.length || 0,
       },
-    }).catch(() => {
-      // Silent failure
-    });
-    debugLog("UserPromptSubmit", "Argus event posted", {
-      message: promptSummary,
-    });
+    }).catch(() => {});
 
     debugLog("UserPromptSubmit", "Hook completed successfully");
     process.exit(0);
   } catch (error) {
     debugLog("UserPromptSubmit", "Hook error", { error: String(error) });
-    // Silent fail to not interrupt Claude
     process.exit(0);
   }
 }
