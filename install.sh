@@ -292,8 +292,10 @@ echo "Installing Momentum components..."
 mkdir -p "$MOMENTUM_INSTALL"
 
 # Only copy if component doesn't exist or we just backed up
-# System prompt (always update to get latest)
+# System prompt files (always update to get latest)
 cp "$MOMENTUM_SOURCE/system.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ System prompt (updated)"
+cp "$MOMENTUM_SOURCE/project.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ Project mode context (updated)"
+cp "$MOMENTUM_SOURCE/workspace.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ Workspace mode context (updated)"
 if [[ ! -d "$MOMENTUM_INSTALL/commands" ]]; then
     cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_INSTALL/" && echo "  ✓ Commands"
 fi

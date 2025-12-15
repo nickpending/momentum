@@ -1,18 +1,13 @@
 #!/usr/bin/env bun
 /**
  * Momentum UserPromptSubmit Hook
- * Injects per-turn context: metadata + voice instructions
- * Static content (system prompt, output format) injected at session start
+ * Injects per-turn metadata (date, time, session_id)
+ * Static content (system prompt, voice, output format) in system.md at session start
  */
 
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
 import { loadConfig } from "./shared/config-loader.ts";
 import { PROJECT_ROOT, PROJECT_NAME } from "./shared/momentum-paths.ts";
-import {
-  loadVoiceStyle,
-  loadVerbosityLevel,
-  buildVoiceInstructions,
-} from "./shared/voice-loader.ts";
 import {
   appendEvent,
   createEvent,
@@ -57,31 +52,13 @@ async function main() {
       .toLocaleString("sv-SE", { timeZone: TZ })
       .replace(" ", "T");
 
-    // Inject metadata (per-turn dynamic values)
+    // Inject metadata (per-turn dynamic values only)
     console.log("<!-- HOOK: Momentum per-turn context -->");
     console.log(`<!-- CURRENT_DATE: ${currentDate} -->`);
     console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
     console.log(`<!-- SESSION_ID: ${data.session_id} -->`);
 
-    // Inject voice instructions (generated from TOML config)
-    try {
-      const momentumHome = config.momentum.install;
-      const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
-      const verbosityLevel = config.voice.verbosity.project || "normal";
-      const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
-      const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
-
-      console.log(`\n${voiceInstructions}`);
-
-      debugLog("UserPromptSubmit", "Voice instructions injected", {
-        style: config.voice.style,
-        verbosity: verbosityLevel,
-      });
-    } catch (error) {
-      debugLog("UserPromptSubmit", "Failed to load voice instructions", {
-        error: String(error),
-      });
-    }
+    debugLog("UserPromptSubmit", "Metadata injected");
 
     // Layer 1: JSONL event logging
     const jsonlHookInput: JsonlHookInput = {
