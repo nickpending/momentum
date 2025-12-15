@@ -321,6 +321,7 @@ cp "$MOMENTUM_SOURCE/hooks/momentum-pre-tool-use-hook.ts" "$MOMENTUM_INSTALL/hoo
 cp "$MOMENTUM_SOURCE/hooks/momentum-post-tool-use-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Post-tool-use hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-subagent-stop-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Subagent stop hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-session-end-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Session end hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/render-project-prompt.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Render project prompt (updated)"
 # Copy shared utilities
 if [[ -d "$MOMENTUM_SOURCE/hooks/shared" ]]; then
     cp -r "$MOMENTUM_SOURCE/hooks/shared" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Shared voice utilities (updated)"

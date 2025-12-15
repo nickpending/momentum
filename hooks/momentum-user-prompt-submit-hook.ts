@@ -153,16 +153,12 @@ async function main() {
     // Get user name from config
     const userName = config.personalization.name;
 
-    // Output metadata only - path variables injected once at SessionStart
+    // Output metadata only - NAME, PROJECT, MODE, CAPABILITIES now in system prompt via Mustache
     // Model uses ${VAR} syntax in bash to access PROJECT_ROOT, PROJECT_NAME, WORKFLOW_PROJECTS
     console.log("\n<!-- HOOK: Momentum routing loaded -->");
     console.log(`<!-- CURRENT_DATE: ${currentDate} -->`);
     console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
     console.log(`<!-- SESSION_ID: ${data.session_id} -->`);
-    console.log(`<!-- MODE: project -->`);
-    console.log(`<!-- PROJECT: ${projectName} -->`);
-    console.log(`<!-- NAME: ${userName} -->`);
-    console.log(`<!-- LORE_AVAILABLE: ${loreAvailable} -->`);
 
     // Load and inject combined output format (CAPTURE + VOICE) at the end
     try {

@@ -5,8 +5,10 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "@types/mustache": "^4.2.6",
     "argus-send": "link:argus-send",
+    "llm-summarize": "link:llm-summarize",
     "lore-capture": "link:lore-capture",
-    "llm-summarize": "link:llm-summarize"
+    "mustache": "^4.2.0"
   }
 }

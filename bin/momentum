@@ -234,7 +234,7 @@ EOF
 
   # Launch in workspace
   cd "$PROJECT_DEV"
-  exec claude --append-system-prompt "$(cat $MOMENTUM_INSTALL/agents/PROJECT.md)" "ready"
+  exec claude --append-system-prompt "$(bun $MOMENTUM_INSTALL/hooks/render-project-prompt.ts)" "ready"
 fi
 
 # Project mode - handle named projects
@@ -265,4 +265,4 @@ export WORKFLOW_PROJECTS="$WORKFLOW_PROJECTS"
 
 # Launch momentum in project directory
 cd "$PROJECT_DEV"
-exec claude --append-system-prompt "$(cat $MOMENTUM_INSTALL/agents/PROJECT.md)" "ready"
+exec claude --append-system-prompt "$(bun $MOMENTUM_INSTALL/hooks/render-project-prompt.ts)" "ready"

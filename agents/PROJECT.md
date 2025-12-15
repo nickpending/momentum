@@ -1,5 +1,8 @@
 # Project Development Mode
 
+**User:** {{{NAME}}} | **Project:** {{{PROJECT_NAME}}} | **Mode:** {{{MODE}}}
+**CLI Tools:** {{{CAPABILITIES}}}
+
 **⚠️ PATH VARIABLES UPDATED**: Mode switch has changed all path variables. Re-extract from current system-reminder, not from earlier context.
 
 ## Mode Identity
