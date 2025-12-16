@@ -46,7 +46,7 @@ Think of it as having a development partner who never forgets context and always
 
 ## ✨ Features
 
-- 🚀 **Context-Aware Conversations** - Dynamic hooks detect semantic patterns and inject relevant context
+- 🚀 **Context-Aware Conversations** - Dynamic hooks inject mode-specific context with minimal per-turn overhead
 - 🧠 **Evidence-Based Planning** - AI agents investigate and present options instead of prescriptive solutions
 - 🎯 **Working Software First** - Ship functional code every iteration, test after to prove it works
 - 📦 **Memory Management** - Save/restore state across Claude's context limits without losing progress
@@ -137,19 +137,16 @@ EXPLORE → IDEATE → PLAN → DECOMPOSE → BUILD → SHIP → REPEAT
 workspace   new   vision   planned   active   active
 ```
 
-### Semantic Interaction
+### Natural Interaction
 
 No need to memorize commands. Just talk naturally:
 
 **Natural language:**
-- "let's explore" → Load exploration context
-- "save this exploration" → Capture exploration to file
-- "review the code" → Launch code reviewer (with confirmation)
+- "let's explore" → Use exploration skill
+- "I have an idea" → Use ideation skill
+- "review the code" → Launch code reviewer agent
 - "is this over-engineered?" → Architecture review for complexity
-- "analyze the architecture for X" → Multi-option architectural analysis
 - "how should I implement X" → Technical implementation options
-- "set up gitignore" → Configure project security
-- "that fixed it!" → Auto-document discovery
 
 **Slash commands:**
 - `/plan-iteration` → Collaborative iteration planning
@@ -175,22 +172,21 @@ No need to memorize commands. Just talk naturally:
 
 ## 🏗️ Architecture
 
-Momentum uses a multi-agent architecture optimized for evidence-based decisions:
+Momentum uses a mode-based architecture with specialized agents:
 
 ```
-Natural Language Input    Semantic Routing         Specialized Agents
-        │                      │                         │
-"I have an idea" ──► Ideation Context ──► Creative Discussion
-"Review the code" ──► Confirmation ──► Code Reviewer Agent
-"Analyze options" ──► Analysis Request ──► Architecture Analyst
-        │                      │                         │
-        └──► Evidence Collection ──► Options Presentation
+Mode Selection              System Prompt              Specialized Agents
+       │                         │                           │
+momentum ──────────► workspace.md ──► Exploration, Ideation
+momentum <project> ──► project.md ──► Build, Ship, Iterate
+       │                         │                           │
+       └──► Evidence Collection ──► Options Presentation
 ```
 
-- **Semantic Routing**: Detects intent from natural language, loads appropriate context
+- **Mode-Based Prompts**: Mustache-templated system prompt with mode-specific instructions
 - **Evidence-Based Agents**: Investigate actual code, present multiple verified options
 - **Context Management**: Preserves state across Claude's memory limitations
-- **Quality Embedded**: Verification and standards built into task completion
+- **Minimal Per-Turn Injection**: Only metadata (date/time/session) injected per message
 
 ## 🔧 Installation
 
@@ -349,7 +345,8 @@ source ~/.zshrc  # or ~/.bashrc
 
 ### "Command not found: momentum"
 ```bash
-echo 'alias momentum="cd ~/.local/share/momentum/home && claude --append-system-prompt \"$(cat ~/.config/momentum/agents/ASSISTANT.md)\" \"TODAY IS: $(date +%Y-%m-%d). Activate Assistant\""' >> ~/.zshrc
+# Re-run installer to set up momentum function
+./install.sh
 source ~/.zshrc
 ```
 
@@ -361,7 +358,7 @@ cd ~/development/projects/myproject
 momentum
 ```
 
-### Semantic routing not working
+### Hooks not working
 Ensure Bun is installed for dynamic context hooks:
 ```bash
 curl -fsSL https://bun.sh/install | bash
@@ -413,9 +410,10 @@ Areas where we'd love contributions:
 
 ```
 momentum/
-├── agents/            # Mode agents (ASSISTANT.md, PROJECT.md)
+├── system.md          # Base system prompt (shared across modes)
+├── project.md         # Project mode instructions
+├── workspace.md       # Workspace mode instructions
 ├── commands/          # Core workflow slash commands
-├── contexts/          # Semantic routing contexts for each mode
 ├── subagents/         # Specialized analysis agents
 ├── skills/            # Agent skills (experimental capability packages)
 ├── templates/         # Project scaffolding templates
@@ -425,23 +423,26 @@ momentum/
 
 ## 🎯 Roadmap
 
-**v4.2.3** (Current):
+**v4.3.0** (Current):
+- [x] Consolidated system prompt (system.md + project.md + workspace.md)
+- [x] Mustache templating for dynamic prompt generation
+- [x] Minimal per-turn injection (metadata only: date/time/session)
+- [x] CLI capabilities auto-detection at session start
+- [x] Voice instructions injected at session start, not per-turn
+- [x] Optimized prompts (-320 lines, instructions over documentation)
+- [x] Environment variable unification (${VAR} syntax)
+
+**v4.2.x** (Previous):
 - [x] Workspace mode for exploration without project constraints
 - [x] State-based initialization (new → vision → planned → active)
 - [x] Knowledge capture system (CAPTURE lines → lore integration)
-- [x] Consolidated output format (CAPTURE + VOICE in single context)
 - [x] MCP integration (playwright server for browser automation)
-- [x] Granular permission system (reduce approval prompts)
 - [x] TOML configuration with voice customization
-- [x] Semantic routing with dynamic context injection
 - [x] Evidence-based agent system (6 specialized agents)
-- [x] Skills architecture with plugin support
 - [x] Three-layer observability (JSONL forensics, Lore knowledge, Argus real-time)
-- [x] Argus integration with LLM-powered summaries
-- [x] Library-first architecture (llmcli-tools imports instead of CLI calls)
-- [x] Session cache for reliable project detection across hooks
+- [x] Library-first architecture (llmcli-tools imports)
 
-**Next** (v4.3+):
+**Next** (v4.4+):
 - [ ] PreCompact hook for auto-save before context compression
 - [ ] Notification system for background processes
 - [ ] Enhanced backlog management
