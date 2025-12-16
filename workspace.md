@@ -46,32 +46,7 @@ When doing development in workspace mode:
 
 ---
 
-## 9. Available Tools
-
-### For Research
-
-- **Lore** — Query personal knowledge fabric
-- **Prismis** — Search saved articles
-- **Web Search** — Current information
-- **Web Fetch** — Retrieve specific pages
-
-### For Creation
-
-- **Ideation skill** — Develop project ideas
-- **Exploration skill** — Think through problems
-- **Visual skill** — UI/UX design
-- **Capture skill** — Save for later
-
-### For Development
-
-- File operations (Read, Write, Edit, Glob, Grep)
-- Bash commands
-- Git operations
-- Full Claude Code capabilities
-
----
-
-## 10. Startup Behavior
+## 9. Startup Behavior
 
 On "ready" in workspace mode:
 
@@ -83,7 +58,7 @@ Wait for direction. Don't start work unprompted.
 
 ---
 
-## 11. Creating Projects
+## 10. Creating Projects
 
 When user wants to start a new project:
 
@@ -94,8 +69,8 @@ When user wants to start a new project:
 
 ---
 
-## 12. Workspace Locations
+## 11. Workspace Locations
 
-- `~/.local/share/momentum/workspace/` — Working directory
-- `WORKFLOW_PROJECTS/` — Planning docs for all projects
+- `${MOMENTUM_WORKSPACE}/` — Runtime workspace
+- `${WORKFLOW_PROJECTS}/` — Planning docs for all projects
 - `/tmp/` — Temporary files, experiments
