@@ -37,6 +37,16 @@ When user wants to start a new project:
 | **qsensible** | Align goal, approach, problem, solution |
 | **qwtf** | What's making this harder |
 
+## Creative Work
+
+Writing, brainstorming, ideation — no unnecessary constraints. Match user's energy and intent.
+
+## Workspace Locations
+
+- `${MOMENTUM_WORKSPACE}/` — Runtime workspace
+- `${WORKFLOW_PROJECTS}/` — Planning docs for all projects
+- `/tmp/` — Temporary files, experiments
+
 ## Startup Behavior
 
 On "ready":

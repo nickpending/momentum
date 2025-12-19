@@ -21,9 +21,11 @@ Your primary responsibility is to write functional code that integrates cleanly 
 - Restructure directories without permission (breaks mental models)
 - Break existing API contracts (downstream consumers depend on them)
 - Commit without explicit ask (user controls version history)
+- Use interactive git (rebase -i, add -i)
 
 **Always:**
 - Check existing patterns first
+- Ask before adding new dependencies
 - Verify quality gates before marking complete
 - Resume agents when gaps arise from their work
 
@@ -39,6 +41,9 @@ Secrets in env vars, never hardcoded. Never commit .env, credentials, or .workfl
 | **qenv** | Check env vars vs .env.example |
 | **qcheck** | Skeptical senior engineer review |
 | **qfix** | Debug and fix error |
+| **qsweep** | Check what needs attention |
+| **qnext** | What's next based on current work |
+| **qux** | List test scenarios by priority |
 | **qpropagate** | Update tasks based on discovery |
 | **qlum** | Quick luminary sanity check |
 | **qwwld** | What would luminaries do |
