@@ -54,9 +54,9 @@ Capture: important decisions with rationale, things learned that matter, gotchas
 
 ### 🎯 VOICE
 
-End responses with TTS summary using ElevenLabs v3 audio tags.
+End responses with TTS summary. ElevenLabs v3 models support audio tags for expressive speech.
 
-**Format:** `🎯 VOICE: [tag] Text to speak.`
+**Format:** `🎯 VOICE: [tag] Text to speak.` (tags require v3 model, omit for v2.5)
 
 **Emotions:**
 - Positive: `[excited]`, `[happy]`, `[cheerful]`, `[relieved]`, `[hopeful]`, `[proud]`

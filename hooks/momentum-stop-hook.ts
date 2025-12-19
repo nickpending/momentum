@@ -307,6 +307,11 @@ async function speakSentences(
       args.push("--cache-threshold", ttsConfig.cache_threshold.toString());
     }
 
+    // Add model if specified
+    if (ttsConfig.model) {
+      args.push("--model", ttsConfig.model);
+    }
+
     // Add sentence as argument (like clarvis does)
     args.push(sentence);
 

@@ -314,10 +314,7 @@ echo "Installing Momentum components..."
 mkdir -p "$MOMENTUM_INSTALL"
 
 # Only copy if component doesn't exist or we just backed up
-# System prompt files (always update to get latest)
-cp "$MOMENTUM_SOURCE/system.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ System prompt (updated)"
-cp "$MOMENTUM_SOURCE/project.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ Project mode context (updated)"
-cp "$MOMENTUM_SOURCE/workspace.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ Workspace mode context (updated)"
+# Legacy prompt files removed - contexts/ directory is now source of truth
 # Always update commands (includes orchestration)
 rm -rf "$MOMENTUM_INSTALL/commands"
 cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_INSTALL/" && echo "  ✓ Commands"
@@ -375,8 +372,12 @@ if [[ -d "$MOMENTUM_SOURCE/voices/verbosity" ]]; then
     cp "$MOMENTUM_SOURCE/voices/verbosity"/*.toml "$MOMENTUM_INSTALL/voices/verbosity/" 2>/dev/null && echo "  ✓ Voice verbosity levels (updated)"
 fi
 
-# Create TOML configuration (source of truth)
-cat > "$MOMENTUM_INSTALL/config.toml" << EOF
+# Create TOML configuration only if it doesn't exist (preserve user settings)
+if [[ -f "$MOMENTUM_INSTALL/config.toml" ]]; then
+    echo -e "${GREEN}✅ Existing config.toml preserved${RESET}"
+    echo "   To reset configuration, delete ~/.config/momentum/config.toml and reinstall"
+else
+    cat > "$MOMENTUM_INSTALL/config.toml" << EOF
 # Momentum Configuration
 # Edit this file to customize your workflow settings
 # Generated: $(date)
@@ -408,7 +409,7 @@ data = "$HOME/.local/share/lore"
 cache = "$HOME/.cache/lore"
 
 [voice]
-# Voice style: jarvis, professional, casual, or custom
+# Voice style: jarvis, professional, casual, sable, or custom
 style = "jarvis"
 
 [voice.verbosity]
@@ -420,8 +421,9 @@ project = "brief"
 # Text-to-Speech configuration
 enabled = true
 provider = "system"  # Options: "system" (free) or "elevenlabs" (premium)
+# model = "eleven_flash_v2_5"  # ElevenLabs model (v3 models support audio tags)
 # api_key = ""  # Required for elevenlabs provider
-# voice_id = ""  # Required for elevenlabs provider (create JARVIS-style voice)
+# voice_id = ""  # Required for elevenlabs provider
 cache_threshold = 0.90  # Semantic similarity threshold (0.0-1.0)
 
 # Cache control per verbosity level
@@ -431,7 +433,8 @@ brief = true     # Concise responses - use cache
 normal = false   # Longer, unique content - don't cache
 EOF
 
-echo -e "${GREEN}✅ TOML configuration created${RESET}"
+    echo -e "${GREEN}✅ TOML configuration created${RESET}"
+fi
 
 # Generate bash config from TOML (for setupd compatibility)
 cat > "$MOMENTUM_INSTALL/config" << EOF
