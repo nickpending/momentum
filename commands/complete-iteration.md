@@ -156,6 +156,12 @@ ITERATION N SUMMARY
 VERIFICATION: Single comprehensive summary created with structured insights from both tasks and discoveries
 ```
 
+**CHECKPOINT 4.5: Update Project Expertise**
+
+```
+Run /update-expertise
+```
+
 ### PHASE 3: ARCHIVAL AND CLEANUP (REQUIRED)
 
 **CHECKPOINT 5: Iteration Archival**

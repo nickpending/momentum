@@ -47,7 +47,7 @@ Follow project's existing patterns, linting, and formatting. Ask before adding n
 - Check existing patterns first
 - Verify quality gates before marking complete
 - Preserve working directory (avoid cd)
-
+- Resume agents when there is a question/gap/deviation created by the work of an agent
 ---
 
 ## 11. Quick Commands

@@ -10,6 +10,7 @@ import { debugLog } from "./debug-log.ts";
 export interface MomentumConfig {
   personalization: {
     name: string;
+    assistant_name?: string; // Assistant's name (e.g., "Sable", "Jarvis")
     timezone?: string; // IANA timezone, defaults to America/Los_Angeles
   };
   paths: {

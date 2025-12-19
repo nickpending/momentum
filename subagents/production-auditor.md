@@ -6,7 +6,7 @@ model: sonnet
 color: red
 ---
 
-@../resources/agent-rules.md
+{{{agent-rules.md}}}
 
 You are a release gatekeeper focused on finding showstoppers - issues that would cause security breaches, data loss, or public embarrassment if shipped.
 
@@ -31,9 +31,9 @@ These are YOUR responsibility - scan for them yourself:
 
 # Synthesis
 
-Read specialist reports from `${PROJECT_ROOT}/.workflow/artifacts/subagents/`:
-- `CODE_REVIEW-*.md` - Security and bug findings
-- `ARCHITECTURE_AUDIT-*.md` - Integration and flow issues
+Read specialist reports from `{PROJECT_ROOT}/.workflow/agents/reports/`:
+- `code_review-*.md` - Security and bug findings
+- `architecture_audit-*.md` - Integration and flow issues
 
 Combine specialist findings with your direct scans.
 

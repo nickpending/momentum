@@ -220,15 +220,17 @@ fi
 
 echo
 
-# Step 3.5: Get user name for voice interactions
+# Step 3.5: Get user name and assistant name for personalization
 echo -e "${CYAN}Step 3.5: Personalizing your experience${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo
 
 EXISTING_NAME=""
+EXISTING_ASSISTANT_NAME=""
 if [[ -f "$EXISTING_CONFIG" ]]; then
     source "$EXISTING_CONFIG" 2>/dev/null || true
     EXISTING_NAME="$NAME"
+    EXISTING_ASSISTANT_NAME="$ASSISTANT_NAME"
 fi
 
 echo "Momentum uses your name for voice interactions and personalized responses."
@@ -248,6 +250,26 @@ elif [[ -z "$USER_NAME" ]]; then
 fi
 
 echo -e "${GREEN}✅ Using name: $USER_NAME${RESET}"
+echo
+
+echo "Your assistant needs a name too. This becomes part of its identity."
+echo -e "${YELLOW}What should your assistant be called?${RESET}"
+echo "Examples: Jarvis, Friday, Sable, Alfred"
+if [[ -n "$EXISTING_ASSISTANT_NAME" ]]; then
+    printf "Assistant name [$EXISTING_ASSISTANT_NAME]: "
+else
+    printf "Assistant name: "
+fi
+read -r ASSISTANT_NAME
+
+# Use existing value if no input provided
+if [[ -z "$ASSISTANT_NAME" && -n "$EXISTING_ASSISTANT_NAME" ]]; then
+    ASSISTANT_NAME="$EXISTING_ASSISTANT_NAME"
+elif [[ -z "$ASSISTANT_NAME" ]]; then
+    ASSISTANT_NAME="Assistant"  # Default fallback
+fi
+
+echo -e "${GREEN}✅ Assistant name: $ASSISTANT_NAME${RESET}"
 echo
 
 # Step 4: Check for existing installation
@@ -296,18 +318,18 @@ mkdir -p "$MOMENTUM_INSTALL"
 cp "$MOMENTUM_SOURCE/system.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ System prompt (updated)"
 cp "$MOMENTUM_SOURCE/project.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ Project mode context (updated)"
 cp "$MOMENTUM_SOURCE/workspace.md" "$MOMENTUM_INSTALL/" 2>/dev/null && echo "  ✓ Workspace mode context (updated)"
-if [[ ! -d "$MOMENTUM_INSTALL/commands" ]]; then
-    cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_INSTALL/" && echo "  ✓ Commands"
-fi
+# Always update commands (includes orchestration)
+rm -rf "$MOMENTUM_INSTALL/commands"
+cp -r "$MOMENTUM_SOURCE/commands" "$MOMENTUM_INSTALL/" && echo "  ✓ Commands"
 if [[ ! -d "$MOMENTUM_INSTALL/templates" ]]; then
     cp -r "$MOMENTUM_SOURCE/templates" "$MOMENTUM_INSTALL/" && echo "  ✓ Templates"
 fi
-if [[ ! -d "$MOMENTUM_INSTALL/resources" ]]; then
-    cp -r "$MOMENTUM_SOURCE/resources" "$MOMENTUM_INSTALL/" && echo "  ✓ Resources"
-fi
-if [[ ! -d "$MOMENTUM_INSTALL/subagents" ]]; then
-    cp -r "$MOMENTUM_SOURCE/subagents" "$MOMENTUM_INSTALL/" && echo "  ✓ Subagents"
-fi
+# Always update resources (used in subagent rendering)
+rm -rf "$MOMENTUM_INSTALL/resources"
+cp -r "$MOMENTUM_SOURCE/resources" "$MOMENTUM_INSTALL/" && echo "  ✓ Resources"
+# Always update subagents (JIT rendered at session start)
+rm -rf "$MOMENTUM_INSTALL/subagents"
+cp -r "$MOMENTUM_SOURCE/subagents" "$MOMENTUM_INSTALL/" && echo "  ✓ Subagents"
 if [[ ! -d "$MOMENTUM_INSTALL/skills" ]]; then
     cp -r "$MOMENTUM_SOURCE/skills" "$MOMENTUM_INSTALL/" && echo "  ✓ Skills"
 fi
@@ -339,7 +361,9 @@ if [[ -f "$MOMENTUM_SOURCE/hooks/package.json" ]]; then
     fi
 fi
 
-# Note: contexts/ no longer used - output format is in system.md, voice from TOML
+# Contexts (injectable prompts for hooks - always update)
+mkdir -p "$MOMENTUM_INSTALL/contexts"
+cp "$MOMENTUM_SOURCE/contexts"/*.md "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ Contexts (updated)"
 
 # Install voice files (always update to get latest)
 mkdir -p "$MOMENTUM_INSTALL/voices/styles"
@@ -360,6 +384,8 @@ cat > "$MOMENTUM_INSTALL/config.toml" << EOF
 [personalization]
 # Your name (used in greetings and voice output)
 name = "$USER_NAME"
+# Your assistant's name (becomes part of its identity)
+assistant_name = "$ASSISTANT_NAME"
 # IANA timezone for dates/filenames (internal timestamps stay UTC)
 timezone = "America/Los_Angeles"
 
@@ -421,6 +447,7 @@ export WORKFLOW_PROJECTS="$PLANNING_DIR"
 
 # Personalization
 export NAME="$USER_NAME"
+export ASSISTANT_NAME="$ASSISTANT_NAME"
 
 # Momentum paths
 export MOMENTUM_INSTALL="$HOME/.config/momentum"

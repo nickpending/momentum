@@ -172,20 +172,27 @@ No need to memorize commands. Just talk naturally:
 
 ## 🏗️ Architecture
 
-Momentum uses a mode-based architecture with specialized agents:
+Momentum uses identity-first prompt composition with specialized agents:
 
 ```
-Mode Selection              System Prompt              Specialized Agents
-       │                         │                           │
-momentum ──────────► workspace.md ──► Exploration, Ideation
-momentum <project> ──► project.md ──► Build, Ship, Iterate
-       │                         │                           │
+Mode Selection              Identity + Base              Specialized Agents
+       │                         │                            │
+momentum ──────────► workspace-identity.md ◄──┐
+momentum <project> ──► project-identity.md ◄──┼── base.md
+       │                         │             └── personality
+       │                         │                            │
        └──► Evidence Collection ──► Options Presentation
 ```
 
-- **Mode-Based Prompts**: Mustache-templated system prompt with mode-specific instructions
+**Prompt Composition:**
+- **Identity First**: Role, name, and personality establish who the assistant is at prompt start
+- **Mode-Specific Principles**: Each mode has distinct constraints and startup behavior
+- **Shared Mechanics**: Base.md provides agents, resources, guards, and output formatting
+
+**Key Design Decisions:**
+- **Mustache Templating**: Variables like `{{{PERSONALITY}}}` inject at render time
+- **Personality at Top**: Voice style shapes identity, not just output formatting
 - **Evidence-Based Agents**: Investigate actual code, present multiple verified options
-- **Context Management**: Preserves state across Claude's memory limitations
 - **Minimal Per-Turn Injection**: Only metadata (date/time/session) injected per message
 
 ## 🔧 Installation
@@ -223,21 +230,22 @@ Momentum uses TOML for structured configuration:
 # ~/.config/momentum/config.toml
 [personalization]
 name = "Your Name"
+assistant_name = "Sable"  # Your assistant's identity
 
 [paths]
 dev = "/path/to/development/projects"
 projects = "/path/to/obsidian/projects"
 
 [voice]
-style = "jarvis"  # jarvis, professional, casual
+style = "sable"  # sable, jarvis, professional, casual
 
 [voice.verbosity]
-assistant = "terse"   # Brief responses
-project = "brief"     # Focus on essentials
+assistant = "terse"   # Brief responses in workspace mode
+project = "brief"     # Focus on essentials in project mode
 
 [voice.tts]
 enabled = true
-provider = "system"  # system (free) or elevenlabs (premium)
+provider = "elevenlabs"  # system (free) or elevenlabs (premium)
 ```
 
 **Directory Structure:**
@@ -245,6 +253,25 @@ provider = "system"  # system (free) or elevenlabs (premium)
 - Voice styles: `~/.config/momentum/voices/`
 - Projects: `~/obsidian/projects/` (configurable)
 - Code: `~/development/projects/` (configurable)
+
+### Voice Personalities
+
+Momentum supports custom assistant personalities. The default "Sable" personality is inspired by Tilda Swinton's Ancient One - ethereal calm with quiet authority.
+
+**Creating a custom ElevenLabs voice:**
+
+Use this voice design prompt with ElevenLabs to create a matching voice:
+
+```
+Perfect audio quality. A woman in her 40s with a crisp British accent.
+Aristocratic but not stuffy — think ancient knowledge, not old money. Cool, precise diction
+with a subtle breathiness. A knowing quality, like she sees more than
+she says. Slight Scottish undertone beneath the RP accent.
+Normal speaking pace. Calm authority without warmth — detached compassion.
+Almost theatrical precision in articulation.
+```
+
+Voice styles are defined in `voices/styles/*.toml` and inject personality at the top of the system prompt, shaping identity from the start.
 
 ## 🚀 Usage Patterns
 
@@ -410,12 +437,16 @@ Areas where we'd love contributions:
 
 ```
 momentum/
-├── system.md          # Base system prompt (shared across modes)
-├── project.md         # Project mode instructions
-├── workspace.md       # Workspace mode instructions
+├── contexts/          # System prompt components
+│   ├── base.md            # Shared mechanics (agents, resources, guards, output)
+│   ├── project-identity.md    # Project mode identity and principles
+│   └── workspace-identity.md  # Workspace mode identity
+├── voices/            # Voice and personality configuration
+│   ├── styles/            # Personality styles (sable, jarvis, professional)
+│   └── verbosity/         # Response length (terse, brief, normal)
 ├── commands/          # Core workflow slash commands
 ├── subagents/         # Specialized analysis agents
-├── skills/            # Agent skills (experimental capability packages)
+├── skills/            # Agent skills (exploration, ideation)
 ├── templates/         # Project scaffolding templates
 ├── bin/               # setupd and other executables
 └── hooks/             # Dynamic context injection hooks
@@ -423,7 +454,16 @@ momentum/
 
 ## 🎯 Roadmap
 
-**v4.3.0** (Current):
+**v4.4.0** (Current):
+- [x] Identity-first prompt architecture (contexts/ directory)
+- [x] Personality injection at prompt top (shapes identity, not just output)
+- [x] Assistant name configuration (`assistant_name` in config.toml)
+- [x] Split personality/verbosity injection points
+- [x] Sable voice personality (Tilda Swinton-inspired)
+- [x] ElevenLabs voice design prompt included
+- [x] Prescriptive startup behaviors (how to greet, not scripted responses)
+
+**v4.3.x** (Previous):
 - [x] Consolidated system prompt (system.md + project.md + workspace.md)
 - [x] Mustache templating for dynamic prompt generation
 - [x] Minimal per-turn injection (metadata only: date/time/session)
@@ -432,17 +472,15 @@ momentum/
 - [x] Optimized prompts (-320 lines, instructions over documentation)
 - [x] Environment variable unification (${VAR} syntax)
 
-**v4.2.x** (Previous):
+**v4.2.x**:
 - [x] Workspace mode for exploration without project constraints
 - [x] State-based initialization (new → vision → planned → active)
 - [x] Knowledge capture system (CAPTURE lines → lore integration)
 - [x] MCP integration (playwright server for browser automation)
 - [x] TOML configuration with voice customization
 - [x] Evidence-based agent system (6 specialized agents)
-- [x] Three-layer observability (JSONL forensics, Lore knowledge, Argus real-time)
-- [x] Library-first architecture (llmcli-tools imports)
 
-**Next** (v4.4+):
+**Next** (v4.5+):
 - [ ] PreCompact hook for auto-save before context compression
 - [ ] Notification system for background processes
 - [ ] Enhanced backlog management

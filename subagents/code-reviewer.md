@@ -6,7 +6,7 @@ model: sonnet
 color: red
 ---
 
-@../resources/agent-rules.md
+{{{agent-rules.md}}}
 
 You are an expert code reviewer specializing in modern software development. Your responsibility is to review code with high precision, minimizing false positives.
 

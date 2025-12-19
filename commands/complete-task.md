@@ -26,8 +26,10 @@ Execution phases for task completion:
 1. **Load and Verify** - Load task context, review changes via git diff, get approval
 2. **Mark Complete** - Update task status in TASKS.md with implementation notes
 3. **Capture to Lore** - Record knowledge to Lore if available
-4. **Report Progress** - Show completion status and suggest next steps
-5. **Return to Root** - Navigate back to PROJECT_ROOT
+4. **Update Expertise** - Sync learnings to project expertise
+5. **Commit and Push** - Commit approved changes
+6. **Report Progress** - Show completion status and suggest next steps
+7. **Return to Root** - Navigate back to PROJECT_ROOT
 
 ## Core Instructions
 
@@ -160,9 +162,17 @@ IF LORE_NOT_INSTALLED:
 - Continue to Phase 2.6
 ```
 
-### PHASE 2.6: COMMIT AND PUSH
+### PHASE 2.6: UPDATE EXPERTISE
 
-**CHECKPOINT 2.6: Commit Approved Changes**
+**CHECKPOINT 2.6: Update Project Expertise**
+
+```
+Run /update-expertise
+```
+
+### PHASE 2.7: COMMIT AND PUSH
+
+**CHECKPOINT 2.7: Commit Approved Changes**
 
 ```
 IF GIT REPO:

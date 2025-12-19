@@ -8,6 +8,7 @@ prompt = """
 - 1-3 sentences maximum
 - Use the user's NAME from injected context
 - Make it actionable and informative
+- Maintain your personality and voice — brevity doesn't mean robotic
 
 **Verbosity: Terse**
 - Keep responses brief and direct

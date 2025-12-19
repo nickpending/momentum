@@ -33,6 +33,7 @@ import {
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
+import { renderSubagents } from "./shared/subagent-renderer.ts";
 
 interface SessionStartInput extends HookInput {
   source?: string; // startup | resume | clear | compact
@@ -93,6 +94,10 @@ async function main(): Promise<void> {
     const hasIdea = existsSync(ideaPath);
     const hasIteration = existsSync(iterationPath);
     const hasTasks = existsSync(tasksPath);
+
+    // Check for PROJECT_EXPERTISE.toml
+    const expertisePath = join(ARTIFACTS_DIR, "PROJECT_EXPERTISE.toml");
+    const hasExpertise = existsSync(expertisePath);
 
     let projectState: "new" | "vision" | "planned" | "active" | "workspace";
     let iterationInfo = "";
@@ -158,18 +163,20 @@ async function main(): Promise<void> {
       hasTasks,
     });
 
-    // Check gitignore compliance for non-workspace projects
-    let gitignoreWarning = "";
+    // Auto-fix gitignore compliance for non-workspace projects (silent)
     if (!isWorkspace) {
       try {
-        const complianceCheck = Bun.spawnSync(["gitignore-check", cwd]);
+        const complianceCheck = Bun.spawnSync([
+          "gitignore-check",
+          cwd,
+          "--fix",
+        ]);
 
-        if (complianceCheck.exitCode === 1) {
+        if (complianceCheck.exitCode === 1 || complianceCheck.exitCode === 2) {
           const result = JSON.parse(complianceCheck.stdout.toString());
-          if (!result.compliant && result.missing.length > 0) {
-            gitignoreWarning = `\n\n⚠️  **Gitignore Compliance Warning**\nProject .gitignore missing ${result.missing.length} base security pattern(s).\nRun: \`gitignore-check . --fix\` to auto-fix.`;
-            debugLog("SessionStart", "Gitignore non-compliant", {
-              missing: result.missing.length,
+          if (result.fixed && result.missing.length > 0) {
+            debugLog("SessionStart", "Gitignore auto-fixed", {
+              added: result.missing.length,
             });
           }
         }
@@ -178,6 +185,20 @@ async function main(): Promise<void> {
           error: String(error),
         });
       }
+    }
+
+    // Render subagents with resource substitution (JIT)
+    try {
+      const momentumHome = config.momentum.install;
+      const renderResult = renderSubagents(momentumHome);
+      debugLog("SessionStart", "Subagents rendered", {
+        rendered: renderResult.rendered,
+        errors: renderResult.errors.length,
+      });
+    } catch (error) {
+      debugLog("SessionStart", "Subagent rendering failed", {
+        error: String(error),
+      });
     }
 
     // Build metadata for PROJECT.md
@@ -218,9 +239,25 @@ async function main(): Promise<void> {
       });
     }
 
-    // Append gitignore compliance warning if present
-    if (gitignoreWarning) {
-      additionalContext += gitignoreWarning;
+    // Inject bootstrap-expertise context if expertise file missing (non-workspace)
+    if (!isWorkspace && !hasExpertise) {
+      try {
+        const momentumHome = config.momentum.install;
+        const bootstrapPath = join(
+          momentumHome,
+          "contexts",
+          "bootstrap-expertise.md",
+        );
+        if (existsSync(bootstrapPath)) {
+          const bootstrapContext = readFileSync(bootstrapPath, "utf-8");
+          additionalContext += `\n\n${bootstrapContext}`;
+          debugLog("SessionStart", "Expertise bootstrap context injected");
+        }
+      } catch (error) {
+        debugLog("SessionStart", "Failed to load bootstrap-expertise context", {
+          error: String(error),
+        });
+      }
     }
 
     const output = {

@@ -43,15 +43,8 @@ refresh_project_links() {
         ln -sf "$MOMENTUM_INSTALL/skills" "$dev_project/.claude/skills"
     fi
 
-    # Subagents directory
-    if [[ -d "$MOMENTUM_INSTALL/subagents" ]]; then
-        mkdir -p "$dev_project/.claude/agents"
-        for agent in "$MOMENTUM_INSTALL/subagents"/*.md; do
-            if [[ -f "$agent" ]]; then
-                ln -sf "$agent" "$dev_project/.claude/agents/$(basename "$agent")" 2>/dev/null || true
-            fi
-        done
-    fi
+    # Subagents directory (created only - populated by session start hook with JIT rendering)
+    mkdir -p "$dev_project/.claude/agents"
 
     # Contexts (hooks are referenced by absolute path in settings.json, no symlinks needed)
     rm -rf "$dev_project/.workflow/contexts" 2>/dev/null || true
@@ -604,10 +597,10 @@ if [[ ! -d "$MOMENTUM_INSTALL/resources" ]]; then
     resource_missing="${resource_missing}resources "
 fi
 
-# Report subagent count
+# Report subagent count (JIT rendered at session start)
 if [[ -d "$MOMENTUM_INSTALL/subagents" ]]; then
     subagent_count=$(ls -1 "$MOMENTUM_INSTALL/subagents"/*.md 2>/dev/null | wc -l)
-    echo -e "${GREEN}✅ Project subagents: $subagent_count linked${RESET}"
+    echo -e "${GREEN}✅ Project subagents: $subagent_count (JIT rendered)${RESET}"
 fi
 
 echo -e "${GREEN}✅ Project hooks: Momentum hook linked${RESET}"
