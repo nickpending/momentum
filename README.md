@@ -240,8 +240,8 @@ projects = "/path/to/obsidian/projects"
 style = "sable"  # sable, jarvis, professional, casual
 
 [voice.verbosity]
-assistant = "terse"   # Brief responses in workspace mode
-project = "brief"     # Focus on essentials in project mode
+assistant = "terse"   # Workspace mode verbosity
+project = "brief"     # Project mode verbosity
 
 [voice.tts]
 enabled = true

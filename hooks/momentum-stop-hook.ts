@@ -237,8 +237,10 @@ function shouldUseCache(
   config: ReturnType<typeof loadConfig>,
 ): boolean {
   // Get verbosity level for current mode
+  // Note: config uses "assistant" key for workspace mode, "project" for project mode
+  const configKey = mode === "workspace" ? "assistant" : "project";
   const verbosity =
-    config.voice.verbosity[mode as keyof typeof config.voice.verbosity] ||
+    config.voice.verbosity[configKey as keyof typeof config.voice.verbosity] ||
     "normal";
 
   // Check cache config for this verbosity level
