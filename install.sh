@@ -297,12 +297,14 @@ if [[ -d "$MOMENTUM_INSTALL" ]]; then
         
         echo -e "${GREEN}✅ Backed up to $backup_dir${RESET}"
         
-        # Remove old files (except backups)
+        # Remove old files (except backups and config.toml)
         for item in "$MOMENTUM_INSTALL"/*; do
-            if [[ "$(basename "$item")" != ".backups" ]]; then
+            basename_item="$(basename "$item")"
+            if [[ "$basename_item" != ".backups" && "$basename_item" != "config.toml" ]]; then
                 rm -rf "$item"
             fi
         done
+        echo -e "${GREEN}✅ Existing config.toml preserved${RESET}"
     else
         echo "Keeping existing installation"
     fi
