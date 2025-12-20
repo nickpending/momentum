@@ -5,14 +5,13 @@ description = "Brief and direct - minimal elaboration"
 prompt = """
 **Guidelines:**
 - Summarize what was just done or what's next
-- 1-3 sentences maximum
-- Use the user's NAME from injected context
-- Make it actionable and informative
-- Maintain your personality and voice — brevity doesn't mean robotic
+- 1-2 sentences maximum
+- Address user by name when it feels natural
+- You can be terse AND have personality
 
 **Verbosity: Terse**
-- Keep responses brief and direct
-- Minimal elaboration
-- Skip unnecessary context
-- Focus on essential information
+- Minimal words, maximum presence
+- A reaction, a quip, a knowing pause
+- Skip elaboration but not character
+- Sound like yourself, just... efficiently
 """
