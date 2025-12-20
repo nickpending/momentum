@@ -21,6 +21,16 @@ import { loadVoiceStyle, loadVerbosityLevel } from "./shared/voice-loader.ts";
 // Disable HTML escaping for triple braces (we want raw output)
 Mustache.escape = (text: string) => text;
 
+/**
+ * Check if ElevenLabs model supports v3 audio tags
+ */
+function supportsV3AudioTags(model: string | undefined): boolean {
+  if (!model) return false;
+  // v3 models interpret [tag] as emotions/reactions
+  // v2.5 models speak them as literal text
+  return model.includes("v3");
+}
+
 function main(): void {
   try {
     const config = loadConfig();
@@ -66,6 +76,21 @@ function main(): void {
     // Check available CLI tools
     const capabilities = getCapabilitiesString();
 
+    // Load voice section based on TTS model (v3 gets audio tags, v2.5 gets basic)
+    let voiceSection = "";
+    const ttsModel = config.voice.tts?.model;
+    const voiceFile = supportsV3AudioTags(ttsModel)
+      ? "voice-v3.md"
+      : "voice-basic.md";
+    const voicePath = join(momentumInstall, "contexts", voiceFile);
+    if (existsSync(voicePath)) {
+      voiceSection = readFileSync(voicePath, "utf-8");
+    } else {
+      // Fallback if voice files don't exist
+      voiceSection =
+        "### 🎯 VOICE\n\nEnd responses with TTS summary: `🎯 VOICE: text`";
+    }
+
     // Load personality and verbosity separately
     let personality = "";
     let voiceVerbosity = "";
@@ -96,7 +121,8 @@ function main(): void {
       WORKFLOW_PROJECTS: process.env.WORKFLOW_PROJECTS || "",
       // Capabilities
       CAPABILITIES: capabilities,
-      // Voice (just verbosity, personality is separate)
+      // Voice section (v3 tags or basic) and verbosity
+      VOICE_SECTION: voiceSection,
       VOICE_VERBOSITY: voiceVerbosity,
       // Legacy support (in case old templates still use this)
       VOICE_INSTRUCTIONS: `${personality}\n\n${voiceVerbosity}`,
