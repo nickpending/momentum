@@ -77,7 +77,7 @@ VERIFICATION: You know how to run tests for this project
 ```
 REQUIRED: Understand what was built:
 - READ `${PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`
-- LOCATE task {task-number}
+- LOCATE task {TASK_NUMBER}
 - VERIFY task status is 🔄 In Progress or ✅ Complete
 - IDENTIFY what functionality was implemented
 - READ the actual implementation code

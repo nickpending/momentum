@@ -191,7 +191,7 @@ REQUIRED: Report progress and suggest next steps:
 
 COMPLETION REPORT:
 =====================================
-TASK {task-number} COMPLETED ✅
+TASK {TASK_NUMBER} COMPLETED ✅
 =====================================
 
 Task: [task name and key accomplishment]

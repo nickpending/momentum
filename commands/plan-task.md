@@ -29,7 +29,7 @@ Each step builds on previous steps. Do not skip ahead or produce final summary w
 **REQUIRED ACTIONS:**
 
 1. EXTRACT from ARTIFACTS_DIR/TASKS.md (already loaded by /load-app-context):
-   - Task {task-number} details, feature number
+   - Task {TASK_NUMBER} details, feature number
    - Task type (Implementation/Design/Research)
    - Deliverables, demo commands, dependencies
    - Embedded standards that apply (from ITERATION.md Tech Stack section)
@@ -48,7 +48,7 @@ Context loaded, task type identified, feature tasks scanned.
 
 **REQUIRED ACTIONS:**
 
-1. ASK: "Would a user care if I completed ONLY task {task-number}?"
+1. ASK: "Would a user care if I completed ONLY task {TASK_NUMBER}?"
 
 2. DECIDE grouping:
    - **NO** → Group related tasks for meaningful delivery
@@ -56,7 +56,7 @@ Context loaded, task type identified, feature tasks scanned.
 
 3. STATE decision:
    ```
-   GROUPING: [SINGLE {task-number} / GROUP X.Y-X.Z]
+   GROUPING: [SINGLE {TASK_NUMBER} / GROUP X.Y-X.Z]
    RATIONALE: [Why this grouping provides user value]
    ```
 

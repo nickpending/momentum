@@ -13,7 +13,7 @@ Spawn task-planner subagent, handle specialist routing, synthesize final plan.
 ## Step 1: Get Task Details
 
 READ the task file:
-- `${PROJECT_ROOT}/.workflow/artifacts/tasks/task-{task-number}-*.md` (glob for slug)
+- `${PROJECT_ROOT}/.workflow/artifacts/tasks/task-{TASK_NUMBER}-*.md` (glob for slug)
 
 This contains full implementation guidance from the decomposer.
 
@@ -26,8 +26,8 @@ FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines y
 
 Then plan this task:
 - PROJECT_ROOT: {value}
-- task-number: {task-number}
-- task-file: {PROJECT_ROOT}/.workflow/artifacts/tasks/task-{task-number}-*.md
+- TASK_NUMBER: {TASK_NUMBER}
+- task-file: {PROJECT_ROOT}/.workflow/artifacts/tasks/task-{TASK_NUMBER}-*.md
 
 Planning process:
 1. Read task file, extract details and scan related tasks
@@ -87,7 +87,7 @@ PRESENT final plan to user:
 ```
 PLAN READY
 
-Task: {task-number} - {title}
+Task: {TASK_NUMBER} - {title}
 Complexity: {complexity}
 Specialists: {arch/impl/none}
 
