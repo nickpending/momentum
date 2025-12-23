@@ -22,7 +22,7 @@ Extract task {task-number} title and description.
 SPAWN task-planner subagent with this prompt:
 
 ```
-FIRST: Read {PROJECT_ROOT}/resources/agent-rules.md — this defines your output format.
+FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format.
 
 Then plan this task:
 - PROJECT_ROOT: {value}

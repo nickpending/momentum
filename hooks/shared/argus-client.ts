@@ -11,7 +11,7 @@ import {
   type ArgusEvent as BaseArgusEvent,
   type ArgusHook,
   type ArgusStatus,
-} from "argus-send";
+} from "@voidwire/argus-send";
 import { debugLog } from "./debug-log.ts";
 
 // Re-export types from argus-send for hook consumers

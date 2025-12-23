@@ -16,7 +16,7 @@ interface Capability {
 
 const CAPABILITIES: Record<string, Capability> = {
   lore: {
-    command: "lore-capture",
+    command: "lore",
     configPath: ".config/lore/config",
     description: "Personal knowledge capture",
   },

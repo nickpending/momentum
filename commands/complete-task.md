@@ -138,9 +138,9 @@ Based on the task you just completed and the implementation notes, generate a JS
 capturing the knowledge gained. Think about what would be valuable to remember for
 future similar tasks.
 
-CAPTURE TO LORE using lore-capture CLI:
+CAPTURE TO LORE using lore CLI:
 
-lore-capture task \
+lore capture task \
   --project="{current-project-name}" \
   --name="[Task name from TASKS.md]" \
   --problem="[Core problem this task addressed]" \
@@ -153,7 +153,7 @@ lore-capture task \
   --tech="[library1,framework1,tool1]" \
   --difficulty="[What made this tricky or easy]"
 
-NOTE: lore-capture is installed globally via bun at ~/.bun/bin/lore-capture
+NOTE: lore is installed globally via bun at ~/.bun/bin/lore
 
 VERIFICATION: Event captured to Lore for future knowledge retrieval
 

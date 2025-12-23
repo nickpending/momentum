@@ -16,7 +16,10 @@ import {
 import { postToArgus } from "./shared/argus-client.ts";
 import { buildPromptContext } from "./shared/summary-context.ts";
 import { getLastAssistantMessage } from "./shared/transcript-parser.ts";
-import { summarize, loadConfig as loadLLMConfig } from "llm-summarize";
+import {
+  summarize,
+  loadConfig as loadLLMConfig,
+} from "@voidwire/llm-summarize";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 
 interface HookInput {

@@ -33,7 +33,7 @@ import {
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
-import { renderSubagents } from "./shared/subagent-renderer.ts";
+import { updateExpertise } from "@voidwire/expertise-update";
 
 interface SessionStartInput extends HookInput {
   source?: string; // startup | resume | clear | compact
@@ -98,6 +98,23 @@ async function main(): Promise<void> {
     // Check for PROJECT_EXPERTISE.toml
     const expertisePath = join(ARTIFACTS_DIR, "PROJECT_EXPERTISE.toml");
     const hasExpertise = existsSync(expertisePath);
+
+    // Sync Lore insights into PROJECT_EXPERTISE.toml (best-effort)
+    if (hasExpertise && !isWorkspace) {
+      try {
+        const result = await updateExpertise(projectName, cwd);
+        if (result.updated) {
+          debugLog("SessionStart", "Lore insights synced", {
+            added: result.insights_added,
+            total: result.total_insights,
+          });
+        }
+      } catch (error) {
+        debugLog("SessionStart", "Lore sync failed", {
+          error: String(error),
+        });
+      }
+    }
 
     let projectState: "new" | "vision" | "planned" | "active" | "workspace";
     let iterationInfo = "";
@@ -185,20 +202,6 @@ async function main(): Promise<void> {
           error: String(error),
         });
       }
-    }
-
-    // Render subagents with resource substitution (JIT)
-    try {
-      const momentumHome = config.momentum.install;
-      const renderResult = renderSubagents(momentumHome);
-      debugLog("SessionStart", "Subagents rendered", {
-        rendered: renderResult.rendered,
-        errors: renderResult.errors.length,
-      });
-    } catch (error) {
-      debugLog("SessionStart", "Subagent rendering failed", {
-        error: String(error),
-      });
     }
 
     // Build metadata for PROJECT.md

@@ -17,9 +17,11 @@ Key directories:
 - Operators: `{PROJECT_ROOT}/.workflow/agents/operators/`
 
 Key files:
-- `{PROJECT_ROOT}/.workflow/artifacts/TASKS.md` - Task definitions
+- `{PROJECT_ROOT}/CLAUDE.md` - Project conventions
+- `{PROJECT_ROOT}/.workflow/artifacts/IDEA.md` - Vision, problem, solution
 - `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md` - Current iteration plan
-- `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml` - Codebase knowledge
+- `{PROJECT_ROOT}/.workflow/artifacts/TASKS.md` - Task definitions
+- `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml` - Codebase knowledge, patterns, gotchas
 
 ## Operator Log
 

@@ -6,9 +6,10 @@
   "type": "module",
   "dependencies": {
     "@types/mustache": "^4.2.6",
-    "argus-send": "link:argus-send",
-    "llm-summarize": "link:llm-summarize",
-    "lore-capture": "link:lore-capture",
+    "@voidwire/argus-send": "^2.0.0",
+    "@voidwire/expertise-update": "^1.0.0",
+    "@voidwire/llm-summarize": "^2.0.0",
+    "@voidwire/lore": "^0.1.0",
     "mustache": "^4.2.0"
   }
 }

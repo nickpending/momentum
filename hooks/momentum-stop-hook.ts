@@ -1,7 +1,7 @@
 #!/usr/bin/env bun
 /**
  * Momentum Stop Hook
- * Processes CAPTURE lines via lore-capture and speaks VOICE summaries via lspeak TTS
+ * Processes CAPTURE lines via lore and speaks VOICE summaries via lspeak TTS
  */
 
 import { existsSync } from "fs";
@@ -19,8 +19,11 @@ import {
   getLastUserMessage,
 } from "./shared/transcript-parser.ts";
 import { buildResponseContext } from "./shared/summary-context.ts";
-import { captureKnowledge, type KnowledgeCaptureType } from "lore-capture";
-import { summarize, loadConfig as loadLLMConfig } from "llm-summarize";
+import { captureKnowledge, type KnowledgeCaptureType } from "@voidwire/lore";
+import {
+  summarize,
+  loadConfig as loadLLMConfig,
+} from "@voidwire/llm-summarize";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 
 interface StopHookInput {
@@ -179,7 +182,7 @@ function extractCaptureLines(
 }
 
 /**
- * Process CAPTURE lines via lore-capture library
+ * Process CAPTURE lines via lore library
  */
 function processCaptureLines(
   captures: Array<{ context: string; type: string; insight: string }>,
@@ -191,7 +194,7 @@ function processCaptureLines(
   debugLog("StopHook", `Processing ${captures.length} CAPTURE lines`, {});
 
   for (const capture of captures) {
-    debugLog("StopHook", "Calling lore-capture", {
+    debugLog("StopHook", "Calling lore captureKnowledge", {
       context: capture.context,
       insight: capture.insight,
       type: capture.type,
@@ -209,7 +212,7 @@ function processCaptureLines(
         type: capture.type,
       });
     } else {
-      debugLog("StopHook", "lore-capture failed", {
+      debugLog("StopHook", "lore capture failed", {
         error: result.error,
         context: capture.context,
       });

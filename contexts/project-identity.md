@@ -16,15 +16,20 @@ Your primary responsibility is to write functional code that integrates cleanly 
 ## Constraints
 
 **Never:**
+
 - Create docs unless requested (documentation is a separate task)
 - Mock internal services (integration issues hide until production)
 - Restructure directories without permission (breaks mental models)
 - Break existing API contracts (downstream consumers depend on them)
 - Commit without explicit ask (user controls version history)
 - Use interactive git (rebase -i, add -i)
+- Mention MVPs or shortcuts — focus on long-term solutions that are maintainable, matched to the problem domain and not just quick wins.
 
 **Always:**
+
 - Check existing patterns first
+- Use existing tools and libraries
+- Be aware and honor any data contracts
 - Ask before adding new dependencies
 - Verify quality gates before marking complete
 - Resume agents when gaps arise from their work
@@ -35,35 +40,36 @@ Secrets in env vars, never hardcoded. Never commit .env, credentials, or .workfl
 
 ## Dev Commands
 
-| Command | Action |
-|---------|--------|
-| **qtest** | Write ONE integration test |
-| **qenv** | Check env vars vs .env.example |
-| **qcheck** | Skeptical senior engineer review |
-| **qfix** | Debug and fix error |
-| **qsweep** | Check what needs attention |
-| **qnext** | What's next based on current work |
-| **qux** | List test scenarios by priority |
-| **qpropagate** | Update tasks based on discovery |
-| **qlum** | Quick luminary sanity check |
-| **qwwld** | What would luminaries do |
+| Command        | Action                            |
+| -------------- | --------------------------------- |
+| **qtest**      | Write ONE integration test        |
+| **qenv**       | Check env vars vs .env.example    |
+| **qcheck**     | Skeptical senior engineer review  |
+| **qfix**       | Debug and fix error               |
+| **qsweep**     | Check what needs attention        |
+| **qnext**      | What's next based on current work |
+| **qux**        | List test scenarios by priority   |
+| **qpropagate** | Update tasks based on discovery   |
+| **qlum**       | Quick luminary sanity check       |
+| **qwwld**      | What would luminaries do          |
 
 ## Startup Behavior
 
 On "ready" with PROJECT_STATE metadata:
 
-| State | Guidance |
-|-------|----------|
-| **new** | No vision exists — offer ideation |
-| **vision** | Vision exists but no iteration — suggest `/plan-iteration` |
+| State       | Guidance                                                        |
+| ----------- | --------------------------------------------------------------- |
+| **new**     | No vision exists — offer ideation                               |
+| **vision**  | Vision exists but no iteration — suggest `/plan-iteration`      |
 | **planned** | Iteration planned but no tasks — suggest `/decompose-iteration` |
-| **active** | Report iteration progress, suggest `/load-app-context` |
+| **active**  | Report iteration progress, suggest `/load-app-context`          |
 
 Greet naturally in your voice. Acknowledge the project and state without robotic announcements. Wait for direction.
 
 ## Project Context
 
 **Key locations:**
+
 - `${PROJECT_ROOT}/.workflow/artifacts/` — TASKS.md, PROJECT_SUMMARY.md, ITERATION.md
 - `${PROJECT_ROOT}/.workflow/state/` — Saved development state
 - `${WORKFLOW_PROJECTS}/{project}/later.md` — Backlog items

@@ -11,7 +11,7 @@ import {
   type HookInput,
 } from "./shared/jsonl-logger.ts";
 import { postToArgus } from "./shared/argus-client.ts";
-import { captureKnowledge } from "lore-capture";
+import { captureKnowledge } from "@voidwire/lore";
 import { Glob } from "bun";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 

@@ -4,17 +4,28 @@
     "": {
       "name": "momentum-hooks",
       "dependencies": {
-        "argus-send": "link:argus-send",
-        "llm-summarize": "link:llm-summarize",
-        "lore-capture": "link:lore-capture",
+        "@types/mustache": "^4.2.6",
+        "@voidwire/argus-send": "^2.0.0",
+        "@voidwire/expertise-update": "^1.0.0",
+        "@voidwire/llm-summarize": "^2.0.0",
+        "@voidwire/lore": "^0.1.0",
+        "mustache": "^4.2.0",
       },
     },
   },
   "packages": {
-    "argus-send": ["argus-send@link:argus-send", { "bin": { "argus-send": "./cli.ts" } }],
+    "@types/mustache": ["@types/mustache@4.2.6", "", {}, "sha512-t+8/QWTAhOFlrF1IVZqKnMRJi84EgkIK5Kh0p2JV4OLywUvCwJPFxbJAl7XAow7DVIHsF+xW9f1MVzg0L6Szjw=="],
 
-    "llm-summarize": ["llm-summarize@link:llm-summarize", { "bin": { "llm-summarize": "./cli.ts" } }],
+    "@voidwire/argus-send": ["@voidwire/argus-send@2.0.0", "", { "bin": { "argus-send": "cli.ts" } }, "sha512-5o2Irwja0MgkEMKw/OQeBUBM/AmfNuc/Fkl0GHoJ+hzLOPRwmk23nAISKVupnBI+qkp7QuRQt+m4tJ+iJpwxcw=="],
 
-    "lore-capture": ["lore-capture@link:lore-capture", { "bin": { "lore-capture": "./cli.ts" } }],
+    "@voidwire/expertise-update": ["@voidwire/expertise-update@1.0.0", "", { "dependencies": { "@voidwire/lore": "^0.1.0", "smol-toml": "1.3.1" }, "bin": { "expertise-update": "cli.ts" } }, "sha512-xm2ehHSwQzehg2hKEtYfkC2CuclCZNDjbOK7ikyGdUIHcgWVvP+xiPCcQ61T7ZNbFydKf1wc4SRnZhlTWUz/zw=="],
+
+    "@voidwire/llm-summarize": ["@voidwire/llm-summarize@2.0.0", "", { "bin": { "llm-summarize": "cli.ts" } }, "sha512-h4kh3X38cG0Trb92vWhpw32AcInYcjh27yWijsSJmxNxXrocTrWqeWAEZZ4/aSlnSNME4ngIRCsHp6lQYdiiBA=="],
+
+    "@voidwire/lore": ["@voidwire/lore@0.1.0", "", { "bin": { "lore": "cli.ts" } }, "sha512-j/5DMmyW3MbBp2KEn50tAMX9dI5bqwsNCrpiYmQiW1Cf11GOhJwhCvRfSgsRlcM0TLFvVwIwYb3Df3gRnBVGGw=="],
+
+    "mustache": ["mustache@4.2.0", "", { "bin": { "mustache": "bin/mustache" } }, "sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ=="],
+
+    "smol-toml": ["smol-toml@1.3.1", "", {}, "sha512-tEYNll18pPKHroYSmLLrksq233j021G0giwW7P3D24jC54pQ5W5BXMsQ/Mvw1OJCmEYDgY+lrzT+3nNUtoNfXQ=="],
   }
 }
