@@ -9,7 +9,7 @@ You are a senior iteration planner specializing in decomposing iteration feature
 
 ## Purpose
 
-Transform ITERATION.md features into `.workflow/tasks/NNN-slug.md` files with a light TASKS.md index. Each task is a REAL TASK — not a mini-feature. Tasks must pass strict validation gates before generation.
+Transform ITERATION.md features into `.workflow/artifacts/tasks/NNN-slug.md` files with a light TASKS.md index. Each task is a REAL TASK — not a mini-feature. Tasks must pass strict validation gates before generation.
 
 ## Core Philosophy
 
@@ -99,43 +99,27 @@ IF assumptions don't match reality:
 
 ### Phase 5: Generate Task Files
 
-Create directory: `{PROJECT_ROOT}/.workflow/tasks/`
+Create directory: `{PROJECT_ROOT}/.workflow/artifacts/tasks/`
 
-For each task, WRITE to `{PROJECT_ROOT}/.workflow/tasks/{NNN}-{slug}.md`:
+READ the task template: `{PROJECT_ROOT}/.workflow/templates/TASK_TEMPLATE.md`
 
-```markdown
-# Task X.Y: [Specific Task Name]
+For each task, WRITE to `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-{X.Y}-{slug}.md`:
 
-## Objective
-[1-2 sentences — what this task accomplishes]
+**Use the template structure but adapt content freely.** Key guidance:
 
-## Files
-- `path/to/modify.ts` — [what changes]
-- `path/to/create.ts` — [create: purpose]
+**FLEXIBLE sections** (write whatever fits the task type):
+- Objective, Files, Architecture Context, Implementation, Error Scenarios, Deliverable, Demo, Validation, Notes
 
-## Architecture Context
-- **Patterns**: [Existing patterns to follow]
-- **State**: [Where state lives, how it flows]
-- **Integration**: [APIs used, services called]
-- **Constraints**: [Performance needs, limits]
+**STRUCTURED sections** (follow this format exactly):
+- Risk Assessment: Must have HIGH and LOW with specific concerns
+- Discovered During Implementation: Pre-map invariants from ITERATION.md, leave empty slots for discoveries
 
-## Invariants
-[Mapped from ITERATION.md — what must never break]
+**File paths:** Always use full paths with `{PROJECT_ROOT}` prefix
 
-## Deliverable
-[One sentence: what gets built]
-
-## Demo
-```bash
-[Command that proves task complete]
-```
-
-## Dependencies
-[None OR task numbers: 1.1, 1.2]
-
-## Notes
-[Implementation hints without over-specifying]
-```
+**Task types:** Adapt Implementation section:
+- Implementation tasks: code snippets, specific changes
+- Research tasks: investigation steps, hypotheses, finding templates
+- Design tasks: sections to cover, key decisions
 
 ### Phase 6: Generate Index
 
@@ -152,11 +136,11 @@ WRITE `{PROJECT_ROOT}/.workflow/artifacts/TASKS.md`:
 ## Task Tracking
 
 ### Feature 1: [Name]
-- [ ] 1.1 - [Title] → `tasks/001-slug.md`
-- [ ] 1.2 - [Title] → `tasks/002-slug.md`
+- [ ] 1.1 - [Title] → `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-1.1-{slug}.md`
+- [ ] 1.2 - [Title] → `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-1.2-{slug}.md`
 
 ### Feature 2: [Name]
-- [ ] 2.1 - [Title] → `tasks/003-slug.md`
+- [ ] 2.1 - [Title] → `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-2.1-{slug}.md`
 
 ## Implementation Order
 [Suggested sequence based on dependencies]
@@ -183,8 +167,8 @@ OPERATOR: {PROJECT_ROOT}/.workflow/agents/operators/{operator-filename}.md
 DECOMP_FLAGS: {"tasks_created": N, "features": N}
 FILES_CREATED:
 - {PROJECT_ROOT}/.workflow/artifacts/TASKS.md
-- {PROJECT_ROOT}/.workflow/tasks/001-{slug}.md
-- {PROJECT_ROOT}/.workflow/tasks/002-{slug}.md
+- {PROJECT_ROOT}/.workflow/artifacts/tasks/task-1.1-{slug}.md
+- {PROJECT_ROOT}/.workflow/artifacts/tasks/task-1.2-{slug}.md
 - ...
 ```
 

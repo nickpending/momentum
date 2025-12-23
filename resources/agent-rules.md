@@ -55,6 +55,15 @@ Keep entries SHORT — one line per bullet. No structured sections, no code bloc
 - Next: Implement injection block
 ```
 
+## Resume Behavior
+
+When resumed by orchestrator (you receive new instructions mid-task):
+
+1. Read your existing operator file to restore context
+2. Append resume marker: `- [HH:MM] **RESUMED:** {1-line summary of new instructions}`
+3. Continue normal append-only logging
+4. Update `## Summary` to reflect combined work (don't duplicate)
+
 ## Reports
 
 Write final report to `{PROJECT_ROOT}/.workflow/agents/reports/`

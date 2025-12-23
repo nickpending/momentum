@@ -54,7 +54,7 @@ STORE the agent_id for resume.
 
 IF decomposer returned questions:
 - USE AskUserQuestion to gather answers
-- RESUME decomposer with answers
+- RESUME decomposer with: "Continue your operator log. {answers to questions}"
 
 ASK user about:
 - Ambiguous behaviors that could go multiple ways
@@ -103,7 +103,7 @@ Ready to generate task files?
 ## Step 5: Generate Files
 
 IF user approves:
-- RESUME decomposer with: "Generate task files and TASKS.md index"
+- RESUME decomposer with: "Continue your operator log. Generate task files and TASKS.md index. {any additional details}"
 - WAIT for completion
 
 READ the agent's report from REPORT path.
@@ -111,13 +111,13 @@ READ the agent's report from REPORT path.
 ## Step 6: Verify
 
 CHECK generated files:
-- Task files exist in `.workflow/tasks/`
+- Task files exist in `.workflow/artifacts/tasks/`
 - TASKS.md index created
 - Each task has demo command
 - Dependencies are valid
 
 IF issues found:
-- RESUME decomposer with specific corrections
+- RESUME decomposer with: "Continue your operator log. {specific corrections}"
 - Re-verify after corrections
 
 ## Step 7: Complete
@@ -126,7 +126,7 @@ IF issues found:
 DECOMPOSITION COMPLETE
 ======================
 Tasks created: {count}
-Location: .workflow/tasks/
+Location: .workflow/artifacts/tasks/
 Index: .workflow/artifacts/TASKS.md
 
 First task: {X.Y} - {name}

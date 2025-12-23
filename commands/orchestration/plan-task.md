@@ -12,10 +12,10 @@ Spawn task-planner subagent, handle specialist routing, synthesize final plan.
 
 ## Step 1: Get Task Details
 
-Check if you've already read TASKS.md in this conversation. If not, read it:
-- `${PROJECT_ROOT}/.workflow/artifacts/TASKS.md`
+READ the task file:
+- `${PROJECT_ROOT}/.workflow/artifacts/tasks/task-{task-number}-*.md` (glob for slug)
 
-Extract task {task-number} title and description.
+This contains full implementation guidance from the decomposer.
 
 ## Step 2: Spawn Planner
 
@@ -27,10 +27,10 @@ FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines y
 Then plan this task:
 - PROJECT_ROOT: {value}
 - task-number: {task-number}
-- task-description: {extracted from TASKS.md}
+- task-file: {PROJECT_ROOT}/.workflow/artifacts/tasks/task-{task-number}-*.md
 
 Planning process:
-1. Read TASKS.md, extract task details and scan related tasks
+1. Read task file, extract details and scan related tasks
 2. Decide grouping: "Would user care if I completed ONLY this task?"
 3. Route by type (Implementation/Design/Research)
 4. For implementation: explore codebase, read actual files
@@ -50,7 +50,7 @@ If it needs implementation guidance, spawn implementation-analyst.
 
 ## Step 4: Finalize
 
-If specialists ran, resume the task-planner with their analysis so it can finalize.
+If specialists ran, RESUME task-planner with: "Continue your operator log. {specialist analysis summaries}"
 
 ## Step 5: Read Report
 
@@ -74,10 +74,10 @@ Compare the agent's plan against the original task requirements:
 
 If gaps OR deviations exist:
 1. Check if the report already explains the rationale for each deviation/gap
-2. If rationale is missing, RESUME the agent and ask why
+2. If rationale is missing, RESUME agent with: "Continue your operator log. {ask why for specific gaps/deviations}"
 3. Present findings to the user with specific examples AND rationale (from report or agent)
 4. Ask: "Should I have the agent revise, or proceed as-is?"
-5. If user wants revision, RESUME the agent with the specific issues to address
+5. If user wants revision, RESUME agent with: "Continue your operator log. {specific issues to address}"
 6. Do NOT fill gaps or correct deviations yourself — the agent owns its domain
 
 ## Step 7: Present

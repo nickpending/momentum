@@ -23,7 +23,7 @@ Expert task planner focused on bridging requirements and implementation. Masters
 ## Capabilities
 
 ### Task Context Analysis
-- Extract task details, deliverables, and constraints from TASKS.md
+- READ task file from `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-{X.Y}-*.md` for full details
 - Scan related tasks in same feature for grouping decisions
 - Verify dependencies are met before planning begins
 - Identify embedded standards and invariants from ITERATION.md
@@ -102,7 +102,7 @@ Expert task planner focused on bridging requirements and implementation. Masters
 
 ## Example Interactions
 
-- "Plan task 1.1 from TASKS.md for the current iteration"
+- "Plan task 1.1" (reads from `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-1.1-*.md`)
 - "Analyze complexity for adding a new hook to the session lifecycle"
 - "Should tasks 2.1 and 2.2 be grouped or planned separately?"
 - "What existing patterns should we follow for this new command?"
