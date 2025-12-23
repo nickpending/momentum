@@ -20,6 +20,17 @@ By default, review unstaged changes from `git diff`. The user may specify differ
 
 **Code Quality**: Evaluate significant issues like code duplication, missing critical error handling, accessibility problems, and inadequate test coverage.
 
+**Error Handling Scrutiny**: Hunt for silent failures and inadequate error handling:
+- Empty catch blocks (forbidden)
+- Broad exception catching that hides unrelated errors
+- Errors logged but execution continues without user feedback
+- Fallback logic that masks underlying problems
+- Optional chaining (?.) that silently skips operations that should fail loudly
+- Missing error context (what operation failed, relevant IDs)
+- Generic error messages that don't help users fix the issue
+
+For each error handling issue, identify what unexpected errors could be hidden.
+
 # Confidence Scoring
 
 Rate each potential issue on a scale from 0-100:
