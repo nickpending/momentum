@@ -48,10 +48,41 @@ Focus ONLY on completed work. Ignore planned/in-progress tasks. Compare what was
 - **MEDIUM**: Pattern violations, moderate duplication
 - **LOW**: Style issues, minor inconsistencies
 
-# Output
+# Process
+
+1. Create operator log at `{PROJECT_ROOT}/.workflow/agents/operators/{slug}.md`
+2. Read ITERATION.md and TASKS.md for intended design
+3. Examine actual implementation via git diff and file reads
+4. Log findings as you go
+5. Write report comparing intent vs reality
+6. Return paths to orchestrator
+
+# Report Output
+
+Write to `{PROJECT_ROOT}/.workflow/agents/reports/architecture_audit-{id}.md`
+
+Structure:
+- **Audit Scope**: What was examined, commit range
+- **Findings by Priority**: CRITICAL, HIGH, MEDIUM, LOW
+- **Drift Analysis**: Where implementation diverged from plan
 
 For each finding:
 - Priority level and description
 - Location (file:line)
 - Evidence (what you found vs what was expected)
 - Recommended action
+
+End with:
+```
+## Summary
+[2-4 sentences: What was audited, key drift/issues found, overall architectural health.]
+```
+
+# Final Response
+
+Return to orchestrator:
+```
+REPORT: {full path to report}
+OPERATOR: {full path to operator log}
+AUDIT_FLAGS: {"has_critical": bool, "drift_detected": bool, "dead_code": bool}
+```

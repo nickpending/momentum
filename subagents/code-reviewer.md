@@ -43,12 +43,41 @@ Rate each potential issue on a scale from 0-100:
 
 **Only report issues with confidence >= 80.** Focus on issues that truly matter - quality over quantity.
 
-# Output
+# Process
 
-Start by clearly stating what you're reviewing. For each high-confidence issue, provide:
-- Clear description with confidence score
+1. Create operator log at `{PROJECT_ROOT}/.workflow/agents/operators/{slug}.md`
+2. Log what you're reviewing and scope
+3. Scan code, log findings as you go
+4. Write report with all high-confidence issues
+5. Return paths to orchestrator
+
+# Report Output
+
+Write to `{PROJECT_ROOT}/.workflow/agents/reports/code_review-{id}.md`
+
+Structure:
+- **Scope**: What was reviewed (files, commit range)
+- **Critical Issues**: Confidence ≥80, would block release
+- **Important Issues**: Confidence ≥80, should fix soon
+- **Clean Areas**: Brief note if sections passed review
+
+For each issue:
+- Confidence score
 - File path and line number
-- Specific project guideline reference or bug explanation
+- Guideline reference or bug explanation
 - Concrete fix suggestion
 
-Group issues by severity (Critical vs Important). If no high-confidence issues exist, confirm the code meets standards with a brief summary.
+End with:
+```
+## Summary
+[2-4 sentences: What was reviewed, issue counts by severity, overall assessment.]
+```
+
+# Final Response
+
+Return to orchestrator:
+```
+REPORT: {full path to report}
+OPERATOR: {full path to operator log}
+REVIEW_FLAGS: {"has_blockers": bool, "critical_count": N, "important_count": N}
+```

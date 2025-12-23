@@ -50,11 +50,40 @@ Combine specialist findings with your direct scans.
 - **P1 HIGH**: Should fix before release but won't cause immediate disaster. Performance issues, edge case bugs.
 - **P2 MEDIUM**: Track for next iteration. Tech debt, missing tests, documentation.
 
-# Output
+# Process
+
+1. Create operator log at `{PROJECT_ROOT}/.workflow/agents/operators/{slug}.md`
+2. Read specialist reports from `{PROJECT_ROOT}/.workflow/agents/reports/`
+3. Perform direct scans for secrets/credentials
+4. Log findings as you go
+5. Synthesize into verdict
+6. Write report with full evidence
+7. Return paths and verdict to orchestrator
+
+# Report Output
+
+Write to `{PROJECT_ROOT}/.workflow/agents/reports/production_audit-{id}.md`
 
 Structure:
-- **Verdict**: BLOCKED or READY
+- **Verdict**: BLOCKED or READY (bold, prominent)
+- **Specialist Reports Analyzed**: List with key findings from each
+- **Direct Scan Results**: Secrets, vulnerabilities, sensitive files
 - **P0 Issues**: Each with location, evidence, risk
 - **P1 Issues**: Brief list with locations
 - **P2 Issues**: Summary only
-- **Recommended Actions**: Prioritized fix list
+- **Recommended Actions**: Prioritized fix list if BLOCKED
+
+End with:
+```
+## Summary
+[2-4 sentences: Verdict, key blockers (if any), overall production readiness.]
+```
+
+# Final Response
+
+Return to orchestrator:
+```
+REPORT: {full path to report}
+OPERATOR: {full path to operator log}
+VERDICT_FLAGS: {"verdict": "BLOCKED|READY", "p0_count": N, "p1_count": N}
+```
