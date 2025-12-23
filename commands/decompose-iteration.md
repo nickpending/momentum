@@ -41,7 +41,7 @@ description: Break iteration features into concrete implementable tasks
 
 ```
 REQUIRED: Load and analyze iteration context:
-- READ `${PROJECT_ROOT}/.workflow/artifacts/ITERATION.md` for all features
+- READ `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md` for all features
 - EXTRACT each numbered "task" (these are actually features)
 - IDENTIFY embedded standards and tech patterns
 - NOTE success criteria for each feature
@@ -309,7 +309,7 @@ Please respond with YES or NO.
 ```
 REQUIRED: Create TASKS.md in project root using template:
 
-TEMPLATE LOCATION: `${PROJECT_ROOT}/.workflow/templates/TASKS_TEMPLATE.md`
+TEMPLATE LOCATION: `{PROJECT_ROOT}/.workflow/templates/TASKS_TEMPLATE.md`
 - USE template structure exactly
 - POPULATE all fields for each task
 - ENSURE every task has complete information
@@ -328,7 +328,7 @@ TASK TYPE HANDLING:
 - Design Tasks: Mark as "Type: Design Task", output to designs/
 - Research Spikes: Mark as "Type: Research Spike", focus on question to answer
 
-LOCATION: Create in `${PROJECT_ROOT}/.workflow/artifacts/`
+LOCATION: Create in `{PROJECT_ROOT}/.workflow/artifacts/`
 VERIFICATION: TASKS.md follows template structure exactly
 ```
 

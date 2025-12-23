@@ -59,7 +59,7 @@ Think like a safety inspector who:
 
 ```
 REQUIRED: Understand how testing works in this project:
-- READ `${PROJECT_ROOT}/.workflow/artifacts/TESTING.md`
+- READ `{PROJECT_ROOT}/.workflow/artifacts/TESTING.md`
 - EXTRACT test runner command and framework
 - NOTE directory structure for tests
 - UNDERSTAND environment requirements
@@ -76,7 +76,7 @@ VERIFICATION: You know how to run tests for this project
 
 ```
 REQUIRED: Understand what was built:
-- READ `${PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`
+- READ `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`
 - LOCATE task {TASK_NUMBER}
 - VERIFY task status is 🔄 In Progress or ✅ Complete
 - IDENTIFY what functionality was implemented
@@ -89,7 +89,7 @@ IMPLEMENTATION ANALYSIS:
 - What would a user actually do with this?
 - What could go wrong that would ruin their day?
 
-DEVELOPER'S DISCOVERIES (from `${PROJECT_ROOT}/.workflow/artifacts/TASKS.md`):
+DEVELOPER'S DISCOVERIES (from `{PROJECT_ROOT}/.workflow/artifacts/TASKS.md`):
 - What invariants did they discover?
 - What failure modes did they encounter?
 - What risk assessment did they make?

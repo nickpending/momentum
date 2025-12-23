@@ -18,10 +18,10 @@ These env vars are available in bash commands (use `${VAR}` syntax):
 - `${PROJECT_ROOT}` - Current project code directory (e.g., `~/development/projects/argus`)
 - `${WORKFLOW_PROJECTS}` - Obsidian projects root (e.g., `~/obsidian/projects`)
 
-**Derived paths (construct from base vars):**
-- Project planning/IDEA.md: `${WORKFLOW_PROJECTS}/{project-name}/`
-- Explorations: `${WORKFLOW_PROJECTS}/{project-name}/explorations/`
-- Later backlog: `${WORKFLOW_PROJECTS}/{project-name}/later.md`
+**Derived paths (placeholders for tool calls):**
+- Project planning/IDEA.md: `{WORKFLOW_PROJECTS}/{project-name}/`
+- Explorations: `{WORKFLOW_PROJECTS}/{project-name}/explorations/`
+- Later backlog: `{WORKFLOW_PROJECTS}/{project-name}/later.md`
 
 **Note**: The `{project-name}` references in this skill refer to the project being ideated about (extracted from user conversation), not the current `${PROJECT_NAME}` context.
 
@@ -32,7 +32,7 @@ User mentions idea/project
     ↓
 Extract project name (ask if ambiguous)
     ↓
-Check for existing ${WORKFLOW_PROJECTS}/{project-name}/IDEA.md
+Check for existing {WORKFLOW_PROJECTS}/{project-name}/IDEA.md
     ↓
     ├─ Not found → NEW PROJECT flow
     ├─ Found + major pivot → BIG CHANGES flow
@@ -88,7 +88,7 @@ Identify the project name from the conversation. If ambiguous or not mentioned, 
 
 ### Check for Existing Project
 
-Look for `${WORKFLOW_PROJECTS}/{project-name}/IDEA.md` using the Read tool.
+Look for `{WORKFLOW_PROJECTS}/{project-name}/IDEA.md` using the Read tool.
 
 ### Classify Scope
 
@@ -149,10 +149,10 @@ Execute save immediately when user says:
 
 #### NEW PROJECT
 
-1. Create directory: `${WORKFLOW_PROJECTS}/{project-name}/`
+1. Create directory: `{WORKFLOW_PROJECTS}/{project-name}/`
 2. Read `references/idea_template.md` from this skill
 3. Generate new IDEA.md by filling template with discussion details
-4. Write to `${WORKFLOW_PROJECTS}/{project-name}/IDEA.md`
+4. Write to `{WORKFLOW_PROJECTS}/{project-name}/IDEA.md`
 5. Confirm: "Created project '{project-name}' at {path}"
 6. If PROJECT is "workspace": Say "Run `momentum {project-name}` to start building."
 
@@ -165,7 +165,7 @@ Execute save immediately when user says:
 
 #### BIG CHANGES
 
-1. Read existing `${WORKFLOW_PROJECTS}/{project-name}/IDEA.md`
+1. Read existing `{WORKFLOW_PROJECTS}/{project-name}/IDEA.md`
 2. Update with new vision while preserving relevant existing parts
 3. Move superseded information to "Learning and Evolution" section
 4. Write updated content back to same location
@@ -179,7 +179,7 @@ Execute save immediately when user says:
 
 #### NEW FEATURES
 
-1. Check if `${WORKFLOW_PROJECTS}/{project-name}/later.md` exists
+1. Check if `{WORKFLOW_PROJECTS}/{project-name}/later.md` exists
 2. Generate unique ID using `scripts/generate_id.py` for each feature
 3. Format as: `- idea:: {description} id::{generated-id} captured::{today's date in YYYY-MM-DD format}`
 4. Append to `later.md` (create file if needed)

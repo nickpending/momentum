@@ -28,7 +28,7 @@ description: Synthesize iteration learnings, update statuses, and archive
 
 ```
 REQUIRED: Verify iteration is ready for completion:
-- READ `${PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`
+- READ `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`
 - COUNT total tasks vs completed tasks (✅ Complete)
 - IDENTIFY any remaining 📋 Planned or 🔄 In Progress tasks
 - VERIFY iteration success criteria were met
@@ -81,7 +81,7 @@ VERIFICATION: Systematic extraction completed for all tasks
 
 ```
 REQUIRED: Extract structured insights from discovery files:
-- READ all files in `${PROJECT_ROOT}/.workflow/discoveries/`
+- READ all files in `{PROJECT_ROOT}/.workflow/discoveries/`
 - FOR EACH DISCOVERY extract:
   - Bug patterns found and root causes
   - Performance insights and optimizations applied
@@ -124,8 +124,8 @@ SYNTHESIS PROCESS:
 - ASSESS overall iteration effectiveness
 
 CREATE SUMMARY FILE:
-- DETERMINE iteration number from `${PROJECT_ROOT}/.workflow/archives/` directory
-- WRITE to `${PROJECT_ROOT}/.workflow/archives/ITERATION_{N}_SUMMARY.md`
+- DETERMINE iteration number from `{PROJECT_ROOT}/.workflow/archives/` directory
+- WRITE to `{PROJECT_ROOT}/.workflow/archives/ITERATION_{N}_SUMMARY.md`
 
 COMPREHENSIVE SUMMARY STRUCTURE:
 =====================================
@@ -168,15 +168,15 @@ Run /update-expertise
 
 ```
 REQUIRED: Archive completed iteration properly:
-- CREATE `${PROJECT_ROOT}/.workflow/archives/iteration-N/` directory
+- CREATE `{PROJECT_ROOT}/.workflow/archives/iteration-N/` directory
 - COPY ITERATION.md to `archives/iteration-N/`
 - COPY TASKS.md to `archives/iteration-N/`
 - MOVE `ITERATION_{N}_SUMMARY.md` to `archives/iteration-N/`
-- MOVE `${PROJECT_ROOT}/.workflow/discoveries/*` to `archives/iteration-N/discoveries/`
+- MOVE `{PROJECT_ROOT}/.workflow/discoveries/*` to `archives/iteration-N/discoveries/`
 - PRESERVE any critical artifacts or documentation
 
 ARCHIVAL STRUCTURE:
-`${PROJECT_ROOT}/.workflow/archives/iteration-N/`
+`{PROJECT_ROOT}/.workflow/archives/iteration-N/`
 ├── ITERATION.md (completed with all task details)
 ├── TASKS.md (completed tasks)
 ├── ITERATION_{N}_SUMMARY.md (synthesized insights and lessons)
@@ -189,8 +189,8 @@ VERIFICATION: Iteration properly archived with summary and discoveries
 
 ```
 REQUIRED: Move active items to completed tracking:
-- READ `${WORKFLOW_PROJECTS}/{projectname}/active.md`
-- READ `${WORKFLOW_PROJECTS}/{projectname}/completed.md` (create if not exists)
+- READ `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/active.md`
+- READ `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/completed.md` (create if not exists)
 - MOVE all checked items from active.md to completed.md
 - FORMAT with completion timestamp
 
@@ -216,7 +216,7 @@ VERIFICATION: All completed items moved from active.md to completed.md
 ```
 REQUIRED: Prepare clean workspace for next iteration:
 
-ARTIFACTS CLEANUP (`${PROJECT_ROOT}/.workflow/artifacts/`):
+ARTIFACTS CLEANUP (`{PROJECT_ROOT}/.workflow/artifacts/`):
 - REMOVE iteration-specific files:
   - ITERATION.md (now archived)
   - TASKS.md (now archived)
@@ -226,7 +226,7 @@ ARTIFACTS CLEANUP (`${PROJECT_ROOT}/.workflow/artifacts/`):
   - PROJECT_SUMMARY.md (lightweight project context)
   - Any other project-wide documentation
 
-STATE CLEANUP (`${PROJECT_ROOT}/.workflow/state/`):
+STATE CLEANUP (`{PROJECT_ROOT}/.workflow/state/`):
 - REMOVE all saved state files (task-*.md, etc.)
 - These are iteration-specific and no longer needed
 

@@ -50,7 +50,7 @@ Capture current branch, commit, and status.
 
 ### Step 6: Write State File
 
-Write to `${PROJECT_ROOT}/.workflow/state/state-{timestamp}.md` using Write tool.
+Write to `{PROJECT_ROOT}/.workflow/state/state-{timestamp}.md` using Write tool.
 
 Use the Comprehensive State Structure template below for file content.
 
@@ -170,8 +170,8 @@ Confirm to user with filename.
 
 State successfully saved when:
 
-- [ ] File written to `${PROJECT_ROOT}/.workflow/state/state-{timestamp}.md`
-- [ ] Save registered in `${MOMENTUM_CACHE}/saves.log`
+- [ ] File written to `{PROJECT_ROOT}/.workflow/state/state-{timestamp}.md`
+- [ ] Save registered in `{MOMENTUM_CACHE}/saves.log`
 - [ ] Clear understanding of conversation flow captured
 - [ ] Decisions preserved with reasoning
 - [ ] Specific next actions identified

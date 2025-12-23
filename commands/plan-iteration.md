@@ -105,11 +105,11 @@ Plan iterations by investigating the codebase, presenting findings as options, a
 
 ```
 REQUIRED: Read and acknowledge ALL foundation files:
-- `${PROJECT_ROOT}/.workflow/resources/DESIGN_PRINCIPLES.md`
-- `${PROJECT_ROOT}/.workflow/resources/IMPLEMENTATION_GUIDELINES.md`
-- `${PROJECT_ROOT}/.workflow/artifacts/IDEA.md` (Core vision, problem, solution, and features)
-- `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md` (if exists) - Current system understanding
-- `${WORKFLOW_PROJECTS}/{projectname}/later.md` (if exists) - Later items to consider
+- `{PROJECT_ROOT}/.workflow/resources/DESIGN_PRINCIPLES.md`
+- `{PROJECT_ROOT}/.workflow/resources/IMPLEMENTATION_GUIDELINES.md`
+- `{PROJECT_ROOT}/.workflow/artifacts/IDEA.md` (Core vision, problem, solution, and features)
+- `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md` (if exists) - Current system understanding
+- `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/later.md` (if exists) - Later items to consider
 
 VERIFICATION: State "Foundation context loaded" and summarize the composition-first approach
 ```
@@ -151,7 +151,7 @@ VERIFICATION: User selects which later items to include
 
 ```
 REQUIRED: Analyze current system for context:
-- SCAN `${PROJECT_ROOT}/.workflow/archives/` for completed iterations
+- SCAN `{PROJECT_ROOT}/.workflow/archives/` for completed iterations
 - IDENTIFY existing services/APIs/components
 - NOTE current architecture and data flows
 - UNDERSTAND existing integration points
@@ -164,7 +164,7 @@ VERIFICATION: Have map of what exists
 
 ```
 REQUIRED: Learn from recent iteration summaries:
-- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from `${PROJECT_ROOT}/.workflow/archives/iteration-*/`
+- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from `{PROJECT_ROOT}/.workflow/archives/iteration-*/`
 - EXTRACT insights from actual summary structure:
   - Task Insights: Implementation decisions, patterns established, development friction
   - Discovery Insights: Bug patterns, performance learnings, integration insights, technical debt
@@ -243,7 +243,7 @@ FOR COMPLEX items (run concurrently):
   COLLECT all agent responses as they complete
   For each subagent response:
     - Generate 4-char random ID (e.g., 7a3f)
-    - SAVE report to `${PROJECT_ROOT}/.workflow/artifacts/subagents/ARCHITECTURE-{ID}.md`
+    - SAVE report to `{PROJECT_ROOT}/.workflow/artifacts/subagents/ARCHITECTURE-{ID}.md`
     - Document which feature the analysis was for
   READ saved artifacts to incorporate into iteration plan
 
@@ -272,7 +272,7 @@ After investigation, determine the appropriate task type for each item:
 
 ### Design Tasks (Create Artifacts)
 - **When**: Need to figure out UI/UX, architecture, data models DURING iteration
-- **Output**: Exploration document in `WORKFLOW_PROJECTS/{project}/explorations/`
+- **Output**: Exploration document in `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/`
 - **Completion**: Design decisions documented that guide implementation
 - **Structure**: Goals, constraints, explorations, decisions, mockups/diagrams
 - **Examples**: UI mockups, API design, data model, system architecture
@@ -293,7 +293,7 @@ After investigation, determine the appropriate task type for each item:
 
 ```
 REQUIRED: Learn from recent iteration summaries:
-- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from `${PROJECT_ROOT}/.workflow/archives/iteration-*/`
+- READ the last 2-3 ITERATION_{N}_SUMMARY.md files from `{PROJECT_ROOT}/.workflow/archives/iteration-*/`
 - EXTRACT insights from actual summary structure:
   - Task Insights: Implementation decisions, patterns established, development friction
   - Discovery Insights: Bug patterns, performance learnings, integration insights, technical debt
@@ -586,7 +586,7 @@ Please respond with YES or NO.
 IF items were selected from later.md:
 
 MOVE TO ACTIVE:
-1. READ `${WORKFLOW_PROJECTS}/{projectname}/active.md` (create if not exists)
+1. READ `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/active.md` (create if not exists)
 2. ADD selected items to appropriate section:
    - Critical bugs → Today section
    - Iteration tasks → This Week section
@@ -612,9 +612,9 @@ VERIFICATION: Confirm items moved to active.md and removed from later.md
 
 ```
 REQUIRED: Update IDEA.md with iteration progress:
-- DETERMINE next iteration number from `${PROJECT_ROOT}/.workflow/archives/`
+- DETERMINE next iteration number from `{PROJECT_ROOT}/.workflow/archives/`
 - MARK selected features as 🔄 In Progress (iteration-N)
-- UPDATE `${PROJECT_ROOT}/.workflow/artifacts/IDEA.md` with new feature statuses
+- UPDATE `{PROJECT_ROOT}/.workflow/artifacts/IDEA.md` with new feature statuses
 
 VERIFICATION: Confirm feature status updates applied
 ```
@@ -623,7 +623,7 @@ VERIFICATION: Confirm feature status updates applied
 
 ```
 REQUIRED: Create ITERATION.md with captured decisions:
-- LOAD `${PROJECT_ROOT}/.workflow/templates/ITERATION_TEMPLATE.md`
+- LOAD `{PROJECT_ROOT}/.workflow/templates/ITERATION_TEMPLATE.md`
 - POPULATE with investigation findings and decisions
 - EMBED tech standards for reference
 - INCLUDE invariant analysis
@@ -661,7 +661,7 @@ TASK TEMPLATE:
 [FOR DESIGN TASKS]:
 **What to design**: [UI flow, architecture, data model, API spec]
 **Constraints**: [Technical, business, user requirements]
-**Output artifact**: `${WORKFLOW_PROJECTS}/{project}/explorations/` (via exploration save)
+**Output artifact**: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/` (via exploration save)
 
 [FOR RESEARCH SPIKES]:
 **Question to answer**: [Can we do X? Will Y scale? Does Z integrate?]

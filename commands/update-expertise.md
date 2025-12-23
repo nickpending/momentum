@@ -15,7 +15,7 @@ Update PROJECT_EXPERTISE.toml with learnings from recent work and sync insights 
 
 **REQUIRED ACTIONS:**
 
-1. READ `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml`
+1. READ `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml`
 2. NOTE current domains and mental models
 
 **STOP if expertise file doesn't exist** - run bootstrap first.
@@ -76,7 +76,7 @@ Domains touched: [list]
 Mental models updated: [yes/no per domain]
 Lore insights synced: [count added]
 
-Location: ${PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml
+Location: {PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml
 ```
 
 ## Important Notes

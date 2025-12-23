@@ -11,7 +11,7 @@ Spawn iteration-decomposer subagent, conduct interview, get approval, generate f
 
 ## Step 1: Load Iteration
 
-READ `${PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`
+READ `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`
 
 EXTRACT:
 - Iteration name and goal

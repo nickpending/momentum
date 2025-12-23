@@ -20,7 +20,7 @@ description: Resume work with full context from saved state
 
 ### Find and Load State File
 
-1. **READ** `${PROJECT_ROOT}/.workflow/state/state-{specified_or_recent}.md`
+1. **READ** `{PROJECT_ROOT}/.workflow/state/state-{specified_or_recent}.md`
 2. **EXTRACT** essential resumption information:
     - Current progress and phase
     - Files changed and their status
@@ -33,7 +33,7 @@ description: Resume work with full context from saved state
 
 ### Extended Context for Resumption
 
-1. **READ** `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md` (if exists) - System integration context
+1. **READ** `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md` (if exists) - System integration context
 2. **READ** `CLAUDE.md` (if exists) - Project development context
 
 ### Verify Current Environment
@@ -77,7 +77,7 @@ IMMEDIATE NEXT ACTION:
 
 ### Update Task Status
 
-1. **UPDATE** `${PROJECT_ROOT}/.workflow/artifacts/ITERATION.md` - Remove state reference
+1. **UPDATE** `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md` - Remove state reference
 2. **MAINTAIN** task as 🔄 In Progress
 3. **READY** for continued implementation
 
@@ -102,7 +102,7 @@ IMMEDIATE NEXT ACTION:
 
 **IF** state file not found:
 
-- **LIST** available state files in `${PROJECT_ROOT}/.workflow/state/`
+- **LIST** available state files in `{PROJECT_ROOT}/.workflow/state/`
 - **OFFER** to start fresh with `/load-app-context` equivalent
 
 **IF** iteration context missing:

@@ -14,6 +14,8 @@ Use `${VAR}` syntax in bash commands:
 
 **From context (CAPS):**
 - `{PROJECT_ROOT}` — Substitute with actual path
+- `{PROJECT_NAME}` — Current project name
+- `{WORKFLOW_PROJECTS}` — Obsidian projects root
 - `{TASK_NUMBER}` — Task number from arguments
 
 **Generated (lowercase):**

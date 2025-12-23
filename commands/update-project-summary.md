@@ -17,10 +17,10 @@ Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key inform
 
 **READ** these files to extract information:
 
-1. `${PROJECT_ROOT}/.workflow/artifacts/IDEA.md` - project vision and tech stack
-2. `${PROJECT_ROOT}/.workflow/artifacts/ITERATION.md` (if exists) - current iteration details
-3. `${PROJECT_ROOT}/.workflow/artifacts/TASKS.md` (if exists) - task progress
-4. `${PROJECT_ROOT}/.workflow/templates/PROJECT_SUMMARY_TEMPLATE.md` - output template
+1. `{PROJECT_ROOT}/.workflow/artifacts/IDEA.md` - project vision and tech stack
+2. `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md` (if exists) - current iteration details
+3. `{PROJECT_ROOT}/.workflow/artifacts/TASKS.md` (if exists) - task progress
+4. `{PROJECT_ROOT}/.workflow/templates/PROJECT_SUMMARY_TEMPLATE.md` - output template
 
 ### Step 2: Extract Key Information
 
@@ -126,7 +126,7 @@ Run `ls -la` to map project organization:
 
 ### Step 4: Write PROJECT_SUMMARY.md
 
-**CREATE** file at: `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
+**CREATE** file at: `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
 
 Target length: 40-50 lines (lightweight context)
 
@@ -140,7 +140,7 @@ PROJECT SUMMARY UPDATED
 ✅ Project: {PROJECT_NAME}
 ✅ Iteration: {ITERATION_NUMBER} - {ITERATION_NAME}
 ✅ Progress: {COMPLETED}/{TOTAL} tasks complete
-✅ Output: `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
+✅ Output: `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
 
 Summary ready for /load-app-context
 ```
@@ -166,6 +166,6 @@ This command should be called by:
 
 - [ ] PROJECT_SUMMARY.md is 50-100 lines (concise but complete)
 - [ ] All key project info is captured
-- [ ] File written to `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
+- [ ] File written to `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
 - [ ] Template variables all replaced
 - [ ] Missing data handled gracefully

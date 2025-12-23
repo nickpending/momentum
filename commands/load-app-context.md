@@ -13,8 +13,8 @@ description: Quick project orientation with current tasks and vision
 
 **READ**:
 
-1. `${PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
-2. `${PROJECT_ROOT}/.workflow/artifacts/TASKS.md`
+1. `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
+2. `{PROJECT_ROOT}/.workflow/artifacts/TASKS.md`
 
 ### Step 2: Report Status
 

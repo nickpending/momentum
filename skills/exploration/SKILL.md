@@ -18,10 +18,10 @@ These env vars are available in bash commands (use `${VAR}` syntax):
 - `${PROJECT_ROOT}` - Current project code directory (e.g., `~/development/projects/argus`)
 - `${WORKFLOW_PROJECTS}` - Obsidian projects root (e.g., `~/obsidian/projects`)
 
-**Derived paths (construct from base vars):**
-- Explorations: `${WORKFLOW_PROJECTS}/${PROJECT_NAME}/explorations/`
-- Project planning: `${WORKFLOW_PROJECTS}/${PROJECT_NAME}/`
-- Later backlog: `${WORKFLOW_PROJECTS}/${PROJECT_NAME}/later.md`
+**Derived paths (placeholders for tool calls):**
+- Explorations: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/`
+- Project planning: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/`
+- Later backlog: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/later.md`
 
 ## Exploration Mindset
 
@@ -142,7 +142,7 @@ Extract key insights from the entire exploration:
 
 **File location:**
 ```
-${WORKFLOW_PROJECTS}/${PROJECT_NAME}/explorations/{descriptive-name}.md
+{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/{descriptive-name}.md
 ```
 
 **Naming:** Use descriptive names based on what was explored:
