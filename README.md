@@ -170,6 +170,39 @@ No need to memorize commands. Just talk naturally:
 
 **💡 The Flow:** `momentum <project>` → `/plan-iteration` → `/decompose-iteration` → `/plan-task 1` → build → ship
 
+### Task File Architecture
+
+Tasks live as individual files in `.workflow/artifacts/tasks/`:
+
+```
+.workflow/artifacts/
+├── TASKS.md                           # Index with status tracking
+└── tasks/
+    ├── task-1.1-add-auth-middleware.md
+    ├── task-1.2-create-user-schema.md
+    └── task-2.1-api-rate-limiting.md
+```
+
+**File naming:** `task-{X.Y}-{slug}.md`
+- **X.Y** — Feature.task number (1.1, 2.3, etc.)
+- **slug** — Human-readable descriptor from task title
+
+**How it works:**
+- `/decompose-iteration` generates task files with meaningful slugs
+- `/plan-task 1.1` finds the file via glob (`task-1.1-*.md`)
+- TASKS.md tracks status; task files contain full implementation details
+
+### Command Paths
+
+Two command architectures coexist:
+
+| Path | Location | Use Case |
+|------|----------|----------|
+| **Orchestrated** | `commands/orchestration/` | Multi-agent workflows with specialist routing |
+| **Legacy** | `commands/` | Single-step commands, simpler flows |
+
+Orchestrated commands spawn subagents, handle routing, and resume with context. Legacy commands remain functional for simpler workflows.
+
 ## 🏗️ Architecture
 
 Momentum uses identity-first prompt composition with specialized agents:
