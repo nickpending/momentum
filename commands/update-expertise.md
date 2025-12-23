@@ -7,7 +7,18 @@ description: Update project expertise with learnings and Lore insights
 
 # Update Project Expertise
 
-Update PROJECT_EXPERTISE.toml with learnings from recent work and sync insights from Lore.
+Update PROJECT_EXPERTISE.toml with learnings from recent work.
+
+## Section Ownership
+
+**YOU update (domains section):**
+- `mental_model` - Working knowledge of how things connect
+- `patterns` - Discovered coding patterns and conventions
+
+**CLI updates (insights section - DO NOT TOUCH):**
+- `gotchas` - Managed by expertise-update CLI
+- `decisions` - Managed by expertise-update CLI
+- `learnings` - Managed by expertise-update CLI
 
 ## Workflow
 
@@ -33,37 +44,34 @@ Update PROJECT_EXPERTISE.toml with learnings from recent work and sync insights 
 
 3. DETERMINE which domains were affected
 
-### Step 3: Update Mental Models
+### Step 3: Update Domain Knowledge
 
 **REQUIRED ACTIONS:**
 
-For each affected domain:
+For each affected domain, update ONLY these fields:
 
-1. READ the current mental_model
-2. IDENTIFY gaps or outdated information
-3. UPDATE with new understanding:
-   - Keep it concise and useful
-   - Write as working knowledge, not documentation
+1. **mental_model** - UPDATE with new understanding:
+   - Keep concise - working knowledge, not documentation
    - Include key flows and relationships
+   - Focus on "how things work" not "what things are"
 
-4. UPDATE patterns if new ones discovered
+2. **patterns** - ADD new patterns if discovered:
+   - Short, scannable phrases
+   - Actual coding/design patterns found
 
 Use Edit tool to update specific sections.
 
-### Step 4: Sync Lore Insights
+**NEVER touch [insights] section** - that's managed by CLI.
 
-**REQUIRED ACTIONS:**
+### Step 4: Sync Lore Insights (Optional)
 
-Run the expertise-update CLI to pull insights from Lore:
+If expertise-update CLI is available:
 
 ```bash
 expertise-update --project ${PROJECT_NAME} --root ${PROJECT_ROOT}
 ```
 
-This will:
-- Query Lore for gotchas, decisions, learnings
-- Merge into the insights section
-- Preserve existing insights
+This syncs insights from Lore. Skip if CLI not installed.
 
 ### Step 5: Confirm Update
 
@@ -74,7 +82,7 @@ EXPERTISE UPDATED
 
 Domains touched: [list]
 Mental models updated: [yes/no per domain]
-Lore insights synced: [count added]
+Patterns added: [count]
 
 Location: {PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml
 ```
@@ -83,5 +91,5 @@ Location: {PROJECT_ROOT}/.workflow/artifacts/PROJECT_EXPERTISE.toml
 
 - Only update domains that were actually affected
 - Mental models should stay concise - working knowledge, not docs
-- Lore sync is additive - won't remove existing insights
+- NEVER write to [insights] section - CLI owns that
 - This runs automatically after /complete-task and /complete-iteration
