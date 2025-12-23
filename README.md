@@ -208,7 +208,7 @@ momentum <project> ──► project-identity.md ◄──┼── base.md
 **Optional (Progressive Enhancement):**
 - **lspeak** - TTS for voice summaries - [GitHub](https://github.com/nickpending/lspeak)
 - **lore** - Knowledge capture and search - [GitHub](https://github.com/nickpending/lore)
-- **llmcli-tools** - Gitignore compliance, observability tools (argus-send, lore-capture, llm-summarize) - [GitHub](https://github.com/nickpending/llmcli-tools)
+- **llmcli-tools** - Gitignore compliance, observability tools (@voidwire packages) - [GitHub](https://github.com/nickpending/llmcli-tools)
 - **Argus** - Real-time observability dashboard - [GitHub](https://github.com/nickpending/argus)
 - **Playwright MCP** - Browser automation - `npx @playwright/mcp@latest` + `npx playwright install chrome`
 
