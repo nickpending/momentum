@@ -1,14 +1,11 @@
 ---
-name: ideating-ideas
-description: Facilitates creative ideation through collaborative conversation to develop and explore new project ideas, evolve existing concepts, and brainstorm features in depth. Use when user wants to discuss, develop, or explore an idea through conversation - not just capture it for later. Trigger phrases include wanting to "think through", "explore", "develop", or "discuss" ideas.
-allowed-tools: Read, Write, Bash
+name: ideation
+description: Creative ideation for new project concepts. USE WHEN user says "new idea", "what if we built", "I want to create", "brainstorm a project", or discusses ideas without an existing project. Creates IDEA.md and project structure. Not for in-project exploration—use exploration skill for that.
 ---
 
 # Ideation
 
-## Overview
-
-Engage in creative ideation mode to help explore and develop ideas through genuine creative conversation. Whether working on a brand new project concept, evolving an existing idea, or brainstorming features, participate in collaborative creative thinking that captures insights into structured project documentation.
+Collaborative creative thinking for new project concepts. Captures insights into IDEA.md and project structure.
 
 ## Available Environment Variables
 
@@ -47,36 +44,32 @@ User triggers save ("save this ideation", "capture this idea", etc.)
 Execute save based on detected flow
 ```
 
-## Core Principles
+## Examples
 
-### Creative Partnership Approach
+**Example 1: New project from scratch**
+```
+User: "I have an idea for a tool that tracks reading habits"
+→ Extract project name (ask if unclear)
+→ Check for existing IDEA.md → not found → NEW PROJECT flow
+→ Engage in creative discussion
+→ On "save this ideation" → create IDEA.md
+```
 
-**Think WITH the user, not for them** - Ideate together, not through interview-style questioning.
+**Example 2: Evolving existing vision**
+```
+User: "I want to pivot argus to focus on home automation"
+→ Read existing IDEA.md
+→ Discuss major changes → BIG CHANGES flow
+→ On save → update IDEA.md, preserve history
+```
 
-**Follow their passion** - When they express excitement about something, dig deeper into that area.
-
-**Build incrementally** - Use "So if we have X, then we could also..." to expand ideas naturally.
-
-**Challenge respectfully** - Ask "That's interesting, but what about..." to explore constraints.
-
-**Stay concrete** - Request "Give me an example of someone using this" to ground abstract concepts.
-
-### Key Discovery Questions
-
-Use these to guide discussion organically:
-
-- What problem keeps them up at night?
-- Who would use this and why?
-- What's the simplest version that would be useful?
-- What's the dream version with unlimited resources?
-- What makes this different from existing solutions?
-
-### Creative Techniques
-
-**Challenge assumptions**: "Does it have to work that way?"
-**Find connections**: "This reminds me of..."
-**Explore extremes**: "What if it was 10x simpler? 10x more powerful?"
-**Question constraints**: "What if that limitation didn't exist?"
+**Example 3: Adding features to backlog**
+```
+User: "What if we added dark mode to the dashboard?"
+→ Read existing IDEA.md
+→ Discuss feature → NEW FEATURES flow
+→ On save → append to later.md with ID
+```
 
 ## Phase 1: Project Detection
 
@@ -102,38 +95,14 @@ If IDEA.md exists, read it to understand the current vision before proceeding.
 
 ## Phase 2: Creative Discussion
 
-### Engagement Style
+**Approach:** Think WITH them, not for them. Build on excitement, challenge assumptions, stay concrete.
 
-Use collaborative language patterns:
+**Track mentally** (don't call out explicitly):
+- Core problem, target users, key features
+- Success criteria, constraints, unique value
 
-- **"Yes, and..."** - Build on their ideas
-- **"What if..."** - Explore variations
-- **"Show me..."** - Ask for concrete examples
-- **"Why not..."** - Challenge limitations
-- **"Imagine..."** - Paint the picture of success
-
-### Mental Capture During Discussion
-
-Track these elements without explicitly calling them out:
-
-- Core problem being solved
-- Target users and their needs
-- Key features emerging
-- Success criteria mentioned
-- Constraints and assumptions
-- Unique value proposition
-
-### Context-Aware Discussion
-
-**For Existing Projects:**
-- Reference current IDEA.md vision
-- Build on existing features and goals
-- Identify if this is evolution or revolution
-
-**For New Projects:**
-- Focus on problem/solution fit
-- Identify core user need
-- Keep asking "who" and "why"
+**For existing projects:** Reference current IDEA.md, build on existing vision
+**For new projects:** Focus on problem/solution fit, keep asking "who" and "why"
 
 ## Phase 3: Saving Ideation
 
@@ -193,21 +162,11 @@ Execute save immediately when user says:
 - Capture enough context to recall the discussion later
 - One line per feature idea
 
-## Execution Standards
+## Standards
 
-### Quality Requirements
-
-- **Use concrete details** from the actual conversation
-- **Include specific examples** the user mentioned
-- **Don't ask for approval** - execute based on discussion context
-- **Preserve discussion insights** in outputs
-
-### Anti-Patterns
-
-- Don't invent details not discussed
-- Don't ask "would you like me to save this?" - just explain what's being saved
-- Don't create generic placeholders - use real conversation content
-- Don't lose the energy and specificity from the creative discussion
+- Use concrete details from conversation, not invented content
+- Execute on trigger phrases—don't ask "would you like me to save?"
+- Preserve discussion energy in outputs
 
 ## Resources
 

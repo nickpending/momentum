@@ -8,18 +8,39 @@ argument-hint: task-number
 
 # Plan Task (Orchestrated)
 
-Spawn task-planner subagent, handle specialist routing, synthesize final plan.
+You are orchestrating a task-planner subagent to create an implementation plan. Your role is delegation, validation, and handoff — not planning.
 
-## Step 1: Get Task Details
+## Core Principles
 
-READ the task file:
-- `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-{TASK_NUMBER}-*.md` (glob for slug)
+- **Delegate, don't plan**: The agent plans. You orchestrate, validate, present.
+- **Validate agent output**: Check format compliance before accepting results.
+- **Resume, don't restart**: Use agent resume for corrections, not fresh spawns.
+- **Own nothing in the agent's domain**: Don't fill gaps or fix deviations yourself.
+- **Use TodoWrite**: Track phases throughout.
 
-This contains full implementation guidance from the decomposer.
+---
 
-## Step 2: Spawn Planner
+## Phase 1: Load Context
 
-SPAWN task-planner subagent with this prompt:
+**Goal:** Understand what task to plan
+
+**Actions:**
+1. Create todo list with all phases
+2. READ the task file:
+   - `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-{TASK_NUMBER}-*.md` (glob for slug)
+3. Extract task title, type, deliverables, dependencies
+
+IF task file not found:
+- STOP with error: "Task file not found. Run /decompose-iteration first."
+
+---
+
+## Phase 2: Spawn Planner Agent
+
+**Goal:** Delegate planning to task-planner subagent
+
+**Actions:**
+1. SPAWN task-planner subagent with this prompt:
 
 ```
 FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format.
@@ -40,27 +61,60 @@ Planning process:
 Return per agent-rules.md format.
 ```
 
-STORE the agent_id for resume.
+2. STORE the agent_id for resume
+3. Update todo: Phase 2 complete
 
-## Step 3: Route Specialists
+---
 
-If the planner needs architecture help, spawn architecture-analyst.
+## Phase 3: Route Specialists
 
-If it needs implementation guidance, spawn implementation-analyst.
+**Goal:** Provide expert support if agent needs it
 
-## Step 4: Finalize
+**Actions:**
+1. Parse agent's PLAN_FLAGS from response
+2. IF `needs_arch: true`: Spawn architecture-analyst, collect insights
+3. IF `needs_impl: true`: Spawn implementation-analyst, collect insights
+4. IF specialists ran: RESUME task-planner with:
+   - "Continue your operator log. {specialist analysis summaries}"
 
-If specialists ran, RESUME task-planner with: "Continue your operator log. {specialist analysis summaries}"
+IF no specialists needed: Proceed to Phase 4.
 
-## Step 5: Read Report
+---
 
-Read the agent's report using the REPORT path returned in its final response.
+## Phase 4: Validate Agent Output
 
-This contains the full plan, rationale, and implementation steps.
+**Goal:** Ensure agent produced compliant output
 
-## Step 6: Verify
+**DO NOT SKIP this phase.**
 
-Compare the agent's plan against the original task requirements:
+**Actions:**
+1. PARSE the agent's final response for required fields:
+
+```
+REPORT: {path}
+OPERATOR: {path}
+PLAN_FLAGS: {"needs_arch": bool, "needs_impl": bool, "complexity": "simple|medium|complex"}
+```
+
+2. **Validate format:**
+   - REPORT path exists and is readable
+   - OPERATOR path exists and is readable
+   - PLAN_FLAGS contains all required keys
+
+IF any validation fails:
+1. RESUME agent with: "Your output format is incorrect. Required format per agent-rules.md: REPORT: {path}, OPERATOR: {path}, PLAN_FLAGS: {json}. Missing/malformed: {specific issues}. Continue your operator log and provide corrected output."
+2. Re-validate after resume
+3. Maximum 2 resume attempts, then escalate to user
+
+---
+
+## Phase 5: Verify Plan Quality
+
+**Goal:** Ensure plan matches task requirements
+
+**Actions:**
+1. READ the agent's report using the REPORT path
+2. Compare against original task requirements:
 
 **Gaps** (missing pieces):
 - Does the plan cover ALL deliverables listed in TASKS.md?
@@ -72,28 +126,48 @@ Compare the agent's plan against the original task requirements:
 - Did it substitute different approaches than what was specified?
 - Did it add unrequested features or remove specified ones?
 
-If gaps OR deviations exist:
-1. Check if the report already explains the rationale for each deviation/gap
-2. If rationale is missing, RESUME agent with: "Continue your operator log. {ask why for specific gaps/deviations}"
-3. Present findings to the user with specific examples AND rationale (from report or agent)
-4. Ask: "Should I have the agent revise, or proceed as-is?"
-5. If user wants revision, RESUME agent with: "Continue your operator log. {specific issues to address}"
-6. Do NOT fill gaps or correct deviations yourself — the agent owns its domain
+IF gaps OR deviations exist:
+1. Check if the report already explains the rationale
+2. If rationale missing, RESUME agent with: "Continue your operator log. {ask why for specific gaps/deviations}"
+3. **Present findings to user** with specific examples AND rationale
+4. **Ask user:** "Should I have the agent revise, or proceed as-is?"
+5. If user wants revision, RESUME agent with specific issues
+6. Do NOT fill gaps or correct deviations yourself — agent owns its domain
 
-## Step 7: Present
+---
 
-PRESENT final plan to user:
+## Phase 6: Present and Hand Off
+
+**Goal:** Get user approval and hand off to build-task
+
+**DO NOT START without completing Phase 5.**
+
+**Actions:**
+1. PRESENT final plan to user:
 
 ```
 PLAN READY
 
 Task: {TASK_NUMBER} - {title}
-Complexity: {complexity}
+Complexity: {complexity from PLAN_FLAGS}
 Specialists: {arch/impl/none}
+Report: {REPORT path}
+Operator: {OPERATOR path}
 
-{plan summary}
+{plan summary from report}
 
-Ready to implement? (YES/NO)
+Ready to build? (YES/NO)
 ```
 
-WAIT for approval before any implementation.
+2. **WAIT for user approval**
+
+IF YES:
+- Mark all todos complete
+- Immediately invoke `/orchestration:build-task {TASK_NUMBER}`
+
+IF NO:
+- **Ask user** what needs adjustment
+- RESUME agent to revise
+- Re-present after revision
+
+**DO NOT attempt implementation yourself — build-task handles that.**

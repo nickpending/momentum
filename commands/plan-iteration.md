@@ -807,6 +807,20 @@ FAILURE MODE: If making assumptions instead of using findings, REVISE
 REQUIRED: Run /update-project-summary to capture new iteration in PROJECT_SUMMARY.md
 ```
 
+### PHASE 4.5: TEST INFRASTRUCTURE (First Iteration Only)
+
+**CHECKPOINT 11: Setup Testing**
+
+```
+ONLY IF FIRST ITERATION (no .workflow/archives/ directory with completed iterations):
+
+CHECK: Does {PROJECT_ROOT}/.workflow/artifacts/TESTING.md exist?
+- If yes → skip this phase
+- If no → RUN /setup-testing
+
+VERIFICATION: TESTING.md exists with concrete test commands
+```
+
 ### PHASE 5: COMPLETION STATEMENT
 
 ```
@@ -820,6 +834,7 @@ ITERATION PLANNED COLLABORATIVELY
 ✅ Invariants and risks identified
 ✅ Standards embedded for reference
 ✅ Tasks ready for implementation
+✅ TESTING.md created (if first iteration)
 
 Designs are YOUR decisions, not my assumptions.
 
@@ -839,6 +854,7 @@ Command succeeds when:
 - [ ] ITERATION.md generated with user approval
 - [ ] Standards embedded in ITERATION.md
 - [ ] Tasks preserve interview discoveries
+- [ ] TESTING.md created with concrete commands (first iteration only)
 - [ ] Ready for /decompose-iteration
 
 ## Notes

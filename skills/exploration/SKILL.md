@@ -1,14 +1,11 @@
 ---
-name: exploring-problems
-description: Facilitates open-ended technical exploration through genuine conversation - thinking through problems, exploring options, investigating approaches, and discussing what-if scenarios. Use when the user wants to explore options, think through problems, investigate approaches, evaluate available options, or engage in what-if discussions rather than immediately implementing solutions.
-allowed-tools: Read, Grep, Write
+name: exploration
+description: Technical exploration within existing projects. USE WHEN user says "think through", "explore options", "investigate", "how should we approach", or needs to evaluate approaches before implementation. Creates exploration documents in project's explorations/ folder. Not for new project ideas—use ideation skill for that.
 ---
 
-# Exploring Problems
+# Exploration
 
-## Overview
-
-Enter exploration mode during development to help think through technical ideas, evaluate options, discover better approaches, and investigate possibilities through genuine conversation. Not interviews, not requirements gathering - real collaborative thinking.
+Technical deep dives within existing projects. Think through problems, evaluate options, investigate approaches. Captures insights to explorations/ for future iterations.
 
 ## Available Environment Variables
 
@@ -18,192 +15,77 @@ These env vars are available in bash commands (use `${VAR}` syntax):
 - `${PROJECT_ROOT}` - Current project code directory (e.g., `~/development/projects/argus`)
 - `${WORKFLOW_PROJECTS}` - Obsidian projects root (e.g., `~/obsidian/projects`)
 
-**Derived paths (placeholders for tool calls):**
-- Explorations: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/`
-- Project planning: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/`
-- Later backlog: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/later.md`
+**Output location:**
+- Explorations save to: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/`
+- This is the Obsidian projects folder, not the code repo
 
-## Exploration Mindset
+## Mindset
 
-### Think Like a Co-Founder
+**Explore WITH them** — not interviews, real collaborative thinking. Follow their energy, challenge assumptions, stay concrete.
 
-Not interviewing them - exploring WITH them. Get excited about interesting parts. Push on weird edges. Question assumptions. Suggest wild alternatives.
+**Read actual code** — Use Read and Grep to examine how things work. Evidence over speculation.
 
-### Read Between the Lines
-
-- What are they REALLY trying to solve?
-- What frustration sparked this?
-- What would they build with unlimited resources?
-- What's the version they could ship today?
-
-### Find the Hidden Gems
-
+**Find hidden gems:**
 - The constraint that isn't real
 - The simple solution they dismissed
 - The pattern from another domain
-- The assumption everyone makes but is wrong
 
-### Follow the Energy
+## Process
 
-When they light up about something, dig deeper. When they hesitate, find out why. When they say "but that's impossible", explore what would make it possible.
+1. **Engage immediately** — No meta-commentary, just start thinking together
+2. **Investigate real code** — Use Read/Grep, reference file:line locations, build on what exists
+3. **Track patterns mentally** — Problems crystallizing, approaches forming, decisions being made
+4. **Challenge constructively** — "What about edge case X?", "What happens at scale?"
+5. **Build on energy** — Dig deeper into excitement, connect across domains
 
-## Core Principles
+## Examples
 
-**Be genuinely curious** - Not performatively interested
+**Example 1: Architecture decision**
+```
+User: "How should we structure the plugin system?"
+→ Read existing code to understand current patterns
+→ Discuss options, trade-offs
+→ On "save this exploration" → create architecture-decision.md
+```
 
-**Think together** - "What if we..." not "Have you considered..."
+**Example 2: Technical investigation**
+```
+User: "The auth flow feels slow, let's explore why"
+→ Use Grep/Read to trace the flow
+→ Identify bottlenecks together
+→ On "document these insights" → create auth-performance.md
+```
 
-**Build on their energy** - Amplify what excites them
-
-**Challenge with respect** - "That's interesting, but what about..."
-
-**Stay concrete** - Examples over abstractions
-
-**Read actual code** - When exploring implementation, dive into the real codebase instead of speculating. Use Read and Grep tools to examine how things actually work.
-
-**Evidence over theory** - "Let me check how it actually works" not "I think it probably..."
-
-## Exploration Process
-
-### 1. Engage Authentically
-
-Start exploring immediately. No meta-commentary about "entering exploration mode" - just start thinking together.
-
-Ask probing questions:
-- "What's the real problem here?"
-- "What happens if we flip that assumption?"
-- "Have you seen this pattern somewhere else?"
-- "What would this look like at 10x scale?"
-
-### 2. Investigate Real Code
-
-When discussing implementation or architecture:
-
-**DO:**
-- Use Read to examine actual files
-- Use Grep to find patterns in the codebase
-- Reference specific file:line locations
-- Build on what actually exists
-
-**DON'T:**
-- Speculate about how things "probably work"
-- Make assumptions about architecture
-- Discuss theoretical patterns without grounding
-
-### 3. Capture Patterns as They Emerge
-
-Notice (but don't explicitly call out):
-- Core problems crystallizing
-- Technical approaches forming
-- Success criteria emerging
-- Risks worth addressing
-- Decisions being made
-
-### 4. Challenge Constructively
-
-When something feels off:
-- "That could work, but what about edge case X?"
-- "What happens when Y scales?"
-- "That assumption might not hold if..."
-- "Have you considered the opposite approach?"
-
-### 5. Build Momentum
-
-When energy appears:
-- Dig deeper into what excites them
-- Connect ideas across domains
-- Suggest bold extensions
-- Find the simplest version that proves the concept
+**Example 3: Options evaluation**
+```
+User: "Should we use SQLite or Postgres for this?"
+→ Discuss constraints, scale requirements
+→ On "capture this" → create database-selection.md
+```
 
 ## When to Save
 
-They'll signal readiness with phrases like:
-- "save this exploration"
-- "let's capture this"
-- "document these insights"
-- "write this down"
+User signals with: "save this exploration", "capture this", "document these insights", "write this down"
 
-**Do NOT ask if they want to save** - wait for them to say so.
+**Do NOT ask if they want to save** — wait for the trigger.
 
-## How to Save Explorations
+## Saving Explorations
 
-When they request saving:
+**Location:** `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/{slug}.md`
 
-### 1. Review the Conversation
+**Slug:** Descriptive, lowercase-hyphen (`skills-vs-routing.md`), not timestamps (`exploration-20251017.md`)
 
-Extract key insights from the entire exploration:
-- How thinking evolved
-- Options explored and why
-- Decisions made
-- Patterns discovered
-- Open questions remaining
+**Template:** Reference `assets/EXPLORATION_TEMPLATE.md`, adapt as needed
 
-### 2. Create the Document
+**Required:** Title, date, context, key insights, decisions (if any)
 
-**File location:**
-```
-{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/{descriptive-name}.md
-```
+**Critical:** Capture the JOURNEY, not just destination. Show how thinking evolved.
 
-**Naming:** Use descriptive names based on what was explored:
-- `dynamic-context-injection.md`
-- `skills-vs-routing-architecture.md`
-- `jarvis-audio-briefings.md`
+**Write concretely:**
+- Good: "Discovered routing can't scale beyond 20 skills due to token costs"
+- Bad: "We discussed various approaches"
 
-NOT generic timestamps like `exploration-20251017.md` unless nothing more descriptive fits.
-
-### 3. Use the Template
-
-Reference the template at `assets/EXPLORATION_TEMPLATE.md` for structure, but adapt to fit the actual exploration:
-
-**Required sections:**
-- Title and date
-- Context (what sparked this)
-- Key insights or evolution of thinking
-- Decisions made (if any)
-
-**Optional sections** (use what fits):
-- Problem statement
-- Options explored
-- Architecture decisions
-- What we learned
-- Next steps
-- Open questions
-- Files referenced
-
-**Critical:** Capture the JOURNEY, not just the destination. Show how thinking evolved.
-
-### 4. Write Concretely
-
-**Good:**
-- "Discovered that routing can't scale beyond 20 skills due to token costs"
-- "Realized lspeak already handles ElevenLabs integration, no need to rebuild"
-- "Decision: Use hybrid approach - routing for orchestration, skills for capabilities"
-
-**Bad:**
-- "We discussed various approaches"
-- "Considered multiple options"
-- "Made some architectural decisions"
-
-### 5. Reference Real Code
-
-If code was examined during exploration, include references:
-- `src/hooks/momentum-user-prompt-submit-hook.ts:45` - Where routing injection happens
-- `PROJECT_SUMMARY.md` - Project metadata structure
-
-## Best Practices
-
-**Stay in conversation** - Be helpful, curious, and slightly provocative. Not formal. Not interview-like.
-
-**Follow their lead** - If they want to dive deep into architecture, go there. If they want to sketch quick ideas, match that energy.
-
-**Challenge assumptions** - Respectfully question things that seem taken for granted.
-
-**Find the simple path** - Often the best solution is simpler than the first proposal.
-
-**Connect patterns** - "This reminds me of how X works in that other system"
-
-**Read, don't guess** - When discussing existing code, actually read it.
+**Include file references** if code was examined: `src/hooks/hook.ts:45`
 
 ## Resources
 

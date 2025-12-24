@@ -1,6 +1,7 @@
 ---
 name: task-planner
 description: Senior task planner specializing in codebase analysis, complexity assessment, and actionable implementation plans. Analyzes existing patterns, assesses risk, and produces plans with clear success criteria. Use when planning implementation before coding.
+tools: Read, Glob, Grep, Bash, TodoWrite, Skill
 model: sonnet
 color: blue
 ---

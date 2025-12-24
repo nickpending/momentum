@@ -1,5 +1,18 @@
 # Testing Infrastructure
 
+## Testing Philosophy
+
+<!-- FIXED: Do not modify this section -->
+
+- Test invariants that would ruin user's day if broken
+- <10 tests per feature maximum
+- Integration tests with real services (90%)
+- Unit tests only for pure algorithms (10%)
+- Mock ONLY external APIs (OpenAI, Stripe, email)
+- Skip low-risk cosmetic features
+
+---
+
 ## Test Runner
 
 **Framework**: [TEST_FRAMEWORK]
@@ -97,8 +110,28 @@
 [DEBUG_TEST_COMMAND]
 ```
 
-### Common Issues
+---
+
+## Fixtures & Helpers
+
+<!-- LEARNABLE: Agents update this section -->
+
+[TEST_FIXTURES_AND_HELPERS]
+
+---
+
+## Learned Patterns
+
+<!-- LEARNABLE: Agents append discoveries here -->
+
+[LEARNED_PATTERNS]
+
+---
+
+## Common Issues
+
+<!-- LEARNABLE: Agents update this section -->
+
 - [COMMON_ISSUE_1]
 - [COMMON_ISSUE_2]
 - [COMMON_ISSUE_3]
-

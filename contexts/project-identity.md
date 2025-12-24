@@ -50,8 +50,6 @@ Secrets in env vars, never hardcoded. Never commit .env, credentials, or .workfl
 | **qnext**      | What's next based on current work |
 | **qux**        | List test scenarios by priority   |
 | **qpropagate** | Update tasks based on discovery   |
-| **qlum**       | Quick luminary sanity check       |
-| **qwwld**      | What would luminaries do          |
 
 ## Startup Behavior
 

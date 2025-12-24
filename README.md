@@ -84,12 +84,13 @@ momentum myproject
 | Command | Purpose |
 |---------|---------|
 | `/plan-iteration` | Collaborative planning — investigate before proposing |
-| `/decompose-iteration` | Break iteration into concrete tasks |
-| `/plan-task N` | Execute task with evidence-based approach |
-| `/complete-task` | Verify with working demo |
+| `/orchestration:decompose-iteration` | Break iteration into concrete tasks (spawns agent) |
+| `/orchestration:plan-task N` | Plan task implementation (spawns task-planner) |
+| `/orchestration:build-task N` | Build from approved plan |
+| `/orchestration:test-task N` | Write and run tests (spawns test-runner) |
+| `/complete-task` | Verify with working demo, capture to Lore |
 | `/complete-iteration` | Archive and synthesize learnings |
-| `/save-state` | Preserve progress before context fills |
-| `/restore-state` | Resume exactly where you left off |
+| `/save-state` / `/restore-state` | Preserve and resume progress |
 
 **Quick commands:**
 - `qcheck` — Senior engineer code review
@@ -135,18 +136,21 @@ TypeScript hooks (Bun runtime) fire on Claude Code lifecycle events:
 
 ### Specialized Agents
 
-Natural language triggers spawn focused analysis:
+Agents spawn via orchestrated commands or natural language:
 
-| Trigger | Agent | Purpose |
-|---------|-------|---------|
-| "review the code" | code-reviewer | Security, bugs, quality with confidence scoring |
-| "analyze the architecture" | architecture-analyst | Multiple options with trade-offs |
-| "is this over-engineered?" | architecture-reviewer | Complexity assessment |
-| "check drift from design" | architecture-auditor | Compare plan vs implementation |
-| "check production readiness" | production-auditor | Release blockers, secrets scan |
-| "how should I implement X" | implementation-analyst | Technical approaches |
+| Agent | Triggered By | Purpose |
+|-------|--------------|---------|
+| **task-planner** | `/orchestration:plan-task` | Codebase analysis, complexity assessment, implementation plans |
+| **test-runner** | `/orchestration:test-task` | Risk-based invariant testing, writes and runs tests |
+| **iteration-decomposer** | `/orchestration:decompose-iteration` | Break features into concrete tasks |
+| **code-reviewer** | "review the code" | Security, bugs, quality with confidence scoring |
+| **architecture-analyst** | "analyze the architecture" | Multiple options with trade-offs |
+| **architecture-reviewer** | "is this over-engineered?" | Complexity assessment, right-sizing |
+| **architecture-auditor** | "check drift from design" | Compare plan vs implementation |
+| **production-auditor** | `/orchestration:audit-production` | Release blockers, secrets scan |
+| **implementation-analyst** | "how should I implement X" | Technical approaches |
 
-Agents investigate actual code and report findings with file:line references.
+Agents write operator logs (progress) and reports (findings) to `.workflow/agents/`.
 
 ### Voice System
 
