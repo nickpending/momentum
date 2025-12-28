@@ -2,10 +2,16 @@
 /**
  * Session Cache
  * Persists session context from SessionStart for use by other hooks
- * Stored in /tmp/momentum-session-{session_id}.json
+ * Stored in $XDG_STATE_HOME/momentum/sessions/{session_id}.json
  */
 
-import { existsSync, readFileSync, writeFileSync, unlinkSync } from "fs";
+import {
+  existsSync,
+  readFileSync,
+  writeFileSync,
+  unlinkSync,
+  mkdirSync,
+} from "fs";
 import { join } from "path";
 import { debugLog } from "./debug-log.ts";
 
@@ -21,10 +27,23 @@ export interface SessionContext {
   source: string; // startup | resume | clear | compact
 }
 
-const CACHE_DIR = "/tmp";
+// XDG Base Directory spec - session state goes in XDG_STATE_HOME
+const XDG_STATE_HOME =
+  process.env.XDG_STATE_HOME || join(process.env.HOME!, ".local", "state");
+const SESSIONS_DIR = join(XDG_STATE_HOME, "momentum", "sessions");
+
+function ensureSessionDir(): void {
+  try {
+    if (!existsSync(SESSIONS_DIR)) {
+      mkdirSync(SESSIONS_DIR, { recursive: true });
+    }
+  } catch {
+    // Silent fail - don't interrupt hooks
+  }
+}
 
 function getCachePath(sessionId: string): string {
-  return join(CACHE_DIR, `momentum-session-${sessionId}.json`);
+  return join(SESSIONS_DIR, `${sessionId}.json`);
 }
 
 /**
@@ -33,6 +52,7 @@ function getCachePath(sessionId: string): string {
  */
 export function writeSessionCache(context: SessionContext): void {
   try {
+    ensureSessionDir();
     const path = getCachePath(context.session_id);
     writeFileSync(path, JSON.stringify(context, null, 2));
     debugLog("SessionCache", "Cache written", {
