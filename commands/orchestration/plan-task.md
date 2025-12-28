@@ -14,14 +14,14 @@ You are orchestrating a task-planner subagent to create an implementation plan. 
 
 **Start event:**
 ```bash
-argus-send --source momentum --event-type command --status pending \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status pending \
   --message "Starting /orchestration:plan-task {TASK_NUMBER}" \
   --data '{"command_name": "orchestration:plan-task", "task_number": "{TASK_NUMBER}"}'
 ```
 
 **End event (after Phase 6):**
 ```bash
-argus-send --source momentum --event-type command --status success \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status success \
   --message "Completed /orchestration:plan-task {TASK_NUMBER}" \
   --data '{"command_name": "orchestration:plan-task", "task_number": "{TASK_NUMBER}", "complexity": "{complexity}"}'
 ```

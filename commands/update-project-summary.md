@@ -15,14 +15,14 @@ Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key inform
 
 **Start event:**
 ```bash
-argus-send --source momentum --event-type command --status pending \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status pending \
   --message "Starting /update-project-summary" \
   --data '{"command_name": "update-project-summary"}'
 ```
 
 **End event (after Step 5):**
 ```bash
-argus-send --source momentum --event-type command --status success \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status success \
   --message "Completed /update-project-summary" \
   --data '{"command_name": "update-project-summary"}'
 ```

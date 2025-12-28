@@ -11,14 +11,14 @@ description: Validate task completion with evidence of working functionality
 
 **Start event:**
 ```bash
-argus-send --source momentum --event-type command --status pending \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status pending \
   --message "Starting /complete-task {TASK_NUMBER}" \
   --data '{"command_name": "complete-task", "task_number": "{TASK_NUMBER}"}'
 ```
 
 **End event (after Phase 4):**
 ```bash
-argus-send --source momentum --event-type command --status success \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status success \
   --message "Completed /complete-task {TASK_NUMBER}" \
   --data '{"command_name": "complete-task", "task_number": "{TASK_NUMBER}"}'
 ```

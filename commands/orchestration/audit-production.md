@@ -13,14 +13,14 @@ Spawn specialist agents in parallel, then synthesize findings into release verdi
 
 **Start event:**
 ```bash
-argus-send --source momentum --event-type command --status pending \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status pending \
   --message "Starting /orchestration:audit-production" \
   --data '{"command_name": "orchestration:audit-production"}'
 ```
 
 **End event (after Step 6):**
 ```bash
-argus-send --source momentum --event-type command --status success \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status success \
   --message "Completed /orchestration:audit-production" \
   --data '{"command_name": "orchestration:audit-production", "verdict": "{BLOCKED/READY}"}'
 ```

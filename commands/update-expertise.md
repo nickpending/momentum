@@ -13,14 +13,14 @@ Update PROJECT_EXPERTISE.toml with learnings from recent work.
 
 **Start event:**
 ```bash
-argus-send --source momentum --event-type command --status pending \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status pending \
   --message "Starting /update-expertise" \
   --data '{"command_name": "update-expertise"}'
 ```
 
 **End event (after Step 5):**
 ```bash
-argus-send --source momentum --event-type command --status success \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status success \
   --message "Completed /update-expertise" \
   --data '{"command_name": "update-expertise", "domains_updated": {count}}'
 ```

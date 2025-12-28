@@ -13,14 +13,14 @@ You are helping plan an iteration by investigating the codebase, presenting find
 
 **Start event:**
 ```bash
-argus-send --source momentum --event-type command --status pending \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status pending \
   --message "Starting /plan-iteration" \
   --data '{"command_name": "plan-iteration"}'
 ```
 
 **End event (after Phase 10):**
 ```bash
-argus-send --source momentum --event-type command --status success \
+argus-send --source momentum --type command --session-id {SESSION_ID} --status success \
   --message "Completed /plan-iteration" \
   --data '{"command_name": "plan-iteration", "features": {count}, "iteration": "{name}"}'
 ```
