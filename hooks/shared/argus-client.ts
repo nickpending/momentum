@@ -25,7 +25,9 @@ export type ArgusEventType =
   | "session"
   | "agent"
   | "response"
-  | "prompt";
+  | "prompt"
+  | "command"
+  | "skill";
 
 /**
  * Momentum-specific Argus event

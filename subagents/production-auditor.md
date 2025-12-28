@@ -1,7 +1,7 @@
 ---
 name: production-auditor
 description: Release blocker hunter. Scans for secrets and vulnerabilities, reads specialist reports, and synthesizes a go/no-go verdict.
-tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput
+tools: Read, Write, Glob, Grep, TodoWrite
 model: sonnet
 color: red
 ---

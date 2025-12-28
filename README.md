@@ -63,6 +63,8 @@ The `momentum` command:
 
 ## The Workflow
 
+### Project States
+
 ```
 momentum myproject
     │
@@ -73,13 +75,48 @@ momentum myproject
     │   └─ Suggest /plan-iteration
     │
     ├─ State: planned (has ITERATION.md)
-    │   └─ Suggest /decompose-iteration
+    │   └─ Suggest /orchestration:decompose-iteration
     │
     └─ State: active (has TASKS.md)
         └─ Show progress, suggest next task
 ```
 
-**Commands:**
+### Orchestrated Task Flow
+
+Once you have tasks, the workflow is **agent-driven with user approval gates**:
+
+```
+/plan-iteration                    ← You collaborate on what to build
+    ↓
+/orchestration:decompose-iteration ← Agent breaks into tasks, you approve
+    ↓
+┌─────────────────────────────────────────────┐
+│  For each task:                             │
+│                                             │
+│  /orchestration:plan-task N                 │
+│      ↓ agent plans, presents approach       │
+│      ↓ you approve or request changes       │
+│                                             │
+│  /orchestration:build-task N                │
+│      ↓ agent builds, shows progress         │
+│      ↓ you approve when demo works          │
+│                                             │
+│  /orchestration:test-task N                 │
+│      ↓ agent writes tests, runs them        │
+│      ↓ you approve when passing             │
+│                                             │
+│  /complete-task N                           │
+│      ↓ capture learnings, update progress   │
+└─────────────────────────────────────────────┘
+    ↓
+/orchestration:audit-production    ← Agents scan for blockers, you get verdict
+    ↓
+/complete-iteration                ← Archive and synthesize
+```
+
+**The pattern: agents do the work, you say yes/no.** Each orchestrated command spawns specialized agents, validates their output, and presents results for your approval before proceeding.
+
+### Commands
 
 | Command | Purpose |
 |---------|---------|
@@ -88,6 +125,7 @@ momentum myproject
 | `/orchestration:plan-task N` | Plan task implementation (spawns task-planner) |
 | `/orchestration:build-task N` | Build from approved plan |
 | `/orchestration:test-task N` | Write and run tests (spawns test-runner) |
+| `/orchestration:audit-production` | Pre-release scan for blockers (spawns auditors) |
 | `/complete-task` | Verify with working demo, capture to Lore |
 | `/complete-iteration` | Archive and synthesize learnings |
 | `/save-state` / `/restore-state` | Preserve and resume progress |

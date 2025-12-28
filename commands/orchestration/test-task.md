@@ -12,6 +12,24 @@ Spawn test-runner agent to write and run tests for a completed task.
 
 **Runs after `orchestration:build-task` completes.**
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /orchestration:test-task {TASK_NUMBER}" \
+  --data '{"command_name": "orchestration:test-task", "task_number": "{TASK_NUMBER}"}'
+```
+
+**End event (after Phase 7):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /orchestration:test-task {TASK_NUMBER}" \
+  --data '{"command_name": "orchestration:test-task", "task_number": "{TASK_NUMBER}", "tests_passed": {count}}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## Core Principles
 
 - **Delegate**: Agent writes and runs tests. You validate and present.

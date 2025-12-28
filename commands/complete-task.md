@@ -7,6 +7,24 @@ description: Validate task completion with evidence of working functionality
 
 # Validate task completion with evidence of working functionality
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /complete-task {TASK_NUMBER}" \
+  --data '{"command_name": "complete-task", "task_number": "{TASK_NUMBER}"}'
+```
+
+**End event (after Phase 4):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /complete-task {TASK_NUMBER}" \
+  --data '{"command_name": "complete-task", "task_number": "{TASK_NUMBER}"}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## ⚠️ CRITICAL: MARK TASK COMPLETE AND DOCUMENT
 
 **REQUIRED:**

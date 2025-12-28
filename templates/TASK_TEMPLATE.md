@@ -37,6 +37,13 @@
 - **HIGH**: [If affects user data, state, money, security - be specific]
 - **LOW**: [If cosmetic, isolated, easily reversible - be specific]
 
+## Test Considerations
+<!-- Populated by decomposer based on ITERATION.md invariants -->
+- **Invariants to protect**: [Which invariants from IDD this task affects]
+- **Happy path**: [Primary success scenario to verify]
+- **Error cases**: [Expected failures that must be handled correctly]
+- **Edge cases**: [Boundary conditions worth testing]
+
 ## Discovered During Implementation
 - **Invariants (from ITERATION.md):**
   - [Pre-mapped by decomposer]

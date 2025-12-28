@@ -11,6 +11,24 @@ description: Generate lightweight project summary for context loading
 
 Generate a lightweight PROJECT_SUMMARY.md (40-50 lines) by extracting key information from IDEA.md, ITERATION.md, and TASKS.md. This replaces loading full context files during /load-app-context.
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /update-project-summary" \
+  --data '{"command_name": "update-project-summary"}'
+```
+
+**End event (after Step 5):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /update-project-summary" \
+  --data '{"command_name": "update-project-summary"}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## Core Instructions
 
 ### Step 1: Load Source Files

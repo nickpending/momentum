@@ -10,6 +10,24 @@ argument-hint: task-number
 
 You are orchestrating a task-planner subagent to create an implementation plan. Your role is delegation, validation, and handoff — not planning.
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /orchestration:plan-task {TASK_NUMBER}" \
+  --data '{"command_name": "orchestration:plan-task", "task_number": "{TASK_NUMBER}"}'
+```
+
+**End event (after Phase 6):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /orchestration:plan-task {TASK_NUMBER}" \
+  --data '{"command_name": "orchestration:plan-task", "task_number": "{TASK_NUMBER}", "complexity": "{complexity}"}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## Core Principles
 
 - **Delegate, don't plan**: The agent plans. You orchestrate, validate, present.

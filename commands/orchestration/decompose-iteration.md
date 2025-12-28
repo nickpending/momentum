@@ -9,6 +9,24 @@ description: Orchestrate iteration decomposition via subagent
 
 Spawn iteration-decomposer subagent, conduct interview, get approval, generate files.
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /orchestration:decompose-iteration" \
+  --data '{"command_name": "orchestration:decompose-iteration"}'
+```
+
+**End event (after Step 7):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /orchestration:decompose-iteration" \
+  --data '{"command_name": "orchestration:decompose-iteration", "tasks_created": {count}}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## Step 1: Load Iteration
 
 READ `{PROJECT_ROOT}/.workflow/artifacts/ITERATION.md`

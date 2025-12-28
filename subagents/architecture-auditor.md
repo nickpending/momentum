@@ -1,7 +1,7 @@
 ---
 name: architecture-auditor
 description: Architecture drift auditor. Use PROACTIVELY after major features to identify drift from design, dead code, integration gaps, and technical debt. Compares what was actually built versus what was planned.
-tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput
+tools: Read, Write, Glob, Grep, Bash, TodoWrite
 model: sonnet
 color: red
 ---

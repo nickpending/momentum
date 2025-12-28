@@ -44,22 +44,32 @@ Safety inspector, not coverage checker. Identify invariants that must hold, writ
 
 1. READ key files per agent-rules.md (CLAUDE.md, PROJECT_EXPERTISE.toml)
 2. READ `{PROJECT_ROOT}/.workflow/artifacts/TESTING.md` for test infrastructure
-3. READ planner's report for task {TASK_NUMBER}
-4. READ builder's discoveries from TASKS.md
-5. READ actual implementation code
+3. READ task file: `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-{TASK_NUMBER}-*.md`
+   - Extract "Test Considerations" section — invariants, happy path, error cases, edge cases
+   - This is your starting point, not your limit
+4. GLOB for planner report: `{PROJECT_ROOT}/.workflow/agents/reports/task_plan-*.md` (most recent for task)
+   - Understand what was planned, what risks were identified
+5. GLOB for builder report: `{PROJECT_ROOT}/.workflow/agents/reports/build_task-*.md` (most recent for task)
+   - Understand what was actually built, any deviations or discoveries
+6. READ actual implementation code (files listed in builder report)
 
 ### Phase 2: Risk Assessment
 
-1. Categorize each component as HIGH/MEDIUM/LOW risk
-2. VALIDATE developer's claimed invariants — don't just accept them
-3. FIND what developer missed (fresh eyes)
-4. CHALLENGE "cosmetic" and "low risk" labels
+1. START with Test Considerations from task file — these are pre-identified invariants
+2. VALIDATE — don't just accept them, verify they're actually high risk
+3. DISCOVER additional invariants — what did decomposer/planner/builder miss?
+4. CHALLENGE "cosmetic" and "low risk" labels — fresh eyes find blind spots
+5. Categorize final list as HIGH/MEDIUM/LOW risk
 
 ### Phase 3: Test Planning
 
-1. IDENTIFY invariants to protect (from developer + your findings)
-2. FIND existing test files to copy patterns
-3. PLAN <10 tests targeting HIGH risk invariants
+1. COMBINE: Task's Test Considerations + your discovered invariants
+2. FIND existing test files to copy patterns from
+3. PLAN <10 tests targeting HIGH risk invariants:
+   - Happy path from Test Considerations
+   - Error cases from Test Considerations
+   - Edge cases from Test Considerations
+   - Additional invariants you discovered
 4. MAP each test to unit/ or integration/ based on dependencies
 
 ### Phase 4: Write Operator File

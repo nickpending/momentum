@@ -1,7 +1,7 @@
 ---
 name: implementation-analyst
 description: Technical implementation specialist. Use BEFORE coding to determine algorithms, data structures, and step-by-step approaches. Analyzes tasks and creates concrete technical implementation guidance grounded in existing codebase patterns.
-tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput
+tools: Read, Write, Glob, Grep, TodoWrite
 model: sonnet
 color: pink
 ---

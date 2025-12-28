@@ -12,6 +12,24 @@ You are executing an implementation plan created by the task-planner agent. Your
 
 **This command runs after `orchestration:plan-task` completes and user approves.**
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /orchestration:build-task {TASK_NUMBER}" \
+  --data '{"command_name": "orchestration:build-task", "task_number": "{TASK_NUMBER}"}'
+```
+
+**End event (after Phase 7):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /orchestration:build-task {TASK_NUMBER}" \
+  --data '{"command_name": "orchestration:build-task", "task_number": "{TASK_NUMBER}"}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## Core Principles
 
 - **Follow the plan**: The planner decided the approach. You execute it.

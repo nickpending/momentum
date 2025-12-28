@@ -1,7 +1,7 @@
 ---
 name: architecture-reviewer
 description: Architecture fitness specialist. Use PROACTIVELY after completing iterations to evaluate right-sizing, DRY/YAGNI compliance, coupling, cohesion, and layer violations. Assesses whether architecture is fit for purpose.
-tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput
+tools: Read, Write, Glob, Grep, Bash, TodoWrite
 model: sonnet
 color: purple
 ---

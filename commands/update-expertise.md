@@ -9,6 +9,24 @@ description: Update project expertise with learnings and Lore insights
 
 Update PROJECT_EXPERTISE.toml with learnings from recent work.
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /update-expertise" \
+  --data '{"command_name": "update-expertise"}'
+```
+
+**End event (after Step 5):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /update-expertise" \
+  --data '{"command_name": "update-expertise", "domains_updated": {count}}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## Section Ownership
 
 **YOU update (domains section):**

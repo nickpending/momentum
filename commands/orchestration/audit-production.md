@@ -9,6 +9,24 @@ description: Orchestrate production readiness audit via subagents
 
 Spawn specialist agents in parallel, then synthesize findings into release verdict.
 
+## Instrumentation
+
+**Start event:**
+```bash
+argus-send --source momentum --event-type command --status pending \
+  --message "Starting /orchestration:audit-production" \
+  --data '{"command_name": "orchestration:audit-production"}'
+```
+
+**End event (after Step 6):**
+```bash
+argus-send --source momentum --event-type command --status success \
+  --message "Completed /orchestration:audit-production" \
+  --data '{"command_name": "orchestration:audit-production", "verdict": "{BLOCKED/READY}"}'
+```
+
+If command fails, use `--status failure` with error details.
+
 ## Step 1: Context
 
 EXTRACT from session:

@@ -1,7 +1,7 @@
 ---
 name: architecture-analyst
 description: Architecture planning specialist. Use BEFORE implementing features to determine system structure, patterns, and integration points. Proposes multiple architectural approaches with clear trade-offs grounded in actual codebase patterns.
-tools: Glob, Grep, LS, Read, NotebookRead, WebFetch, TodoWrite, WebSearch, KillShell, BashOutput
+tools: Read, Write, Glob, Grep, TodoWrite
 model: sonnet
 color: green
 ---
