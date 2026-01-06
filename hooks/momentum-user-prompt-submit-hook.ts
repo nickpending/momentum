@@ -21,6 +21,11 @@ import {
   loadConfig as loadLLMConfig,
 } from "@voidwire/llm-summarize";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
+import {
+  getUnackedNotifications,
+  ackNotification,
+  formatNotificationsForContext,
+} from "./shared/notifications.ts";
 
 interface HookInput {
   session_id: string;
@@ -61,6 +66,28 @@ async function main() {
     console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
     console.log(`<!-- SESSION_ID: ${data.session_id} -->`);
 
+    // Inject notifications (urgent + indicator tiers)
+    try {
+      const notifications = getUnackedNotifications();
+      if (notifications.length > 0) {
+        const formatted = formatNotificationsForContext(notifications);
+        console.log(formatted);
+
+        // Auto-ack urgent notifications after injection
+        for (const n of notifications) {
+          if (n.tier === "urgent") {
+            ackNotification(n.id);
+          }
+        }
+        debugLog("UserPromptSubmit", "Notifications injected", {
+          count: notifications.length,
+          urgent: notifications.filter((n) => n.tier === "urgent").length,
+        });
+      }
+    } catch {
+      // Silent fail - never crash hook for notifications
+    }
+
     debugLog("UserPromptSubmit", "Metadata injected");
 
     // Layer 1: JSONL event logging
@@ -94,9 +121,12 @@ async function main() {
         userName,
       });
       const llmConfig = loadLLMConfig();
-      const result = await summarize(context, llmConfig);
-      if (result.summary) {
-        promptSummary = result.summary;
+      const result = await summarize(context, llmConfig, {
+        mode: "quick",
+        userName,
+      });
+      if (result.insights?.summary) {
+        promptSummary = result.insights.summary;
       }
     } catch {
       promptSummary = data.prompt?.substring(0, 100) || "Empty prompt";

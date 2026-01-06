@@ -13,29 +13,24 @@ export interface SummaryContextOptions {
 }
 
 /**
- * Build structured context for prompt summarization
+ * Build structured context for prompt summarization (blocking - keep brief)
  */
 export function buildPromptContext(opts: SummaryContextOptions): string {
   const previous = opts.previousTurn?.substring(0, 300) || "Session start";
   const content = opts.content.substring(0, 500);
-  const userLine = opts.userName ? `User: ${opts.userName}\n` : "";
 
-  return `Event Type: ${opts.eventType}
-Project: ${opts.project}
-${userLine}Previous Assistant: ${previous}
+  return `Project: ${opts.project}
+Previous Assistant: ${previous}
 User Prompt: ${content}`;
 }
 
 /**
- * Build structured context for response summarization
+ * Build structured context for response summarization (async worker - no truncation)
  */
 export function buildResponseContext(opts: SummaryContextOptions): string {
-  const previous = opts.previousTurn?.substring(0, 300) || "Session start";
-  const content = opts.content.substring(0, 1000);
-  const userLine = opts.userName ? `User: ${opts.userName}\n` : "";
+  const previous = opts.previousTurn || "Session start";
 
-  return `Event Type: ${opts.eventType}
-Project: ${opts.project}
-${userLine}User Asked: ${previous}
-Assistant Response: ${content}`;
+  return `Project: ${opts.project}
+User Asked: ${previous}
+Assistant Response: ${opts.content}`;
 }

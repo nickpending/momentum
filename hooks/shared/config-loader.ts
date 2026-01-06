@@ -35,6 +35,7 @@ export interface MomentumConfig {
     tts?: {
       enabled?: boolean;
       provider?: string;
+      model?: string;
       api_key?: string;
       voice_id?: string;
       cache_threshold?: number;
@@ -43,6 +44,24 @@ export interface MomentumConfig {
         brief?: boolean;
         normal?: boolean;
       };
+    };
+  };
+  behavior?: {
+    teaching?: number;
+    wit?: number;
+    pushback?: number;
+    depth?: number;
+    teaching_config?: {
+      enabled?: boolean;
+      domains?: string[];
+      min_confidence?: string;
+      max_length?: string;
+    };
+    triggers?: {
+      on_confusion?: boolean;
+      on_agreement?: boolean;
+      on_architecture?: boolean;
+      on_completion?: boolean;
     };
   };
 }

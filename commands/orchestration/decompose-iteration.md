@@ -41,10 +41,15 @@ IF no ITERATION.md exists:
 
 ## Step 2: Spawn Decomposer
 
-SPAWN iteration-decomposer subagent with this prompt:
+**Actions:**
+1. Generate CORRELATION_ID: `decompose-iteration-{8 random hex chars}`
+2. SPAWN iteration-decomposer subagent with this prompt:
 
 ```
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format.
+CORRELATION_ID: {generated correlation_id}
+SESSION_ID: {SESSION_ID from hook context}
+
+FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
 
 Decompose this iteration into task files:
 - PROJECT_ROOT: {value}

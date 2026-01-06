@@ -58,10 +58,14 @@ IF task file not found:
 **Goal:** Delegate planning to task-planner subagent
 
 **Actions:**
-1. SPAWN task-planner subagent with this prompt:
+1. Generate CORRELATION_ID: `plan-task-{TASK_NUMBER}-{8 random hex chars}`
+2. SPAWN task-planner subagent with this prompt:
 
 ```
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format.
+CORRELATION_ID: {generated correlation_id}
+SESSION_ID: {SESSION_ID from hook context}
+
+FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
 
 Then plan this task:
 - PROJECT_ROOT: {value}
@@ -79,8 +83,8 @@ Planning process:
 Return per agent-rules.md format.
 ```
 
-2. STORE the agent_id for resume
-3. Update todo: Phase 2 complete
+3. STORE the agent_id for resume
+4. Update todo: Phase 2 complete
 
 ---
 

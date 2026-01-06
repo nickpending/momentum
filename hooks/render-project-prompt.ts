@@ -22,6 +22,85 @@ import { loadVoiceStyle, loadVerbosityLevel } from "./shared/voice-loader.ts";
 Mustache.escape = (text: string) => text;
 
 /**
+ * Render behavior section from config dials and triggers
+ */
+function renderBehaviorSection(config: ReturnType<typeof loadConfig>): string {
+  const behavior = config.behavior;
+  if (!behavior) {
+    return ""; // No behavior config, return empty (graceful fallback)
+  }
+
+  const lines: string[] = [];
+
+  // Dials section
+  const dials = [
+    {
+      name: "Teaching",
+      value: behavior.teaching,
+      desc: "Surface first principles when relevant",
+    },
+    {
+      name: "Wit",
+      value: behavior.wit,
+      desc: "Personality in body text, not just VOICE",
+    },
+    {
+      name: "Pushback",
+      value: behavior.pushback,
+      desc: "Challenge assumptions when warranted",
+    },
+    { name: "Depth", value: behavior.depth, desc: "Explanation thoroughness" },
+  ].filter((d) => d.value !== undefined);
+
+  if (dials.length > 0) {
+    lines.push("**Dials:**");
+    for (const dial of dials) {
+      lines.push(`- ${dial.name}: ${dial.value}/100 — ${dial.desc}`);
+    }
+    lines.push("");
+  }
+
+  // Teaching config
+  const teaching = behavior.teaching_config;
+  if (teaching?.enabled !== false) {
+    lines.push("**Teaching:**");
+    if (teaching?.domains) {
+      lines.push(`- Domains: ${teaching.domains.join(", ")}`);
+    }
+    if (teaching?.min_confidence) {
+      lines.push(`- Min confidence: ${teaching.min_confidence}`);
+    }
+    lines.push("- Use `📚 TEACH [domain] ~confidence:` format");
+    lines.push("");
+  }
+
+  // Triggers
+  const triggers = behavior.triggers;
+  if (triggers) {
+    const activeTriggersMap: Record<string, string> = {
+      on_confusion: "User confusion → Step back to first principles",
+      on_agreement: "Agreement on approach → Surface underlying principle",
+      on_architecture: "Architecture decision → Note the trade-off pattern",
+      on_completion: "Complex task completed → Explain what made it work",
+    };
+
+    const activeTriggers = Object.entries(triggers)
+      .filter(([_, enabled]) => enabled)
+      .map(([key]) => activeTriggersMap[key])
+      .filter(Boolean);
+
+    if (activeTriggers.length > 0) {
+      lines.push("**Triggers:**");
+      for (const trigger of activeTriggers) {
+        lines.push(`- ${trigger}`);
+      }
+    }
+  }
+
+  return lines.join("\n");
+}
+
+/**
  * Check if ElevenLabs model supports v3 audio tags
  */
 function supportsV3AudioTags(model: string | undefined): boolean {
@@ -109,6 +188,9 @@ function main(): void {
       voiceVerbosity = "Be concise. Focus on essentials.";
     }
 
+    // Render behavior section from config
+    const behaviorSection = renderBehaviorSection(config);
+
     const view = {
       // Identity
       ASSISTANT_NAME: config.personalization.assistant_name || "Assistant",
@@ -124,6 +206,8 @@ function main(): void {
       // Voice section (v3 tags or basic) and verbosity
       VOICE_SECTION: voiceSection,
       VOICE_VERBOSITY: voiceVerbosity,
+      // Behavioral calibration
+      BEHAVIOR_SECTION: behaviorSection,
       // Legacy support (in case old templates still use this)
       VOICE_INSTRUCTIONS: `${personality}\n\n${voiceVerbosity}`,
       MODE_CONTEXT: "", // No longer used, but keep for backwards compat

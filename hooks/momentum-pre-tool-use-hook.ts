@@ -19,6 +19,7 @@ import {
   matchPendingAgent,
   registerActivatedAgent,
   readAgentPrompt,
+  extractCorrelationId,
 } from "./shared/agent-lookup.ts";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 import { formatToolMessage } from "./shared/tool-formatter.ts";
@@ -103,13 +104,28 @@ async function main(): Promise<void> {
       );
       const instanceId = instanceMatch?.[1];
 
-      // Cache pending agent for prompt-based correlation when agent_id discovered
-      if (data.tool_use_id && taskInput.prompt) {
+      // Extract correlation_id from prompt for exact matching (replaces fragile prompt matching)
+      const correlationId = taskInput.prompt
+        ? extractCorrelationId(taskInput.prompt)
+        : null;
+
+      // Cache pending agent for correlation when agent_id discovered
+      if (data.tool_use_id && correlationId) {
         addPendingAgent(data.session_id, {
           tool_use_id: data.tool_use_id,
-          prompt: taskInput.prompt,
+          correlation_id: correlationId,
           subagent_type: taskInput.subagent_type || "unknown",
           instance_id: instanceId,
+        });
+        debugLog("PreToolUse", "Extracted correlation_id from prompt", {
+          correlation_id: correlationId,
+          tool_use_id: data.tool_use_id,
+        });
+      } else if (data.tool_use_id && taskInput.prompt) {
+        // Fallback: no CORRELATION_ID in prompt (non-instrumented agent)
+        debugLog("PreToolUse", "No CORRELATION_ID found in prompt", {
+          tool_use_id: data.tool_use_id,
+          prompt_preview: taskInput.prompt.substring(0, 100),
         });
       }
 
@@ -128,6 +144,7 @@ async function main(): Promise<void> {
           prompt_preview: taskInput.prompt?.substring(0, 200),
           is_background: taskInput.run_in_background || false,
           instance_id: instanceId,
+          correlation_id: correlationId,
         },
       }).catch(() => {
         // Silent failure
@@ -136,6 +153,7 @@ async function main(): Promise<void> {
         subagent_type: taskInput.subagent_type,
         tool_use_id: data.tool_use_id,
         instance_id: instanceId,
+        correlation_id: correlationId,
       });
     } else {
       // Regular tool event
@@ -159,48 +177,65 @@ async function main(): Promise<void> {
             parent_tool_use_id: parentToolUseId,
           });
         } else {
-          // First tool we've seen from this agent - try to activate via prompt matching
+          // First tool we've seen from this agent - try to activate via correlation_id
           const agentPrompt = readAgentPrompt(
             data.transcript_path || "",
             agentId,
           );
 
           if (agentPrompt) {
-            const matched = matchPendingAgent(data.session_id, agentPrompt);
-            if (matched) {
-              // Successfully correlated! Register activation
-              parentToolUseId = matched.tool_use_id;
-              instanceId = matched.instance_id;
-              subagentType = matched.subagent_type;
+            // Extract CORRELATION_ID from agent's prompt
+            const correlationId = extractCorrelationId(agentPrompt);
 
-              registerActivatedAgent(data.session_id, agentId, {
-                parent_tool_use_id: matched.tool_use_id,
-                subagent_type: matched.subagent_type,
-                instance_id: matched.instance_id,
-              });
+            if (correlationId) {
+              // Match by correlation_id (exact string match)
+              const matched = matchPendingAgent(data.session_id, correlationId);
+              if (matched) {
+                // Successfully correlated! Register activation
+                parentToolUseId = matched.tool_use_id;
+                instanceId = matched.instance_id;
+                subagentType = matched.subagent_type;
 
-              // Emit activation event to Argus
-              await postToArgus({
-                source: "momentum",
-                event_type: "agent",
-                hook: "SubagentActivated",
-                session_id: data.session_id,
-                tool_use_id: matched.tool_use_id,
-                agent_id: agentId,
-                status: "activated",
-                message: `Agent ${matched.subagent_type} activated`,
-                data: {
-                  project: projectName,
+                registerActivatedAgent(data.session_id, agentId, {
+                  parent_tool_use_id: matched.tool_use_id,
                   subagent_type: matched.subagent_type,
                   instance_id: matched.instance_id,
+                });
+
+                // Emit activation event to Argus (hook-side correlation complete)
+                await postToArgus({
+                  source: "momentum",
+                  event_type: "agent",
+                  hook: "SubagentActivated",
+                  session_id: data.session_id,
+                  tool_use_id: matched.tool_use_id,
+                  agent_id: agentId,
+                  status: "activated",
+                  message: `Agent ${matched.subagent_type} activated`,
+                  data: {
+                    project: projectName,
+                    subagent_type: matched.subagent_type,
+                    instance_id: matched.instance_id,
+                    correlation_id: correlationId,
+                  },
+                }).catch(() => {});
+                debugLog("PreToolUse", "Agent activation via correlation_id", {
+                  correlation_id: correlationId,
+                  agent_id: agentId,
+                  parent_tool_use_id: parentToolUseId,
+                  subagent_type: subagentType,
+                });
+              }
+            } else {
+              // No CORRELATION_ID - non-instrumented agent, can't correlate
+              debugLog(
+                "PreToolUse",
+                "Agent has no CORRELATION_ID, skipping correlation",
+                {
+                  agent_id: agentId,
+                  prompt_preview: agentPrompt.substring(0, 100),
                 },
-              }).catch(() => {});
-              debugLog("PreToolUse", "Agent activation event emitted", {
-                agent_id: agentId,
-                parent_tool_use_id: parentToolUseId,
-                subagent_type: subagentType,
-                instance_id: instanceId,
-              });
+              );
             }
           }
         }

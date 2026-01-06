@@ -184,7 +184,13 @@ export function getLastUserMessage(transcriptPath: string): string | null {
     for (let i = entries.length - 1; i >= 0; i--) {
       const entry = entries[i];
       if (entry.message?.role === "user" && entry.message.content) {
-        for (const block of entry.message.content) {
+        const content = entry.message.content;
+        // Handle plain string content
+        if (typeof content === "string") {
+          return content;
+        }
+        // Handle array of content blocks
+        for (const block of content) {
           if (block.type === "text" && block.text) {
             return block.text;
           }

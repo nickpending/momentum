@@ -7,24 +7,21 @@
 import { existsSync } from "fs";
 import { debugLog, debugLogSeparator } from "./shared/debug-log.ts";
 import { loadConfig } from "./shared/config-loader.ts";
+import { PROJECT_NAME } from "./shared/momentum-paths.ts";
 import { $ } from "bun";
 import {
   appendEvent,
   createEvent,
   type HookInput,
 } from "./shared/jsonl-logger.ts";
-import { postToArgus } from "./shared/argus-client.ts";
 import {
   parseTranscript,
   getLastUserMessage,
 } from "./shared/transcript-parser.ts";
 import { buildResponseContext } from "./shared/summary-context.ts";
 import { captureKnowledge, type KnowledgeCaptureType } from "@voidwire/lore";
-import {
-  summarize,
-  loadConfig as loadLLMConfig,
-} from "@voidwire/llm-summarize";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
+import { join } from "path";
 
 interface StopHookInput {
   session_id: string;
@@ -379,9 +376,9 @@ async function main() {
       model: transcriptStats.model,
     });
 
-    // Generate summary first (used by both JSONL and Argus)
+    // Use PROJECT_NAME from momentum-paths (consistent with other hooks)
     const cwd = data.cwd || process.cwd();
-    const projectName = cwd.split("/").pop() || "unknown";
+    const projectName = PROJECT_NAME;
 
     // Strip VOICE marker (it's for TTS, not observability)
     const contentForSummary = lastMessageContent
@@ -391,25 +388,17 @@ async function main() {
     // Get user prompt for context
     const userPrompt = getLastUserMessage(data.transcript_path);
 
-    // Build structured context and summarize
-    let summary: string;
-    try {
-      const context = buildResponseContext({
-        eventType: "Stop",
-        project: projectName,
-        sessionId: data.session_id,
-        content: contentForSummary,
-        previousTurn: userPrompt || undefined,
-        userName,
-      });
-      const llmConfig = loadLLMConfig();
-      const result = await summarize(context, llmConfig);
-      summary = result.summary || contentForSummary.substring(0, 200);
-    } catch {
-      summary = contentForSummary.substring(0, 200);
-    }
+    // Build context for summarization (used by worker)
+    const context = buildResponseContext({
+      eventType: "Stop",
+      project: projectName,
+      sessionId: data.session_id,
+      content: contentForSummary,
+      previousTurn: userPrompt || undefined,
+      userName,
+    });
 
-    // Layer 1: JSONL event logging (includes summary)
+    // Layer 1: JSONL event logging (synchronous, no LLM call)
     const hookInput: HookInput = {
       session_id: data.session_id,
       transcript_path: data.transcript_path,
@@ -428,33 +417,40 @@ async function main() {
       has_voice: !!voiceSummary,
       captures_count: captures.length,
       model: transcriptStats.model,
-      summary,
+      summary: contentForSummary.substring(0, 200), // Truncated, worker enriches Argus
     });
     appendEvent(logEvent);
     debugLog("StopHook", "JSONL event logged");
 
-    // Layer 3: Argus real-time event (reuses summary)
-    await postToArgus({
-      source: "momentum",
-      event_type: "response",
-      hook: "Stop",
-      session_id: data.session_id,
-      status: "success",
-      message: summary,
-      data: {
-        project: projectName,
-        tokens: {
-          input: transcriptStats.total_input_tokens,
-          output: transcriptStats.total_output_tokens,
-        },
-        tools_used: transcriptStats.tools_used,
-        model: transcriptStats.model,
-        captures_count: captures.length,
+    // Layer 3: Spawn detached worker for async Argus enrichment
+    // Worker calls llm-summarize, posts enriched event to Argus
+    const hooksDir = import.meta.dir;
+    const workerPath = join(hooksDir, "summarizer-worker.ts");
+    const workerInput = JSON.stringify({
+      sessionId: data.session_id,
+      project: projectName,
+      context,
+      userName,
+      tokens: {
+        input: transcriptStats.total_input_tokens,
+        output: transcriptStats.total_output_tokens,
       },
-    }).catch(() => {
-      // Silent failure - Argus is best-effort
+      toolsUsed: transcriptStats.tools_used,
+      model: transcriptStats.model,
+      capturesCount: captures.length,
     });
-    debugLog("StopHook", "Argus event posted", { message: summary });
+
+    debugLog("StopHook", "Spawning worker", { workerPath, hooksDir });
+    const worker = Bun.spawn(["bun", workerPath], {
+      stdin: "pipe",
+      stdout: "ignore",
+      stderr: "ignore",
+      cwd: hooksDir, // Ensure worker can find node_modules
+    });
+    worker.stdin.write(workerInput);
+    worker.stdin.end();
+    worker.unref(); // Allow hook to exit while worker continues
+    debugLog("StopHook", "Summarizer worker spawned");
 
     // TTS: Speak voice summary if present
     if (!voiceSummary) {

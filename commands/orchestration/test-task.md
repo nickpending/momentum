@@ -58,10 +58,14 @@ IF missing: STOP with clear error message.
 **Goal:** Delegate to test-runner agent
 
 **Actions:**
-1. SPAWN test-runner with:
+1. Generate CORRELATION_ID: `test-task-{TASK_NUMBER}-{8 random hex chars}`
+2. SPAWN test-runner with:
 
 ```
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md for output format.
+CORRELATION_ID: {generated correlation_id}
+SESSION_ID: {SESSION_ID from hook context}
+
+FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md for output format and instrumentation.
 
 Write and run tests for task {TASK_NUMBER}.
 PROJECT_ROOT: {value}
@@ -69,7 +73,7 @@ PROJECT_ROOT: {value}
 Return after Phase 4 (operator file with test plan) for approval.
 ```
 
-2. STORE agent_id for resume
+3. STORE agent_id for resume
 
 ---
 

@@ -37,11 +37,18 @@ RUN `git log --oneline -5` to confirm what's being audited.
 
 ## Step 2: Spawn Specialists (Parallel)
 
-SPAWN both agents IN PARALLEL:
+**Actions:**
+1. Generate CORRELATION_IDs:
+   - `audit-code-review-{8 random hex chars}`
+   - `audit-architecture-{8 random hex chars}`
+2. SPAWN both agents IN PARALLEL:
 
 **code-reviewer:**
 ```
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format.
+CORRELATION_ID: {generated code-review correlation_id}
+SESSION_ID: {SESSION_ID from hook context}
+
+FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
 
 Review the current codebase for production readiness:
 - PROJECT_ROOT: {value}
@@ -54,7 +61,10 @@ Write report per agent-rules.md format.
 
 **architecture-auditor:**
 ```
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format.
+CORRELATION_ID: {generated architecture correlation_id}
+SESSION_ID: {SESSION_ID from hook context}
+
+FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
 
 Audit architecture for drift and integration issues:
 - PROJECT_ROOT: {value}
@@ -68,16 +78,21 @@ Focus on:
 Write report per agent-rules.md format.
 ```
 
-STORE both agent_ids for potential resume.
+3. STORE both agent_ids for potential resume.
 
 WAIT for both to complete.
 
 ## Step 3: Spawn Production Auditor
 
-After specialists complete, SPAWN production-auditor:
+**Actions:**
+1. Generate CORRELATION_ID: `audit-production-{8 random hex chars}`
+2. After specialists complete, SPAWN production-auditor:
 
 ```
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format.
+CORRELATION_ID: {generated correlation_id}
+SESSION_ID: {SESSION_ID from hook context}
+
+FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
 
 Synthesize release readiness verdict:
 - PROJECT_ROOT: {value}
