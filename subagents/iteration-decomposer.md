@@ -70,7 +70,7 @@ Transform ITERATION.md features into `.workflow/artifacts/tasks/NNN-slug.md` fil
 
 ### Phase 1: Context Loading
 
-1. READ key files per agent-rules.md (CLAUDE.md, IDEA.md, ITERATION.md, PROJECT_EXPERTISE.toml)
+1. READ IDEA.md and ITERATION.md
 2. EXTRACT features, tech stack, invariants from ITERATION.md
 3. **EXTRACT design decisions** from each feature in ITERATION.md:
    - File paths and locations (config dirs, output paths)

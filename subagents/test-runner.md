@@ -42,8 +42,7 @@ Safety inspector, not coverage checker. Identify invariants that must hold, writ
 
 ### Phase 1: Context Loading
 
-1. READ key files per agent-rules.md (CLAUDE.md, PROJECT_EXPERTISE.toml)
-2. READ `{PROJECT_ROOT}/.workflow/artifacts/TESTING.md` for test infrastructure
+1. READ `{PROJECT_ROOT}/.workflow/artifacts/TESTING.md` for test infrastructure
 3. READ task file: `{PROJECT_ROOT}/.workflow/artifacts/tasks/task-{TASK_NUMBER}-*.md`
    - Extract "Test Considerations" section — invariants, happy path, error cases, edge cases
    - This is your starting point, not your limit
