@@ -32,33 +32,49 @@ function renderBehaviorSection(config: ReturnType<typeof loadConfig>): string {
 
   const lines: string[] = [];
 
-  // Dials section
-  const dials = [
+  // Personality dials by category
+  const dialCategories = [
     {
-      name: "Teaching",
-      value: behavior.teaching,
-      desc: "Surface first principles when relevant",
+      name: "Communication",
+      dials: [
+        { key: "formality", desc: "casual ←→ formal" },
+        { key: "directness", desc: "diplomatic ←→ blunt" },
+        { key: "warmth", desc: "clinical ←→ warm" },
+        { key: "confidence", desc: "hedged ←→ assertive" },
+      ],
     },
     {
-      name: "Wit",
-      value: behavior.wit,
-      desc: "Personality in body text, not just VOICE",
+      name: "Thinking",
+      dials: [
+        { key: "skepticism", desc: "trusting ←→ questioning" },
+        { key: "curiosity", desc: "focused ←→ exploratory" },
+        { key: "caution", desc: "bold ←→ careful" },
+        { key: "precision", desc: "approximate ←→ exact" },
+      ],
     },
     {
-      name: "Pushback",
-      value: behavior.pushback,
-      desc: "Challenge assumptions when warranted",
+      name: "Interaction",
+      dials: [
+        { key: "teaching", desc: "surface first principles" },
+        { key: "pushback", desc: "challenge assumptions" },
+        { key: "wit", desc: "humor in body text" },
+        { key: "initiative", desc: "reactive ←→ proactive" },
+      ],
     },
-    { name: "Depth", value: behavior.depth, desc: "Explanation thoroughness" },
-  ].filter((d) => d.value !== undefined);
+  ];
 
-  if (dials.length > 0) {
-    lines.push("**Dials:**");
-    for (const dial of dials) {
-      lines.push(`- ${dial.name}: ${dial.value}/100 — ${dial.desc}`);
+  lines.push("**Dials:**");
+  for (const category of dialCategories) {
+    const activeDials = category.dials.filter(
+      (d) => behavior[d.key] !== undefined,
+    );
+    if (activeDials.length > 0) {
+      lines.push(
+        `- ${category.name}: ${activeDials.map((d) => `${d.key[0].toUpperCase() + d.key.slice(1)} ${behavior[d.key]}`).join(", ")}`,
+      );
     }
-    lines.push("");
   }
+  lines.push("");
 
   // Teaching config
   const teaching = behavior.teaching_config;
@@ -155,37 +171,106 @@ function main(): void {
     // Check available CLI tools
     const capabilities = getCapabilitiesString();
 
-    // Load voice section based on TTS model (v3 gets audio tags, v2.5 gets basic)
+    // Load speech marker section based on TTS model (v3 gets audio tags, v2.5 gets basic)
+    // Skip if speech.enabled or voice.output_enabled is explicitly false
     let voiceSection = "";
-    const ttsModel = config.voice.tts?.model;
-    const voiceFile = supportsV3AudioTags(ttsModel)
-      ? "voice-v3.md"
-      : "voice-basic.md";
-    const voicePath = join(momentumInstall, "contexts", voiceFile);
-    if (existsSync(voicePath)) {
-      voiceSection = readFileSync(voicePath, "utf-8");
-    } else {
-      // Fallback if voice files don't exist
-      voiceSection =
-        "### 🎯 VOICE\n\nEnd responses with TTS summary: `🎯 VOICE: text`";
+    const speechEnabled =
+      config.speech?.enabled ?? config.voice.output_enabled !== false;
+
+    if (speechEnabled) {
+      const ttsModel = config.voice.tts?.model;
+      const markerFormat =
+        config.speech?.marker_format ||
+        (supportsV3AudioTags(ttsModel) ? "v3" : "basic");
+      const markerPath = join(
+        momentumInstall,
+        "contexts",
+        "speech",
+        `marker-${markerFormat}.md`,
+      );
+      if (existsSync(markerPath)) {
+        voiceSection = readFileSync(markerPath, "utf-8");
+      } else {
+        // Fallback if speech marker files don't exist
+        voiceSection = "### 🗣️ VOICE\n\nTTS summary format: `🗣️ VOICE: text`";
+      }
     }
 
-    // Load personality and verbosity separately
-    let personality = "";
-    let voiceVerbosity = "";
-    try {
-      const voiceStyle = loadVoiceStyle(config.voice.style, momentumInstall);
-      personality = voiceStyle.personality.prompt;
+    // Load output format context (e.g., standard, discord)
+    // Default to "standard" if not specified
+    let outputFormatSection = "";
+    const outputFormat = config.output?.format || "standard";
+    const outputFormatPath = join(
+      momentumInstall,
+      "contexts",
+      "output",
+      "format",
+      `${outputFormat}.md`,
+    );
+    if (existsSync(outputFormatPath)) {
+      outputFormatSection = readFileSync(outputFormatPath, "utf-8");
+    }
 
-      const verbosityLevel =
-        mode === "workspace"
-          ? config.voice.verbosity.assistant || "terse"
-          : config.voice.verbosity.project || "brief";
-      const verbosity = loadVerbosityLevel(verbosityLevel, momentumInstall);
-      voiceVerbosity = verbosity.instructions.prompt;
+    // Load CAPTURE section (unless disabled by profile)
+    let captureSection = "";
+    if (config.output?.capture_enabled !== false) {
+      const capturePath = join(
+        momentumInstall,
+        "contexts",
+        "output",
+        "capture.md",
+      );
+      if (existsSync(capturePath)) {
+        captureSection = readFileSync(capturePath, "utf-8");
+      }
+    }
+
+    // Load TEACH section (unless disabled by profile)
+    let teachSection = "";
+    if (config.output?.teach_enabled !== false) {
+      const teachPath = join(momentumInstall, "contexts", "output", "teach.md");
+      if (existsSync(teachPath)) {
+        teachSection = readFileSync(teachPath, "utf-8");
+      }
+    }
+
+    // Load personality style (personality.style with fallback to voice.style)
+    let personality = "";
+    try {
+      const styleName = config.personality?.style || config.voice.style;
+      const voiceStyle = loadVoiceStyle(styleName, momentumInstall);
+      personality = voiceStyle.personality.prompt;
     } catch {
       personality = "Professional and efficient communication style.";
+    }
+
+    // Load speech summary verbosity (for VOICE marker content)
+    let voiceVerbosity = "";
+    try {
+      const summaryLevel =
+        config.speech?.summary_verbosity ||
+        (mode === "workspace"
+          ? config.voice.verbosity.assistant || "terse"
+          : config.voice.verbosity.project || "brief");
+      const verbosity = loadVerbosityLevel(summaryLevel, momentumInstall);
+      voiceVerbosity = verbosity.instructions.prompt;
+    } catch {
       voiceVerbosity = "Be concise. Focus on essentials.";
+    }
+
+    // Load output verbosity (text response wordiness ceiling)
+    let outputVerbosity = "";
+    const outputVerbosityLevel =
+      config.output?.verbosity || (mode === "workspace" ? "terse" : "brief");
+    const outputVerbosityPath = join(
+      momentumInstall,
+      "contexts",
+      "output",
+      "verbosity",
+      `${outputVerbosityLevel}.md`,
+    );
+    if (existsSync(outputVerbosityPath)) {
+      outputVerbosity = readFileSync(outputVerbosityPath, "utf-8");
     }
 
     // Render behavior section from config
@@ -203,9 +288,13 @@ function main(): void {
       WORKFLOW_PROJECTS: process.env.WORKFLOW_PROJECTS || "",
       // Capabilities
       CAPABILITIES: capabilities,
-      // Voice section (v3 tags or basic) and verbosity
+      // Output sections (modular, config-controlled)
+      OUTPUT_FORMAT_SECTION: outputFormatSection,
+      OUTPUT_VERBOSITY: outputVerbosity, // text wordiness ceiling
+      CAPTURE_SECTION: captureSection,
+      TEACH_SECTION: teachSection,
       VOICE_SECTION: voiceSection,
-      VOICE_VERBOSITY: voiceVerbosity,
+      VOICE_VERBOSITY: voiceVerbosity, // speech summary verbosity
       // Behavioral calibration
       BEHAVIOR_SECTION: behaviorSection,
       // Legacy support (in case old templates still use this)

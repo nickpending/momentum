@@ -164,8 +164,8 @@ TypeScript hooks (Bun runtime) fire on Claude Code lifecycle events:
 
 | Hook | Purpose |
 |------|---------|
-| **SessionStart** | Detect project state, inject context, sync expertise from Lore |
-| **UserPromptSubmit** | Add per-turn metadata (date, session ID) |
+| **SessionStart** | Detect project state, inject XML context + PROJECT_SUMMARY.md, sync expertise |
+| **UserPromptSubmit** | Add per-turn metadata (XML format) |
 | **PreToolUse** | Log tool invocation to JSONL |
 | **PostToolUse** | Log tool completion, track duration |
 | **Stop** | Process CAPTURE lines, generate TTS summary, post to Argus |
@@ -190,21 +190,28 @@ Agents spawn via orchestrated commands or natural language:
 
 Agents write operator logs (progress) and reports (findings) to `.workflow/agents/`.
 
-### Voice System
+### Personality System
 
 Personality shapes identity, not just output:
 
 **Styles:** sable (ethereal/measured), jarvis (efficient/warm), professional, casual
 
-**Verbosity:** terse, brief, normal
+**12 behavioral dials** across 3 categories:
+- **Communication:** Formality, Directness, Warmth, Confidence
+- **Thinking:** Skepticism, Curiosity, Caution, Precision
+- **Interaction:** Teaching, Pushback, Wit, Initiative
+
+**7 output categories:** GIST, CONTEXT, ANALYSIS, ACTIONS, BREAKDOWN, NEXT, FLAGS
 
 ```toml
 # ~/.config/momentum/config.toml
-[voice]
+[personality]
 style = "sable"
 
-[voice.verbosity]
-project = "brief"
+[behavior]
+formality = 40       # casual ←→ formal
+directness = 70      # diplomatic ←→ blunt
+teaching = 75        # never ←→ liberally
 ```
 
 The default "Sable" personality: serene calm, quiet authority, measured wisdom, dry wit. Inspired by Tilda Swinton's Ancient One.
@@ -280,14 +287,23 @@ timezone = "America/Los_Angeles"
 dev = "~/development/projects"
 projects = "~/obsidian/projects"
 
-[voice]
+[personality]
 style = "sable"  # sable, jarvis, professional, casual
 
-[voice.verbosity]
-project = "brief"   # terse, brief, normal
-assistant = "terse"
+[behavior]
+# 12 dials across 3 categories (0-100 scale)
+formality = 40       # casual ←→ formal
+directness = 70      # diplomatic ←→ blunt
+warmth = 60          # clinical ←→ warm
+confidence = 65      # hedged ←→ assertive
+teaching = 75        # never ←→ liberally
+wit = 50             # none ←→ liberal
+pushback = 60        # agreeable ←→ challenging
 
-[voice.tts]
+[output]
+verbosity = "brief"  # terse, brief, normal
+
+[speech]
 enabled = true
 provider = "elevenlabs"  # system or elevenlabs
 ```
@@ -302,14 +318,14 @@ momentum/
 ├── contexts/         # System prompt components
 │   ├── project-identity.md
 │   ├── workspace-identity.md
-│   └── base.md
+│   ├── base.md
+│   ├── output/       # Output format templates
+│   └── speech/       # TTS summary templates
+├── personalities/    # Style TOML files (sable, jarvis, etc.)
 ├── commands/         # Slash command prompts
 │   └── orchestration/ # Multi-agent workflows
 ├── subagents/        # Specialized agent definitions
 ├── skills/           # Exploration, ideation
-├── voices/
-│   ├── styles/       # Personality TOML files
-│   └── verbosity/    # Response length TOML files
 ├── templates/        # Artifact scaffolding
 └── resources/        # Shared guidelines (agent-rules.md, etc.)
 ```

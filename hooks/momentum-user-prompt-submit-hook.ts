@@ -60,11 +60,12 @@ async function main() {
       .toLocaleString("sv-SE", { timeZone: TZ })
       .replace(" ", "T");
 
-    // Inject metadata (per-turn dynamic values only)
-    console.log("<!-- HOOK: Momentum per-turn context -->");
-    console.log(`<!-- CURRENT_DATE: ${currentDate} -->`);
-    console.log(`<!-- CURRENT_DATETIME: ${currentDateTime} -->`);
-    console.log(`<!-- SESSION_ID: ${data.session_id} -->`);
+    // Inject metadata (per-turn dynamic values only) as XML
+    console.log("<turn>");
+    console.log(`  <date>${currentDate}</date>`);
+    console.log(`  <datetime>${currentDateTime}</datetime>`);
+    console.log(`  <session_id>${data.session_id}</session_id>`);
+    console.log("</turn>");
 
     // Inject notifications (urgent + indicator tiers)
     try {

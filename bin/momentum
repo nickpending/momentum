@@ -23,6 +23,12 @@ source "$WORKFLOW_CONFIG"
 # Parse flags
 WORKSPACE_TAG=""
 PROJECT_NAME=""
+MOMENTUM_PROFILE=""
+SESSION_ID=""
+RESUME=""
+PRINT_MODE=""
+OUTPUT_FORMAT=""
+PROMPT_ARG=""
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -35,28 +41,68 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     -h|--help)
-      echo "Usage: momentum [-p <project>] [-n <workspace-tag>]"
+      echo "Usage: momentum [-p <project>] [options] [prompt]"
       echo ""
       echo "Options:"
-      echo "  -p, --project <name>   Open project mode for <name>"
-      echo "  -n, --name <tag>       Start workspace with named tag"
+      echo "  -p, --project <name>      Open project mode for <name>"
+      echo "  -n, --name <tag>          Start workspace with named tag"
+      echo "  --profile <name>          Use config profile (e.g., discord, api)"
+      echo ""
+      echo "Claude passthrough options:"
+      echo "  --session-id <uuid>       Use specific session ID"
+      echo "  --resume                  Resume existing session"
+      echo "  --print                   Non-interactive mode (output and exit)"
+      echo "  --output-format <fmt>     Output format (text, json, stream-json)"
       echo ""
       echo "Examples:"
-      echo "  momentum               # Workspace mode (auto-tagged)"
-      echo "  momentum -n wireframes # Workspace mode with tag"
-      echo "  momentum argus         # Project mode (legacy)"
-      echo "  momentum -p argus      # Project mode (explicit)"
+      echo "  momentum                  # Workspace mode (auto-tagged)"
+      echo "  momentum -n wireframes    # Workspace mode with tag"
+      echo "  momentum argus            # Project mode (legacy)"
+      echo "  momentum -p argus         # Project mode (explicit)"
+      echo "  momentum -p argus --profile discord --print \"message\""
       exit 0
       ;;
+    --profile)
+      MOMENTUM_PROFILE="$2"
+      shift 2
+      ;;
+    --session-id)
+      SESSION_ID="$2"
+      shift 2
+      ;;
+    --resume)
+      RESUME="true"
+      shift
+      ;;
+    --print)
+      PRINT_MODE="true"
+      shift
+      ;;
+    --output-format)
+      OUTPUT_FORMAT="$2"
+      shift 2
+      ;;
     *)
-      # Legacy: positional arg is project name
+      # Legacy: positional arg is project name, or prompt if project already set
       if [[ -z "$PROJECT_NAME" ]]; then
         PROJECT_NAME="$1"
+      else
+        PROMPT_ARG="$1"
       fi
       shift
       ;;
   esac
 done
+
+# Build Claude passthrough arguments
+CLAUDE_ARGS=""
+[[ -n "$SESSION_ID" ]] && CLAUDE_ARGS="$CLAUDE_ARGS --session-id $SESSION_ID"
+[[ "$RESUME" == "true" ]] && CLAUDE_ARGS="$CLAUDE_ARGS --resume"
+[[ "$PRINT_MODE" == "true" ]] && CLAUDE_ARGS="$CLAUDE_ARGS -p"
+[[ -n "$OUTPUT_FORMAT" ]] && CLAUDE_ARGS="$CLAUDE_ARGS --output-format $OUTPUT_FORMAT"
+
+# Export profile for hooks to use
+[[ -n "$MOMENTUM_PROFILE" ]] && export MOMENTUM_PROFILE="$MOMENTUM_PROFILE"
 
 # Handle workspace mode (no project specified)
 if [[ -z "$PROJECT_NAME" ]]; then
@@ -205,8 +251,9 @@ EOF
   rm -rf "$PROJECT_DEV/.claude/skills" 2>/dev/null || true
   ln -sf "$MOMENTUM_INSTALL/skills" "$PROJECT_DEV/.claude/skills"
 
+  rm -f "$PROJECT_DEV/.claude/agents"/*.md 2>/dev/null || true
   for agent in "$MOMENTUM_INSTALL/subagents"/*.md; do
-    if [[ -f "$agent" ]]; then
+    if [[ -f "$agent" ]] && [[ "$(basename "$agent")" != *.backup ]]; then
       ln -sf "$agent" "$PROJECT_DEV/.claude/agents/$(basename "$agent")" 2>/dev/null || true
     fi
   done
@@ -234,7 +281,8 @@ EOF
 
   # Launch in workspace
   cd "$PROJECT_DEV"
-  exec claude --append-system-prompt "$(bun $MOMENTUM_INSTALL/hooks/render-project-prompt.ts)" "ready"
+  INITIAL_PROMPT="${PROMPT_ARG:-ready}"
+  exec claude --append-system-prompt "$(bun $MOMENTUM_INSTALL/hooks/render-project-prompt.ts)" $CLAUDE_ARGS "$INITIAL_PROMPT"
 fi
 
 # Project mode - handle named projects
@@ -265,4 +313,5 @@ export WORKFLOW_PROJECTS="$WORKFLOW_PROJECTS"
 
 # Launch momentum in project directory
 cd "$PROJECT_DEV"
-exec claude --append-system-prompt "$(bun $MOMENTUM_INSTALL/hooks/render-project-prompt.ts)" "ready"
+INITIAL_PROMPT="${PROMPT_ARG:-ready}"
+exec claude --append-system-prompt "$(bun $MOMENTUM_INSTALL/hooks/render-project-prompt.ts)" $CLAUDE_ARGS "$INITIAL_PROMPT"

@@ -65,7 +65,9 @@ IF missing: STOP with clear error message.
 CORRELATION_ID: {generated correlation_id}
 SESSION_ID: {SESSION_ID from hook context}
 
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md for output format and instrumentation.
+FIRST: Read these files before starting:
+1. {PROJECT_ROOT}/.workflow/resources/agent-philosophy.md — How to think
+2. {PROJECT_ROOT}/.workflow/resources/agent-rules.md — Output format and instrumentation
 
 Write and run tests for task {TASK_NUMBER}.
 PROJECT_ROOT: {value}

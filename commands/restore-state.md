@@ -43,37 +43,14 @@ description: Resume work with full context from saved state
 3. **VERIFY** project environment is ready for continuation
 4. **NOTE** any drift (commits, branch changes, file modifications since save)
 
-### Step 3: Restore Implementation Context
+### Step 3: Report Restoration Status
 
-### Context Integration
+**Summarize restored context using standard output format:**
 
-```
-=====================================
-STATE + CONTEXT RESTORED
-=====================================
-
-📂 State File: task-[task_number]-[timestamp]
-🎯 Project: [project_name_from_idea]
-🔄 Task: #[task_number] - [task_name]
-📊 Progress: [saved_progress_description]
-
-GIT STATE:
-✅ Branch: [current_branch] [if_changed: ⚠️ Was: saved_branch]
-✅ Commit: [current_sha] [if_changed: ⚠️ Was: saved_sha]
-✅ Status: [clean/dirty] [if_changed_show_diff]
-
-SAVED STATE RESTORED:
-✅ Current progress: [current_phase]
-✅ Files changed: [file_count] files in various states
-✅ Key decisions: [decision_count] implementation decisions
-✅ Next steps: [next_step_count] actions identified
-
-READY TO RESUME FROM:
-[resume_point_from_state]
-
-IMMEDIATE NEXT ACTION:
-[first_next_step]
-```
+   ▸ State file loaded and task identified
+   ▸ Git state compared (note any drift)
+   ▸ Progress, decisions, and next steps extracted
+   ▸ Resume point and immediate next action clear
 
 ### Update Task Status
 

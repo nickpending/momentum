@@ -145,18 +145,19 @@ async function main(): Promise<void> {
         const completedTasks = (tasksContent.match(/- \[x\]/g) || []).length;
         const totalTasks = (tasksContent.match(/- \[[x ]\]/g) || []).length;
 
-        // Find next available task
-        const nextTaskMatch = tasksContent.match(/- \[ \] (\d+) -/);
-        const nextTask = nextTaskMatch ? nextTaskMatch[1] : null;
+        // Find next available task with description
+        const nextTaskMatch = tasksContent.match(/- \[ \] (\d+) - (.+)/);
+        const nextTaskId = nextTaskMatch ? nextTaskMatch[1] : null;
+        const nextTaskDesc = nextTaskMatch ? nextTaskMatch[2].trim() : null;
 
-        // Build iteration info string
-        iterationInfo = `\n<!-- ITERATION_NUMBER: ${iterationNumber} -->
-<!-- ITERATION_NAME: ${iterationName} -->
-<!-- TASKS_COMPLETE: ${completedTasks} -->
-<!-- TASKS_TOTAL: ${totalTasks} -->`;
+        // Build iteration info as XML
+        iterationInfo = `
+  <iteration number="${iterationNumber}" name="${iterationName}" />
+  <tasks complete="${completedTasks}" total="${totalTasks}" />`;
 
-        if (nextTask) {
-          iterationInfo += `\n<!-- NEXT_TASK: ${nextTask} -->`;
+        if (nextTaskId && nextTaskDesc) {
+          iterationInfo += `
+  <next_task id="${nextTaskId}">${nextTaskDesc}</next_task>`;
         }
 
         debugLog("SessionStart", "Task info parsed", {
@@ -164,7 +165,8 @@ async function main(): Promise<void> {
           iterationName,
           completedTasks,
           totalTasks,
-          nextTask,
+          nextTaskId,
+          nextTaskDesc,
         });
       } catch (error) {
         debugLog("SessionStart", "Failed to parse TASKS.md", {
@@ -204,21 +206,43 @@ async function main(): Promise<void> {
       }
     }
 
-    // Build metadata for PROJECT.md
+    // Build metadata for PROJECT.md as XML
     // Base path variables injected ONCE at session start (model uses ${VAR} in bash)
-    let additionalContext = `<!-- HOOK: Momentum SessionStart -->
-<!-- CURRENT_DATE: ${currentDate} -->
-<!-- CURRENT_DATETIME: ${currentDateTime} -->
-<!-- SESSION_ID: ${data.session_id} -->
-<!-- MODE: project -->
-<!-- PROJECT: ${projectName} -->
-<!-- PROJECT_STATE: ${projectState} -->${iterationInfo}
-<!-- NAME: ${userName} -->
+    let additionalContext = `<session>
+  <date>${currentDate}</date>
+  <datetime>${currentDateTime}</datetime>
+  <session_id>${data.session_id}</session_id>
+  <mode>${isWorkspace ? "workspace" : "project"}</mode>
+  <project>${projectName}</project>
+  <state>${projectState}</state>
+  <user>${userName}</user>${iterationInfo}
+</session>
 
-<!-- BASE PATH VARIABLES (use \${VAR} syntax in bash commands) -->
-<!-- PROJECT_ROOT: ${PROJECT_ROOT} -->
-<!-- PROJECT_NAME: ${PROJECT_NAME} -->
-<!-- WORKFLOW_PROJECTS: ${WORKFLOW_PROJECTS} -->`;
+<paths>
+  <project_root>${PROJECT_ROOT}</project_root>
+  <project_name>${PROJECT_NAME}</project_name>
+  <workflow_projects>${WORKFLOW_PROJECTS}</workflow_projects>
+</paths>`;
+
+    // Inject PROJECT_SUMMARY.md for non-workspace projects
+    if (!isWorkspace) {
+      const summaryPath = join(ARTIFACTS_DIR, "PROJECT_SUMMARY.md");
+      if (existsSync(summaryPath)) {
+        try {
+          const summaryContent = readFileSync(summaryPath, "utf-8");
+          additionalContext += `
+
+<project_context>
+${summaryContent}
+</project_context>`;
+          debugLog("SessionStart", "PROJECT_SUMMARY.md injected");
+        } catch (error) {
+          debugLog("SessionStart", "Failed to read PROJECT_SUMMARY.md", {
+            error: String(error),
+          });
+        }
+      }
+    }
 
     // Load and append voice instructions for project mode
     try {

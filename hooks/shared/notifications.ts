@@ -72,13 +72,14 @@ export function formatNotificationsForContext(
   }
 
   const lines: string[] = [];
-  lines.push("<!-- NOTIFICATIONS -->");
+  lines.push("<notifications>");
 
   for (const n of notifications) {
-    const icon = n.tier === "urgent" ? "🔔" : "📌";
-    lines.push(`<!-- ${icon} [${n.tier}] ${n.source}: ${n.message} -->`);
+    lines.push(
+      `  <notification tier="${n.tier}" source="${n.source}">${n.message}</notification>`,
+    );
   }
 
-  lines.push("<!-- END NOTIFICATIONS -->");
+  lines.push("</notifications>");
   return lines.join("\n");
 }

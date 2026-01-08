@@ -150,18 +150,13 @@ Target length: 40-50 lines (lightweight context)
 
 ### Step 5: Output Confirmation
 
-```
-=====================================
-PROJECT SUMMARY UPDATED
-=====================================
+Report using standard output format:
 
-✅ Project: {PROJECT_NAME}
-✅ Iteration: {ITERATION_NUMBER} - {ITERATION_NAME}
-✅ Progress: {COMPLETED}/{TOTAL} tasks complete
-✅ Output: `{PROJECT_ROOT}/.workflow/artifacts/PROJECT_SUMMARY.md`
+   ▸ Project and iteration identified
+   ▸ Progress (X/Y tasks complete)
+   ▸ Output path confirmed
 
-Summary ready for /load-app-context
-```
+Summary ready for `/load-app-context`.
 
 ## When to Run
 

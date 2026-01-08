@@ -201,24 +201,12 @@ IF GIT REPO:
 
 **CHECKPOINT 3: Workflow Guidance**
 
-```
-REQUIRED: Report progress and suggest next steps:
-- COUNT completed vs remaining tasks
-- IDENTIFY next available task(s) based on dependencies
-- ASSESS overall iteration progress
+Report progress using standard output format:
 
-COMPLETION REPORT:
-=====================================
-TASK {TASK_NUMBER} COMPLETED ✅
-=====================================
-
-Task: [task name and key accomplishment]
-Progress: X/Y tasks complete ([percentage]%)
-Next Available: [next task number and name, or "All tasks complete!"]
-Dependencies Unblocked: [any tasks now ready to start]
-
-Ready for /plan-task [next-task] or /complete-iteration if all done.
-```
+   ▸ Count completed vs remaining tasks
+   ▸ Identify next available task(s) based on dependencies
+   ▸ Assess overall iteration progress
+   ▸ Suggest `/plan-task [next]` or `/complete-iteration` as appropriate
 
 ### PHASE 4: RETURN TO PROJECT ROOT (REQUIRED)
 

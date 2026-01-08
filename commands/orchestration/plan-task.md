@@ -65,7 +65,9 @@ IF task file not found:
 CORRELATION_ID: {generated correlation_id}
 SESSION_ID: {SESSION_ID from hook context}
 
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
+FIRST: Read these files before starting:
+1. {PROJECT_ROOT}/.workflow/resources/agent-philosophy.md — How to think
+2. {PROJECT_ROOT}/.workflow/resources/agent-rules.md — Output format and instrumentation
 
 Then plan this task:
 - PROJECT_ROOT: {value}

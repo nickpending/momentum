@@ -49,7 +49,9 @@ IF no ITERATION.md exists:
 CORRELATION_ID: {generated correlation_id}
 SESSION_ID: {SESSION_ID from hook context}
 
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
+FIRST: Read these files before starting:
+1. {PROJECT_ROOT}/.workflow/resources/agent-philosophy.md — How to think
+2. {PROJECT_ROOT}/.workflow/resources/agent-rules.md — Output format and instrumentation
 
 Decompose this iteration into task files:
 - PROJECT_ROOT: {value}
@@ -91,35 +93,15 @@ NEVER ask about:
 
 ## Step 4: Present Decomposition
 
-PRESENT decomposition summary:
+Present decomposition using standard output format:
 
-```
-=====================================
-DECOMPOSITION COMPLETE - NO FILES YET
-=====================================
+   ▸ Iteration name and feature count
+   ▸ Total tasks identified
+   ▸ Multiplication check (tasks should exceed features — not 1:1)
+   ▸ Sample tasks with file counts
+   ▸ Task distribution by type
 
-Iteration: {name}
-Features Analyzed: {count}
-Tasks Identified: {total}
-
-Multiplication Check:
-- Features: {N}
-- Tasks: {M}
-- Factor: {M/N}x
-- ✅ Properly decomposed (not 1:1)
-
-Sample Tasks:
-- 1.1: {name} ({files} files)
-- 2.3: {name} ({files} files)
-- 3.1: {name} ({files} files)
-
-Task Distribution:
-- Implementation: {count}
-- Design: {count}
-- Research: {count}
-
-Ready to generate task files?
-```
+Ask user: "Ready to generate task files?"
 
 **🛑 STOP — WAIT FOR APPROVAL**
 
@@ -145,13 +127,10 @@ IF issues found:
 
 ## Step 7: Complete
 
-```
-DECOMPOSITION COMPLETE
-======================
-Tasks created: {count}
-Location: .workflow/artifacts/tasks/
-Index: .workflow/artifacts/TASKS.md
+Report using standard output format:
 
-First task: {X.Y} - {name}
-Suggested start: /plan-task {X.Y}
-```
+   ▸ Tasks created with count
+   ▸ Location and index path
+   ▸ First task identified
+
+Suggest: `/plan-task {X.Y}` to begin implementation.

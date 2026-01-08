@@ -249,25 +249,14 @@ REQUIRED: Run /update-project-summary to refresh PROJECT_SUMMARY.md after archiv
 
 **CHECKPOINT 9: Next Iteration Preparation**
 
-```
-REQUIRED: Provide clear guidance for next iteration:
-- ASSESS overall project progress toward goals
-- RECOMMEND focus areas for next iteration based on lessons learned
-- SUGGEST logical feature progression from completed work
-- ADVISE on architecture evolution opportunities
+Provide transition guidance using standard output format:
 
-TRANSITION GUIDANCE:
-=====================================
-ITERATION N COMPLETED ✅
-=====================================
+   ▸ Overall project progress toward goals
+   ▸ Key capabilities now available as foundation
+   ▸ Recommended focus for next iteration
+   ▸ Opportunities for improvement or expansion
 
-Progress: [X iterations complete, Y% toward project goals]
-Foundation: [key capabilities now available for building upon]
-Recommendations: [suggested focus for next iteration]
-Opportunities: [areas for improvement or expansion]
-
-Ready for /plan-iteration to begin next iteration planning.
-```
+Suggest `/plan-iteration` to begin next iteration planning.
 
 
 ## Error Handling

@@ -154,44 +154,14 @@ VERIFICATION: If multi-task, properly decomposed
 
 **⚠️ CRITICAL: INTERVIEW COMPLETE - NO TASKS UNTIL APPROVED ⚠️**
 
-```
-MANDATORY SUMMARY:
-=====================================
-DISCOVERED TASK ANALYSIS COMPLETE
-=====================================
+Summarize using standard output format:
 
-Discovery Type: [Audit/Implementation/Testing finding]
-Severity: [Blocks progress/Quality issue/Future risk]
+   ▸ Discovery type and severity
+   ▸ Context: what you found, root cause, impact if not fixed
+   ▸ Task breakdown (single or multiple with prefix)
+   ▸ Risk assessment and invariants to preserve
 
-CONTEXT CAPTURED:
-- Found while: [activity]
-- Root cause: [explanation]
-- Impact if not fixed: [consequences]
-- Proposed approach: [solution]
-
-TASK BREAKDOWN:
-[IF SINGLE TASK]
-- Single task: [description]
-- Files affected: [list]
-- Validation: [demo command]
-
-[IF MULTIPLE TASKS]
-Total tasks: [N]
-- [Prefix]1.1: [description] (X files, ~Y lines)
-- [Prefix]1.2: [description] (X files, ~Y lines)
-- [Prefix]1.3: [description] (X files, ~Y lines)
-
-Risk Assessment:
-- HIGH RISK: [components if any]
-- LOW RISK: [components if any]
-
-Invariants to preserve:
-- [Any invariants this might affect]
-
-Ready to add to TASKS.md?
-
-Please respond with YES or NO.
-```
+Ask user: "Ready to add to TASKS.md? YES or NO"
 
 **🛑 STOP HERE - WAIT FOR APPROVAL**
 
@@ -273,32 +243,12 @@ VERIFICATION: Tracking sections updated
 
 **CHECKPOINT 7: Final Summary**
 
-```
-TASK ADDITION COMPLETE
-=====================
+Report using standard output format:
 
-Added: [N] discovered tasks
-Type: [Discovery/Refactor/Fix/Technical]
-Prefix used: [D1/R1/F1/T1]
-
-TASKS ADDED:
-- [Prefix]1.1: [description]
-- [Prefix]1.2: [description]
-[etc.]
-
-Discovery documented: YES
-Full context captured: YES
-Same quality as planned tasks: YES
-
-Next step: /plan-task [Prefix]1.1
-
-These tasks can now be:
-- Implemented with /plan-task
-- Tested with /plan-test
-- Completed with /complete-task
-
-Just like any other task in the iteration.
-```
+   ▸ Number of tasks added with prefix used
+   ▸ List of tasks added
+   ▸ Confirmation: discovery documented, context captured
+   ▸ Suggest next step: `/plan-task [Prefix]1.1`
 
 ## Error Handling
 

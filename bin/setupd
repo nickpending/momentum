@@ -43,8 +43,14 @@ refresh_project_links() {
         ln -sf "$MOMENTUM_INSTALL/skills" "$dev_project/.claude/skills"
     fi
 
-    # Subagents directory (created only - populated by session start hook with JIT rendering)
+    # Subagents - symlink all from momentum install (remove old files first)
     mkdir -p "$dev_project/.claude/agents"
+    rm -f "$dev_project/.claude/agents"/*.md 2>/dev/null || true
+    for agent in "$MOMENTUM_INSTALL/subagents"/*.md; do
+        if [[ -f "$agent" ]] && [[ "$(basename "$agent")" != *.backup ]]; then
+            ln -sf "$agent" "$dev_project/.claude/agents/$(basename "$agent")" 2>/dev/null || true
+        fi
+    done
 
     # Contexts (hooks are referenced by absolute path in settings.json, no symlinks needed)
     rm -rf "$dev_project/.workflow/contexts" 2>/dev/null || true

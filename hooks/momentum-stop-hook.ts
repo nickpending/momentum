@@ -139,10 +139,10 @@ function splitIntoSentences(text: string): string[] {
 }
 
 /**
- * Extract 🎯 VOICE: summary from assistant message
+ * Extract 🗣️ VOICE: summary from assistant message
  */
 function extractVoiceSummary(content: string): string | null {
-  const voiceMatch = content.match(/🎯\s*VOICE:\s*(.+?)(?:\n|$)/i);
+  const voiceMatch = content.match(/🗣️\s*VOICE:\s*(.+?)(?:\n|$)/i);
   if (voiceMatch && voiceMatch[1]) {
     return voiceMatch[1].trim();
   }
@@ -382,7 +382,7 @@ async function main() {
 
     // Strip VOICE marker (it's for TTS, not observability)
     const contentForSummary = lastMessageContent
-      .replace(/🎯\s*VOICE:.*$/s, "")
+      .replace(/🗣️\s*VOICE:.*$/s, "")
       .trim();
 
     // Get user prompt for context

@@ -1,0 +1,12 @@
+# Discord profile - for sable-conduit and Discord bot interfaces
+# Merges on top of base config.toml
+
+[speech]
+enabled = false         # No 🗣️ VOICE output (Discord is text-only)
+
+[output]
+verbosity = "terse"     # Shorter text responses for chat context
+format = "discord"      # Load contexts/output/format/discord.md
+capture_enabled = true  # Keep CAPTURE for learning persistence
+teach_enabled = true    # Keep TEACH for insights
+max_length = 1900       # Discord message limit awareness

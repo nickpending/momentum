@@ -48,7 +48,9 @@ RUN `git log --oneline -5` to confirm what's being audited.
 CORRELATION_ID: {generated code-review correlation_id}
 SESSION_ID: {SESSION_ID from hook context}
 
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
+FIRST: Read these files before starting:
+1. {PROJECT_ROOT}/.workflow/resources/agent-philosophy.md — How to think
+2. {PROJECT_ROOT}/.workflow/resources/agent-rules.md — Output format and instrumentation
 
 Review the current codebase for production readiness:
 - PROJECT_ROOT: {value}
@@ -64,7 +66,9 @@ Write report per agent-rules.md format.
 CORRELATION_ID: {generated architecture correlation_id}
 SESSION_ID: {SESSION_ID from hook context}
 
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
+FIRST: Read these files before starting:
+1. {PROJECT_ROOT}/.workflow/resources/agent-philosophy.md — How to think
+2. {PROJECT_ROOT}/.workflow/resources/agent-rules.md — Output format and instrumentation
 
 Audit architecture for drift and integration issues:
 - PROJECT_ROOT: {value}
@@ -92,7 +96,9 @@ WAIT for both to complete.
 CORRELATION_ID: {generated correlation_id}
 SESSION_ID: {SESSION_ID from hook context}
 
-FIRST: Read {PROJECT_ROOT}/.workflow/resources/agent-rules.md — this defines your output format and instrumentation.
+FIRST: Read these files before starting:
+1. {PROJECT_ROOT}/.workflow/resources/agent-philosophy.md — How to think
+2. {PROJECT_ROOT}/.workflow/resources/agent-rules.md — Output format and instrumentation
 
 Synthesize release readiness verdict:
 - PROJECT_ROOT: {value}
@@ -125,30 +131,12 @@ IF verdict unclear or incomplete:
 
 ## Step 6: Present
 
-PRESENT verdict to user:
+Present verdict using standard output format:
 
-```
-PRODUCTION AUDIT COMPLETE
-=========================
-
-Verdict: {BLOCKED/READY}
-
-Specialists Run:
-- Code Review: {status}
-- Architecture Audit: {status}
-
-{If BLOCKED}
-P0 Blockers:
-- {issue 1 with location}
-- {issue 2 with location}
-
-{If READY}
-No blockers found. P1/P2 issues noted for follow-up.
-
-Reports:
-- {PROJECT_ROOT}/.workflow/agents/reports/{code-review-report}
-- {PROJECT_ROOT}/.workflow/agents/reports/{architecture-audit-report}
-- {PROJECT_ROOT}/.workflow/agents/reports/{production-audit-report}
-```
+   ▸ Verdict: BLOCKED or READY
+   ▸ Specialists run and their status
+   ▸ If BLOCKED: P0 blockers with locations
+   ▸ If READY: note P1/P2 issues for follow-up
+   ▸ Report paths in `.workflow/agents/reports/`
 
 IF BLOCKED, list specific actions required before release.

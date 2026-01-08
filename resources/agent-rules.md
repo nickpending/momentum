@@ -18,7 +18,7 @@
 
 If CORRELATION_ID and SESSION_ID are in your prompt, use them. If not provided, generate:
 - CORRELATION_ID: `adhoc-{8 random hex chars}`
-- SESSION_ID: Look for `<!-- SESSION_ID: xxx -->` in conversation context
+- SESSION_ID: Look for `<session_id>` tag in conversation context
 
 ```bash
 argus-send --source momentum --type agent \

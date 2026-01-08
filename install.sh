@@ -365,14 +365,39 @@ fi
 mkdir -p "$MOMENTUM_INSTALL/contexts"
 cp "$MOMENTUM_SOURCE/contexts"/*.md "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ Contexts (updated)"
 
-# Install voice files (always update to get latest)
-mkdir -p "$MOMENTUM_INSTALL/voices/styles"
-mkdir -p "$MOMENTUM_INSTALL/voices/verbosity"
-if [[ -d "$MOMENTUM_SOURCE/voices/styles" ]]; then
-    cp "$MOMENTUM_SOURCE/voices/styles"/*.toml "$MOMENTUM_INSTALL/voices/styles/" 2>/dev/null && echo "  ✓ Voice styles (updated)"
+# Install output subdirectories (format, verbosity, annotations)
+mkdir -p "$MOMENTUM_INSTALL/contexts/output/format"
+mkdir -p "$MOMENTUM_INSTALL/contexts/output/verbosity"
+if [[ -d "$MOMENTUM_SOURCE/contexts/output" ]]; then
+    cp "$MOMENTUM_SOURCE/contexts/output"/*.md "$MOMENTUM_INSTALL/contexts/output/" 2>/dev/null
+    cp "$MOMENTUM_SOURCE/contexts/output/format"/*.md "$MOMENTUM_INSTALL/contexts/output/format/" 2>/dev/null
+    cp "$MOMENTUM_SOURCE/contexts/output/verbosity"/*.md "$MOMENTUM_INSTALL/contexts/output/verbosity/" 2>/dev/null
+    echo "  ✓ Output contexts (format, verbosity, annotations)"
 fi
-if [[ -d "$MOMENTUM_SOURCE/voices/verbosity" ]]; then
-    cp "$MOMENTUM_SOURCE/voices/verbosity"/*.toml "$MOMENTUM_INSTALL/voices/verbosity/" 2>/dev/null && echo "  ✓ Voice verbosity levels (updated)"
+
+# Install speech marker files
+mkdir -p "$MOMENTUM_INSTALL/contexts/speech"
+if [[ -d "$MOMENTUM_SOURCE/contexts/speech" ]]; then
+    cp "$MOMENTUM_SOURCE/contexts/speech"/*.md "$MOMENTUM_INSTALL/contexts/speech/" 2>/dev/null && echo "  ✓ Speech markers (updated)"
+fi
+
+# Install personality files (moved from voices/styles/)
+mkdir -p "$MOMENTUM_INSTALL/personalities"
+if [[ -d "$MOMENTUM_SOURCE/personalities" ]]; then
+    cp "$MOMENTUM_SOURCE/personalities"/*.toml "$MOMENTUM_INSTALL/personalities/" 2>/dev/null && echo "  ✓ Personalities (updated)"
+fi
+
+# Install speech summary verbosity files (moved from voices/verbosity/)
+mkdir -p "$MOMENTUM_INSTALL/speech/summaries"
+if [[ -d "$MOMENTUM_SOURCE/speech/summaries" ]]; then
+    cp "$MOMENTUM_SOURCE/speech/summaries"/*.toml "$MOMENTUM_INSTALL/speech/summaries/" 2>/dev/null && echo "  ✓ Speech summaries (updated)"
+fi
+
+# Install profiles (copy if missing - users can customize)
+if [[ ! -d "$MOMENTUM_INSTALL/profiles" ]]; then
+    cp -r "$MOMENTUM_SOURCE/profiles" "$MOMENTUM_INSTALL/" && echo "  ✓ Profiles (discord, api)"
+else
+    echo "  ✓ Profiles (existing - preserved)"
 fi
 
 # Create TOML configuration only if it doesn't exist (preserve user settings)
