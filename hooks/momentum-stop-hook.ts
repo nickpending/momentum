@@ -19,7 +19,11 @@ import {
   getLastUserMessage,
 } from "./shared/transcript-parser.ts";
 import { buildResponseContext } from "./shared/summary-context.ts";
-import { captureKnowledge, type KnowledgeCaptureType } from "@voidwire/lore";
+import {
+  captureKnowledge,
+  captureTeaching,
+  type KnowledgeCaptureType,
+} from "@voidwire/lore";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 import { join } from "path";
 
@@ -38,6 +42,12 @@ interface TranscriptEntry {
       text?: string;
     }>;
   };
+}
+
+interface TeachBlock {
+  domain: string;
+  confidence: string;
+  text: string;
 }
 
 /**
@@ -179,6 +189,33 @@ function extractCaptureLines(
 }
 
 /**
+ * Extract 📚 TEACH lines from assistant message
+ * Format: TEACH [domain] ~confidence: content
+ */
+function extractTeachLines(content: string): TeachBlock[] {
+  const blocks: TeachBlock[] = [];
+
+  // Regex: TEACH\s*\[([^\]]+)\]\s*~(\w+):\s*(.+)
+  // Group 1: domain (inside brackets)
+  // Group 2: confidence (after ~, before :)
+  // Group 3: content (rest of line)
+  const regex = /TEACH\s*\[([^\]]+)\]\s*~(\w+):\s*(.+?)(?:\n|$)/gi;
+
+  let match;
+  while ((match = regex.exec(content)) !== null) {
+    if (match[1] && match[2] && match[3]) {
+      blocks.push({
+        domain: match[1].trim(),
+        confidence: match[2].trim().toLowerCase(),
+        text: match[3].trim(),
+      });
+    }
+  }
+
+  return blocks;
+}
+
+/**
  * Process CAPTURE lines via lore library
  */
 function processCaptureLines(
@@ -212,6 +249,43 @@ function processCaptureLines(
       debugLog("StopHook", "lore capture failed", {
         error: result.error,
         context: capture.context,
+      });
+    }
+  }
+}
+
+/**
+ * Process TEACH lines via lore library
+ */
+function processTeachLines(blocks: TeachBlock[]): void {
+  if (blocks.length === 0) {
+    return;
+  }
+
+  debugLog("StopHook", `Processing ${blocks.length} TEACH lines`, {});
+
+  for (const block of blocks) {
+    debugLog("StopHook", "Calling lore captureTeaching", {
+      domain: block.domain,
+      confidence: block.confidence,
+      text: block.text,
+    });
+
+    const result = captureTeaching({
+      domain: block.domain,
+      confidence: block.confidence,
+      text: block.text,
+      source: "momentum",
+    });
+
+    if (result.success) {
+      debugLog("StopHook", "TEACH logged successfully", {
+        domain: block.domain,
+      });
+    } else {
+      debugLog("StopHook", "lore capture teaching failed", {
+        error: result.error,
+        domain: block.domain,
       });
     }
   }
@@ -362,6 +436,13 @@ async function main() {
     if (captures.length > 0) {
       debugLog("StopHook", `Found ${captures.length} CAPTURE lines`, {});
       await processCaptureLines(captures);
+    }
+
+    // Extract and process TEACH lines (Layer 2: Lore)
+    const teachBlocks = extractTeachLines(lastMessageContent);
+    if (teachBlocks.length > 0) {
+      debugLog("StopHook", `Found ${teachBlocks.length} TEACH lines`, {});
+      processTeachLines(teachBlocks);
     }
 
     // Extract Voice: summary

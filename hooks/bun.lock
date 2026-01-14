@@ -9,7 +9,7 @@
         "@voidwire/expertise-update": "^1.0.1",
         "@voidwire/llm-notify": "^2.0.0",
         "@voidwire/llm-summarize": "^3.2.0",
-        "@voidwire/lore": "^0.1.5",
+        "@voidwire/lore": "^0.1.6",
         "mustache": "^4.2.0",
       },
     },
@@ -25,7 +25,7 @@
 
     "@voidwire/llm-summarize": ["@voidwire/llm-summarize@3.2.0", "", { "bin": { "llm-summarize": "cli.ts" } }, "sha512-Udz0K29Jw7W0miTecNfraHDu9eDI6kY1UPnhWbCmWNDL4bCeX0WjPhhl9RI6lUnD3z5Br9jUkp6k53519t2ySw=="],
 
-    "@voidwire/lore": ["@voidwire/lore@0.1.5", "", { "bin": { "lore": "cli.ts" } }, "sha512-m5FrzOrTxNOJS7NA3yF+/s06yGvn0wu0Kilhf+VoQVt80lCChDLxiksPQgmjcF1GU8JHmk/Uo2PJbYbHLVKZjg=="],
+    "@voidwire/lore": ["@voidwire/lore@0.1.6", "", { "bin": { "lore": "cli.ts" } }, "sha512-uTJo/hL6ErXIlX/38uvtfvjpr90LGNNX4AQLBVMBwha9j0QhLvvlZ39/1UiijYCUVADwKIpviJpSBSVVWrJE4Q=="],
 
     "mustache": ["mustache@4.2.0", "", { "bin": { "mustache": "bin/mustache" } }, "sha512-71ippSywq5Yb7/tVYyGbkBggbU8H3u5Rz56fH60jGFgr8uHwxs+aSKeqmluIVzM0m0kB7xQjKS6qPfd0b2ZoqQ=="],
 
