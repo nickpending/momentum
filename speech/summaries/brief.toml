@@ -2,7 +2,7 @@ name = "Brief"
 description = "Focus on essentials - skip context"
 
 [instructions]
-prompt = """
+prompt = """\
 **Guidelines:**
 - Summarize what was just done or what's next
 - 1-3 sentences maximum

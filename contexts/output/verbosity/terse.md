@@ -1,9 +1,7 @@
 ## Output Verbosity: Terse
 
-Minimum words. Maximum signal.
+Verbosity controls response length, not content inclusion. All required output elements still apply.
 
-- One sentence per point
+- Maximum 1-2 sentences per point
 - No elaboration unless asked
-- No context unless critical
-- Strip all preamble
-- Tables compressed to essentials
+- Compress tables and lists

@@ -95,10 +95,24 @@ export interface MomentumConfig {
     max_length?: number; // Max response length hint
   };
   behavior?: {
-    teaching?: number;
-    wit?: number;
-    pushback?: number;
-    depth?: number;
+    communication?: {
+      formality?: { value: number; scale: string };
+      directness?: { value: number; scale: string };
+      warmth?: { value: number; scale: string };
+      confidence?: { value: number; scale: string };
+    };
+    thinking?: {
+      skepticism?: { value: number; scale: string };
+      curiosity?: { value: number; scale: string };
+      caution?: { value: number; scale: string };
+      precision?: { value: number; scale: string };
+    };
+    interaction?: {
+      teaching?: { value: number; scale: string };
+      pushback?: { value: number; scale: string };
+      wit?: { value: number; scale: string };
+      initiative?: { value: number; scale: string };
+    };
     teaching_config?: {
       enabled?: boolean;
       domains?: string[];

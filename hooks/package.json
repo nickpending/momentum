@@ -7,10 +7,10 @@
   "dependencies": {
     "@types/mustache": "^4.2.6",
     "@voidwire/argus-send": "^2.0.2",
-    "@voidwire/expertise-update": "^1.0.0",
-    "@voidwire/llm-notify": "^1.1.0",
+    "@voidwire/expertise-update": "^1.0.1",
+    "@voidwire/llm-notify": "^2.0.0",
     "@voidwire/llm-summarize": "^3.2.0",
-    "@voidwire/lore": "^0.1.2",
+    "@voidwire/lore": "^0.1.5",
     "mustache": "^4.2.0"
   }
 }

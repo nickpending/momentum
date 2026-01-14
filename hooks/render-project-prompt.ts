@@ -23,6 +23,7 @@ Mustache.escape = (text: string) => text;
 
 /**
  * Render behavior section from config dials and triggers
+ * Outputs v4 format with dial values and scale descriptions
  */
 function renderBehaviorSection(config: ReturnType<typeof loadConfig>): string {
   const behavior = config.behavior;
@@ -32,83 +33,29 @@ function renderBehaviorSection(config: ReturnType<typeof loadConfig>): string {
 
   const lines: string[] = [];
 
-  // Personality dials by category
-  const dialCategories = [
-    {
-      name: "Communication",
-      dials: [
-        { key: "formality", desc: "casual ←→ formal" },
-        { key: "directness", desc: "diplomatic ←→ blunt" },
-        { key: "warmth", desc: "clinical ←→ warm" },
-        { key: "confidence", desc: "hedged ←→ assertive" },
-      ],
-    },
-    {
-      name: "Thinking",
-      dials: [
-        { key: "skepticism", desc: "trusting ←→ questioning" },
-        { key: "curiosity", desc: "focused ←→ exploratory" },
-        { key: "caution", desc: "bold ←→ careful" },
-        { key: "precision", desc: "approximate ←→ exact" },
-      ],
-    },
-    {
-      name: "Interaction",
-      dials: [
-        { key: "teaching", desc: "surface first principles" },
-        { key: "pushback", desc: "challenge assumptions" },
-        { key: "wit", desc: "humor in body text" },
-        { key: "initiative", desc: "reactive ←→ proactive" },
-      ],
-    },
+  // Personality dials by category - new structure with {value, scale}
+  // Output matches v4 format: no header, just category lists
+  const categories = [
+    { name: "Communication", key: "communication" as const },
+    { name: "Thinking", key: "thinking" as const },
+    { name: "Interaction", key: "interaction" as const },
   ];
 
-  lines.push("**Dials:**");
-  for (const category of dialCategories) {
-    const activeDials = category.dials.filter(
-      (d) => behavior[d.key] !== undefined,
+  for (const category of categories) {
+    const categoryData = behavior[category.key];
+    if (!categoryData) continue;
+
+    const dialEntries = Object.entries(categoryData).filter(
+      ([_, dial]) => dial && typeof dial === "object" && "value" in dial,
     );
-    if (activeDials.length > 0) {
-      lines.push(
-        `- ${category.name}: ${activeDials.map((d) => `${d.key[0].toUpperCase() + d.key.slice(1)} ${behavior[d.key]}`).join(", ")}`,
-      );
-    }
-  }
-  lines.push("");
 
-  // Teaching config
-  const teaching = behavior.teaching_config;
-  if (teaching?.enabled !== false) {
-    lines.push("**Teaching:**");
-    if (teaching?.domains) {
-      lines.push(`- Domains: ${teaching.domains.join(", ")}`);
-    }
-    if (teaching?.min_confidence) {
-      lines.push(`- Min confidence: ${teaching.min_confidence}`);
-    }
-    lines.push("- Use `📚 TEACH [domain] ~confidence:` format");
-    lines.push("");
-  }
-
-  // Triggers
-  const triggers = behavior.triggers;
-  if (triggers) {
-    const activeTriggersMap: Record<string, string> = {
-      on_confusion: "User confusion → Step back to first principles",
-      on_agreement: "Agreement on approach → Surface underlying principle",
-      on_architecture: "Architecture decision → Note the trade-off pattern",
-      on_completion: "Complex task completed → Explain what made it work",
-    };
-
-    const activeTriggers = Object.entries(triggers)
-      .filter(([_, enabled]) => enabled)
-      .map(([key]) => activeTriggersMap[key])
-      .filter(Boolean);
-
-    if (activeTriggers.length > 0) {
-      lines.push("**Triggers:**");
-      for (const trigger of activeTriggers) {
-        lines.push(`- ${trigger}`);
+    if (dialEntries.length > 0) {
+      lines.push(`- ${category.name}:`);
+      for (const [dialName, dial] of dialEntries) {
+        const d = dial as { value: number; scale: string };
+        const capitalizedName =
+          dialName.charAt(0).toUpperCase() + dialName.slice(1);
+        lines.push(`  - ${capitalizedName} ${d.value} (${d.scale})`);
       }
     }
   }
@@ -126,6 +73,52 @@ function supportsV3AudioTags(model: string | undefined): boolean {
   return model.includes("v3");
 }
 
+/**
+ * Generate merged commands table (shared + mode-specific)
+ */
+function generateCommandsTable(mode: string): string {
+  // Shared commands (always present)
+  const sharedCommands = [
+    ["**qcom**", "Stage all, commit conventional"],
+    ["**qpush**", "Push to origin"],
+    ["**qsum**", "Summarize recent commits"],
+    ["**qwhy**", "Explain why command failed"],
+    ["**qexplain**", "Problem, solution, breakage, assumptions"],
+    ["**qlazy**", "Anti-laziness enforcement"],
+    ["**qnoquit**", "Force completion of analysis"],
+  ];
+
+  // Mode-specific commands
+  const modeCommands =
+    mode === "project"
+      ? [
+          ["**qtest**", "Write ONE integration test"],
+          ["**qenv**", "Check env vars vs .env.example"],
+          ["**qcheck**", "Skeptical senior engineer review"],
+          ["**qfix**", "Debug and fix error"],
+          ["**qsweep**", "Check what needs attention"],
+          ["**qnext**", "What's next based on current work"],
+          ["**qux**", "List test scenarios by priority"],
+          ["**qpropagate**", "Update tasks based on discovery"],
+        ]
+      : [
+          ["**qback**", "Add to project backlog"],
+          ["**qalt**", "Suggest alternative approach"],
+          ["**qsensible**", "Align goal, approach, problem, solution"],
+          ["**qwtf**", "What's making this harder"],
+        ];
+
+  const allCommands = [...sharedCommands, ...modeCommands];
+  const lines = [
+    "| Command        | Action                                   |",
+    "| -------------- | ---------------------------------------- |",
+  ];
+  for (const [cmd, action] of allCommands) {
+    lines.push(`| ${cmd.padEnd(14)} | ${action.padEnd(40)} |`);
+  }
+  return lines.join("\n");
+}
+
 function main(): void {
   try {
     const config = loadConfig();
@@ -135,38 +128,29 @@ function main(): void {
     const projectName = process.env.PROJECT_NAME || "unknown";
     const mode = projectName === "workspace" ? "workspace" : "project";
 
-    // Read identity template for this mode
-    const identityPath = join(
-      momentumInstall,
-      "contexts",
-      `${mode}-identity.md`,
-    );
-    let identityTemplate = "";
-    if (existsSync(identityPath)) {
-      identityTemplate = readFileSync(identityPath, "utf-8");
-    } else {
-      // Fallback to old structure if contexts/ doesn't exist yet
-      const oldModePath = join(momentumInstall, `${mode}.md`);
-      if (existsSync(oldModePath)) {
-        identityTemplate = readFileSync(oldModePath, "utf-8");
-      }
+    // Read mode role (first 2 sentences)
+    let modeRole = "";
+    const rolePath = join(momentumInstall, "contexts", `${mode}-role.md`);
+    if (existsSync(rolePath)) {
+      modeRole = readFileSync(rolePath, "utf-8").trim();
     }
 
-    // Read base mechanics template
+    // Read mode rules (principles, constraints)
+    let modeRules = "";
+    const rulesPath = join(momentumInstall, "contexts", `${mode}-rules.md`);
+    if (existsSync(rulesPath)) {
+      modeRules = readFileSync(rulesPath, "utf-8").trim();
+    }
+
+    // Read base template
     const basePath = join(momentumInstall, "contexts", "base.md");
     let baseTemplate = "";
     if (existsSync(basePath)) {
       baseTemplate = readFileSync(basePath, "utf-8");
-    } else {
-      // Fallback to old system.md if contexts/ doesn't exist yet
-      const oldSystemPath = join(momentumInstall, "system.md");
-      if (existsSync(oldSystemPath)) {
-        baseTemplate = readFileSync(oldSystemPath, "utf-8");
-      }
     }
 
-    // Combine templates: identity first, then base mechanics
-    const combinedTemplate = `${identityTemplate}\n\n---\n\n${baseTemplate}`;
+    // Generate merged commands table
+    const commandsTable = generateCommandsTable(mode);
 
     // Check available CLI tools
     const capabilities = getCapabilitiesString();
@@ -208,6 +192,7 @@ function main(): void {
       `${outputFormat}.md`,
     );
     if (existsSync(outputFormatPath)) {
+      // Load raw format, will render through Mustache later with CAPTURE/TEACH sections
       outputFormatSection = readFileSync(outputFormatPath, "utf-8");
     }
 
@@ -273,6 +258,17 @@ function main(): void {
       outputVerbosity = readFileSync(outputVerbosityPath, "utf-8");
     }
 
+    // Render output format with all embedded sections
+    if (outputFormatSection) {
+      outputFormatSection = Mustache.render(outputFormatSection, {
+        CAPTURE_SECTION: captureSection,
+        TEACH_SECTION: teachSection,
+        VOICE_SECTION: voiceSection,
+        VOICE_VERBOSITY: voiceVerbosity,
+        OUTPUT_VERBOSITY: outputVerbosity,
+      });
+    }
+
     // Render behavior section from config
     const behaviorSection = renderBehaviorSection(config);
 
@@ -281,6 +277,10 @@ function main(): void {
       ASSISTANT_NAME: config.personalization.assistant_name || "Assistant",
       NAME: config.personalization.name,
       PERSONALITY: personality,
+      // Mode-specific content
+      MODE_ROLE: modeRole,
+      MODE_RULES: modeRules,
+      COMMANDS_TABLE: commandsTable,
       // Context
       PROJECT_NAME: projectName,
       MODE: mode,
@@ -288,22 +288,14 @@ function main(): void {
       WORKFLOW_PROJECTS: process.env.WORKFLOW_PROJECTS || "",
       // Capabilities
       CAPABILITIES: capabilities,
-      // Output sections (modular, config-controlled)
+      // Output (all sections pre-rendered into OUTPUT_FORMAT_SECTION)
       OUTPUT_FORMAT_SECTION: outputFormatSection,
-      OUTPUT_VERBOSITY: outputVerbosity, // text wordiness ceiling
-      CAPTURE_SECTION: captureSection,
-      TEACH_SECTION: teachSection,
-      VOICE_SECTION: voiceSection,
-      VOICE_VERBOSITY: voiceVerbosity, // speech summary verbosity
       // Behavioral calibration
       BEHAVIOR_SECTION: behaviorSection,
-      // Legacy support (in case old templates still use this)
-      VOICE_INSTRUCTIONS: `${personality}\n\n${voiceVerbosity}`,
-      MODE_CONTEXT: "", // No longer used, but keep for backwards compat
     };
 
     // Render and output
-    const rendered = Mustache.render(combinedTemplate, view);
+    const rendered = Mustache.render(baseTemplate, view);
     console.log(rendered);
   } catch (error) {
     // On error, output raw template so claude still works

@@ -1,9 +1,7 @@
 ## Output Verbosity: Standard
 
-Room to explain. Include context when it adds value.
+Verbosity controls response length, not content inclusion. All required output elements still apply.
 
-- Full sentences where they aid clarity
-- Explain the "why" not just the "what"
-- Rationale for significant choices
-- Context that helps understanding
+- Full explanations when useful
+- Include context and rationale
 - Still no fluff — every sentence earns its place

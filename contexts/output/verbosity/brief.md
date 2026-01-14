@@ -1,9 +1,7 @@
 ## Output Verbosity: Brief
 
-Focus on essentials. Skip background unless critical.
+Verbosity controls response length, not content inclusion. All required output elements still apply.
 
+- Concise explanations, no rambling
 - One idea per bullet
-- No throat-clearing ("Let me explain...", "It's worth noting...")
-- Prefer bullets over prose
-- Tables for comparisons
-- Context only when it adds real value
+- Skip preamble and throat-clearing

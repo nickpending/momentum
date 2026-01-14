@@ -365,6 +365,11 @@ fi
 mkdir -p "$MOMENTUM_INSTALL/contexts"
 cp "$MOMENTUM_SOURCE/contexts"/*.md "$MOMENTUM_INSTALL/contexts/" 2>/dev/null && echo "  ✓ Contexts (updated)"
 
+# Remove legacy context files no longer in source
+rm -f "$MOMENTUM_INSTALL/contexts/base-v2.md" 2>/dev/null
+rm -f "$MOMENTUM_INSTALL/contexts/project-identity.md" 2>/dev/null
+rm -f "$MOMENTUM_INSTALL/contexts/workspace-identity.md" 2>/dev/null
+
 # Install output subdirectories (format, verbosity, annotations)
 mkdir -p "$MOMENTUM_INSTALL/contexts/output/format"
 mkdir -p "$MOMENTUM_INSTALL/contexts/output/verbosity"

@@ -16,11 +16,6 @@ import {
   PROJECT_OBSIDIAN_DIR,
 } from "./shared/momentum-paths.ts";
 import {
-  loadVoiceStyle,
-  loadVerbosityLevel,
-  buildVoiceInstructions,
-} from "./shared/voice-loader.ts";
-import {
   writeSessionCache,
   getGitBranch,
   parseIterationInfo,
@@ -242,28 +237,6 @@ ${summaryContent}
           });
         }
       }
-    }
-
-    // Load and append voice instructions for project mode
-    try {
-      const momentumHome = config.momentum.install;
-      const voiceStyle = loadVoiceStyle(config.voice.style, momentumHome);
-      const verbosityLevel = config.voice.verbosity.project || "brief";
-      const verbosity = loadVerbosityLevel(verbosityLevel, momentumHome);
-      const voiceInstructions = buildVoiceInstructions(voiceStyle, verbosity);
-
-      if (voiceInstructions) {
-        additionalContext += `\n\n${voiceInstructions}`;
-      }
-
-      debugLog("SessionStart", "Voice instructions loaded", {
-        style: config.voice.style,
-        verbosity: verbosityLevel,
-      });
-    } catch (error) {
-      debugLog("SessionStart", "Failed to load voice instructions", {
-        error: String(error),
-      });
     }
 
     // Inject bootstrap-expertise context if expertise file missing (non-workspace)
