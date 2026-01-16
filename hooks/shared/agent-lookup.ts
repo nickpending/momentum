@@ -35,22 +35,6 @@ try {
 interface AgentCache {
   session_id: string;
   mappings: Record<string, string>; // tool_use_id → short_hash
-  pending: PendingAgent[]; // Agents awaiting activation (Task called, first tool not yet seen)
-  activated: Record<string, ActivatedAgent>; // agent_id → parent info for correlation
-}
-
-interface PendingAgent {
-  tool_use_id: string;
-  correlation_id: string; // Synthetic ID for exact matching (replaces fragile prompt matching)
-  subagent_type: string;
-  instance_id?: string; // From [AGENT: code-reviewer-1] if present
-  timestamp: number;
-}
-
-interface ActivatedAgent {
-  parent_tool_use_id: string;
-  subagent_type: string;
-  instance_id?: string;
 }
 
 // Agent types cache (SubagentStart → SubagentStop handoff)
@@ -192,8 +176,6 @@ function initCache(sessionId: string): AgentCache {
   return {
     session_id: sessionId,
     mappings: {},
-    pending: [],
-    activated: {},
   };
 }
 
@@ -211,136 +193,6 @@ function cacheMapping(
   }
   cache.mappings[toolUseId] = agentId;
   writeAgentCache(cache);
-}
-
-/**
- * Add a pending agent (called from PreToolUse when Task tool is invoked)
- * The agent is awaiting activation - we have tool_use_id and correlation_id but no agent_id yet
- */
-export function addPendingAgent(
-  sessionId: string,
-  agent: Omit<PendingAgent, "timestamp">,
-): void {
-  let cache = readAgentCache(sessionId);
-  if (!cache) {
-    cache = initCache(sessionId);
-  }
-  // Ensure pending array exists (for legacy cache files)
-  if (!cache.pending) cache.pending = [];
-
-  cache.pending.push({
-    ...agent,
-    timestamp: Date.now(),
-  });
-  writeAgentCache(cache);
-  debugLog("AgentLookup", "Added pending agent", {
-    tool_use_id: agent.tool_use_id,
-    correlation_id: agent.correlation_id,
-    subagent_type: agent.subagent_type,
-    instance_id: agent.instance_id,
-    pending_count: cache.pending.length,
-  });
-}
-
-/**
- * Extract CORRELATION_ID from agent prompt text
- * Looks for pattern: CORRELATION_ID: {id} at start of prompt
- */
-export function extractCorrelationId(promptText: string): string | null {
-  const match = promptText.match(/^CORRELATION_ID:\s*(\S+)/m);
-  return match?.[1] || null;
-}
-
-/**
- * Match a pending agent by correlation_id
- * Called when we discover an agent_id and need to correlate with parent Task
- * Returns the match and removes it from pending list
- */
-export function matchPendingAgent(
-  sessionId: string,
-  correlationId: string,
-): PendingAgent | null {
-  const cache = readAgentCache(sessionId);
-  if (!cache?.pending?.length) return null;
-
-  // Find matching agent by correlation_id (exact match)
-  const index = cache.pending.findIndex(
-    (p) => p.correlation_id === correlationId,
-  );
-  if (index === -1) {
-    debugLog("AgentLookup", "No pending agent matched correlation_id", {
-      correlation_id: correlationId,
-      pending_count: cache.pending.length,
-    });
-    return null;
-  }
-
-  // Remove from pending and return
-  const [matched] = cache.pending.splice(index, 1);
-  writeAgentCache(cache);
-  debugLog("AgentLookup", "Matched pending agent by correlation_id", {
-    correlation_id: correlationId,
-    tool_use_id: matched.tool_use_id,
-    subagent_type: matched.subagent_type,
-    instance_id: matched.instance_id,
-  });
-  return matched;
-}
-
-/**
- * Register an activated agent (agent_id now known, correlated with parent)
- * Called after matchPendingAgent succeeds
- */
-export function registerActivatedAgent(
-  sessionId: string,
-  agentId: string,
-  info: ActivatedAgent,
-): void {
-  let cache = readAgentCache(sessionId);
-  if (!cache) {
-    cache = initCache(sessionId);
-  }
-  // Ensure activated map exists
-  if (!cache.activated) cache.activated = {};
-
-  cache.activated[agentId] = info;
-  writeAgentCache(cache);
-  debugLog("AgentLookup", "Registered activated agent", {
-    agent_id: agentId,
-    parent_tool_use_id: info.parent_tool_use_id,
-    subagent_type: info.subagent_type,
-    instance_id: info.instance_id,
-  });
-}
-
-/**
- * Get parent info for an activated agent
- * Called by PreToolUse/PostToolUse to include parent_tool_use_id in events
- */
-export function getActivatedAgent(
-  sessionId: string,
-  agentId: string,
-): ActivatedAgent | null {
-  const cache = readAgentCache(sessionId);
-  return cache?.activated?.[agentId] || null;
-}
-
-/**
- * Remove a pending agent by tool_use_id (called on Task PostToolUse)
- * Cleans up in case agent never activated (error, timeout, etc.)
- */
-export function removePendingAgent(sessionId: string, toolUseId: string): void {
-  const cache = readAgentCache(sessionId);
-  if (!cache?.pending?.length) return;
-
-  const index = cache.pending.findIndex((p) => p.tool_use_id === toolUseId);
-  if (index !== -1) {
-    cache.pending.splice(index, 1);
-    writeAgentCache(cache);
-    debugLog("AgentLookup", "Removed pending agent", {
-      tool_use_id: toolUseId,
-    });
-  }
 }
 
 /**
