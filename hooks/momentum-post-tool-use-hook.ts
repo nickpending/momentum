@@ -15,8 +15,6 @@ import { readSessionCache } from "./shared/session-cache.ts";
 import {
   findAgentForToolUse,
   removeCachedMapping,
-  getActivatedAgent,
-  removePendingAgent,
 } from "./shared/agent-lookup.ts";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
 import { formatToolMessage } from "./shared/tool-formatter.ts";
@@ -141,19 +139,8 @@ async function main(): Promise<void> {
       const toolResponse = data.tool_response as TaskToolResponse;
       const agentId = toolResponse?.agentId;
 
-      // Clean up pending agent entry (in case activation never happened)
-      if (data.tool_use_id) {
-        removePendingAgent(data.session_id, data.tool_use_id);
-      }
-
-      // Get activation info for correlation
-      const activated = agentId
-        ? getActivatedAgent(data.session_id, agentId)
-        : null;
-
       if (agentId) {
         // Emit agent completion event
-        // PostToolUse fires AFTER SubagentStop, so this is the completion
         await postToArgus({
           source: "momentum",
           event_type: "agent",
@@ -165,31 +152,22 @@ async function main(): Promise<void> {
           message: `Agent ${toolInput.subagent_type || "unknown"} completed`,
           data: {
             project: projectName,
-            subagent_type: activated?.subagent_type || toolInput.subagent_type,
-            instance_id: activated?.instance_id,
+            subagent_type: toolInput.subagent_type,
             description: toolInput.description,
             is_resume: !!toolInput.resume,
-            parent_agent_id: null,
             is_background: toolInput.run_in_background || false,
           },
-        }).catch(() => {
-          // Silent failure
-        });
+        }).catch(() => {});
+
         debugLog("PostToolUse", "Agent completion event posted", {
           agent_id: agentId,
           tool_use_id: data.tool_use_id,
           subagent_type: toolInput.subagent_type,
-          instance_id: activated?.instance_id,
         });
       }
     } else {
-      // Regular tool event - include agent_id and parent correlation if this is a subagent tool
+      // Regular tool event
       const isBackground = data.tool_input.run_in_background === true;
-
-      // Get parent correlation if this tool belongs to an agent
-      const activated = subagentOwner
-        ? getActivatedAgent(data.session_id, subagentOwner)
-        : null;
 
       await postToArgus({
         source: "momentum",
@@ -199,7 +177,6 @@ async function main(): Promise<void> {
         tool_name: data.tool_name,
         tool_use_id: data.tool_use_id,
         agent_id: subagentOwner || undefined,
-        parent_tool_use_id: activated?.parent_tool_use_id,
         is_background: isBackground,
         status: success ? "success" : "failure",
         message: toolMessage,
@@ -207,16 +184,12 @@ async function main(): Promise<void> {
           project: projectName,
           tool_input: data.tool_input,
           result_size: resultSize,
-          subagent_type: activated?.subagent_type,
-          instance_id: activated?.instance_id,
         },
-      }).catch(() => {
-        // Silent failure
-      });
+      }).catch(() => {});
+
       debugLog("PostToolUse", "Argus event posted", {
         message: toolMessage,
         agent_id: subagentOwner,
-        parent_tool_use_id: activated?.parent_tool_use_id,
       });
     }
 

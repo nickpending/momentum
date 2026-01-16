@@ -10,10 +10,10 @@ import {
   createEvent,
   type HookInput,
 } from "./shared/jsonl-logger.ts";
-import { postToArgus } from "./shared/argus-client.ts";
 import { captureKnowledge } from "@voidwire/lore";
 import { Glob } from "bun";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
+import { lookupAgentType } from "./shared/agent-lookup.ts";
 
 interface SubagentStopInput extends HookInput {
   subagent_type?: string;
@@ -21,85 +21,6 @@ interface SubagentStopInput extends HookInput {
   duration_ms?: number;
   agent_id?: string;
   agent_transcript_path?: string;
-}
-
-/**
- * Find subagent_type by reading transcript and matching agent_id
- * SubagentStop fires ~50ms before toolUseResult is written, so we wait and retry
- */
-async function findSubagentTypeFromTranscript(
-  transcriptPath: string,
-  agentId: string,
-): Promise<string | null> {
-  const maxAttempts = 5;
-  const delayMs = 150;
-
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    if (attempt > 0) {
-      await Bun.sleep(delayMs);
-    }
-
-    try {
-      const file = Bun.file(transcriptPath);
-      const content = await file.text();
-      const lines = content.trim().split("\n");
-
-      // Build map of tool_use_id -> subagent_type from Task calls
-      const taskCalls = new Map<string, string>();
-      let foundAgentId = false;
-
-      for (const line of lines) {
-        try {
-          const entry = JSON.parse(line);
-
-          // Collect Task tool_use calls
-          if (entry.message?.role === "assistant" && entry.message?.content) {
-            for (const block of entry.message.content) {
-              if (block.type === "tool_use" && block.name === "Task") {
-                const subagentType = block.input?.subagent_type;
-                if (subagentType && block.id) {
-                  taskCalls.set(block.id, subagentType);
-                }
-              }
-            }
-          }
-
-          // Look for toolUseResult with matching agentId
-          if (entry.toolUseResult?.agentId === agentId) {
-            foundAgentId = true;
-            // Found the result - get tool_use_id from the tool_result message
-            const toolUseId = entry.message?.content?.[0]?.tool_use_id;
-            debugLog("SubagentStop", "Found agentId in transcript", {
-              attempt,
-              agentId,
-              toolUseId,
-              taskCallsSize: taskCalls.size,
-              hasToolUseId: taskCalls.has(toolUseId || ""),
-            });
-            if (toolUseId && taskCalls.has(toolUseId)) {
-              return taskCalls.get(toolUseId)!;
-            }
-          }
-        } catch {
-          continue;
-        }
-      }
-
-      debugLog("SubagentStop", "Transcript scan complete", {
-        attempt,
-        agentId,
-        foundAgentId,
-        taskCallsCount: taskCalls.size,
-      });
-    } catch (error) {
-      debugLog("SubagentStop", "Failed to read transcript", {
-        attempt,
-        error: String(error),
-      });
-    }
-  }
-
-  return null;
 }
 
 /**
@@ -155,20 +76,15 @@ async function main(): Promise<void> {
     const cwd = data.cwd || process.cwd();
     const projectName = cwd.split("/").pop() || "unknown";
 
-    // Try to get subagent_type from transcript since Claude Code doesn't send it directly
+    // Get subagent_type from cache (set by SubagentStart hook)
     let agentType = data.subagent_type || null;
-    if (!agentType && data.transcript_path && data.agent_id) {
-      agentType = await findSubagentTypeFromTranscript(
-        data.transcript_path,
-        data.agent_id,
-      );
-      debugLog("SubagentStop", "Resolved subagent_type from transcript", {
+    if (!agentType && data.agent_id && data.session_id) {
+      agentType = lookupAgentType(data.session_id, data.agent_id);
+      debugLog("SubagentStop", "Resolved subagent_type from cache", {
         agent_id: data.agent_id,
         subagent_type: agentType,
       });
     }
-
-    // Fallback to "unknown" if still not found
     agentType = agentType || "unknown";
 
     // Determine status from result

@@ -181,6 +181,16 @@ if [[ -z "$PROJECT_NAME" ]]; then
         ]
       }
     ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-subagent-start-hook.ts"
+          }
+        ]
+      }
+    ],
     "SubagentStop": [
       {
         "hooks": [

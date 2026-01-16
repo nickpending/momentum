@@ -134,6 +134,16 @@ refresh_project_links() {
         ]
       }
     ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-subagent-start-hook.ts"
+          }
+        ]
+      }
+    ],
     "SubagentStop": [
       {
         "hooks": [
@@ -259,6 +269,16 @@ EOF
           {
             "type": "command",
             "command": "bun $HOME/.config/momentum/hooks/momentum-post-tool-use-hook.ts"
+          }
+        ]
+      }
+    ],
+    "SubagentStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun $HOME/.config/momentum/hooks/momentum-subagent-start-hook.ts"
           }
         ]
       }

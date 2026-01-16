@@ -53,6 +53,99 @@ interface ActivatedAgent {
   instance_id?: string;
 }
 
+// Agent types cache (SubagentStart → SubagentStop handoff)
+interface AgentTypesCache {
+  session_id: string;
+  types: Record<string, string>; // agent_id → agent_type
+}
+
+function getAgentTypesCachePath(sessionId: string): string {
+  return join(STATE_DIR, `agent-types-${sessionId}.json`);
+}
+
+/**
+ * Read agent types cache from disk
+ */
+function readAgentTypesCache(sessionId: string): AgentTypesCache | null {
+  try {
+    const path = getAgentTypesCachePath(sessionId);
+    if (!existsSync(path)) return null;
+    const content = readFileSync(path, "utf-8");
+    return JSON.parse(content) as AgentTypesCache;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Write agent types cache atomically
+ */
+function writeAgentTypesCache(cache: AgentTypesCache): void {
+  try {
+    const path = getAgentTypesCachePath(cache.session_id);
+    const tempPath = `${path}.tmp.${process.pid}`;
+    writeFileSync(tempPath, JSON.stringify(cache, null, 2));
+    renameSync(tempPath, path);
+  } catch (error) {
+    debugLog("AgentLookup", "Failed to write agent types cache", {
+      error: String(error),
+    });
+  }
+}
+
+/**
+ * Cache agent_id → agent_type mapping
+ * Called by SubagentStart hook
+ */
+export function cacheAgentType(
+  sessionId: string,
+  agentId: string,
+  agentType: string,
+): void {
+  let cache = readAgentTypesCache(sessionId);
+  if (!cache) {
+    cache = { session_id: sessionId, types: {} };
+  }
+  cache.types[agentId] = agentType;
+  writeAgentTypesCache(cache);
+  debugLog("AgentLookup", "Cached agent type", {
+    agent_id: agentId,
+    agent_type: agentType,
+  });
+}
+
+/**
+ * Lookup agent_type by agent_id
+ * Called by SubagentStop hook
+ */
+export function lookupAgentType(
+  sessionId: string,
+  agentId: string,
+): string | null {
+  const cache = readAgentTypesCache(sessionId);
+  return cache?.types[agentId] || null;
+}
+
+/**
+ * Delete agent types cache
+ * Called by SessionEnd hook
+ */
+export function deleteAgentTypesCache(sessionId: string): void {
+  try {
+    const path = getAgentTypesCachePath(sessionId);
+    if (existsSync(path)) {
+      unlinkSync(path);
+      debugLog("AgentLookup", "Agent types cache deleted", {
+        session_id: sessionId,
+      });
+    }
+  } catch (error) {
+    debugLog("AgentLookup", "Failed to delete agent types cache", {
+      error: String(error),
+    });
+  }
+}
+
 function getCachePath(sessionId: string): string {
   return join(STATE_DIR, `agent-cache-${sessionId}.json`);
 }

@@ -341,6 +341,7 @@ cp "$MOMENTUM_SOURCE/hooks/momentum-user-prompt-submit-hook.ts" "$MOMENTUM_INSTA
 cp "$MOMENTUM_SOURCE/hooks/momentum-stop-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Stop hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-pre-tool-use-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Pre-tool-use hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-post-tool-use-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Post-tool-use hook (updated)"
+cp "$MOMENTUM_SOURCE/hooks/momentum-subagent-start-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Subagent start hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-subagent-stop-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Subagent stop hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/momentum-session-end-hook.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Session end hook (updated)"
 cp "$MOMENTUM_SOURCE/hooks/summarizer-worker.ts" "$MOMENTUM_INSTALL/hooks/" 2>/dev/null && echo "  ✓ Summarizer worker (updated)"

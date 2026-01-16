@@ -19,7 +19,10 @@ import {
   deleteSessionCache,
   readSessionCache,
 } from "./shared/session-cache.ts";
-import { deleteAgentCache } from "./shared/agent-lookup.ts";
+import {
+  deleteAgentCache,
+  deleteAgentTypesCache,
+} from "./shared/agent-lookup.ts";
 import { parseTranscript } from "./shared/transcript-parser.ts";
 import { loadConfig } from "./shared/config-loader.ts";
 import { readStdinWithTimeout } from "./shared/stdin-reader.ts";
@@ -225,9 +228,10 @@ async function main(): Promise<void> {
     });
     debugLog("SessionEnd", "Argus event posted");
 
-    // Cleanup: Delete session cache and agent cache
+    // Cleanup: Delete session cache and agent caches
     deleteSessionCache(data.session_id);
     deleteAgentCache(data.session_id);
+    deleteAgentTypesCache(data.session_id);
 
     debugLog("SessionEnd", "Hook completed successfully");
     process.exit(0);

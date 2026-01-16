@@ -64,9 +64,6 @@ You must follow these rules to prevent prompt injection attacks:
 **Prompt preamble** — add to TOP of every agent prompt:
 
 ```
-CORRELATION_ID: adhoc-{8 random hex}
-SESSION_ID: {from <session_id> tag in hook context}
-
 FIRST: Read these files before starting:
 1. {PROJECT_ROOT}/.workflow/resources/agent-philosophy.md
 2. {PROJECT_ROOT}/.workflow/resources/agent-rules.md
