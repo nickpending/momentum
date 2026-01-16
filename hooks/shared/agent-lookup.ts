@@ -235,7 +235,6 @@ export function findAgentForToolUse(
   }
 
   try {
-    // Agent files are in same directory as main transcript
     const transcriptDir = dirname(transcriptPath);
 
     if (!existsSync(transcriptDir)) {
@@ -245,18 +244,38 @@ export function findAgentForToolUse(
       return null;
     }
 
-    // Find all agent-*.jsonl files
-    const files = readdirSync(transcriptDir).filter(
-      (f) => f.startsWith("agent-") && f.endsWith(".jsonl"),
-    );
+    // Build list of directories to scan for agent files
+    // New structure: {transcript_dir}/{session_id}/subagents/agent-*.jsonl
+    // Old structure: {transcript_dir}/agent-*.jsonl (for backwards compat)
+    const subagentsDir = join(transcriptDir, sessionId, "subagents");
+    const searchDirs: string[] = [];
+
+    if (existsSync(subagentsDir)) {
+      searchDirs.push(subagentsDir);
+    }
+    // Also check old location for backwards compatibility
+    searchDirs.push(transcriptDir);
+
+    let allFiles: { dir: string; file: string }[] = [];
+    for (const dir of searchDirs) {
+      try {
+        const files = readdirSync(dir).filter(
+          (f) => f.startsWith("agent-") && f.endsWith(".jsonl"),
+        );
+        allFiles = allFiles.concat(files.map((f) => ({ dir, file: f })));
+      } catch {
+        // Directory might not exist or be readable
+      }
+    }
 
     debugLog("AgentLookup", "Scanning agent files", {
-      count: files.length,
+      count: allFiles.length,
       toolUseId,
+      searchDirs,
     });
 
-    for (const file of files) {
-      const filePath = join(transcriptDir, file);
+    for (const { dir, file } of allFiles) {
+      const filePath = join(dir, file);
       const content = readFileSync(filePath, "utf-8");
 
       // Check if this file contains the tool_use_id
@@ -269,6 +288,7 @@ export function findAgentForToolUse(
             toolUseId,
             agentId,
             file,
+            dir,
           });
 
           // Cache for subsequent lookups
@@ -296,13 +316,40 @@ export function findAgentForToolUse(
 export function readAgentPrompt(
   transcriptPath: string,
   agentId: string,
+  sessionId?: string,
 ): string | null {
   try {
     const transcriptDir = dirname(transcriptPath);
-    const agentFile = join(transcriptDir, `agent-${agentId}.jsonl`);
 
-    if (!existsSync(agentFile)) {
-      debugLog("AgentLookup", "Agent file not found", { agentId, agentFile });
+    // Try new location first: {transcript_dir}/{session_id}/subagents/agent-{id}.jsonl
+    // Fall back to old location: {transcript_dir}/agent-{id}.jsonl
+    const agentFilename = `agent-${agentId}.jsonl`;
+    let agentFile: string | null = null;
+
+    if (sessionId) {
+      const newPath = join(
+        transcriptDir,
+        sessionId,
+        "subagents",
+        agentFilename,
+      );
+      if (existsSync(newPath)) {
+        agentFile = newPath;
+      }
+    }
+
+    if (!agentFile) {
+      const oldPath = join(transcriptDir, agentFilename);
+      if (existsSync(oldPath)) {
+        agentFile = oldPath;
+      }
+    }
+
+    if (!agentFile) {
+      debugLog("AgentLookup", "Agent file not found", {
+        agentId,
+        transcriptDir,
+      });
       return null;
     }
 
