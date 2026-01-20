@@ -1,12 +1,3 @@
-<!--
-PURPOSE: Reference documentation for lore CLI - knowledge fabric search
-LOCATION: contexts/SYSTEM/TOOLS/LORE.md
-RELATED FILES:
-- README.md - Tools directory overview
-- PRISMIS.md - Related knowledge tool
-- ../DEVELOPMENT/RESOURCES.md - Resource discovery patterns
--->
-
 # Lore
 
 Query indexed knowledge across development history. Two search modes with different purposes.

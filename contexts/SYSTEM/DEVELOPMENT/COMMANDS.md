@@ -1,11 +1,3 @@
-<!--
-PURPOSE: Quick command reference table
-LOCATION: contexts/SYSTEM/DEVELOPMENT/COMMANDS.md
-RELATED FILES:
-- README.md - Development directory overview
-- PRACTICES.md - Development principles
--->
-
 # Quick Commands
 
 Short commands for common operations.

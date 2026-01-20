@@ -35,6 +35,9 @@ export const PROJECT_NAME = requireEnv("PROJECT_NAME");
 /** Root of obsidian/planning projects */
 export const WORKFLOW_PROJECTS = requireEnv("WORKFLOW_PROJECTS");
 
+/** Obsidian vault root */
+export const OBSIDIAN_DIR = requireEnv("OBSIDIAN_DIR");
+
 // =============================================================================
 // DERIVED PATHS (calculated from base variables)
 // =============================================================================
@@ -54,8 +57,13 @@ export const CONTEXTS_DIR = join(WORKFLOW_DIR, "contexts");
 /** Project obsidian directory: ${WORKFLOW_PROJECTS}/${PROJECT_NAME} */
 export const PROJECT_OBSIDIAN_DIR = join(WORKFLOW_PROJECTS, PROJECT_NAME);
 
-/** Explorations directory: ${PROJECT_OBSIDIAN_DIR}/explorations */
-export const EXPLORATIONS_DIR = join(PROJECT_OBSIDIAN_DIR, "explorations");
+/** Explorations directory: ${OBSIDIAN_DIR}/reference/technical/explorations */
+export const EXPLORATIONS_DIR = join(
+  OBSIDIAN_DIR,
+  "reference",
+  "technical",
+  "explorations",
+);
 
 // =============================================================================
 // OPTIONAL VARIABLES (from momentum script - may not be set)

@@ -220,6 +220,45 @@ fi
 
 echo
 
+# Get Obsidian vault root (derive from planning directory parent as default)
+EXISTING_OBSIDIAN=""
+if [[ -f "$EXISTING_CONFIG" ]]; then
+    source "$EXISTING_CONFIG" 2>/dev/null || true
+    EXISTING_OBSIDIAN="$OBSIDIAN_DIR"
+fi
+
+# Derive default from planning directory parent
+DERIVED_OBSIDIAN="$(dirname "$PLANNING_DIR")"
+
+echo -e "${YELLOW}Where is your Obsidian vault root?${RESET}"
+echo "This is typically the parent of your planning directory."
+if [[ -n "$EXISTING_OBSIDIAN" ]]; then
+    printf "Obsidian vault [$EXISTING_OBSIDIAN]: "
+else
+    printf "Obsidian vault [$DERIVED_OBSIDIAN]: "
+fi
+read -r OBSIDIAN_DIR
+
+# Use derived/existing value if no input provided
+if [[ -z "$OBSIDIAN_DIR" ]]; then
+    if [[ -n "$EXISTING_OBSIDIAN" ]]; then
+        OBSIDIAN_DIR="$EXISTING_OBSIDIAN"
+    else
+        OBSIDIAN_DIR="$DERIVED_OBSIDIAN"
+    fi
+fi
+
+# Expand tilde
+OBSIDIAN_DIR="${OBSIDIAN_DIR/#\~/$HOME}"
+
+if [[ -d "$OBSIDIAN_DIR" ]]; then
+    echo -e "${GREEN}✅ Using $OBSIDIAN_DIR${RESET}"
+else
+    echo -e "${YELLOW}⚠️  Directory '$OBSIDIAN_DIR' doesn't exist (will use anyway)${RESET}"
+fi
+
+echo
+
 # Step 3.5: Get user name and assistant name for personalization
 echo -e "${CYAN}Step 3.5: Personalizing your experience${RESET}"
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -429,6 +468,8 @@ timezone = "America/Los_Angeles"
 dev = "$DEV_DIR"
 # Where your planning/documentation lives (Obsidian)
 projects = "$PLANNING_DIR"
+# Obsidian vault root
+obsidian = "$OBSIDIAN_DIR"
 
 [momentum]
 # Momentum installation directory
@@ -502,6 +543,7 @@ cat > "$MOMENTUM_INSTALL/config" << EOF
 # Your workspace directories
 export WORKFLOW_DEV="$DEV_DIR"
 export WORKFLOW_PROJECTS="$PLANNING_DIR"
+export OBSIDIAN_DIR="$OBSIDIAN_DIR"
 
 # Personalization
 export NAME="$USER_NAME"

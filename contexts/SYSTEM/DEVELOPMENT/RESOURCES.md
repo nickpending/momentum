@@ -1,11 +1,3 @@
-<!--
-PURPOSE: How to find local and remote resources
-LOCATION: contexts/SYSTEM/DEVELOPMENT/RESOURCES.md
-RELATED FILES:
-- README.md - Development directory overview
-- ../TOOLS/LORE.md - Knowledge search tool
--->
-
 # Resources
 
 How to find project resources, evaluate repos, and discover related work.
@@ -63,4 +55,4 @@ lore-graph related-to <project>
 | `${PROJECT_ROOT}/.workflow/artifacts/` | TASKS.md, PROJECT_SUMMARY.md, ITERATION.md |
 | `${PROJECT_ROOT}/.workflow/state/` | Saved development state |
 | `${WORKFLOW_PROJECTS}/{project}/later.md` | Backlog items |
-| `${WORKFLOW_PROJECTS}/{project}/explorations/` | Exploration documents |
+| `${OBSIDIAN_DIR}/reference/technical/explorations/` | Exploration documents |

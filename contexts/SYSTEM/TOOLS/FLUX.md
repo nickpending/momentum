@@ -1,10 +1,3 @@
-<!--
-PURPOSE: Reference documentation for flux CLI - task management
-LOCATION: contexts/SYSTEM/TOOLS/FLUX.md
-RELATED FILES:
-- README.md - Tools directory overview
--->
-
 # Flux
 
 Task management CLI for Obsidian-based workflows.

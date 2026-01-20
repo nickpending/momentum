@@ -1,11 +1,3 @@
-<!--
-PURPOSE: Core development principles and critical rules
-LOCATION: contexts/SYSTEM/DEVELOPMENT/PRACTICES.md
-RELATED FILES:
-- README.md - Development directory overview
-- COMMITS.md - Commit conventions
--->
-
 # Development Practices
 
 ## Core Development Principles

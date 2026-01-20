@@ -14,10 +14,11 @@ These env vars are available in bash commands (use `${VAR}` syntax):
 - `${PROJECT_NAME}` - Current project name
 - `${PROJECT_ROOT}` - Current project code directory (e.g., `~/development/projects/argus`)
 - `${WORKFLOW_PROJECTS}` - Obsidian projects root (e.g., `~/obsidian/projects`)
+- `${OBSIDIAN_DIR}` - Obsidian vault root (e.g., `~/obsidian`)
 
 **Derived paths (placeholders for tool calls):**
 - Project planning/IDEA.md: `{WORKFLOW_PROJECTS}/{project-name}/`
-- Explorations: `{WORKFLOW_PROJECTS}/{project-name}/explorations/`
+- Explorations: `{OBSIDIAN_DIR}/reference/technical/explorations/`
 - Later backlog: `{WORKFLOW_PROJECTS}/{project-name}/later.md`
 
 **Note**: The `{project-name}` references in this skill refer to the project being ideated about (extracted from user conversation), not the current `${PROJECT_NAME}` context.

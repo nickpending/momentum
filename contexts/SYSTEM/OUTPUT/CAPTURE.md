@@ -1,12 +1,3 @@
-<!--
-PURPOSE: When and how to preserve discoveries for future sessions
-LOCATION: contexts/SYSTEM/OUTPUT/CAPTURE.md
-RELATED FILES:
-- README.md - Output directory overview
-- FORMAT.md - Full output format
-- TEACH.md - Related extraction type
--->
-
 # CAPTURE
 
 Preserve valuable discoveries for future sessions.

@@ -68,7 +68,7 @@
 
 - **Status:** 📋 Not Started
 - **Type:** Design Task
-- **Output:** `$WORKFLOW_PROJECTS/{project}/explorations/` (via exploration save)
+- **Output:** `${OBSIDIAN_DIR}/reference/technical/explorations/` (via exploration save)
 - **Sections to include:**
   - [List key sections the design document should cover]
   - [e.g., User flow, Component hierarchy, State management]

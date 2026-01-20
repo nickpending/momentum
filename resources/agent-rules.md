@@ -4,6 +4,8 @@
 
 **Provided by orchestrator (CAPS):**
 - `{PROJECT_ROOT}` — Absolute path to project root
+- `{WORKFLOW_PROJECTS}` — Obsidian projects root (e.g., ~/obsidian/projects)
+- `{OBSIDIAN_DIR}` — Obsidian vault root (e.g., ~/obsidian)
 - `{TASK_NUMBER}` — Task being worked on (e.g., 1.1)
 - `{SESSION_ID}` — Claude Code session identifier (from per-turn hook context)
 

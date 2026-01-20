@@ -150,7 +150,12 @@ IF any validation fails:
 - Did it substitute different approaches than what was specified?
 - Did it add unrequested features or remove specified ones?
 
-IF gaps OR deviations exist:
+**Fidelity** (specificity preserved):
+- Were concrete values (sizes, sources, paths) preserved, if they exist in the task?
+- Did specific requirements get flattened to vague descriptions?
+- Do success criteria verify correctness, not just existence?
+
+IF gaps, deviations, OR fidelity issues exist:
 1. Check if the report already explains the rationale
 2. If rationale missing, RESUME agent with: "Continue your operator log. {ask why for specific gaps/deviations}"
 3. **Present findings to user** with specific examples AND rationale

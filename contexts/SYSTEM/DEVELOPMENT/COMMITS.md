@@ -1,11 +1,3 @@
-<!--
-PURPOSE: Commit message format and conventions
-LOCATION: contexts/SYSTEM/DEVELOPMENT/COMMITS.md
-RELATED FILES:
-- README.md - Development directory overview
-- PRACTICES.md - Development principles
--->
-
 # Commits
 
 ## Format

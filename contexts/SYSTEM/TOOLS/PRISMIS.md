@@ -1,11 +1,3 @@
-<!--
-PURPOSE: Reference documentation for prismis-cli - saved articles database
-LOCATION: contexts/SYSTEM/TOOLS/PRISMIS.md
-RELATED FILES:
-- README.md - Tools directory overview
-- LORE.md - Related knowledge tool
--->
-
 # Prismis
 
 Query and access your Prismis content database for research and reference.

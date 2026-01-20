@@ -1,8 +1,16 @@
+---
+type: exploration
+domain: technical
+status: complete
+started: {YYYY-MM-DD}
+project: {PROJECT_NAME}
+tags: [exploration]
+related: [[{PROJECT_NAME}]]
+---
+
 # {Topic} Exploration
 
-**Date:** {YYYY-MM-DD}
-**Context:** {What sparked this exploration}
-**Status:** {Optional - e.g., "Design Complete", "In Progress", "Open Questions Remain"}
+**Context:** [[projects/{PROJECT_NAME}|{PROJECT_NAME}]] — {What sparked this exploration}
 
 ## Problem / Core Question
 

@@ -113,7 +113,7 @@ IF user approves:
 
 READ the agent's report from REPORT path.
 
-## Step 6: Verify
+## Step 6: Verify Structure
 
 CHECK generated files:
 - Task files exist in `.workflow/artifacts/tasks/`
@@ -121,9 +121,37 @@ CHECK generated files:
 - Each task has demo command
 - Dependencies are valid
 
-IF issues found:
+IF structural issues found:
 - RESUME decomposer with: "Continue your operator log. {specific corrections}"
 - Re-verify after corrections
+
+---
+
+## Step 6.5: Reconciliation Check
+
+**Goal**: Verify decomposition faithfully represents iteration — nothing lost, nothing added
+
+CHECK for fidelity issues:
+
+**Nothing Lost**:
+- Did every feature from ITERATION.md get decomposed into tasks?
+- Were specific details (sizes, sources, quality criteria) preserved in task files?
+- Did concrete requirements get flattened to vague descriptions?
+
+**Nothing Added**:
+- Did any tasks appear that weren't in the iteration?
+- Were scope expansions made without approval?
+
+**Specificity Preserved**:
+- Concrete values (sizes, counts, paths) from iteration appear in task files
+- Content sources named in iteration are preserved, not generalized
+- Success criteria verify correctness, not just existence
+
+IF fidelity issues found:
+1. PRESENT specific discrepancies to user
+2. ASK: "Should I have the agent revise these tasks?"
+3. IF yes → RESUME decomposer with: "Continue your operator log. {specific fidelity corrections}"
+4. Re-verify after corrections
 
 ## Step 7: Complete
 

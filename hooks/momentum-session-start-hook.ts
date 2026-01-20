@@ -12,6 +12,7 @@ import {
   PROJECT_ROOT,
   PROJECT_NAME,
   WORKFLOW_PROJECTS,
+  OBSIDIAN_DIR,
   ARTIFACTS_DIR,
   PROJECT_OBSIDIAN_DIR,
 } from "./shared/momentum-paths.ts";
@@ -217,6 +218,7 @@ async function main(): Promise<void> {
   <project_root>${PROJECT_ROOT}</project_root>
   <project_name>${PROJECT_NAME}</project_name>
   <workflow_projects>${WORKFLOW_PROJECTS}</workflow_projects>
+  <obsidian_dir>${OBSIDIAN_DIR}</obsidian_dir>
 </paths>`;
 
     // Inject PROJECT_SUMMARY.md for non-workspace projects

@@ -1,12 +1,3 @@
-<!--
-PURPOSE: Full output format specification with all categories and rules
-LOCATION: contexts/SYSTEM/OUTPUT/FORMAT.md
-RELATED FILES:
-- README.md - Output directory overview
-- CAPTURE.md - Discovery preservation
-- TEACH.md - Principle surfacing
--->
-
 # Output Format
 
 **CRITICAL: Follow these output formatting rules exactly.**

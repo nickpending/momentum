@@ -16,8 +16,8 @@ These env vars are available in bash commands (use `${VAR}` syntax):
 - `${WORKFLOW_PROJECTS}` - Obsidian projects root (e.g., `~/obsidian/projects`)
 
 **Output location:**
-- Explorations save to: `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/`
-- This is the Obsidian projects folder, not the code repo
+- Explorations save to: `~/obsidian/reference/technical/explorations/{PROJECT_NAME}/`
+- TODO: Replace hardcoded path with `{OBSIDIAN_ROOT}` variable when available
 
 ## Mindset
 
@@ -71,7 +71,7 @@ User signals with: "save this exploration", "capture this", "document these insi
 
 ## Saving Explorations
 
-**Location:** `{WORKFLOW_PROJECTS}/{PROJECT_NAME}/explorations/{slug}.md`
+**Location:** `~/obsidian/reference/technical/explorations/{PROJECT_NAME}/{slug}.md`
 
 **Slug:** Descriptive, lowercase-hyphen (`skills-vs-routing.md`), not timestamps (`exploration-20251017.md`)
 
@@ -86,6 +86,21 @@ User signals with: "save this exploration", "capture this", "document these insi
 - Bad: "We discussed various approaches"
 
 **Include file references** if code was examined: `src/hooks/hook.ts:45`
+
+## Registering in Global Index
+
+After saving an exploration, append entry to `~/obsidian/reference/technical/explorations/index.md`:
+
+**Entry format:**
+```markdown
+- [[{PROJECT_NAME}/{slug}|{Title}]] - {YYYY-MM-DD} - {one-line summary}
+```
+
+**Rules:**
+- Group entries by project
+- Create project section (`### [[{PROJECT_NAME}]]`) if first exploration for that project
+- Add new entries at top of project section (most recent first)
+- Update the `updated:` frontmatter field to current date
 
 ## Resources
 

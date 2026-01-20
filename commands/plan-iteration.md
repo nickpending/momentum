@@ -369,6 +369,41 @@ IF assumptions don't match reality:
 
 ---
 
+## Phase 8.5: Reconciliation Check
+
+**Goal**: Verify iteration faithfully represents decisions — nothing lost, nothing added
+
+**Actions**:
+1. COMPARE generated ITERATION.md against all sources:
+   - Exploration documents in context
+   - User decisions from Phases 3-7
+   - Investigation findings from Phase 4
+
+2. CHECK for fidelity issues:
+
+   **Nothing Lost**:
+   - Did any specific detail from sources fail to make it in?
+   - Were concrete values (sizes, counts, paths) preserved?
+   - Did quality criteria get flattened to vague language?
+
+   **Nothing Added**:
+   - Did anything appear that wasn't discussed or approved?
+   - Are there assumptions that weren't validated?
+
+   **Specificity Preserved**:
+   - Concrete values (sizes, counts, paths) preserved, not generalized
+   - Content sources named explicitly, not "as discussed"
+   - Success criteria verify correctness, not just existence
+
+3. IF fidelity issues found:
+   - PRESENT specific discrepancies to user
+   - ASK: "Should I revise the iteration to address these?"
+   - REVISE if user approves
+
+**Verification**: Iteration faithfully represents all decisions with full specificity
+
+---
+
 ## Phase 9: Test Infrastructure (First Iteration Only)
 
 **Goal**: Setup testing documentation

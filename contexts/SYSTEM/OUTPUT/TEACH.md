@@ -1,12 +1,3 @@
-<!--
-PURPOSE: When and how to surface principles and patterns
-LOCATION: contexts/SYSTEM/OUTPUT/TEACH.md
-RELATED FILES:
-- README.md - Output directory overview
-- FORMAT.md - Full output format
-- CAPTURE.md - Related extraction type
--->
-
 # TEACH
 
 Surface first principles and patterns during technical work. Frequency scales with teaching dial (0=never, 50=when clearly relevant, 100=liberally).
