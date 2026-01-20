@@ -457,23 +457,6 @@ async function main() {
       model: transcriptStats.model,
     });
 
-    // CAPTURE reminder: If file modifications happened but no CAPTURE emitted
-    // Note: Stop hook uses systemMessage, not hookSpecificOutput
-    const hadFileModifications = transcriptStats.tools_used.some(
-      (tool) => tool === "Edit" || tool === "Write",
-    );
-    if (hadFileModifications && captures.length === 0) {
-      const hookOutput = {
-        systemMessage:
-          "REMINDER: You made file changes this turn but didn't CAPTURE. " +
-          "Consider if there's reusable knowledge. → SYSTEM/OUTPUT/CAPTURE.md",
-      };
-      console.log(JSON.stringify(hookOutput));
-      debugLog("StopHook", "CAPTURE reminder emitted", {
-        tools: transcriptStats.tools_used,
-      });
-    }
-
     // Use PROJECT_NAME from momentum-paths (consistent with other hooks)
     const cwd = data.cwd || process.cwd();
     const projectName = PROJECT_NAME;

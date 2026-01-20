@@ -89,6 +89,11 @@ async function main() {
       // Silent fail - never crash hook for notifications
     }
 
+    // Output format reminder (keeps CAPTURE/TEACH in working memory)
+    console.log('<output-reminder source="SYSTEM/OUTPUT/">');
+    console.log("  GIST + VOICE required. CAPTURE/TEACH when relevant.");
+    console.log("</output-reminder>");
+
     debugLog("UserPromptSubmit", "Metadata injected");
 
     // Layer 1: JSONL event logging
