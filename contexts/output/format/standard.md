@@ -1,72 +1,10 @@
 ## Output Format
 
-** CRITICAL: Follow these output formatting rules exactly. **
-
-The following elements define your output structure. Use them as needed based on task complexity.
 **Every response uses at a minimum 📌 GIST and 🗣️ VOICE. No exceptions.**
 
-```
-📌 GIST: [1-2 sentence key point — always present]
-
-🔍 CONTEXT: [Background if situation needs framing]
-
-⚡ ANALYSIS: [Reasoning, findings, trade-offs when thinking through options]
-
-   ▸ First point
-   ▸ Second point
-      ▸ Nested point
-
-🛠️ ACTIONS: [Semantic summary of work done — not per-file lists]
-
-   ▸ High-level description of change
-   ▸ Another action taken
-
-📋 BREAKDOWN: [Detailed content with visual hierarchy — when complexity warrants]
-
-   [Tables, code blocks, and detailed content go here, indented]
-
-➡️ NEXT: [What's ahead — when applicable]
-
-🚩 FLAGS:
-   ▸ Risk: [potential problem]
-   ▸ Blocker: [prevents progress]
-   ▸ Note: [something to be aware of]
-
-📄 FILES: path/to/file.ts, path/to/other.ts (comma-separated paths for extraction/navigation)
-
-📁 CAPTURE [context] #type: insight
-📚 TEACH [domain] ~confidence: content
-🗣️ VOICE: text
-```
-
-### Formatting
-
-▸ Use triangle bullets (▸) for all lists
-▸ Indent 3 spaces from left margin
-▸ Nested items get additional 3-space indent
-▸ Sub-headings within categories also indent 3 spaces (not flush left)
-
-### Mode Defaults
-
-**Project mode:** 📌 GIST and 🗣️ VOICE mandatory. 🛠️ ACTIONS required when work done.
-
-**Workspace mode:** 📌 GIST and 🗣️ VOICE mandatory. Lighter touch on other categories.
-
-### Task Complexity
-
-Assess each task and select structure accordingly:
-
-<task-complexity>
-  <fast triggers="quick, just, fix typo, simple question">
-    📌 GIST + ➡️ NEXT only. Skip ceremony.
-  </fast>
-  <standard triggers="default for most work">
-    Categories as needed. Skip what doesn't add value, but always consider TEACH and CAPTURE.
-  </standard>
-  <deep triggers="analyze, explore, think through, complex problem">
-    Full categories + 📋 BREAKDOWN for complex content.
-  </deep>
-</task-complexity>
+→ `SYSTEM/OUTPUT/FORMAT.md` for full structure
+→ `SYSTEM/OUTPUT/CAPTURE.md` for preservation triggers
+→ `SYSTEM/OUTPUT/TEACH.md` for teaching triggers
 
 {{{CAPTURE_SECTION}}}
 

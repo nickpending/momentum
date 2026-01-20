@@ -420,6 +420,25 @@ if [[ -d "$MOMENTUM_SOURCE/contexts/output" ]]; then
     echo "  ✓ Output contexts (format, verbosity, annotations)"
 fi
 
+# Install SYSTEM/ breadcrumb docs (tools, output format, development)
+if [[ -d "$MOMENTUM_SOURCE/contexts/SYSTEM" ]]; then
+    mkdir -p "$MOMENTUM_INSTALL/contexts/SYSTEM/TOOLS"
+    mkdir -p "$MOMENTUM_INSTALL/contexts/SYSTEM/OUTPUT"
+    mkdir -p "$MOMENTUM_INSTALL/contexts/SYSTEM/DEVELOPMENT"
+    cp "$MOMENTUM_SOURCE/contexts/SYSTEM"/*.md "$MOMENTUM_INSTALL/contexts/SYSTEM/" 2>/dev/null
+    cp "$MOMENTUM_SOURCE/contexts/SYSTEM/TOOLS"/*.md "$MOMENTUM_INSTALL/contexts/SYSTEM/TOOLS/" 2>/dev/null
+    cp "$MOMENTUM_SOURCE/contexts/SYSTEM/OUTPUT"/*.md "$MOMENTUM_INSTALL/contexts/SYSTEM/OUTPUT/" 2>/dev/null
+    cp "$MOMENTUM_SOURCE/contexts/SYSTEM/DEVELOPMENT"/*.md "$MOMENTUM_INSTALL/contexts/SYSTEM/DEVELOPMENT/" 2>/dev/null
+    echo "  ✓ SYSTEM breadcrumbs (tools, output, development)"
+fi
+
+# Install USER/ breadcrumb docs (persona)
+if [[ -d "$MOMENTUM_SOURCE/contexts/USER" ]]; then
+    mkdir -p "$MOMENTUM_INSTALL/contexts/USER"
+    cp "$MOMENTUM_SOURCE/contexts/USER"/*.md "$MOMENTUM_INSTALL/contexts/USER/" 2>/dev/null
+    echo "  ✓ USER breadcrumbs (persona)"
+fi
+
 # Install speech marker files
 mkdir -p "$MOMENTUM_INSTALL/contexts/speech"
 if [[ -d "$MOMENTUM_SOURCE/contexts/speech" ]]; then

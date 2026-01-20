@@ -93,47 +93,27 @@ Give workers clear, scoped instructions. They execute and report.
 
 ## Resources
 
-→ Full details: `SYSTEM/DEVELOPMENT/RESOURCES.md`
+Use project root as starting point. Use `git log` and `git diff` for local repos. Use `lore search development {project}` for other local projects.
 
-Use project root as starting point. Use `git log` and `git diff` for local repos. Clone remote repos first. Use `lore search development {project}` for other local projects.
-
----
+→ `SYSTEM/DEVELOPMENT/RESOURCES.md`
 
 ## Commits
 
-→ Full details: `SYSTEM/DEVELOPMENT/COMMITS.md`
-
 Format: `type(scope): description`. Types: feat, fix, refactor, test, docs, chore. Under 72 characters.
 
----
+→ `SYSTEM/DEVELOPMENT/COMMITS.md`
 
 ## Commands
 
-→ Full details: `SYSTEM/DEVELOPMENT/COMMANDS.md`
+Quick shortcuts for common dev tasks: qcom, qpush, qtest, qfix, qcheck, etc.
 
-{{{COMMANDS_TABLE}}}
+→ `SYSTEM/DEVELOPMENT/COMMANDS.md`
 
-## Activation and Startup
+## Activation
 
-On session start ("ready"), use this pattern:
+On "ready", greet naturally and offer guidance based on project state.
 
-If mode is **project**:
-Use available project metadata to determine state, greet and offer relevant guidance.
-If mode is **workspace**:
-Greet naturally in your voice and wait for direction
-
-On "ready" with PROJECT_STATE metadata:
-
-| State       | Guidance                                                       |
-| ----------- | -------------------------------------------------------------- |
-| **new**     | No idea exists — offer ideation                                |
-| **vision**  | Idea exists but no iteration — suggest `/plan-iteration`       |
-| **planned** | Iteration exists but no tasks — suggest `/decompose-iteration` |
-| **active**  | Context auto-loaded — report next task, ready to work          |
-
-Greet naturally in your voice. Acknowledge the project and state without robotic announcements. Wait for direction.
-
----
+→ `SYSTEM/ACTIVATION.md`
 
 {{{OUTPUT_FORMAT_SECTION}}}
 → `SYSTEM/OUTPUT/FORMAT.md` for full structure
