@@ -425,7 +425,7 @@ async function main() {
     );
     if (!lastMessageContent) {
       debugLog("StopHook", "No assistant message found in transcript", {});
-      return;
+      process.exit(0);
     }
 
     // Determine current mode from environment or default to project
@@ -456,6 +456,23 @@ async function main() {
       tools: transcriptStats.tools_used.length,
       model: transcriptStats.model,
     });
+
+    // CAPTURE reminder: If file modifications happened but no CAPTURE emitted
+    // Note: Stop hook uses systemMessage, not hookSpecificOutput
+    const hadFileModifications = transcriptStats.tools_used.some(
+      (tool) => tool === "Edit" || tool === "Write",
+    );
+    if (hadFileModifications && captures.length === 0) {
+      const hookOutput = {
+        systemMessage:
+          "REMINDER: You made file changes this turn but didn't CAPTURE. " +
+          "Consider if there's reusable knowledge. → SYSTEM/OUTPUT/CAPTURE.md",
+      };
+      console.log(JSON.stringify(hookOutput));
+      debugLog("StopHook", "CAPTURE reminder emitted", {
+        tools: transcriptStats.tools_used,
+      });
+    }
 
     // Use PROJECT_NAME from momentum-paths (consistent with other hooks)
     const cwd = data.cwd || process.cwd();
@@ -536,7 +553,7 @@ async function main() {
     // TTS: Speak voice summary if present
     if (!voiceSummary) {
       debugLog("StopHook", "No Voice: marker found", {});
-      return;
+      process.exit(0);
     }
 
     debugLog("StopHook", "Extracted voice summary", { voiceSummary });
@@ -551,9 +568,11 @@ async function main() {
     await speakSentences(sentences, mode, config);
 
     debugLog("StopHook", "TTS complete", {});
+    process.exit(0);
   } catch (error) {
     // Log error but don't fail - TTS is optional
     debugLog("StopHook", "Error in stop hook", { error: String(error) });
+    process.exit(0);
   }
 }
 
