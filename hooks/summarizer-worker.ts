@@ -11,6 +11,7 @@ import {
 } from "@voidwire/llm-summarize";
 import { postToArgus } from "./shared/argus-client.ts";
 import { debugLog } from "./shared/debug-log.ts";
+import { captureInsight } from "@voidwire/lore/capture";
 
 // Worker input passed via stdin
 interface WorkerInput {
@@ -25,6 +26,91 @@ interface WorkerInput {
   toolsUsed: string[];
   model: string | null;
   capturesCount: number;
+}
+
+interface SessionInsights {
+  summary: string;
+  decisions?: string[];
+  patterns_used?: string[];
+  preferences_expressed?: string[];
+  problems_solved?: string[];
+  tools_heavy?: string[];
+}
+
+async function captureInsightsToLore(
+  insights: SessionInsights | undefined,
+  sessionId: string,
+  project: string,
+): Promise<void> {
+  if (!insights) return;
+
+  try {
+    for (const decision of insights.decisions || []) {
+      captureInsight({
+        session_id: sessionId,
+        project,
+        insight_type: "decision",
+        text: decision,
+        source: "auto",
+      });
+    }
+
+    for (const pattern of insights.patterns_used || []) {
+      captureInsight({
+        session_id: sessionId,
+        project,
+        insight_type: "pattern",
+        text: pattern,
+        source: "auto",
+      });
+    }
+
+    for (const problem of insights.problems_solved || []) {
+      captureInsight({
+        session_id: sessionId,
+        project,
+        insight_type: "problem",
+        text: problem,
+        source: "auto",
+      });
+    }
+
+    for (const pref of insights.preferences_expressed || []) {
+      captureInsight({
+        session_id: sessionId,
+        project,
+        insight_type: "preference",
+        text: pref,
+        source: "auto",
+      });
+    }
+
+    for (const tool of insights.tools_heavy || []) {
+      captureInsight({
+        session_id: sessionId,
+        project,
+        insight_type: "tool",
+        text: tool,
+        source: "auto",
+      });
+    }
+
+    if (insights.summary) {
+      captureInsight({
+        session_id: sessionId,
+        project,
+        insight_type: "summary",
+        text: insights.summary,
+        source: "auto",
+      });
+    }
+
+    debugLog("SummarizerWorker", "Lore insights captured");
+  } catch (error) {
+    debugLog("SummarizerWorker", "Lore capture failed (non-critical)", {
+      error: String(error),
+    });
+  }
 }
 
 async function main() {
@@ -116,6 +202,8 @@ async function main() {
     });
 
     debugLog("SummarizerWorker", "Argus event posted successfully");
+
+    await captureInsightsToLore(insights, input.sessionId, input.project);
   } catch (error) {
     debugLog("SummarizerWorker", "Worker error", { error: String(error) });
     process.exit(1);

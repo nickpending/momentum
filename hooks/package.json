@@ -10,7 +10,7 @@
     "@voidwire/expertise-update": "^1.0.1",
     "@voidwire/llm-notify": "^2.0.0",
     "@voidwire/llm-summarize": "^3.2.0",
-    "@voidwire/lore": "^0.1.6",
+    "@voidwire/lore": "^0.5.2",
     "mustache": "^4.2.0"
   }
 }
