@@ -192,12 +192,6 @@ async function main() {
         model: input.model,
         captures_count: input.capturesCount,
         enriched: true,
-        // SessionInsights fields for Lore deriver
-        decisions: insights?.decisions,
-        patterns_used: insights?.patterns_used,
-        preferences_expressed: insights?.preferences_expressed,
-        problems_solved: insights?.problems_solved,
-        tools_heavy: insights?.tools_heavy,
       },
     });
 
